@@ -1,13 +1,11 @@
-import AccessibilityBar from "../components/AccessibilityBar";
 import Header from "../components/Header";
 
 export default function Home() {
   return (
     <>
-      <AccessibilityBar />
       <Header />
       <main id="main" className="p-6">
-        <h2 className="text-2xl font-bold">Welcome to MeitY Clone 🚀</h2>
+        <h2 className="text-2xl font-bold">Welcome  🚀</h2>
         <p>This is the homepage content.</p>
       </main>
     </>
