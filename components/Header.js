@@ -1,9 +1,8 @@
 "use client";
-import Image from "next/image";
 import AccessibilityBar from "./AccessibilityBar";
-import Bhashini from "./icons/bhashini";
+import Bhashini from "./icons/Bhashini";
 import Emblem from "./icons/Emblem";
-import Skip from "./icons/skip";
+import Skip from "./icons/Skip";
 
 export default function Header() {
     return (
