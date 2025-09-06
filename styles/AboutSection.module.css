@@ -1,0 +1,79 @@
+.aboutSection {
+    padding: 60px 0;
+    background-color: #fff;
+  }
+  
+  /* Section Header */
+  .icon {
+    font-size: 28px;
+    color: #162f6a;
+  }
+  .title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #162f6a;
+  }
+  .description {
+    font-size: 1.05rem;
+    color: #333;
+    line-height: 1.8;
+  }
+  
+  /* Info Cards */
+  .infoCard {
+    border: 1px solid #ddd;
+    text-align: center;
+    padding: 20px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  .infoCard:hover {
+    border-color: #162f6a;
+    box-shadow: 0 0 10px rgba(0,0,0,0.05);
+  }
+  .infoIcon {
+    font-size: 24px;
+    color: #162f6a;
+    margin-bottom: 10px;
+  }
+  .infoCard span {
+    font-weight: 600;
+    color: #000;
+  }
+  
+  /* Minister Cards */
+  .ministerCard {
+    background-color: #fff;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .ministerImage {
+    border-bottom: 4px solid #162f6a;
+    border-radius: 4px 4px 0 0;
+  }
+  .ministerName {
+    margin-top: 12px;
+    font-weight: 600;
+    font-size: 1rem;
+    color: #000;
+  }
+  .ministerRole {
+    font-size: 0.9rem;
+    color: #666;
+  }
+  
+  /* Responsive Fixes */
+  @media (max-width: 768px) {
+    .infoCard {
+      margin-bottom: 1rem;
+    }
+    .title {
+      font-size: 1.5rem;
+      text-align: center;
+    }
+    .icon {
+      font-size: 24px;
+    }
+  }
+  
