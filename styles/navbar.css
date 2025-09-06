@@ -1,6 +1,6 @@
 /* Main navigation - Sticky navbar */
 .main-nav {
-	background: #e6f2ff; /* Light blue background like MEITY */
+	background: #fff; /* Light blue background like MEITY */
 	position: sticky;
 	top: 0;
 	z-index: 1000;
@@ -14,8 +14,9 @@
 	gap: 0;
 	padding: 0;
 	margin: 0;
-	align-items: center;
-	justify-content: center;
+	align-items: end;
+	justify-content: start;
+	margin-left: 64px;
 }
 
 .nav-item {
@@ -33,8 +34,9 @@
 }
 
 .nav-item a:hover {
-	color: #123a6b;
-	background: rgba(18, 58, 107, 0.1);
+	color: #150202;
+	/* background: rgba(18, 58, 107, 0.1); */
+	background: #d2dfff;
 }
 
 /* Active state for Home - underline style */
@@ -68,7 +70,7 @@
 	top: 100%;
 	left: 0;
 	min-width: 200px;
-	background: #2c2c2c; /* Dark grey background */
+	background: #484848; /* Dark grey background */
 	border-radius: 4px;
 	padding: 8px 0;
 	opacity: 0;
@@ -89,7 +91,12 @@
 	list-style: none;
 	padding: 0;
 	margin: 0;
+
+    background: rgba(116, 116, 116, 0);
 }
+
+
+
 
 .dropdown-list li {
 	padding: 0;
@@ -106,6 +113,12 @@
 }
 
 .dropdown-list a:hover {
-	background: rgba(255, 255, 255, 0.1);
-	color: white;
+	background: #d2dfff;
+	color: #484848;
+}
+
+
+.navbar-down-arrow {
+	position: relative;
+    top: 7px;
 }
