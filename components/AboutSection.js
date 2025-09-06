@@ -51,7 +51,7 @@ export default function AboutSection() {
               <div className={styles.ministerCard}>
                 <div className={styles.ministerImage}>
                   <Image
-                    src="/images/about/vaishnaw.jpg"
+                    src="/images/about/ashwini.jpg"
                     alt="Shri Ashwini Vaishnaw"
                     width={150}
                     height={180}
