@@ -8,11 +8,6 @@
 	margin: 0;
 }
 
-
-body {
-	background: red !important;
-}
-
 /* keep page full-height and remove default margin for accurate background display */
 html,
 body {

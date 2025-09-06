@@ -40,29 +40,6 @@ export default function Header() {
                     </div>
                 </div>
             </div>
-            <nav className="main-nav" role="navigation" aria-label="Main navigation">
-                <ul className="nav-list">
-                    <li className="nav-item active"><a href="#">Home</a></li>
-                    <li className="nav-item"><a href="#">Ministry <span className="chev">▾</span></a></li>
-                    <li className="nav-item"><a href="#">Offerings <span className="chev">▾</span></a></li>
-                    <li className="nav-item has-dropdown">
-                        <a href="#">Documents <span className="chev">▾</span></a>
-                        <div className="dropdown" aria-hidden="true">
-                            <div className="top"><a href="#">Reports</a></div>
-                            <ul className="list">
-                                <li><a href="#">Act and Policies</a></li>
-                                <li><a href="#">Orders and Notices</a></li>
-                                <li><a href="#">Publications</a></li>
-                                <li><a href="#">Press Release</a></li>
-                                <li><a href="#">Gazettes Notifications</a></li>
-                                <li><a href="#">Guidelines</a></li>
-                            </ul>
-                        </div>
-                    </li>
-                    <li className="nav-item"><a href="#">Media <span className="chev">▾</span></a></li>
-                    <li className="nav-item"><a href="#">Connect <span className="chev">▾</span></a></li>
-                </ul>
-            </nav>
         </header>
     );
 }
