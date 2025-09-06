@@ -1,53 +1,223 @@
-.wrapper {
-  display: flex;
-  align-items: center;
-  padding: 40px;
-  border-radius: 8px;
-  gap: 30px;
-  background: rgb(235, 234, 234);
-  flex-wrap: wrap; /* allow wrapping on small screens */
+/* Container */
+.container {
+  width: 100%;
+
+  margin: 0 auto;
+  padding: 0 10%;
+  background: #ebeaea;
 }
 
-.imageBox {
-  flex: 0 0 180px;
+/* Row */
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 -15px;
+ 
+  border-radius: 8px;
+  overflow: hidden;
+  
+}
+
+/* Columns */
+.imageColumn {
+  flex: 0 0 300px;
+  padding: 30px;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.image {
-  border: 6px solid #fff;
+.contentColumn {
+  flex: 1;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* Image Box */
+.imageBox {
+  position: relative;
+  width: 100%;
+  max-width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   background: #fff;
   width: 260px;
   height: 260px;
   box-shadow: 0 2px 4px 0 rgba(35, 35, 47, .06), 0 6px 12px 0 rgba(35, 35, 47, .08);
   border-radius: 50%;
   object-fit: cover;
+  
 }
 
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+/* Content */
 .content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
+  max-width: 100%;
 }
 
 .quote {
-  color: rgb(22, 47, 106);
+  color: #162f6a;
+  font-size: 1.25rem;
+  line-height: 1.6;
   margin-bottom: 20px;
   position: relative;
-  font-size: 1rem !important;
-  font-style: normal;
+  padding-left: 30px;
   font-weight: 500;
-  line-height: 29px;
-  letter-spacing: -0.12px;
 }
 
 .quoteMark {
-  color: rgb(22, 47, 106);
+  color: #162f6a;
   display: block;
-  max-height: 40px;
-  font-family: "Material Symbols Outlined";
-  font-size: 4.4rem !important;
+  position: absolute;
+  left: 0;
+  top: -20px;
+  font-size: 5rem !important;
+  line-height: 1;
+  font-weight: 300;
+  opacity: 0.8;
+}
+
+.hr {
+  border: 0;
+  height: 1px;
+  background: #d1d1d1;
+  margin: 20px 0;
+}
+
+/* Meta Section */
+.meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.event {
+  font-weight: 600;
+  color: #333;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.date {
+  color: #666;
+  font-size: 0.85rem;
+  background: #e9e9e9;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-weight: 500;
+}
+
+/* Button */
+.buttonContainer {
+  margin-top: 10px;
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #162f6a;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.button:hover {
+  background: #1a3a80;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.button .material-symbols-outlined {
+  font-size: 1.1rem;
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+  .row {
+    margin: 0;
+    border-radius: 0;
+  }
+  
+  .imageColumn, 
+  .contentColumn {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+  
+  .imageBox {
+    margin: 0 auto 20px;
+    max-width: 220px;
+    height: 220px;
+  }
+  
+  .content {
+    text-align: center;
+  }
+  
+  .quote {
+    padding-left: 0;
+    text-align: center;
+    font-size: 1.1rem !important;
+  }
+  
+  .quoteMark {
+    position: relative;
+    top: 0;
+    left: 0;
+    display: inline-block;
+    margin-bottom: 10px;
+  }
+  
+  .meta {
+    justify-content: center;
+  }
+  
+  .buttonContainer {
+    display: flex;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 576px) {
+  .imageBox {
+    max-width: 200px;
+    height: 200px;
+  }
+  
+  .quote {
+    font-size: 1rem !important;
+    line-height: 1.5;
+  }
+  
+  .meta {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .date {
+    margin-top: 5px;
+  }
 }
 
 .hr {
