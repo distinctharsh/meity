@@ -16,12 +16,13 @@
 }
 
 .image {
-  width: 180px;
-  height: 180px;
+  border: 6px solid #fff;
+  background: #fff;
+  width: 260px;
+  height: 260px;
+  box-shadow: 0 2px 4px 0 rgba(35, 35, 47, .06), 0 6px 12px 0 rgba(35, 35, 47, .08);
   border-radius: 50%;
   object-fit: cover;
-  border: 6px solid #fff;
-  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .content {
