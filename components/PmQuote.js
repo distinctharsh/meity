@@ -29,15 +29,15 @@ export default function EventQuote() {
             <hr className={styles.hr} />
 
             <div className={styles.meta}>
-              <span className={styles.event}>SEMICONDUCTOR EXECUTIVES' ROUNDTABLE</span>
-              <span className={styles.date}>10.09.2024</span>
-            </div>
-
-            <div className={styles.buttonContainer}>
+              <span className={styles.event}>SEMICONDUCTOR EXECUTIVES' ROUNDTABLE<br/><span className={styles.date}>10.09.2024</span></span>
+             
               <a href="#" className={styles.button}>
                 <span aria-hidden="true" className="material-symbols-outlined bhashini-skip-translation ">open_in_new</span>
                 VIEW EVENT
               </a>
+            </div>
+
+            <div className={styles.buttonContainer}>
             </div>
           </div>
         </div>

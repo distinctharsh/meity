@@ -66,25 +66,21 @@
 }
 
 .quote {
-  color: #162f6a;
   font-size: 1.25rem;
   line-height: 1.6;
-  margin-bottom: 20px;
-  position: relative;
-  padding-left: 30px;
+  color: #162f6a;
+  font-style: normal;
   font-weight: 500;
+  letter-spacing: -.12px;
 }
 
 .quoteMark {
+  font-size: 4.4rem !important;
   color: #162f6a;
   display: block;
-  position: absolute;
-  left: 0;
-  top: -20px;
-  font-size: 5rem !important;
-  line-height: 1;
-  font-weight: 300;
-  opacity: 0.8;
+  max-height: 40px;
+  font-family: Material Symbols Outlined;
+  margin-bottom: 20px;
 }
 
 .hr {
@@ -105,18 +101,19 @@
 }
 
 .event {
-  font-weight: 600;
-  color: #333;
   font-size: 0.9rem;
-  text-transform: uppercase;
   letter-spacing: 0.5px;
+
+  color: #162f6a;
+    font-style: normal;
+    font-weight: 500;
+    text-transform: uppercase;
 }
 
 .date {
-  color: #666;
+  color: #162f6a;
   font-size: 0.85rem;
   background: #e9e9e9;
-  padding: 5px 12px;
   border-radius: 20px;
   font-weight: 500;
 }
