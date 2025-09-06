@@ -7,8 +7,7 @@ import PmQuote from "../components/PmQuote";
 export default function Home() {
   return (
     <>
-      <Header />
-      <Navbar />
+     
       <HeroSlider />
       <AnnouncementBar />
       <PmQuote />

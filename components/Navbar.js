@@ -1,29 +1,149 @@
 "use client";
+import { useState } from 'react';
+import Link from 'next/link';
+import styles from '../styles/NewNavbar.module.css';
 
-export default function Navbar() {
-    return (
-        <nav className="main-nav" role="navigation" aria-label="Main navigation">
-            <ul className="nav-list">
-                <li className="nav-item active"><a href="#">Home</a></li>
-                <li className="nav-item"><a href="#">Ministry <span aria-hidden="true" class="material-symbols-outlined bhashini-skip-translation mt-5 navbar-down-arrow" spanprops="[object Object]">expand_more</span></a></li>
-                <li className="nav-item"><a href="#">Offerings <span aria-hidden="true" class="material-symbols-outlined bhashini-skip-translation mt-5 navbar-down-arrow" spanprops="[object Object]">expand_more</span></a></li>
-                <li className="nav-item"><a href="#">Documents <span aria-hidden="true" class="material-symbols-outlined bhashini-skip-translation mt-5 navbar-down-arrow" spanprops="[object Object]">expand_more</span></a></li>
-                <li className="nav-item"><a href="#">Media <span aria-hidden="true" class="material-symbols-outlined bhashini-skip-translation mt-5 navbar-down-arrow" spanprops="[object Object]">expand_more</span></a></li>
-                <li className="nav-item has-dropdown">
-                    <a href="#">Connect <span aria-hidden="true" class="material-symbols-outlined bhashini-skip-translation mt-5 navbar-down-arrow" spanprops="[object Object]">expand_more</span></a>
-                    <div className="dropdown" aria-hidden="true">
-                        <ul className="dropdown-list">
-                            <li><a href="#">Contact Us</a></li>
-                            <li><a href="#">Directory</a></li>
-                            <li><a href="#">RTI</a></li>
-                            <li><a href="#">Grievance Redressal</a></li>
-                            <li><a href="#">Visitor's Pass</a></li>
-                            <li><a href="#">Citizen Engagement</a></li>
-                            <li><a href="#">Parliament Questions</a></li>
-                        </ul>
+export default function NewNavbar() {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [activeDropdown, setActiveDropdown] = useState(null);
+
+  const toggleMobileMenu = () => {
+    setMobileMenuOpen(!mobileMenuOpen);
+  };
+
+  const toggleDropdown = (index) => {
+    setActiveDropdown(activeDropdown === index ? null : index);
+  };
+
+  const navItems = [
+    { 
+      text: 'Home', 
+      href: '#',
+      active: true,
+      dropdown: false 
+    },
+    { 
+      text: 'Ministry', 
+      href: '#',
+      dropdown: true,
+      items: [
+        { text: 'About Us', href: '#' },
+        { text: 'Organization', href: '#' },
+        { text: 'Policies', href: '#' },
+      ]
+    },
+    { 
+      text: 'Offerings', 
+      href: '#',
+      dropdown: true,
+      items: [
+        { text: 'Services', href: '#' },
+        { text: 'Schemes', href: '#' },
+        { text: 'Initiatives', href: '#' },
+      ]
+    },
+    { 
+      text: 'Documents', 
+      href: '#',
+      dropdown: true,
+      items: [
+        { text: 'Reports', href: '#' },
+        { text: 'Publications', href: '#' },
+        { text: 'Circulars', href: '#' },
+      ]
+    },
+    { 
+      text: 'Media', 
+      href: '#',
+      dropdown: true,
+      items: [
+        { text: 'Gallery', href: '#' },
+        { text: 'Videos', href: '#' },
+        { text: 'Press Releases', href: '#' },
+      ]
+    },
+    { 
+      text: 'Connect', 
+      href: '#',
+      dropdown: true,
+      items: [
+        { text: 'Contact Us', href: '#' },
+        { text: 'Directory', href: '#' },
+        { text: 'RTI', href: '#' },
+        { text: 'Grievance Redressal', href: '#' },
+        { text: "Visitor's Pass", href: '#' },
+        { text: 'Citizen Engagement', href: '#' },
+        { text: 'Parliament Questions', href: '#' },
+      ]
+    }
+  ];
+
+  return (
+    <nav className={styles.navbar}>
+      <div className={styles.container}>
+        <div className={styles.navRow}>
+          {/* Mobile Menu Toggle */}
+          <button 
+            className={styles.mobileMenuToggle}
+            onClick={toggleMobileMenu}
+            aria-expanded={mobileMenuOpen}
+            aria-label="Toggle navigation"
+          >
+            <span className="material-symbols-outlined">
+              {mobileMenuOpen ? 'close' : 'menu'}
+            </span>
+          </button>
+
+          {/* Navigation Links */}
+          <div className={`${styles.navLinks} ${mobileMenuOpen ? styles.active : ''}`}>
+            <ul className={styles.navList}>
+              {navItems.map((item, index) => (
+                <li 
+                  key={index} 
+                  className={`${styles.navItem} ${item.active ? styles.active : ''} ${item.dropdown ? styles.hasDropdown : ''}`}
+                >
+                  <Link 
+                    href={item.href}
+                    className={styles.navLink}
+                    onClick={(e) => {
+                      if (item.dropdown) {
+                        e.preventDefault();
+                        toggleDropdown(index);
+                      }
+                    }}
+                  >
+                    {item.text}
+                    {item.dropdown && (
+                      <span className={`material-symbols-outlined ${styles.dropdownIcon}`}>
+                        expand_more
+                      </span>
+                    )}
+                  </Link>
+                  
+                  {item.dropdown && item.items && (
+                    <div 
+                      className={styles.dropdown} 
+                      style={{
+                        display: activeDropdown === index ? 'block' : 'none'
+                      }}
+                    >
+                      <ul className={styles.dropdownList}>
+                        {item.items.map((subItem, subIndex) => (
+                          <li key={subIndex}>
+                            <Link href={subItem.href} className={styles.dropdownLink}>
+                              {subItem.text}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
                     </div>
+                  )}
                 </li>
+              ))}
             </ul>
-        </nav>
-    );
+          </div>
+        </div>
+      </div>
+    </nav>
+  );
 }
