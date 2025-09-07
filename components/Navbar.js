@@ -100,13 +100,15 @@ export default function NewNavbar() {
               {navItems.map((item, index) => (
                 <li 
                   key={index} 
-                  className={`${styles.navItem} ${item.active ? styles.active : ''} ${item.dropdown ? styles.hasDropdown : ''}`}
+                  className={`${styles.navItem} ${item.active ? styles.active : ''} ${item.dropdown ? styles.hasDropdown : ''} ${activeDropdown === index ? styles.open : ''}`}
                 >
                   <Link 
                     href={item.href}
                     className={styles.navLink}
                     onClick={(e) => {
-                      if (item.dropdown) {
+                      // On mobile (small screens) we want click/tap to toggle the dropdown.
+                      // On desktop allow hover to open the menu, so don't intercept the click.
+                      if (item.dropdown && typeof window !== 'undefined' && window.innerWidth < 769) {
                         e.preventDefault();
                         toggleDropdown(index);
                       }
@@ -122,10 +124,7 @@ export default function NewNavbar() {
                   
                   {item.dropdown && item.items && (
                     <div 
-                      className={styles.dropdown} 
-                      style={{
-                        display: activeDropdown === index ? 'block' : 'none'
-                      }}
+                      className={styles.dropdown}
                     >
                       <ul className={styles.dropdownList}>
                         {item.items.map((subItem, subIndex) => (
