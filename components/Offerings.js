@@ -1,7 +1,30 @@
+import { useState } from "react";
 import styles from '../styles/Offerings.module.css';
 import Offering from "./icons/Offering";
 import WhatsNew from './icons/WhatsNew';
+
 export default function Offerings() {
+  const [activeTab, setActiveTab] = useState("schemes");
+
+  // Data for Schemes & Vacancies
+  const schemesList = [
+    "Guidelines for implementation of Scheme for reimbursement of Testing and Certification Charges",
+    "TECHNICAL INTERNSHIP PROGRAMME 2025",
+    "Electronics Component Manufacturing Scheme",
+    "Digital India Internship Scheme-2025"
+  ];
+
+  const vacanciesList = [
+    "Vacancy 1: Technical Assistant",
+    "Vacancy 2: Junior Engineer",
+    "Vacancy 3: Project Manager",
+    "Vacancy 4: Data Analyst"
+  ];
+
+  const handleTabClick = (tab) => {
+    setActiveTab(tab);
+  };
+
   return (
     <section className={styles.offeringSection}>
       <div className={styles.container}>
@@ -9,35 +32,48 @@ export default function Offerings() {
           <div className={styles.colLeft}>
             <div className={styles.headerWithIcon}>
               <div className={styles.icon} aria-hidden>
-                {/* placeholder icon */}
-                <Offering/>
+                <Offering />
               </div>
               <h3 className={styles.title}>Key Offerings</h3>
             </div>
 
             <div className={styles.tabs}>
-              <button className={styles.tabActive}>Schemes</button>
-              <button className={styles.tab}>Vacancies</button>
+              <button
+                className={activeTab === "schemes" ? styles.tabActive : styles.tab}
+                onClick={() => handleTabClick("schemes")}
+                aria-selected={activeTab === "schemes"}
+              >
+                Schemes
+              </button>
+              <button
+                className={activeTab === "vacancies" ? styles.tabActive : styles.tab}
+                onClick={() => handleTabClick("vacancies")}
+                aria-selected={activeTab === "vacancies"}
+              >
+                Vacancies
+              </button>
             </div>
 
             <div className={styles.listBox}>
               <ul className={styles.list}>
-                <li className={styles.item}>Guidelines for implementation of Scheme for reimbursement of Testing and Certification Charges</li>
-                <li className={styles.item}>TECHNICAL INTERNSHIP PROGRAMME 2025</li>
-                <li className={styles.item}>Electronics Component Manufacturing Scheme</li>
-                <li className={styles.item}>Digital India Internship Scheme-2025</li>
+                {(activeTab === "schemes" ? schemesList : vacanciesList).map((item, index) => (
+                  <li key={index} className={styles.listItem}>
+                    {item}
+                    <span className={styles.arrow}>›</span>
+                  </li>
+                ))}
               </ul>
+            </div>
 
-              <div className={styles.viewMoreWrap}>
-                <button className={styles.viewMore}>VIEW MORE</button>
-              </div>
+            <div className={styles.viewMoreWrap}>
+              <button className={styles.viewMore}>VIEW MORE</button>
             </div>
           </div>
 
           <aside className={styles.colRight}>
             <div className={styles.headerWithIconRight}>
               <div className={styles.icon} aria-hidden>
-                <WhatsNew/>
+                <WhatsNew />
               </div>
               <h3 className={styles.title}>What's New</h3>
             </div>
@@ -55,12 +91,3 @@ export default function Offerings() {
     </section>
   );
 }
-
-
-
-
-
-
-
-
-
