@@ -1,7 +1,7 @@
 .container {
   display: flex;
-  justify-content: space-between; /* Space between 3 sections */
-  padding: 2rem 5rem; /* Left and right padding for container */
+  justify-content: space-between; 
+  padding: 2rem 5rem; 
   gap: 2rem;
   font-family: 'Open Sans', sans-serif;
   color: #0a2e60;
@@ -17,7 +17,7 @@
   flex: 0.6;
   display: flex;
   flex-direction: column;
-  align-items: center; /* Center content horizontally */
+  align-items: center;  
 }
 
 .header {
@@ -39,7 +39,7 @@
 .docsGrid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 1rem 2rem; /* row gap 1rem, column gap 2rem */
+  gap: 1rem 2rem; 
   margin-bottom: 1.5rem;
 }
 
