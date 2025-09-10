@@ -1,0 +1,172 @@
+.container {
+  display: flex;
+  justify-content: space-between; /* Space between 3 sections */
+  padding: 2rem 5rem; /* Left and right padding for container */
+  gap: 2rem;
+  font-family: 'Open Sans', sans-serif;
+  color: #0a2e60;
+}
+
+.section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.sectionCenter {
+  flex: 0.6;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center content horizontally */
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 700;
+  font-size: 1.15rem;
+  margin-bottom: 1rem;
+  color: #0a2e60;
+}
+
+.icon {
+  max-width: 48px;
+  stroke-width: 0;
+  font-size: 22px;
+}
+
+.docsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem 2rem; /* row gap 1rem, column gap 2rem */
+  margin-bottom: 1.5rem;
+}
+
+.docCard {
+  min-height: 140px;
+  height: auto;
+  padding: 24px !important;
+  border: .5px solid #162f6a;
+  border-radius: 4px !important;
+  -webkit-border-radius: 4px !important;
+  -moz-border-radius: 4px!important;
+  -ms-border-radius: 4px!important;
+  -o-border-radius: 4px!important;
+  box-shadow: 0 6px 12px 0 rgba(35, 35, 47, .0784313725), 0 2px 4px 0 rgba(35, 35, 47, .0588235294);
+}
+
+.docCard h4 {
+    color: #150202;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    margin-bottom: 8px;
+}
+
+.viewMoreBtn {
+  align-self: start;
+  border: 1px solid #0a2e60;
+  padding: 0.4rem 1rem;
+  background: transparent;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  color: #0a2e60;
+  border-radius: 3px;
+  font-size: 0.75rem;
+  transition: background 0.3s ease;
+}
+
+.viewMoreBtn:hover {
+  background: #0a2e60;
+  color: white;
+}
+
+.personaImageWrapper {
+  background-color: #9aacf2;
+  border-radius: 50%;
+  width: 150px;
+  height: 150px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1rem;
+  overflow: hidden;
+}
+
+.personaImageCircle {
+  border-radius: 50%;
+  overflow: hidden;
+  width: 140px;
+  height: 140px;
+}
+
+.personaText {
+  font-weight: 700;
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+  text-align: center;
+  color: #0a2e60;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  color: #0a2e60;
+  cursor: pointer;
+  user-select: none;
+}
+
+.arrow {
+  font-weight: 700;
+  font-size: 1.3rem;
+  cursor: pointer;
+  user-select: none;
+  padding: 0 5px;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  background: #a3a3a3;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.activeDot {
+  background: #0a2e60;
+  width: 10px;
+  height: 10px;
+}
+
+.linksList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  border-left: 3px solid #0a2e60;
+}
+
+.linkItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #e2e2e2;
+  padding: 0.6rem 1rem;
+  font-size: 0.85rem;
+  color: #0a2e60;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.linkItem:hover {
+  background-color: #f0f0f0;
+}
+
+.linkArrow {
+  font-size: 18px;
+}

@@ -1,10 +1,9 @@
-import Header from "../components/Header";
-import Navbar from "../components/Navbar";
 import HeroSlider from "../components/HeroSlider";
 import AnnouncementBar from "../components/AnnouncementBar";
 import PmQuote from "../components/PmQuote";
 import AboutSection from "@/components/AboutSection";
 import Offerings from "../components/Offerings";
+import RecentDocs from "../components/RecentDocs";
 
 export default function Home() {
   return (
@@ -15,6 +14,7 @@ export default function Home() {
       <PmQuote />
       <AboutSection />
   <Offerings />
+  <RecentDocs />
       <main id="main" className="p-6">
         
       </main>
