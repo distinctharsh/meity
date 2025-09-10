@@ -86,8 +86,28 @@
   padding: 0;
   box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04);
   border-top: none;
-  max-height: 180px;
+  max-height: 230px;
   overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #123a6b #f1f1f1;
+}
+
+.listBox::-webkit-scrollbar {
+  width: 6px;
+}
+
+.listBox::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.listBox::-webkit-scrollbar-thumb {
+  background-color: #123a6b;
+  border-radius: 10px;
+}
+
+.listBox::-webkit-scrollbar-thumb:hover {
+  background: #0e2e5a;
 }
 
 .list {
@@ -97,7 +117,7 @@
 }
 
 .listItem {
-  padding: 12px 20px;
+  padding: 14px 20px;
   border-bottom: 1px solid #e8eefc;
   display: flex;
   justify-content: space-between;
@@ -105,10 +125,10 @@
   color: #150202;
   font-style: normal;
   font-weight: 400;
-  font-size: 1rem !important;
+  font-size: 1.1rem !important;
   cursor: pointer;
   user-select: none;
-  line-height: normal;
+  line-height: 1.5;
   text-decoration: none;
   white-space: normal;
   overflow: hidden;

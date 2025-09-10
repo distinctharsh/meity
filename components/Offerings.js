@@ -2,6 +2,7 @@ import { useState } from "react";
 import styles from '../styles/Offerings.module.css';
 import Offering from "./icons/Offering";
 import WhatsNew from './icons/WhatsNew';
+import { FiChevronRight } from 'react-icons/fi';
 
 export default function Offerings() {
   const [activeTab, setActiveTab] = useState("schemes");
@@ -59,7 +60,9 @@ export default function Offerings() {
                 {(activeTab === "schemes" ? schemesList : vacanciesList).map((item, index) => (
                   <li key={index} className={styles.listItem}>
                     {item}
-                    <span className={styles.arrow}>›</span>
+                    <span className={styles.arrow}>
+                      <FiChevronRight />
+                    </span>
                   </li>
                 ))}
               </ul>
@@ -79,7 +82,9 @@ export default function Offerings() {
             </div>
 
             <div className={styles.newsCard}>
-              <div className={styles.newsItem}>MeitY Performance Smartboard</div>
+              <div className={styles.newsItem}>MeitY Performance Smartboard 
+                <FiChevronRight />
+              </div>
             </div>
 
             <div className={styles.viewMoreWrapRight}>
