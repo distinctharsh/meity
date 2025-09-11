@@ -1,7 +1,6 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
-import styles from "../styles/HeroSlider.module.css"; // अलग CSS file
 
 const HeroSlider = () => {
   const sliderImages = [
@@ -61,19 +60,19 @@ const HeroSlider = () => {
   };
 
   return (
-    <div className={styles.sliderContainer}>
-      <div className={styles.sliderWrapper}>
+    <div className="relative w-full h-[70vh] min-h-[400px] overflow-hidden bg-black">
+      <div className="relative w-full h-full">
         {sliderImages.map((image, index) => (
           <div
             key={index}
-            className={`${styles.slide} ${index === currentSlide ? styles.active : ""}`}
+            className={`absolute inset-0 opacity-0 transition-opacity duration-300 ${index === currentSlide ? 'opacity-100 z-[1]' : ''}`}
           >
             <Image
               src={image}
               alt={`Slide ${index + 1}`}
               width={1600}
               height={600}
-              className={styles.slideImage}
+              className="w-full h-full object-cover"
               priority={index === 0}
             />
           </div>
@@ -81,24 +80,24 @@ const HeroSlider = () => {
       </div>
 
       {/* Arrows */}
-      <button className={`${styles.arrow} ${styles.left}`} onClick={goToPrevious}>
+      <button className="absolute top-1/2 -translate-y-1/2 left-5 bg-[rgba(0,0,0,0.6)] text-white border-0 text-[24px] w-10 h-10 rounded-full cursor-pointer z-[5]" onClick={goToPrevious}>
         &#10094;
       </button>
-      <button className={`${styles.arrow} ${styles.right}`} onClick={goToNext}>
+      <button className="absolute top-1/2 -translate-y-1/2 right-5 bg-[rgba(0,0,0,0.6)] text-white border-0 text-[24px] w-10 h-10 rounded-full cursor-pointer z-[5]" onClick={goToNext}>
         &#10095;
       </button>
 
       {/* Indicators with progress */}
-      <div className={styles.indicators}>
+      <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex gap-2.5 z-[5]">
         {sliderImages.map((_, index) => (
           <div
             key={index}
-            className={`${styles.dot} ${index === currentSlide ? styles.activeDot : ""}`}
+            className={`relative w-[30px] h-[6px] rounded bg-[rgba(255,255,255,0.3)] overflow-hidden cursor-pointer ${index === currentSlide ? 'bg-[rgba(255,255,255,0.5)]' : ''}`}
             onClick={() => goToSlide(index)}
           >
             {index === currentSlide && (
               <span
-                className={styles.progress}
+                className="block h-full bg-white rounded transition-[width] duration-100"
                 style={{ width: `${progress}%` }}
               ></span>
             )}
@@ -107,7 +106,7 @@ const HeroSlider = () => {
       </div>
 
       {/* Play Pause Button */}
-      <button className={styles.playPause} onClick={togglePlayPause}>
+      <button className="absolute bottom-5 right-5 w-10 h-10 rounded-full border-0 bg-[rgba(0,0,0,0.6)] text-white text-[18px] cursor-pointer z-[5]" onClick={togglePlayPause}>
         {isPlaying ? "⏸" : "▶"}
       </button>
     </div>

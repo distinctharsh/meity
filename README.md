@@ -1,5 +1,32 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
+Project structure (proposed best practice)
 
+pages/
+- index.js
+- api/
+
+components/
+- Header.js, Navbar.js, Footer.js
+- AnnouncementBar.js, AboutSection.js, HeroSlider.js, Offerings.js, PmQuote.js, RecentDocs.js
+- icons/*
+
+public/
+- images/*, fonts/* (if any)
+
+lib/
+- db.js (server utilities)
+
+utils/
+- helpers and shared utilities (create as needed)
+
+styles/
+- globals.css (imports Tailwind)
+- slider.css (legacy slider helpers if needed)
+
+Notes
+- Use Tailwind utilities for layout and styling. Add design tokens via tailwind.config.js theme.extend if required.
+- Keep server-only code in lib/ and client UI in components/.
+- Place all static assets in public/ and reference with /images/... paths.
 ## Getting Started
 
 First, run the development server:
