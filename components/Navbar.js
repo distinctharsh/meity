@@ -1,7 +1,6 @@
 "use client";
 import { useState } from 'react';
 import Link from 'next/link';
-import styles from '../styles/NewNavbar.module.css';
 
 export default function NewNavbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -16,57 +15,37 @@ export default function NewNavbar() {
   };
 
   const navItems = [
-    { 
-      text: 'Home', 
-      href: '#',
-      active: true,
-      dropdown: false 
-    },
-    { 
-      text: 'Ministry', 
-      href: '#',
-      dropdown: true,
-      items: [
+    { text: 'Home', href: '#', active: true, dropdown: false },
+    {
+      text: 'Ministry', href: '#', dropdown: true, items: [
         { text: 'About Us', href: '#' },
         { text: 'Organization', href: '#' },
         { text: 'Policies', href: '#' },
       ]
     },
-    { 
-      text: 'Offerings', 
-      href: '#',
-      dropdown: true,
-      items: [
+    {
+      text: 'Offerings', href: '#', dropdown: true, items: [
         { text: 'Services', href: '#' },
         { text: 'Schemes', href: '#' },
         { text: 'Initiatives', href: '#' },
       ]
     },
-    { 
-      text: 'Documents', 
-      href: '#',
-      dropdown: true,
-      items: [
+    {
+      text: 'Documents', href: '#', dropdown: true, items: [
         { text: 'Reports', href: '#' },
         { text: 'Publications', href: '#' },
         { text: 'Circulars', href: '#' },
       ]
     },
-    { 
-      text: 'Media', 
-      href: '#',
-      dropdown: true,
-      items: [
+    {
+      text: 'Media', href: '#', dropdown: true, items: [
         { text: 'Gallery', href: '#' },
         { text: 'Videos', href: '#' },
         { text: 'Press Releases', href: '#' },
       ]
     },
-    { 
-      text: 'Connect', 
-      href: '#',
-      dropdown: true,
-      items: [
+    {
+      text: 'Connect', href: '#', dropdown: true, items: [
         { text: 'Contact Us', href: '#' },
         { text: 'Directory', href: '#' },
         { text: 'RTI', href: '#' },
@@ -75,16 +54,17 @@ export default function NewNavbar() {
         { text: 'Citizen Engagement', href: '#' },
         { text: 'Parliament Questions', href: '#' },
       ]
-    }
+    },
   ];
 
   return (
-    <nav className={styles.navbar}>
-      <div className={styles.container}>
-        <div className={styles.navRow}>
-          {/* Mobile Menu Toggle */}
-          <button 
-            className={styles.mobileMenuToggle}
+    <nav className="bg-white shadow-[0_2px_4px_rgba(0,0,0,0.1)] border-t border-[#d0d0d0] sticky top-0 z-[1000]">
+      <div className="w-full max-w-[1200px] mx-auto px-4">
+        {/* Bar container */}
+        <div className="flex items-center justify-between h-14">
+          {/* Left: Mobile toggle (shown on small screens) */}
+          <button
+            className="bg-transparent border-0 text-[24px] cursor-pointer p-2 text-[#333] md:hidden"
             onClick={toggleMobileMenu}
             aria-expanded={mobileMenuOpen}
             aria-label="Toggle navigation"
@@ -94,42 +74,44 @@ export default function NewNavbar() {
             </span>
           </button>
 
-          {/* Navigation Links */}
-          <div className={`${styles.navLinks} ${mobileMenuOpen ? styles.active : ''}`}>
-            <ul className={styles.navList}>
+          {/* Center/Right: Links container */}
+          <div
+            className={`flex-1 md:flex md:items-center md:justify-center ${mobileMenuOpen ? 'block' : 'hidden'} md:block`}
+          >
+            <ul className="flex flex-col md:flex-row md:items-center gap-2 md:gap-6 m-0 p-0">
               {navItems.map((item, index) => (
-                <li 
-                  key={index} 
-                  className={`${styles.navItem} ${item.active ? styles.active : ''} ${item.dropdown ? styles.hasDropdown : ''} ${activeDropdown === index ? styles.open : ''}`}
+                <li
+                  key={index}
+                  className={`group relative md:w-auto w-full`}
                 >
-                  <Link 
+                  <Link
                     href={item.href}
-                    className={styles.navLink}
+                    className={`flex items-center justify-between md:justify-start no-underline rounded-md px-4 py-2 text-[16px] font-semibold transition-colors duration-200 ${item.active ? 'text-[#123a6b] bg-[#e8f0ff]' : 'text-[#1b1b1b] hover:text-[#123a6b] hover:bg-[rgba(18,58,107,0.05)]'}`}
                     onClick={(e) => {
-                      // On mobile (small screens) we want click/tap to toggle the dropdown.
-                      // On desktop allow hover to open the menu, so don't intercept the click.
                       if (item.dropdown && typeof window !== 'undefined' && window.innerWidth < 769) {
                         e.preventDefault();
                         toggleDropdown(index);
                       }
                     }}
                   >
-                    {item.text}
+                    <span className="leading-none">{item.text}</span>
                     {item.dropdown && (
-                      <span className={`material-symbols-outlined ${styles.dropdownIcon}`}>
-                        expand_more
-                      </span>
+                      <span className="material-symbols-outlined ml-2 text-[20px] md:transform md:transition-transform md:duration-200 md:group-hover:rotate-180">expand_more</span>
                     )}
                   </Link>
-                  
+
+                  {/* Dropdown */}
                   {item.dropdown && item.items && (
-                    <div 
-                      className={styles.dropdown}
+                    <div
+                      className={`md:absolute md:top-[calc(100%+6px)] md:left-0 md:min-w-[220px] md:rounded-[8px] md:py-2 md:bg-[linear-gradient(180deg,rgba(0,0,0,0.9),rgba(0,0,0,0.85))] md:shadow-[0_6px_20px_rgba(0,0,0,0.3)] md:opacity-0 md:invisible md:translate-y-2 md:transition-all md:duration-200 md:group-hover:opacity-100 md:group-hover:visible md:group-hover:translate-y-0 ${activeDropdown === index ? 'block' : 'hidden'} md:block`}
                     >
-                      <ul className={styles.dropdownList}>
+                      <ul className="list-none m-0 p-0 md:bg-transparent bg-[#f9f9f9] md:shadow-none md:pl-0 pl-6">
                         {item.items.map((subItem, subIndex) => (
-                          <li key={subIndex}>
-                            <Link href={subItem.href} className={styles.dropdownLink}>
+                          <li key={subIndex} className="p-0">
+                            <Link
+                              href={subItem.href}
+                              className="block no-underline text-[14.5px] font-medium text-white md:text-white py-3 px-5 hover:bg-[rgba(255,255,255,0.08)]"
+                            >
                               {subItem.text}
                             </Link>
                           </li>
@@ -141,6 +123,9 @@ export default function NewNavbar() {
               ))}
             </ul>
           </div>
+
+          {/* Right spacer to balance the mobile toggle on desktop */}
+          <div className="hidden md:block w-6" />
         </div>
       </div>
     </nav>
