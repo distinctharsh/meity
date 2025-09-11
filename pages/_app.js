@@ -1,13 +1,12 @@
 
-import "../styles/style2.css";
-import "../styles/header.css";
+import "../styles/globals.css";
 import Navbar from '../components/Navbar';
 import Header from "@/components/Header";
 
 export default function App({ Component, pageProps }) {
   return (
     <>
-    <Header />
+      <Header />
       <Navbar />
       <Component {...pageProps} />
     </>
