@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { FaGlobe } from "react-icons/fa";
+import SocialMedia from "./icons/SocialMedia";
 
 // Helper function to get embed URLs for different platforms
 const getEmbedUrl = (url = '') => {
@@ -9,7 +10,7 @@ const getEmbedUrl = (url = '') => {
     const hostname = urlObj.hostname;
     
     if (hostname.includes('twitter.com') || hostname.includes('x.com')) {
-      return `https://twitframe.com/show?url=${encodeURIComponent(url)}`;
+      return `https://x.com/show?url=${encodeURIComponent(url)}`;
     }
     
     if (hostname.includes('facebook.com')) {
@@ -34,10 +35,10 @@ const getEmbedUrl = (url = '') => {
 };
 
 const SocialMediaPreview = ({
-  twitterUrl = "https://x.com/GoI_MeitY/status/1959913113169305755",
+  twitterUrl = "https://x.com/GoI_MeitY",
   youtubeUrl = "https://www.youtube.com/watch?v=Bkno8p81fWc",
-  facebookUrl = "https://www.facebook.com/IndiaMeitY",
-  instagramUrl = "https://www.instagram.com/meity_india/"
+  facebookUrl = "https://www.facebook.com/harshsinghjii",
+  instagramUrl = "https://www.instagram.com/distinctharsh"
 }) => {
   // Extract YouTube video ID from URL
   const getYoutubeId = (url) => {
@@ -58,8 +59,8 @@ const SocialMediaPreview = ({
     <div className="w-full min-h-[525px] bg-[#25355a] py-7 px-0 flex flex-col">
       {/* Header */}
       <div className="flex items-center mb-8 pl-[125px]">
-        <FaGlobe className="w-10 h-10 text-white mr-4" />
-        <h2 className="text-white text-[2rem] font-bold leading-none m-0">
+        <SocialMedia className="w-10 h-10 text-white mr-4" />
+        <h2 className="text-white text-[2rem] font-bold leading-none m-0 ml-5">
           In Social Media
         </h2>
       </div>
@@ -72,7 +73,7 @@ const SocialMediaPreview = ({
           <div className="flex-1 px-4 pt-1 pb-2 overflow-y-auto h-[340px]">
             {twitterUrl ? (
               <iframe 
-                src={getEmbedUrl(twitterUrl)}
+                src={`https://x.com/${twitterUrl}`}
                 className="w-full h-full min-h-[300px] border-0 overflow-hidden"
                 allowTransparency={true}
                 allowFullScreen
@@ -109,7 +110,7 @@ const SocialMediaPreview = ({
           <div className="flex-1 px-4 pt-1 pb-2 overflow-y-auto h-[340px]">
             {facebookUrl ? (
               <iframe
-                src={getEmbedUrl(facebookUrl)}
+                src={`https://www.facebook.com/${facebookUrl}`}
                 className="w-full h-full min-h-[300px] border-0 overflow-hidden"
                 allowTransparency={true}
                 allowFullScreen
@@ -128,7 +129,7 @@ const SocialMediaPreview = ({
           <div className="flex-1 px-4 pt-1 pb-2 overflow-y-auto h-[340px]">
             {instagramUrl ? (
               <iframe
-                src={getEmbedUrl(instagramUrl)}
+                src={`https://www.instagram.com/${instagramUrl}`}
                 className="w-full h-full min-h-[300px] border-0 overflow-hidden"
                 allowTransparency={true}
                 allowFullScreen
