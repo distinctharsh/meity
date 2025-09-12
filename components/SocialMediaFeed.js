@@ -137,155 +137,99 @@ const SocialMediaPreview = ({
   }, []);
 
   return (
-    <div className="w-full min-h-[525px] bg-[#25355a] py-7 px-4 flex flex-col">
+    <div className="w-full min-h-[525px] bg-[#25355a] py-4 px-4 flex flex-col">
       {/* Header */}
-      <div className="flex items-center mb-8 justify-center sm:justify-start sm:pl-[125px]">
-        <SocialMedia className="w-10 h-10 text-white mr-4" />
-        <h2 className="text-white text-2xl sm:text-3xl font-bold leading-none m-0 ml-5">
+      <div className="flex items-center mb-4 justify-center sm:justify-start sm:pl-8">
+        <SocialMedia className="w-8 h-8 text-white mr-2" />
+        <h2 className="text-white text-xl font-bold leading-none m-0">
           In Social Media
         </h2>
       </div>
 
-      {/* Social Media Sections */}
-      <div className="w-full max-w-6xl mx-auto px-4">
-        {/* Twitter Section */}
-        {socialMediaItems.filter(item => item.type === 'twitter').map((item, index) => (
-          <div key={item.type} className="mb-8">
-            <h3 className="text-white text-xl font-semibold mb-4">Twitter</h3>
-            <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-              <div className="p-4 h-[600px] w-full">
-                <iframe
-                  src={item.embedUrl}
-                  className="w-full h-full border-0"
-                  allowTransparency={true}
-                  allowFullScreen
-                  loading="lazy"
-                  title="Twitter Post"
-                />
-              </div>
+      {/* Social Media Grid */}
+      <div className="w-full max-w-6xl mx-auto px-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {/* YouTube Section */}
+          <div className="bg-white rounded-lg shadow overflow-hidden">
+            <div className="p-3 border-b">
+              <h3 className="text-gray-800 font-semibold text-center">YouTube</h3>
             </div>
-          </div>
-        ))}
-
-        {/* YouTube Section */}
-        <div className="mb-8">
-          <h3 className="text-white text-xl font-semibold mb-4">YouTube Videos</h3>
-          <div className="bg-white rounded-lg shadow-lg overflow-hidden h-[600px]">
-            <div className="h-full overflow-y-auto p-4 space-y-4">
-              {youtubeVideos.map((videoUrl, index) => (
-                <div key={index} className="aspect-video w-full rounded-md overflow-hidden shadow-sm">
-                  <iframe
-                    title={`YouTube Video ${index + 1}`}
-                    src={getEmbedUrl(videoUrl)}
-                    className="w-full h-full border-0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                    loading="lazy"
-                  />
+            <div className="p-2 h-[400px] overflow-y-auto flex flex-col gap-3">
+              {youtubeVideos.slice(0, 3).map((videoUrl, index) => (
+                <div key={index} className="flex-1 min-h-[120px]">
+                  <div className="aspect-video w-full rounded overflow-hidden">
+                    <iframe
+                      title={`YouTube Video ${index + 1}`}
+                      src={getEmbedUrl(videoUrl)}
+                      className="w-full h-full"
+                      frameBorder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    />
+                  </div>
                 </div>
               ))}
             </div>
           </div>
-        </div>
 
-        {/* Facebook Section */}
-        <div className="mb-8">
-          <h3 className="text-white text-xl font-semibold mb-4">Facebook Posts</h3>
-          <div className="bg-white rounded-lg shadow-lg overflow-hidden h-[600px]">
-            <div className="h-full overflow-y-auto p-4 space-y-4">
-              {/* Example posts - you can pass them as props if needed */}
-              {[
-                'https://www.facebook.com/meityindia/posts/pfbid0ETpZZhBirRP1kqcFF1ff5qSGjFEMeMkepThq1gn8tocj6oxibTo9xFrfcBZ8f6oCl',
-                'https://www.facebook.com/meityindia/posts/pfbid02Phw2HNHCngvQczo35v4HnSdPBAyLU1bTFH8JHHy1hwQi7ckoZdRAEbJcPuGL3Q8il',
-                'https://www.facebook.com/meityindia/posts/pfbid024ambHS6Fa5u3UKxt5WXTDwg6ATRoQf3pbUDEF37EyC928mmAFixm14mxezuerMUrl',
-                'https://www.facebook.com/meityindia/posts/pfbid0joj5xRsfsRdzVfbmCnYxL672yNBxn6k4ZB7NZvd8ViuApCMri43nDerpXZjdvTa1l',
-                'https://www.facebook.com/meityindia/videos/530102659568553/'
-              ].map((postUrl, index) => (
-                <div key={index} className="w-full rounded-md overflow-hidden shadow-sm">
+          {/* Twitter Section */}
+          <div className="bg-white rounded-lg shadow overflow-hidden">
+            <div className="p-3 border-b">
+              <h3 className="text-gray-800 font-semibold text-center">Twitter</h3>
+            </div>
+            <div className="h-[400px]">
+              <iframe
+                src={socialMediaItems.find(item => item.type === 'twitter')?.embedUrl}
+                className="w-full h-full border-0"
+                allowTransparency={true}
+                allowFullScreen
+                loading="lazy"
+                title="Twitter Post"
+              />
+            </div>
+          </div>
+
+          {/* Facebook Section */}
+          <div className="bg-white rounded-lg shadow overflow-hidden ">
+            <div className="p-3 border-b">
+              <h3 className="text-gray-800 font-semibold text-center">Facebook</h3>
+            </div>
+            <div className="h-[400px] overflow-y-auto">
+              <iframe
+                src="https://www.facebook.com/plugins/post.php?href=https%3A%2F%2Fwww.facebook.com%2Fmeityindia%2Fposts%2Fpfbid0ETpZZhBirRP1kqcFF1ff5qSGjFEMeMkepThq1gn8tocj6oxibTo9xFrfcBZ8f6oCl&show_text=true&width=100%"
+                className="w-full h-full min-h-[400px] border-0"
+                scrolling="no"
+                allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+                allowFullScreen
+                loading="lazy"
+                title="Facebook Post"
+              />
+            </div>
+          </div>
+
+          {/* Instagram Section */}
+          <div className="bg-white rounded-lg shadow overflow-hidden flex flex-col">
+            <div className="p-3 border-b">
+              <h3 className="text-gray-800 font-semibold text-center">Instagram</h3>
+            </div>
+            <div className="flex-1 min-h-0">
+              <div className="h-full overflow-y-auto p-2">
+                <div className="w-full" style={{ minHeight: '500px' }}>
                   <iframe
-                    title={`FacebookPost${index}`}
-                    src={`https://www.facebook.com/plugins/post.php?href=${encodeURIComponent(postUrl)}&show_text=true&width=500`}
-                    className="w-full h-[500px] border-0"
-                    scrolling="no"
-                    allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+                    src="https://www.instagram.com/p/CdEhFSNMbC7/embed/captioned"
+                    className="w-full border-0"
+                    style={{ minHeight: '500px' }}
+                    allowTransparency={true}
                     allowFullScreen
+                    scrolling="yes"
                     loading="lazy"
+                    title="Instagram Post"
                   />
                 </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-
-        {/* Other Social Media */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {socialMediaItems.filter(item => !['twitter', 'youtube'].includes(item.type)).map((item, index) => (
-            <div
-              key={item.type}
-              className="bg-white rounded-lg shadow-lg overflow-hidden"
-            >
-              <div className="p-4 border-b">
-                <h3 className="text-gray-800 font-semibold">{item.title}</h3>
-              </div>
-              <div className="h-[400px] w-full">
-                <iframe
-                  src={item.embedUrl}
-                  className="w-full h-full border-0"
-                  allowTransparency={true}
-                  allowFullScreen
-                  loading="lazy"
-                  title={`${item.title} Embed`}
-                />
               </div>
             </div>
-          ))}
-        </div>
-
-
-
-
-
-
-        {/* Instagram Section */}
-        <div className="mb-8">
-          <div className="p-4 border-b">
-            <h3 className="text-gray-800 font-semibold">Instagram Posts</h3>
-          </div>
-          <div className="bg-white rounded-lg shadow-lg overflow-hidden h-[600px]">
-            <div className="h-full overflow-y-auto p-4 space-y-4">
-              {[
-                'https://www.instagram.com/p/CdEhFSNMbC7/',
-                'https://www.instagram.com/p/CaUrK3vsUls/',
-                'https://www.instagram.com/p/CdQjYOVsYX3/'
-              ].map((postUrl, index) => (
-                <div key={index} className="w-full rounded-md overflow-hidden shadow-sm">
-                  <iframe
-                    title={`InstagramPost${index}`}
-                    src={`https://www.instagram.com/p/${postUrl.split('/').filter(Boolean).pop()}/embed/captioned`}
-                    className="w-full h-[700px] border-0"
-                    allowTransparency="true"
-                    allowFullScreen
-                    scrolling="no"
-                    loading="lazy"
-                    style={{
-                      maxWidth: '540px',
-                      width: 'calc(100% - 2px)',
-                      minWidth: '326px',
-                      borderRadius: '3px',
-                      border: '1px solid #dbdbdb',
-                      boxShadow: 'none',
-                      marginBottom: '12px'
-                    }}
-                  />
-                </div>
-              ))}
-            </div>
           </div>
         </div>
-
-
-
       </div>
 
       {/* Full Screen Preview Modal */}
