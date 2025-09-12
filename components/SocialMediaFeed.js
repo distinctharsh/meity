@@ -159,7 +159,7 @@ const SocialMediaPreview = ({
           {/* Twitter Section */}
           <div className="bg-white rounded-lg shadow overflow-hidden">
             <div className="p-3 border-b">
-              <h3 className="text-gray-800 font-semibold text-center">Twitter</h3>
+              <h3 className="text-gray-800 font-semibold text-center">X</h3>
             </div>
             <div className="h-[400px]">
               <iframe
@@ -172,11 +172,11 @@ const SocialMediaPreview = ({
               />
             </div>
           </div>
-          
+
           {/* YouTube Section */}
           <div className="bg-white rounded-lg shadow overflow-hidden">
             <div className="p-3 border-b">
-              <h3 className="text-gray-800 font-semibold text-center">YouTube</h3>
+              <h3 className="text-gray-800 font-semibold text-center">Youtube</h3>
             </div>
             <div className="p-2 h-[400px] overflow-y-auto flex flex-col gap-3">
               {youtubeVideos.slice(0, 3).map((videoUrl, index) => (
@@ -223,23 +223,22 @@ const SocialMediaPreview = ({
             <div className="p-3 border-b">
               <h3 className="text-gray-800 font-semibold text-center">Instagram</h3>
             </div>
-            <div className="flex-1 min-h-0">
-              <div className="h-full overflow-y-auto p-2">
-                <div className="w-full" style={{ minHeight: '500px' }}>
-                  <iframe
-                    src="https://www.instagram.com/p/CdEhFSNMbC7/embed/captioned"
-                    className="w-full border-0"
-                    style={{ minHeight: '500px' }}
-                    allowTransparency={true}
-                    allowFullScreen
-                    scrolling="yes"
-                    loading="lazy"
-                    title="Instagram Post"
-                  />
-                </div>
+            <div className="h-[400px] overflow-y-auto p-2">
+              { /* Instagram post embedded here */}
+              <div className="w-full h-full min-h-0">
+                <iframe
+                  src="https://www.instagram.com/p/CdEhFSNMbC7/embed/captioned"
+                  className="w-full h-full border-0"
+                  allowTransparency={true}
+                  allowFullScreen
+                  scrolling="yes"
+                  loading="lazy"
+                  title="Instagram Post"
+                />
               </div>
             </div>
           </div>
+
         </div>
       </div>
 
