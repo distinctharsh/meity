@@ -52,17 +52,19 @@ const RecentDocs = () => {
             {recentDocs.map((doc, i) => (
               <div
                 key={i}
-                className="bg-white border border-[#0a2e60] rounded-[6px] p-3"
+                className="bg-white border border-[#0a2e60] rounded-[6px] px-5 py-4"
               >
-                <h4 className="text-[#0a2e60] text-sm font-bold mb-1">{doc.title}</h4>
-                <p className="text-sm text-black leading-snug font-normal">{doc.description}</p>
+                <h4 className="text-[#0a2e60] text-base font-bold mb-2">{doc.title}</h4>
+                <p className="text-base text-black leading-snug font-normal">{doc.description}</p>
               </div>
             ))}
           </div>
 
-          <button className="mt-3 py-1.5 px-3 bg-white border border-[#0a2e60] text-[#0a2e60] text-sm rounded hover:bg-[#0a2e60] hover:text-white transition-colors">
-            <span className="font-bold">VIEW MORE</span> {'>'}
-          </button>
+          <div className="mt-3 flex justify-end" style={{ width: '100%' }}>
+            <button className="py-1.5 px-3 bg-white border border-[#0a2e60] text-[#0a2e60] text-sm rounded hover:bg-[#0a2e60] hover:text-white transition-colors">
+              <span className="font-bold">VIEW MORE</span> {'>'}
+            </button>
+          </div>
         </div>
 
         {/* User Personas */}
@@ -72,13 +74,13 @@ const RecentDocs = () => {
             <h3 className="text-[#202A3A] text-[1.4rem] font-bold leading-none tracking-tight m-0">Explore User Personas</h3>
           </div>
 
-          <div className="bg-[#b4c5f9] rounded-full w-[140px] h-[140px] flex items-center justify-center mb-3">
-            <div className="rounded-full overflow-hidden w-[110px] h-[110px]">
+          <div className="bg-[#b4c5f9] rounded-full w-[180px] h-[180px] flex items-center justify-center mb-3">
+            <div className="rounded-full overflow-hidden w-[150px] h-[150px]">
               <Image
                 src={personas[currentPersonaIndex].img}
                 alt={personas[currentPersonaIndex].label}
-                width={110}
-                height={110}
+                width={150}
+                height={150}
                 className="object-cover"
               />
             </div>
