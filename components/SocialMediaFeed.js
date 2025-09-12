@@ -58,6 +58,12 @@ const SocialMediaPreview = ({
     'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
     'https://www.youtube.com/watch?v=9bZkp7q19f0'
   ],
+  facebookPosts = [
+    'https://www.facebook.com/meityindia/posts/pfbid0ETpZZhBirRP1kqcFF1ff5qSGjFEMeMkepThq1gn8tocj6oxibTo9xFrfcBZ8f6oCl',
+    'https://www.facebook.com/meityindia/posts/pfbid02Phw2HNHCngvQczo35v4HnSdPBAyLU1bTFH8JHHy1hwQi7ckoZdRAEbJcPuGL3Q8il',
+    'https://www.facebook.com/meityindia/posts/pfbid024ambHS6Fa5u3UKxt5WXTDwg6ATRoQf3pbUDEF37EyC928mmAFixm14mxezuerMUrl',
+    'https://www.facebook.com/meityindia/posts/pfbid0joj5xRsfsRdzVfbmCnYxL672yNBxn6k4ZB7NZvd8ViuApCMri43nDerpXZjdvTa1l'
+  ],
   // Single Twitter URL
   twitterUrl = "https://x.com/GoI_MeitY/status/1959913113169305755",
   facebookUrl = "https://www.facebook.com/harshsinghjii",
@@ -190,20 +196,24 @@ const SocialMediaPreview = ({
           </div>
 
           {/* Facebook Section */}
-          <div className="bg-white rounded-lg shadow overflow-hidden ">
+          <div className="bg-white rounded-lg shadow overflow-hidden flex flex-col">
             <div className="p-3 border-b">
               <h3 className="text-gray-800 font-semibold text-center">Facebook</h3>
             </div>
-            <div className="h-[400px] overflow-y-auto">
-              <iframe
-                src="https://www.facebook.com/plugins/post.php?href=https%3A%2F%2Fwww.facebook.com%2Fmeityindia%2Fposts%2Fpfbid0ETpZZhBirRP1kqcFF1ff5qSGjFEMeMkepThq1gn8tocj6oxibTo9xFrfcBZ8f6oCl&show_text=true&width=100%"
-                className="w-full h-full min-h-[400px] border-0"
-                scrolling="no"
-                allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
-                allowFullScreen
-                loading="lazy"
-                title="Facebook Post"
-              />
+            <div className="h-[400px] overflow-y-auto p-2 space-y-4">
+              {facebookPosts.map((postUrl, index) => (
+                <div key={index} className="mb-4 last:mb-0">
+                  <iframe
+                    title={`FacebookPost${index}`}
+                    src={`https://www.facebook.com/plugins/post.php?href=${encodeURIComponent(postUrl)}&show_text=true&width=100%`}
+                    className="w-full h-[350px] border-0"
+                    scrolling="no"
+                    allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+                    allowFullScreen
+                    loading="lazy"
+                  />
+                </div>
+              ))}
             </div>
           </div>
 
