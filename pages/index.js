@@ -6,6 +6,7 @@ import Offerings from "../components/Offerings";
 import RecentDocs from "../components/RecentDocs";
 import SocialMediaFeed from "../components/SocialMediaFeed";
 import PromoSection from "@/components/PromoSection";
+import PartnerLogoCarousel from "@/components/PartnerLogoCarousel";
 
 export default function Home() {
   return (
@@ -18,6 +19,7 @@ export default function Home() {
       <RecentDocs />
       <SocialMediaFeed />
       <PromoSection/>
+      <PartnerLogoCarousel/>
       <main id="main" className="p-6">
 
       </main>
