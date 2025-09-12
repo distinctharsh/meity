@@ -55,7 +55,7 @@ const PromoSection = () => {
     if (!mounted) return null;
 
     return (
-        <div className="w-full py-10 px-4">
+        <div className="w-full py-10 px-4 md:px-8 lg:px-16">
             <div className="flex flex-row gap-4 items-stretch h-[300px]">
 
                 {/* Image Section – zyada space le raha hai */}
