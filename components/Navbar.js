@@ -59,7 +59,7 @@ export default function NewNavbar() {
 
   return (
     <nav className="bg-white shadow-[0_2px_4px_rgba(0,0,0,0.1)] border-t border-[#d0d0d0] sticky top-0 z-[1000]">
-      <div className="w-full max-w-[1200px] mx-auto px-4">
+      <div className="px-[4%]">
         {/* Bar container */}
         <div className="flex items-center justify-between h-14">
           {/* Left: Mobile toggle (shown on small screens) */}
@@ -76,7 +76,7 @@ export default function NewNavbar() {
 
           {/* Center/Right: Links container */}
           <div
-            className={`flex-1 md:flex md:items-center md:justify-center ${mobileMenuOpen ? 'block' : 'hidden'} md:block`}
+            className={`flex-1 md:flex  ${mobileMenuOpen ? 'block' : 'hidden'} md:block`}
           >
             <ul className="flex flex-col md:flex-row md:items-center gap-2 md:gap-6 m-0 p-0">
               {navItems.map((item, index) => (
@@ -86,7 +86,13 @@ export default function NewNavbar() {
                 >
                   <Link
                     href={item.href}
-                    className={`flex items-center justify-between md:justify-start no-underline rounded-md px-4 py-2 text-[16px] font-semibold transition-colors duration-200 ${item.active ? 'text-[#123a6b] bg-[#e8f0ff]' : 'text-[#1b1b1b] hover:text-[#123a6b] hover:bg-[rgba(18,58,107,0.05)]'}`}
+                    className={`flex items-center justify-between md:justify-start no-underline rounded-md px-4 py-2 text-[16px] font-semibold transition-colors duration-200 ${
+                      item.active
+                        ? 'text-[#123a6b] border-b-8 border-[#123a6b]'
+                        : 'text-[#1b1b1b] hover:text-[#123a6b]'
+                    }`}
+                    
+                    
                     onClick={(e) => {
                       if (item.dropdown && typeof window !== 'undefined' && window.innerWidth < 769) {
                         e.preventDefault();
