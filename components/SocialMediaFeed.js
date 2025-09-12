@@ -153,8 +153,26 @@ const SocialMediaPreview = ({
       </div>
 
       {/* Social Media Grid */}
-      <div className="w-full max-w-6xl mx-auto px-2">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="px-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+
+          {/* Twitter Section */}
+          <div className="bg-white rounded-lg shadow overflow-hidden">
+            <div className="p-3 border-b">
+              <h3 className="text-gray-800 font-semibold text-center">Twitter</h3>
+            </div>
+            <div className="h-[400px]">
+              <iframe
+                src={socialMediaItems.find(item => item.type === 'twitter')?.embedUrl}
+                className="w-full h-full border-0"
+                allowTransparency={true}
+                allowFullScreen
+                loading="lazy"
+                title="Twitter Post"
+              />
+            </div>
+          </div>
+          
           {/* YouTube Section */}
           <div className="bg-white rounded-lg shadow overflow-hidden">
             <div className="p-3 border-b">
@@ -175,23 +193,6 @@ const SocialMediaPreview = ({
                   </div>
                 </div>
               ))}
-            </div>
-          </div>
-
-          {/* Twitter Section */}
-          <div className="bg-white rounded-lg shadow overflow-hidden">
-            <div className="p-3 border-b">
-              <h3 className="text-gray-800 font-semibold text-center">Twitter</h3>
-            </div>
-            <div className="h-[400px]">
-              <iframe
-                src={socialMediaItems.find(item => item.type === 'twitter')?.embedUrl}
-                className="w-full h-full border-0"
-                allowTransparency={true}
-                allowFullScreen
-                loading="lazy"
-                title="Twitter Post"
-              />
             </div>
           </div>
 
