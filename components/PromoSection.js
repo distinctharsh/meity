@@ -48,28 +48,29 @@ const PromoSection = () => {
     };
 
     return (
-        <div className="container mx-auto px-[7.5%] py-20">
+        <div className="container mx-auto px-[4.5%] py-15">
             <div className="flex flex-col lg:flex-row gap-6">
 
                 {/* Left Section - Image and Video */}
-                <div className="w-full lg:w-3/4 grid grid-cols-1 md:grid-cols-5 gap-4">
+                <div className="w-full lg:w-3/4 grid grid-cols-1 md:grid-cols-5 gap-4" style={{ gridTemplateRows: '268px' }}>
                     {/* Image */}
-                    <div className="relative h-[250px] md:h-[300px] lg:h-[350px] overflow-hidden rounded-lg cursor-pointer md:col-span-3">
+                    <div className="relative overflow-hidden rounded-lg cursor-pointer md:col-span-4 flex items-center justify-center bg-gray-50">
                         <Image
                             src="/images/promo/digital-personal-data.jpg"
                             alt="Feedback for Digital Personal Data Protection rules 2025"
                             fill
-                            style={{ objectFit: "cover" }}
+                            style={{ objectFit: "contain" }}
                             priority
+                            className="object-contain"
                         />
                     </div>
 
                     {/* Video */}
-                    <div className="h-[250px] md:h-[300px] lg:h-[350px] bg-blue-100 rounded-lg overflow-hidden md:col-span-2">
+                    <div className="relative bg-blue-100 rounded-lg overflow-hidden md:col-span-2 flex items-center justify-center">
                         <video
                             src="https://playhls.media.nic.in/igot_vod/MyGov/NOV24/video/studentmustknow.mp4"
                             poster="https://ccps.digifootprint.gov.in/static//uploads/2025/04/1788fb793d870f1ee49f02201be384e1.jpg"
-                            className="w-full h-full object-cover rounded-lg"
+                            className="w-full h-full object-contain rounded-lg"
                             controls
                             preload="auto"
                         />
@@ -81,7 +82,7 @@ const PromoSection = () => {
                     <div className="relative bg-white rounded-lg shadow-lg overflow-hidden">
                         
                         {/* Carousel Container */}
-                        <div className="relative h-[250px] md:h-[300px] lg:h-[350px]">
+                        <div className="relative flex items-center justify-center" style={{ height: '268px' }}>
                             {/* Navigation Buttons */}
                             <button
                                 onClick={handlePrev}
@@ -108,7 +109,7 @@ const PromoSection = () => {
                             </button>
 
                             {/* Carousel Slides */}
-                            <div className="h-full">
+                            <div className="h-full flex items-center justify-center">
                                 {banners.map((banner) => (
                                     <div
                                         key={banner.id}
@@ -119,7 +120,8 @@ const PromoSection = () => {
                                                 src={banner.imgSrc}
                                                 alt={banner.alt}
                                                 fill
-                                                className="w-full h-full object-cover"
+                                                style={{ objectFit: "contain" }}
+                                                className="object-contain"
                                             />
                                         </a>
                                     </div>
