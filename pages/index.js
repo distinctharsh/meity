@@ -7,10 +7,12 @@ import RecentDocs from "../components/RecentDocs";
 import SocialMediaFeed from "../components/SocialMediaFeed";
 import PromoSection from "@/components/PromoSection";
 import PartnerLogoCarousel from "@/components/PartnerLogoCarousel";
+import Footer from "@/components/Footer";
 
 export default function Home() {
   return (
     <>
+      <main id="main" className="p-6">
       <HeroSlider />
       <AnnouncementBar />
       <PmQuote />
@@ -20,9 +22,9 @@ export default function Home() {
       <SocialMediaFeed />
       <PromoSection/>
       <PartnerLogoCarousel/>
-      <main id="main" className="p-6">
 
       </main>
+      <Footer/>
     </>
   );
 }

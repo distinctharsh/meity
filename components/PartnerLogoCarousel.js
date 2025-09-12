@@ -48,9 +48,7 @@ const PartnerLogoCarousel = () => {
 
   return (
     <div className="w-full bg-gray-100 py-8">
-      <div className="max-w-6xl mx-auto px-4">
-        <h3 className="text-center text-gray-700 mb-6 font-semibold">Our Partners</h3>
-        
+      <div className="max-w-6xl mx-auto px-4">        
         <div className="relative group">
           {/* Scroll Container */}
           <div
