@@ -38,7 +38,7 @@ const Footer = () => {
 
           {/* Right Section */}
           <div className="flex flex-col items-center md:items-end space-y-4">
-            <h4 className="text-lg font-semibold">SUBSCRIBE FOR UPDATES</h4>
+            <h4 className="text-lg font-semibold whitespace-nowrap">SUBSCRIBE FOR UPDATES</h4>
 
             {/* Social Icons */}
             <div className="flex space-x-4">
@@ -51,10 +51,10 @@ const Footer = () => {
             {/* Logos */}
             <div className="flex space-x-8">
               <div className="bg-white p-3 rounded-lg">
-                <Image src="/images/footer/mygovmerisarkar.jpg" alt="MyGov" width={90} height={40} />
+                <Image src="/images/footer/mygovmerisarkar.jpg" alt="MyGov" width={140} height={60} />
               </div>
               <div className="bg-white p-3 rounded-lg">
-                <Image src="/images/footer/indiaportal.svg" alt="India Portal" width={90} height={40} />
+                <Image src="/images/footer/indiaportal.svg" alt="India Portal" width={140} height={60} />
               </div>
             </div>
 
