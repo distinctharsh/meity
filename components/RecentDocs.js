@@ -43,7 +43,7 @@ const RecentDocs = () => {
       <div className="flex flex-row justify-between items-start w-full max-w-[1640px] px-8">
 
         {/* Recent Documents */}
-        <div className="flex flex-col items-start w-[520px] mr-[56px]">
+        <div className="flex flex-col items-start w-[520px] mr-[30px]">
           <div className="flex items-center mb-4">
             <Document className="w-8 h-8 mr-2" />
             <h3 className="text-[#202A3A] text-[2rem] font-bold leading-none tracking-tight m-0">Recent Documents</h3>
@@ -52,10 +52,10 @@ const RecentDocs = () => {
             {recentDocs.map((doc, i) => (
               <div
                 key={i}
-                className="bg-white border border-[#162f6a] rounded-[8px] shadow-[0_6px_12px_rgba(35,35,47,0.078),_0_2px_4px_rgba(35,35,47,0.059)] min-h-[180px] h-auto px-6 pt-6 pb-4 flex flex-col"
+                className="bg-white border border-[#162f6a] rounded-[8px] shadow-[0_6px_12px_rgba(35,35,47,0.078),_0_2px_4px_rgba(35,35,47,0.059)] min-h-[140px] h-auto px-4 pt-4 pb-3 flex flex-col"
               >
-                <h4 className="text-[#162f6a] text-[1.25rem] font-bold mb-2">{doc.title}</h4>
-                <p className="text-[1.09rem] leading-relaxed break-words">{doc.description}</p>
+                <h4 className="text-[#162f6a] text-[1.1rem] font-bold mb-2">{doc.title}</h4>
+                <p className="text-[0.95rem] leading-relaxed break-words">{doc.description}</p>
               </div>
             ))}
           </div>
@@ -66,14 +66,21 @@ const RecentDocs = () => {
 
         {/* User Personas */}
         <div className="flex flex-col items-center justify-center">
-          <div className="bg-[#9aacf2] rounded-full w-[265px] h-[265px] flex items-center justify-center mb-4 overflow-hidden">
-            <div className="rounded-full overflow-hidden w-[224px] h-[224px] border-0" key={`${personas[currentPersonaIndex].img}-${currentPersonaIndex}`}>
+        <div className="flex items-center mb-4">
+            <UserPersonas className="w-8 h-8 mr-2" />
+            <h3 className="text-[#202A3A] text-[2rem] font-bold leading-none tracking-tight m-0">
+              Explore User Personas
+            </h3>
+          </div>
+        
+         <div className="bg-[#9aacf2] rounded-full w-[200px] h-[200px] flex items-center justify-center mb-4 overflow-hidden">
+            <div className="rounded-full overflow-hidden w-[170px] h-[170px] border-0" key={`${personas[currentPersonaIndex].img}-${currentPersonaIndex}`}>
               <Image
                 key={`${personas[currentPersonaIndex].img}-${currentPersonaIndex}`}
                 src={personas[currentPersonaIndex].img}
                 alt={personas[currentPersonaIndex].label}
-                width={224}
-                height={224}
+                width={170}
+                height={170}
                 className="object-cover"
               />
             </div>
@@ -95,14 +102,14 @@ const RecentDocs = () => {
         </div>
 
         {/* Important Links */}
-        <div className="flex flex-col items-start w-[365px] ml-[56px]">
+        <div className="flex flex-col items-start w-[365px] ml-[30px]">
           <div className="flex items-center mb-4">
             <ImportantLink className="w-8 h-8 mr-2" />
             <h3 className="text-[#202A3A] text-[2rem] font-bold leading-none tracking-tight m-0">
               Important Links
             </h3>
           </div>
-          <ul className="m-0 p-0 w-full mt-4 border-l-4 border-[#0a2e60] bg-white rounded-none shadow-none">
+          <ul className="m-0 p-0 w-full mt-4 border-r-4 border-[#0a2e60] bg-white rounded-none shadow-none">
             {importantLinks.map((link, i) => (
               <li
                 key={i}
