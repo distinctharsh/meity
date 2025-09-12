@@ -29,6 +29,11 @@ const Footer = () => {
                 <li><a href="#" className="hover:underline flex items-center"><span aria-hidden="true" className="material-symbols-outlined bhashini-skip-translation mr-2">chevron_right</span>Contact Us</a></li>
               </ul>
             </div>
+
+            {/* Footer Bottom Text */}
+        <div className="text-left text-gray-300 text-base whitespace-nowrap">
+          This Website belongs to Ministry of Electronics and Information Technology, Government of India
+        </div>
           </div>
 
           {/* Right Section */}
@@ -54,14 +59,11 @@ const Footer = () => {
             </div>
 
             {/* Last Updated */}
-            <p className="text-sm text-gray-300">Last Updated On: 12.09.2025</p>
+            <p className="text-sm text-gray-300 whitespace-nowrap">Last Updated On: 12.09.2025</p>
           </div>
         </div>
 
-        {/* Footer Bottom Text */}
-        <div className=" text-left text-gray-300 text-base">
-          This Website belongs to Ministry of Electronics and Information Technology, Government of India
-        </div>
+        
       </div>
     </footer>
   );
