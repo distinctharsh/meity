@@ -60,8 +60,8 @@ const HeroSlider = () => {
   };
 
   return (
-    <div className="relative w-full h-[70vh] min-h-[400px] overflow-hidden bg-black">
-      <div className="relative w-full h-full">
+    <div className="relative w-full h-[70vh] min-h-[400px] overflow-hidden bg-black p-0 m-0">
+      <div className="relative w-full h-full p-0 m-0">
         {sliderImages.map((image, index) => (
           <div
             key={index}
@@ -72,7 +72,7 @@ const HeroSlider = () => {
               alt={`Slide ${index + 1}`}
               width={1600}
               height={600}
-              className="w-full h-full object-cover"
+              className=" object-cover p-0 m-0"
               priority={index === 0}
             />
           </div>
