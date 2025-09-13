@@ -2,8 +2,8 @@ export default function UserPersonas() {
     return (
       <svg
         className="header-emblem" 
-        width="57"
-        height="100"
+        width="40"
+        height="40"
         xmlns="http://www.w3.org/2000/svg"
         id="Layer_1"
         data-name="Layer 1"
