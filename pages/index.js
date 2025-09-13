@@ -12,7 +12,7 @@ import Footer from "@/components/Footer";
 export default function Home() {
   return (
     <>
-      <main id="main" className="p-6">
+      <main id="main" >
       <HeroSlider />
       <AnnouncementBar />
       <PmQuote />
