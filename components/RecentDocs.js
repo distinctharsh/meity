@@ -42,7 +42,7 @@ const RecentDocs = () => {
       <div className="flex flex-row justify-between items-start w-full max-w-[1640px] px-4">
 
         {/* Recent Documents */}
-        <div className="flex flex-col items-start flex-[2] mr-[20px]">
+        <div className="flex flex-col items-start flex-[2] mr-[0px]">
           <div className="flex items-center mb-3">
             <Document className="w-5 h-5 mr-2" />
             <h3 className="text-[#202A3A] text-[1.4rem] font-bold leading-none tracking-tight m-0">Recent Documents</h3>
