@@ -42,7 +42,7 @@ const RecentDocs = () => {
       <div className="flex flex-row justify-between items-start w-full max-w-[1640px] px-4">
 
         {/* Recent Documents */}
-        <div className="flex flex-col items-start flex-[2] mr-[30px]">
+        <div className="flex flex-col items-start flex-[2] mr-[20px]">
           <div className="flex items-center mb-3">
             <Document className="w-5 h-5 mr-2" />
             <h3 className="text-[#202A3A] text-[1.4rem] font-bold leading-none tracking-tight m-0">Recent Documents</h3>
@@ -60,7 +60,7 @@ const RecentDocs = () => {
             ))}
           </div>
 
-          <div className="mt-3 flex justify-end" style={{ width: '100%' }}>
+          <div className="mt-3 flex justify-end w-full">
             <button className="py-1.5 px-3 bg-white border border-[#0a2e60] text-[#0a2e60] text-sm rounded hover:bg-[#0a2e60] hover:text-white transition-colors">
               <span className="font-bold">VIEW MORE</span> {'>'}
             </button>
@@ -105,7 +105,7 @@ const RecentDocs = () => {
         </div>
 
         {/* Important Links */}
-        <div className="flex flex-col items-start flex-[1] ml-[30px]">
+        <div className="flex flex-col items-start flex-[1] ml-[20px]">
           <div className="flex items-center mb-3">
             <ImportantLink className="w-5 h-5 mr-2" />
             <h3 className="text-[#202A3A] text-[1.4rem] font-bold leading-none tracking-tight m-0">Important Links</h3>
