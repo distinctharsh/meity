@@ -60,8 +60,8 @@ const HeroSlider = () => {
   };
 
   return (
-    <div className="relative w-full h-[70vh] min-h-[400px] overflow-hidden bg-black p-0 m-0">
-      <div className="relative w-full h-full p-0 m-0">
+    <div className="relative w-full overflow-hidden">
+      <div className="relative w-full" style={{ height: '70vh' }}>
         {sliderImages.map((image, index) => (
           <div
             key={index}
@@ -71,8 +71,8 @@ const HeroSlider = () => {
               src={image}
               alt={`Slide ${index + 1}`}
               width={1600}
-              height={600}
-              className=" object-cover p-0 m-0"
+              height={900}
+              className="w-full h-full object-contain"  // Changed to object-contain to avoid cropping
               priority={index === 0}
             />
           </div>
@@ -88,7 +88,7 @@ const HeroSlider = () => {
       </button>
 
       {/* Indicators with progress */}
-      <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex gap-2.5 z-[5]">
+      <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-2.5 z-[5]">
         {sliderImages.map((_, index) => (
           <div
             key={index}
@@ -106,7 +106,7 @@ const HeroSlider = () => {
       </div>
 
       {/* Play Pause Button */}
-      <button className="absolute bottom-5 right-5 w-10 h-10 rounded-full border-0 bg-[rgba(0,0,0,0.6)] text-white text-[18px] cursor-pointer z-[5]" onClick={togglePlayPause}>
+      <button className="absolute bottom-2 right-5 w-8 h-8 rounded-full border-0 bg-[rgba(0,0,0,0.6)] text-white text-[16px] cursor-pointer z-[5]" onClick={togglePlayPause}>
         {isPlaying ? "⏸" : "▶"}
       </button>
     </div>
