@@ -27,7 +27,6 @@ export default async function handler(req, res) {
     try {
       const { 
         title, 
-        content, 
         link_url, 
         link_text, 
         is_urgent, 
@@ -38,21 +37,20 @@ export default async function handler(req, res) {
       } = req.body;
 
       // Validate required fields
-      if (!title || !content) {
-        return res.status(400).json({ message: 'Title and content are required' });
+      if (!title) {
+        return res.status(400).json({ message: 'Title is required' });
       }
 
       const [result] = await pool.query(
-        'UPDATE announcements SET title = ?, content = ?, link_url = ?, link_text = ?, is_urgent = ?, is_active = ?, start_date = ?, end_date = ?, display_order = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
+        'UPDATE announcements SET title = ?, link_url = ?, link_text = ?, is_urgent = ?, is_active = ?, start_date = ?, end_date = ?, display_order = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
         [
           title, 
-          content, 
           link_url || null, 
           link_text || null, 
           is_urgent || false, 
           is_active !== false, 
-          start_date || null, 
-          end_date || null, 
+          start_date && start_date.toString().trim() !== '' ? start_date : null, 
+          end_date && end_date.toString().trim() !== '' ? end_date : null, 
           display_order || 0, 
           id
         ]

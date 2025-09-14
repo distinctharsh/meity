@@ -213,7 +213,6 @@ export default function AnnouncementsManagement() {
                           {parseBoolean(announcement.is_active) ? 'ACTIVE' : 'INACTIVE'}
                         </span>
                       </div>
-                      <p className="text-gray-600 mb-2">{announcement.content}</p>
                       {announcement.link_url && (
                         <p className="text-sm text-blue-600">
                           Link: <a href={announcement.link_url} target="_blank" rel="noopener noreferrer">

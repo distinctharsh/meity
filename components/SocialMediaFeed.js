@@ -165,7 +165,6 @@ const SocialMediaPreview = ({
               <iframe
                 src={socialMediaItems.find(item => item.type === 'twitter')?.embedUrl}
                 className="w-full h-full border-0"
-                allowTransparency={true}
                 allowFullScreen
                 loading="lazy"
                 title="Twitter Post"
@@ -229,7 +228,6 @@ const SocialMediaPreview = ({
                 <iframe
                   src="https://www.instagram.com/p/CdEhFSNMbC7/embed/captioned"
                   className="w-full h-full border-0"
-                  allowTransparency={true}
                   allowFullScreen
                   scrolling="yes"
                   loading="lazy"
@@ -279,7 +277,6 @@ const SocialMediaPreview = ({
               <iframe
                 src={currentPreview.embedUrl}
                 className="w-full h-full border-0"
-                allowTransparency={true}
                 allowFullScreen
                 loading="lazy"
                 title={`${currentPreview.title} Full Preview`}

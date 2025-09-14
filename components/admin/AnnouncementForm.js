@@ -4,7 +4,6 @@ import { logFormData, validateFormData, parseBoolean } from '@/utils/debug';
 const AnnouncementForm = ({ announcement, onSubmit, onCancel }) => {
   const [formData, setFormData] = useState({
     title: '',
-    content: '',
     link_url: '',
     link_text: '',
     is_urgent: false,
@@ -19,13 +18,12 @@ const AnnouncementForm = ({ announcement, onSubmit, onCancel }) => {
     if (announcement) {
       setFormData({
         title: announcement.title || '',
-        content: announcement.content || '',
         link_url: announcement.link_url || '',
         link_text: announcement.link_text || '',
         is_urgent: parseBoolean(announcement.is_urgent),
         is_active: parseBoolean(announcement.is_active),
-        start_date: announcement.start_date || '',
-        end_date: announcement.end_date || '',
+        start_date: announcement.start_date ? announcement.start_date.split('T')[0] : '',
+        end_date: announcement.end_date ? announcement.end_date.split('T')[0] : '',
         display_order: announcement.display_order || 0
       });
     }
@@ -39,7 +37,7 @@ const AnnouncementForm = ({ announcement, onSubmit, onCancel }) => {
     logFormData('Announcement', formData);
 
     // Validate form data
-    const validation = validateFormData(formData, ['title', 'content']);
+    const validation = validateFormData(formData, ['title']);
     if (!validation.isValid) {
       alert(`Please fix the following errors:\n${validation.errors.join('\n')}`);
       setLoading(false);
@@ -80,21 +78,6 @@ const AnnouncementForm = ({ announcement, onSubmit, onCancel }) => {
           />
         </div>
 
-        <div>
-          <label htmlFor="content" className="block text-sm font-medium text-gray-700 mb-2">
-            Content *
-          </label>
-          <textarea
-            id="content"
-            name="content"
-            rows={4}
-            value={formData.content}
-            onChange={handleChange}
-            className="block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors resize-vertical"
-            placeholder="Enter announcement content"
-            required
-          />
-        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
