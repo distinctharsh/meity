@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import pool from '../../../../lib/db';
+import pool from '@/lib/db';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
 

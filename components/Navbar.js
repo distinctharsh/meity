@@ -1,10 +1,12 @@
 "use client";
 import { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 export default function NewNavbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
+  const router = useRouter();
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
@@ -15,33 +17,33 @@ export default function NewNavbar() {
   };
 
   const navItems = [
-    { text: 'Home', href: '#', active: true, dropdown: false },
+    { text: 'Home', href: '/', active: router.pathname === '/', dropdown: false },
     {
-      text: 'Ministry', href: '#', dropdown: true, items: [
-        { text: 'About Us', href: '#' },
-        { text: 'Organization', href: '#' },
-        { text: 'Policies', href: '#' },
+      text: 'Ministry', href: '/ministry', active: router.pathname === '/ministry', dropdown: true, items: [
+        { text: 'About Us', href: '/ministry/about' },
+        { text: 'Organization', href: '/ministry/organization' },
+        { text: 'Leadership', href: '/ministry/leadership' },
       ]
     },
     {
-      text: 'Offerings', href: '#', dropdown: true, items: [
-        { text: 'Services', href: '#' },
-        { text: 'Schemes', href: '#' },
-        { text: 'Initiatives', href: '#' },
+      text: 'Offerings', href: '/offerings', active: router.pathname === '/offerings', dropdown: true, items: [
+        { text: 'Services', href: '/offerings/services' },
+        { text: 'Schemes', href: '/offerings/schemes' },
+        { text: 'Initiatives', href: '/offerings/initiatives' },
       ]
     },
     {
-      text: 'Documents', href: '#', dropdown: true, items: [
-        { text: 'Reports', href: '#' },
-        { text: 'Publications', href: '#' },
-        { text: 'Circulars', href: '#' },
+      text: 'Documents', href: '/documents', active: router.pathname === '/documents', dropdown: true, items: [
+        { text: 'Reports', href: '/documents/reports' },
+        { text: 'Publications', href: '/documents/publications' },
+        { text: 'Circulars', href: '/documents/circulars' },
       ]
     },
     {
-      text: 'Media', href: '#', dropdown: true, items: [
-        { text: 'Gallery', href: '#' },
-        { text: 'Videos', href: '#' },
-        { text: 'Press Releases', href: '#' },
+      text: 'Media', href: '/media', active: router.pathname === '/media', dropdown: true, items: [
+        { text: 'Gallery', href: '/media/gallery' },
+        { text: 'Videos', href: '/media/videos' },
+        { text: 'Press Releases', href: '/media/press' },
       ]
     },
     {

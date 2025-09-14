@@ -1,7 +1,7 @@
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
-import pool from '../../../lib/db';
+import pool from '@/lib/db';
 
 // Configure multer for file uploads
 const storage = multer.diskStorage({
