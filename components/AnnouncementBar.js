@@ -5,6 +5,7 @@ import { parseBoolean } from "@/utils/debug";
 
 export default function AnnouncementBar() {
   const [isPaused, setIsPaused] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
   const [announcements, setAnnouncements] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -66,12 +67,18 @@ export default function AnnouncementBar() {
       {/* Left side: Title + Sound icon */}
       <div className="flex items-center font-bold text-[#12306b] mr-3 gap-1">
         <span className="mr-1">Announcements</span>
-        <span className="text-[16px]">{isPaused ? "🔇" : "🔊"}</span>
+        <span className={`text-[16px] transition-colors duration-200 ${(isPaused || isHovered) ? 'text-gray-400' : 'text-green-600'}`}>
+          {(isPaused || isHovered) ? "🔇" : "🔊"}
+        </span>
       </div>
 
       {/* Marquee text */}
-      <div className="flex-1 overflow-hidden whitespace-nowrap relative">
-        <div className={`inline-block whitespace-nowrap pl-[100%] ${isPaused ? '' : 'animate-[marquee_20s_linear_infinite]'} }`}>
+      <div className="flex-1 marquee-container">
+        <div 
+          className={`marquee-content ${(isPaused || isHovered) ? 'paused' : ''}`}
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+        >
           {announcements.map((announcement, index) => (
             <span key={announcement.id} className="mr-[50px] text-[#1a1a1a]">
               {parseBoolean(announcement.is_urgent) && <span className="text-red-600 font-bold">🚨 </span>}
@@ -93,17 +100,58 @@ export default function AnnouncementBar() {
 
       {/* Right side: Play/Pause Button */}
       <button
-        className="ml-3 bg-[rgba(0,0,0,0.6)] text-white text-[14px] font-bold w-7 h-7 rounded-full cursor-pointer flex items-center justify-center hover:bg-[rgba(0,0,0,0.8)] transition-colors"
+        className="ml-3   text-blue-600 text-[16px] font-bold w-8 h-8  cursor-pointer flex items-center justify-center transition-all duration-200 hover:scale-110 "
         onClick={() => setIsPaused(!isPaused)}
         aria-label={isPaused ? 'Play announcements' : 'Pause announcements'}
+        title={isPaused ? 'Resume announcements' : 'Pause announcements (or hover to pause)'}
       >
-        {isPaused ? "▶" : "⏸"}
+        {isPaused ? (
+          <svg className="w-4 h-4 ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M8 5v14l11-7z"/>
+          </svg>
+        ) : (
+          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+          </svg>
+        )}
       </button>
 
       <style jsx>{`
         @keyframes marquee {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-100%); }
+          0% { 
+            transform: translateX(100%); 
+          }
+          100% { 
+            transform: translateX(-100%); 
+          }
+        }
+        
+        .animate-marquee {
+          animation: marquee 20s linear infinite;
+          animation-fill-mode: both;
+        }
+        
+        .animate-marquee:hover {
+          animation-play-state: paused;
+        }
+        
+        .marquee-paused {
+          animation-play-state: paused !important;
+        }
+        
+        .marquee-container {
+          overflow: hidden;
+          white-space: nowrap;
+        }
+        
+        .marquee-content {
+          display: inline-block;
+          white-space: nowrap;
+          animation: marquee 20s linear infinite;
+        }
+        
+        .marquee-content.paused {
+          animation-play-state: paused !important;
         }
       `}</style>
     </div>
