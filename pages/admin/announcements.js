@@ -72,6 +72,9 @@ export default function AnnouncementsManagement() {
         setShowForm(false);
         setEditingAnnouncement(null);
         fetchAnnouncements();
+        
+        // Show success message
+        alert('Announcement saved successfully! Changes will be visible on the website immediately.');
       } else {
         const error = await response.json();
         alert(error.message || 'Failed to save announcement');

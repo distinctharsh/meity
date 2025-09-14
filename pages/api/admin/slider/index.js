@@ -3,6 +3,12 @@ import pool from '@/lib/db';
 export default async function handler(req, res) {
   if (req.method === 'GET') {
     try {
+      // Disable caching for real-time updates
+      res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+      res.setHeader('Pragma', 'no-cache');
+      res.setHeader('Expires', '0');
+      res.setHeader('Surrogate-Control', 'no-store');
+      
       const [rows] = await pool.query(
         'SELECT * FROM hero_slides ORDER BY display_order ASC, created_at DESC'
       );

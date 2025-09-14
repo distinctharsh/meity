@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import { fetchAnnouncements } from "@/utils/api";
 
 export default function AnnouncementBar() {
   const [isPaused, setIsPaused] = useState(false);
@@ -7,18 +8,22 @@ export default function AnnouncementBar() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchAnnouncements();
+    fetchAnnouncementsData();
+    
+    // Auto-refresh every 30 seconds to get latest updates
+    const interval = setInterval(() => {
+      fetchAnnouncementsData();
+    }, 30000);
+    
+    return () => clearInterval(interval);
   }, []);
 
-  const fetchAnnouncements = async () => {
+  const fetchAnnouncementsData = async () => {
     try {
-      const response = await fetch('/api/admin/announcements');
-      if (response.ok) {
-        const data = await response.json();
-        // Filter only active announcements
-        const activeAnnouncements = data.filter(announcement => announcement.is_active);
-        setAnnouncements(activeAnnouncements);
-      }
+      const data = await fetchAnnouncements();
+      // Filter only active announcements
+      const activeAnnouncements = data.filter(announcement => announcement.is_active);
+      setAnnouncements(activeAnnouncements);
     } catch (error) {
       console.error('Error fetching announcements:', error);
     } finally {
