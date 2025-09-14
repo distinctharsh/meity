@@ -51,13 +51,9 @@ const AnnouncementForm = ({ announcement, onSubmit, onCancel }) => {
 
   return (
     <div>
-      <h2 className="text-xl font-semibold text-gray-900 mb-4">
-        {announcement ? 'Edit Announcement' : 'Add New Announcement'}
-      </h2>
-      
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-6">
         <div>
-          <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+          <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
             Title *
           </label>
           <input
@@ -66,14 +62,14 @@ const AnnouncementForm = ({ announcement, onSubmit, onCancel }) => {
             name="title"
             value={formData.title}
             onChange={handleChange}
-            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+            className="block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
             placeholder="Enter announcement title"
             required
           />
         </div>
 
         <div>
-          <label htmlFor="content" className="block text-sm font-medium text-gray-700">
+          <label htmlFor="content" className="block text-sm font-medium text-gray-700 mb-2">
             Content *
           </label>
           <textarea
@@ -82,15 +78,15 @@ const AnnouncementForm = ({ announcement, onSubmit, onCancel }) => {
             rows={4}
             value={formData.content}
             onChange={handleChange}
-            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+            className="block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors resize-vertical"
             placeholder="Enter announcement content"
             required
           />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label htmlFor="start_date" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="start_date" className="block text-sm font-medium text-gray-700 mb-2">
               Start Date
             </label>
             <input
@@ -99,12 +95,12 @@ const AnnouncementForm = ({ announcement, onSubmit, onCancel }) => {
               name="start_date"
               value={formData.start_date}
               onChange={handleChange}
-              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+              className="block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
             />
           </div>
 
           <div>
-            <label htmlFor="end_date" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="end_date" className="block text-sm font-medium text-gray-700 mb-2">
               End Date
             </label>
             <input
@@ -113,43 +109,45 @@ const AnnouncementForm = ({ announcement, onSubmit, onCancel }) => {
               name="end_date"
               value={formData.end_date}
               onChange={handleChange}
-              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+              className="block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+            />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label htmlFor="link_url" className="block text-sm font-medium text-gray-700 mb-2">
+              Link URL (Optional)
+            </label>
+            <input
+              type="url"
+              id="link_url"
+              name="link_url"
+              value={formData.link_url}
+              onChange={handleChange}
+              className="block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+              placeholder="https://example.com"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="link_text" className="block text-sm font-medium text-gray-700 mb-2">
+              Link Text (Optional)
+            </label>
+            <input
+              type="text"
+              id="link_text"
+              name="link_text"
+              value={formData.link_text}
+              onChange={handleChange}
+              className="block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+              placeholder="Read More"
             />
           </div>
         </div>
 
         <div>
-          <label htmlFor="link_url" className="block text-sm font-medium text-gray-700">
-            Link URL (Optional)
-          </label>
-          <input
-            type="url"
-            id="link_url"
-            name="link_url"
-            value={formData.link_url}
-            onChange={handleChange}
-            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-            placeholder="https://example.com"
-          />
-        </div>
-
-        <div>
-          <label htmlFor="link_text" className="block text-sm font-medium text-gray-700">
-            Link Text (Optional)
-          </label>
-          <input
-            type="text"
-            id="link_text"
-            name="link_text"
-            value={formData.link_text}
-            onChange={handleChange}
-            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-            placeholder="Read More"
-          />
-        </div>
-
-        <div>
-          <label htmlFor="display_order" className="block text-sm font-medium text-gray-700">
+          <label htmlFor="display_order" className="block text-sm font-medium text-gray-700 mb-2">
             Display Order
           </label>
           <input
@@ -158,53 +156,58 @@ const AnnouncementForm = ({ announcement, onSubmit, onCancel }) => {
             name="display_order"
             value={formData.display_order}
             onChange={handleChange}
-            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+            className="block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
             min="0"
           />
         </div>
 
-        <div className="space-y-3">
-          <div className="flex items-center">
-            <input
-              id="is_urgent"
-              name="is_urgent"
-              type="checkbox"
-              checked={formData.is_urgent}
-              onChange={handleChange}
-              className="h-4 w-4 text-red-600 focus:ring-red-500 border-gray-300 rounded"
-            />
-            <label htmlFor="is_urgent" className="ml-2 block text-sm text-gray-900">
-              Mark as Urgent
-            </label>
-          </div>
+        <div className="bg-gray-50 p-4 rounded-lg">
+          <h3 className="text-sm font-medium text-gray-700 mb-3">Settings</h3>
+          <div className="space-y-4">
+            <div className="flex items-center">
+              <input
+                id="is_urgent"
+                name="is_urgent"
+                type="checkbox"
+                checked={formData.is_urgent}
+                onChange={handleChange}
+                className="h-4 w-4 text-red-600 focus:ring-red-500 border-gray-300 rounded"
+              />
+              <label htmlFor="is_urgent" className="ml-3 block text-sm text-gray-900">
+                <span className="font-medium">Mark as Urgent</span>
+                <span className="text-gray-500 ml-1">(Shows with 🚨 icon)</span>
+              </label>
+            </div>
 
-          <div className="flex items-center">
-            <input
-              id="is_active"
-              name="is_active"
-              type="checkbox"
-              checked={formData.is_active}
-              onChange={handleChange}
-              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-            />
-            <label htmlFor="is_active" className="ml-2 block text-sm text-gray-900">
-              Active
-            </label>
+            <div className="flex items-center">
+              <input
+                id="is_active"
+                name="is_active"
+                type="checkbox"
+                checked={formData.is_active}
+                onChange={handleChange}
+                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+              />
+              <label htmlFor="is_active" className="ml-3 block text-sm text-gray-900">
+                <span className="font-medium">Active</span>
+                <span className="text-gray-500 ml-1">(Shows on homepage)</span>
+              </label>
+            </div>
           </div>
         </div>
 
-        <div className="flex justify-end space-x-3 pt-4">
+        <div className="flex justify-end space-x-4 pt-6 border-t border-gray-200">
           <button
             type="button"
             onClick={onCancel}
-            className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            className="px-6 py-2 border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
           >
             Cancel
           </button>
           <button
             type="submit"
             disabled={loading}
-            className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-6 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             {loading ? 'Saving...' : (announcement ? 'Update Announcement' : 'Create Announcement')}
           </button>
