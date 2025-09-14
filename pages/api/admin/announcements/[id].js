@@ -37,17 +37,22 @@ export default async function handler(req, res) {
         display_order 
       } = req.body;
 
+      // Validate required fields
+      if (!title || !content) {
+        return res.status(400).json({ message: 'Title and content are required' });
+      }
+
       const [result] = await pool.query(
         'UPDATE announcements SET title = ?, content = ?, link_url = ?, link_text = ?, is_urgent = ?, is_active = ?, start_date = ?, end_date = ?, display_order = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
         [
           title, 
           content, 
-          link_url, 
-          link_text, 
+          link_url || null, 
+          link_text || null, 
           is_urgent || false, 
           is_active !== false, 
-          start_date, 
-          end_date, 
+          start_date || null, 
+          end_date || null, 
           display_order || 0, 
           id
         ]
@@ -60,7 +65,7 @@ export default async function handler(req, res) {
       res.status(200).json({ message: 'Announcement updated successfully' });
     } catch (error) {
       console.error('Error updating announcement:', error);
-      res.status(500).json({ message: 'Internal server error' });
+      res.status(500).json({ message: 'Internal server error', error: error.message });
     }
   } else if (req.method === 'DELETE') {
     try {

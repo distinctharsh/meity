@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { logFormData, validateFormData, parseBoolean } from '@/utils/debug';
 
 const AnnouncementForm = ({ announcement, onSubmit, onCancel }) => {
   const [formData, setFormData] = useState({
@@ -21,8 +22,8 @@ const AnnouncementForm = ({ announcement, onSubmit, onCancel }) => {
         content: announcement.content || '',
         link_url: announcement.link_url || '',
         link_text: announcement.link_text || '',
-        is_urgent: announcement.is_urgent || false,
-        is_active: announcement.is_active !== undefined ? announcement.is_active : true,
+        is_urgent: parseBoolean(announcement.is_urgent),
+        is_active: parseBoolean(announcement.is_active),
         start_date: announcement.start_date || '',
         end_date: announcement.end_date || '',
         display_order: announcement.display_order || 0
@@ -33,6 +34,17 @@ const AnnouncementForm = ({ announcement, onSubmit, onCancel }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+
+    // Debug: Log form data
+    logFormData('Announcement', formData);
+
+    // Validate form data
+    const validation = validateFormData(formData, ['title', 'content']);
+    if (!validation.isValid) {
+      alert(`Please fix the following errors:\n${validation.errors.join('\n')}`);
+      setLoading(false);
+      return;
+    }
 
     try {
       await onSubmit(formData);

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import AdminLayout from '../../components/admin/AdminLayout';
 import AnnouncementForm from '../../components/admin/AnnouncementForm';
+import { parseBoolean } from '@/utils/debug';
 
 export default function AnnouncementsManagement() {
   const [announcements, setAnnouncements] = useState([]);
@@ -77,28 +78,35 @@ export default function AnnouncementsManagement() {
         alert('Announcement saved successfully! Changes will be visible on the website immediately.');
       } else {
         const error = await response.json();
+        console.error('API Error:', error);
         alert(error.message || 'Failed to save announcement');
       }
     } catch (error) {
       console.error('Save error:', error);
-      alert('Failed to save announcement');
+      alert('Failed to save announcement. Please check your internet connection and try again.');
     }
   };
 
   const toggleActive = async (id, isActive) => {
     try {
-      const response = await fetch(`/api/admin/announcements/${id}`, {
+      const response = await fetch('/api/admin/announcements/toggle-status', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ is_active: !isActive }),
+        body: JSON.stringify({ 
+          id: id,
+          is_active: !isActive 
+        }),
       });
 
       if (response.ok) {
+        const result = await response.json();
         fetchAnnouncements();
+        alert(result.message);
       } else {
-        alert('Failed to update announcement status');
+        const error = await response.json();
+        alert(error.message || 'Failed to update announcement status');
       }
     } catch (error) {
       console.error('Toggle error:', error);
@@ -192,17 +200,17 @@ export default function AnnouncementsManagement() {
                         <h3 className="text-lg font-medium text-gray-900">
                           {announcement.title}
                         </h3>
-                        {announcement.is_urgent && (
+                        {parseBoolean(announcement.is_urgent) && (
                           <span className="px-2 py-1 bg-red-100 text-red-800 text-xs font-medium rounded-full">
                             URGENT
                           </span>
                         )}
                         <span className={`px-2 py-1 text-xs font-medium rounded-full ${
-                          announcement.is_active 
+                          parseBoolean(announcement.is_active)
                             ? 'bg-green-100 text-green-800' 
                             : 'bg-gray-100 text-gray-800'
                         }`}>
-                          {announcement.is_active ? 'ACTIVE' : 'INACTIVE'}
+                          {parseBoolean(announcement.is_active) ? 'ACTIVE' : 'INACTIVE'}
                         </span>
                       </div>
                       <p className="text-gray-600 mb-2">{announcement.content}</p>
@@ -221,14 +229,14 @@ export default function AnnouncementsManagement() {
                     </div>
                     <div className="flex space-x-2 ml-4">
                       <button
-                        onClick={() => toggleActive(announcement.id, announcement.is_active)}
+                        onClick={() => toggleActive(announcement.id, parseBoolean(announcement.is_active))}
                         className={`px-3 py-1 text-xs font-medium rounded ${
-                          announcement.is_active
+                          parseBoolean(announcement.is_active)
                             ? 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                             : 'bg-green-100 text-green-700 hover:bg-green-200'
                         }`}
                       >
-                        {announcement.is_active ? 'Deactivate' : 'Activate'}
+                        {parseBoolean(announcement.is_active) ? 'Deactivate' : 'Activate'}
                       </button>
                       <button
                         onClick={() => handleEdit(announcement)}

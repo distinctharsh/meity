@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { fetchAnnouncements } from "@/utils/api";
+import { parseBoolean } from "@/utils/debug";
 
 export default function AnnouncementBar() {
   const [isPaused, setIsPaused] = useState(false);
@@ -22,7 +23,7 @@ export default function AnnouncementBar() {
     try {
       const data = await fetchAnnouncements();
       // Filter only active announcements
-      const activeAnnouncements = data.filter(announcement => announcement.is_active);
+      const activeAnnouncements = data.filter(announcement => parseBoolean(announcement.is_active));
       setAnnouncements(activeAnnouncements);
     } catch (error) {
       console.error('Error fetching announcements:', error);
@@ -73,7 +74,7 @@ export default function AnnouncementBar() {
         <div className={`inline-block whitespace-nowrap pl-[100%] ${isPaused ? '' : 'animate-[marquee_20s_linear_infinite]'} }`}>
           {announcements.map((announcement, index) => (
             <span key={announcement.id} className="mr-[50px] text-[#1a1a1a]">
-              {announcement.is_urgent && <span className="text-red-600 font-bold">🚨 </span>}
+              {parseBoolean(announcement.is_urgent) && <span className="text-red-600 font-bold">🚨 </span>}
               {announcement.title}
               {announcement.link_url && (
                 <a 
