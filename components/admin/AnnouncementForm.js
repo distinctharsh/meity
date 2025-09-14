@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { logFormData, validateFormData, parseBoolean } from '@/utils/debug';
+import { showErrorMessage } from '@/utils/errorHandler';
 
 const AnnouncementForm = ({ announcement, onSubmit, onCancel }) => {
   const [formData, setFormData] = useState({
@@ -13,6 +14,7 @@ const AnnouncementForm = ({ announcement, onSubmit, onCancel }) => {
     display_order: 0
   });
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     if (announcement) {
@@ -32,20 +34,48 @@ const AnnouncementForm = ({ announcement, onSubmit, onCancel }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-
-    // Debug: Log form data
-    logFormData('Announcement', formData);
-
-    // Validate form data
-    const validation = validateFormData(formData, ['title']);
-    if (!validation.isValid) {
-      alert(`Please fix the following errors:\n${validation.errors.join('\n')}`);
-      setLoading(false);
-      return;
-    }
+    setErrors({});
 
     try {
+      // Debug: Log form data
+      logFormData('Announcement', formData);
+
+      // Validate form data
+      const validation = validateFormData(formData, ['title']);
+      if (!validation.isValid) {
+        const fieldErrors = {};
+        validation.errors.forEach(error => {
+          // Extract field name from error message if possible
+          if (error.includes('title')) fieldErrors.title = error;
+          else fieldErrors.general = error;
+        });
+        setErrors(fieldErrors);
+        showErrorMessage('form validation', validation.errors.join(', '));
+        return;
+      }
+
+      // Additional custom validation
+      if (formData.start_date && formData.end_date) {
+        const startDate = new Date(formData.start_date);
+        const endDate = new Date(formData.end_date);
+        
+        if (startDate >= endDate) {
+          setErrors({ end_date: 'End date must be after start date' });
+          showErrorMessage('form validation', 'End date must be after start date');
+          return;
+        }
+      }
+
+      if (formData.link_url && !formData.link_url.match(/^https?:\/\/.+/)) {
+        setErrors({ link_url: 'Please enter a valid URL starting with http:// or https://' });
+        showErrorMessage('form validation', 'Please enter a valid URL');
+        return;
+      }
+
       await onSubmit(formData);
+    } catch (error) {
+      console.error('Form submit error:', error);
+      showErrorMessage('save announcement', error.message || 'An unexpected error occurred');
     } finally {
       setLoading(false);
     }
@@ -57,10 +87,36 @@ const AnnouncementForm = ({ announcement, onSubmit, onCancel }) => {
       ...prev,
       [name]: type === 'checkbox' ? checked : value
     }));
+    
+    // Clear field-specific errors when user starts typing
+    if (errors[name]) {
+      setErrors(prev => ({
+        ...prev,
+        [name]: undefined
+      }));
+    }
   };
 
   return (
     <div>
+      {errors.general && (
+        <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+          <div className="flex">
+            <div className="flex-shrink-0">
+              <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+              </svg>
+            </div>
+            <div className="ml-3">
+              <h3 className="text-sm font-medium text-red-800">Please fix the following errors:</h3>
+              <div className="mt-2 text-sm text-red-700">
+                <p>{errors.general}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
           <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
@@ -72,10 +128,15 @@ const AnnouncementForm = ({ announcement, onSubmit, onCancel }) => {
             name="title"
             value={formData.title}
             onChange={handleChange}
-            className="block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+            className={`block w-full px-3 py-2 border rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
+              errors.title ? 'border-red-300 bg-red-50' : 'border-gray-300'
+            }`}
             placeholder="Enter announcement title"
             required
           />
+          {errors.title && (
+            <p className="mt-1 text-sm text-red-600">{errors.title}</p>
+          )}
         </div>
 
 
@@ -104,8 +165,13 @@ const AnnouncementForm = ({ announcement, onSubmit, onCancel }) => {
               name="end_date"
               value={formData.end_date}
               onChange={handleChange}
-              className="block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+              className={`block w-full px-3 py-2 border rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
+                errors.end_date ? 'border-red-300 bg-red-50' : 'border-gray-300'
+              }`}
             />
+            {errors.end_date && (
+              <p className="mt-1 text-sm text-red-600">{errors.end_date}</p>
+            )}
           </div>
         </div>
 
@@ -120,9 +186,14 @@ const AnnouncementForm = ({ announcement, onSubmit, onCancel }) => {
               name="link_url"
               value={formData.link_url}
               onChange={handleChange}
-              className="block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+              className={`block w-full px-3 py-2 border rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
+                errors.link_url ? 'border-red-300 bg-red-50' : 'border-gray-300'
+              }`}
               placeholder="https://example.com"
             />
+            {errors.link_url && (
+              <p className="mt-1 text-sm text-red-600">{errors.link_url}</p>
+            )}
           </div>
 
           <div>
