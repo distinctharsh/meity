@@ -11,6 +11,7 @@ const SliderForm = ({ slide, onSubmit, onCancel }) => {
     is_active: true
   });
   const [loading, setLoading] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
 
   useEffect(() => {
     if (slide) {
@@ -47,11 +48,23 @@ const SliderForm = ({ slide, onSubmit, onCancel }) => {
 
   return (
     <div>
-      <h2 className="text-xl font-semibold text-gray-900 mb-4">
-        {slide ? 'Edit Slide' : 'Add New Slide'}
-      </h2>
-      
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-xl font-semibold text-gray-900">
+          {slide ? 'Edit Slide' : 'Add New Slide'}
+        </h2>
+        <button
+          type="button"
+          onClick={() => setShowPreview(!showPreview)}
+          className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm"
+        >
+          {showPreview ? 'Hide Preview' : 'Show Preview'}
+        </button>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Form Section */}
+        <div>
+          <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label htmlFor="title" className="block text-sm font-medium text-gray-700">
             Title
@@ -169,23 +182,93 @@ const SliderForm = ({ slide, onSubmit, onCancel }) => {
           </label>
         </div>
 
-        <div className="flex justify-end space-x-3 pt-4">
-          <button
-            type="button"
-            onClick={onCancel}
-            className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            disabled={loading}
-            className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {loading ? 'Saving...' : (slide ? 'Update Slide' : 'Create Slide')}
-          </button>
+            <div className="flex justify-end space-x-3 pt-4">
+              <button
+                type="button"
+                onClick={onCancel}
+                className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={loading}
+                className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {loading ? 'Saving...' : (slide ? 'Update Slide' : 'Create Slide')}
+              </button>
+            </div>
+          </form>
         </div>
-      </form>
+
+        {/* Preview Section */}
+        {showPreview && (
+          <div className="bg-gray-50 p-4 rounded-lg">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Live Preview</h3>
+            <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+              <div className="relative h-64 bg-gradient-to-r from-blue-600 to-blue-800">
+                {formData.image_url ? (
+                  <img
+                    src={formData.image_url}
+                    alt="Slide Preview"
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                    }}
+                  />
+                ) : (
+                  <div className="flex items-center justify-center h-full text-white text-center">
+                    <div>
+                      <div className="text-4xl mb-2">🖼️</div>
+                      <p>No image selected</p>
+                    </div>
+                  </div>
+                )}
+                
+                {/* Overlay Content */}
+                <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center">
+                  <div className="p-6 text-white">
+                    <h2 className="text-2xl font-bold mb-2">
+                      {formData.title || 'Slide Title'}
+                    </h2>
+                    <p className="text-lg mb-4 opacity-90">
+                      {formData.description || 'Slide description will appear here...'}
+                    </p>
+                    {formData.link_url && formData.link_text && (
+                      <a
+                        href={formData.link_url}
+                        className="inline-block bg-white text-blue-600 px-6 py-2 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
+                      >
+                        {formData.link_text}
+                      </a>
+                    )}
+                  </div>
+                </div>
+              </div>
+              
+              {/* Slide Info */}
+              <div className="p-4 bg-gray-50">
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <span className="font-medium text-gray-700">Status:</span>
+                    <span className={`ml-2 px-2 py-1 rounded-full text-xs ${
+                      formData.is_active 
+                        ? 'bg-green-100 text-green-800' 
+                        : 'bg-red-100 text-red-800'
+                    }`}>
+                      {formData.is_active ? 'Active' : 'Inactive'}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="font-medium text-gray-700">Order:</span>
+                    <span className="ml-2 text-gray-600">{formData.display_order}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
