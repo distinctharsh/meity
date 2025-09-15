@@ -88,13 +88,12 @@ export default function NewNavbar() {
                 >
                   <Link
                     href={item.href}
-                    className={`flex items-center justify-between md:justify-start no-underline rounded-md px-4 py-2 text-[16px] font-semibold transition-colors duration-200 ${
-                      item.active
-                        ? 'text-[#123a6b] border-b-8 border-[#123a6b]'
-                        : 'text-[#1b1b1b] hover:text-[#123a6b]'
-                    }`}
-                    
-                    
+                    className={`flex items-center justify-between md:justify-start no-underline rounded-md px-4 py-2 text-[16px] font-semibold transition-colors duration-200 ${item.active
+                      ? `text-[#123a6b] border-b-8 border-[#123a6b] ${item.text !== 'Home' ? 'bg-[#d2dfff]' : ''}`
+                      : `text-[#1b1b1b] hover:text-[#123a6b] ${item.text !== 'Home' ? 'hover:bg-[#d2dfff]' : ''}`
+                      }`}
+
+
                     onClick={(e) => {
                       if (item.dropdown && typeof window !== 'undefined' && window.innerWidth < 769) {
                         e.preventDefault();

@@ -19,8 +19,19 @@ export default function EventQuote() {
         {/* Right Column - Content */}
         <div className="flex-1 p-[30px] flex flex-col justify-center">
           <div className="max-w-full">
-            <p className="text-[1.25rem] leading-[1.6] text-[#162f6a] font-medium tracking-[-0.12px]">
-              <span className="block text-[4.4rem] text-[#162f6a] leading-none mb-5">“</span>
+            <p
+              className="text-[1.25rem] leading-[1.6] text-[#162f6a] font-medium tracking-[-0.12px]"
+              style={{ color: '#162f6a', fontSize: '1.7rem', fontStyle: 'normal', fontWeight: 500, lineHeight: '29px', letterSpacing: '-0.12px' }}
+            >
+              <span
+                className="block text-[4.4rem] text-[#162f6a] leading-none mb-5"
+                style={{ fontSize: '4.4rem', color: '#162f6a', display: 'block', maxHeight: '40px', fontFamily: 'Material Symbols Outlined' }}
+                aria-hidden="true"
+              >
+                “
+              </span>
+
+
               PM emphasises that democracy and technology together can ensure the
               welfare of humanity.
             </p>
@@ -34,8 +45,8 @@ export default function EventQuote() {
                 <span className="text-[0.85rem] bg-[#e9e9e9] rounded-[20px] font-medium">10.09.2024</span>
               </span>
 
-              <a href="#" className="inline-flex items-center gap-2 bg-[#162f6a] text-white py-[10px] px-5 rounded-[4px] no-underline font-medium text-[0.9rem] transition-all hover:bg-[#1a3a80] hover:-translate-y-[2px] shadow-[0_4px_12px_rgba(0,0,0,0.1)]">
-                <span aria-hidden="true" className="material-symbols-outlined">open_in_new</span>
+              <a href="#" className="inline-flex items-center gap-2 bg-[#162f6a] text-white py-[10px] px-5 rounded-[4px] no-underline font-medium text-[0.9rem] transition-all hover:bg-[#fff] hover:-translate-y-[2px] shadow-[0_4px_12px_rgba(0,0,0,0.1)]">
+                <span aria-hidden="true" class Name="material-symbols-outlined">open_in_new</span>
                 VIEW EVENT
               </a>
             </div>
