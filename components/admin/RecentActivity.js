@@ -8,7 +8,7 @@ const RecentActivity = () => {
     const fetchActivities = async () => {
       try {
         const response = await fetch('/api/admin/activities');
-        
+
         if (response.ok) {
           const data = await response.json();
           setActivities(data);
@@ -17,7 +17,7 @@ const RecentActivity = () => {
           const errorData = await response.json().catch(() => ({}));
           const errorMessage = errorData.message || `HTTP ${response.status}: ${response.statusText}`;
           console.error('Activities API error:', errorMessage);
-          
+
           // Set fallback data with error info
           setActivities([
             {
@@ -31,7 +31,7 @@ const RecentActivity = () => {
         }
       } catch (error) {
         console.error('Activities fetch network error:', error);
-        
+
         // Handle different types of network errors
         let errorMessage = 'Network error occurred';
         if (error.name === 'TypeError' && error.message.includes('fetch')) {
@@ -41,7 +41,7 @@ const RecentActivity = () => {
         } else {
           errorMessage = `Network error: ${error.message}`;
         }
-        
+
         // Set fallback data with specific error info
         setActivities([
           {
@@ -146,8 +146,8 @@ const RecentActivity = () => {
             <p className="text-gray-500">No recent activity</p>
           </div>
         ) : (
-          activities.map((activity) => (
-            <div key={activity.id} className="flex items-start space-x-3 p-3 rounded-lg hover:bg-gray-50 transition-colors">
+          activities.map((activity, index) => (
+            <div key={activity.id ?? `${activity.type || 'activity'}-${activity.timestamp || 't'}-${index}`} className="flex items-start space-x-3 p-3 rounded-lg hover:bg-gray-50 transition-colors">
               <div className="flex-shrink-0 mt-0.5">
                 {getActivityIcon(activity.type)}
               </div>

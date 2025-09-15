@@ -11,7 +11,7 @@ export const fetchWithCacheBusting = async (url, options = {}) => {
   const timestamp = new Date().getTime();
   const separator = url.includes('?') ? '&' : '?';
   const urlWithTimestamp = `${url}${separator}t=${timestamp}`;
-  
+
   return fetch(urlWithTimestamp, {
     cache: 'no-store',
     headers: {
@@ -21,6 +21,20 @@ export const fetchWithCacheBusting = async (url, options = {}) => {
     },
     ...options
   });
+};
+
+const readErrorPayload = async (response) => {
+  try {
+    const contentType = response.headers.get('content-type') || '';
+    if (contentType.includes('application/json')) {
+      const json = await response.json();
+      return { body: json };
+    }
+    const text = await response.text();
+    return { body: text };
+  } catch (err) {
+    return { body: '<<unable to read body>>' };
+  }
 };
 
 /**
@@ -33,7 +47,13 @@ export const fetchAnnouncements = async () => {
     if (response.ok) {
       return await response.json();
     }
-    throw new Error('Failed to fetch announcements');
+    const { body } = await readErrorPayload(response);
+    console.error('Announcements fetch failed', {
+      status: response.status,
+      statusText: response.statusText,
+      body
+    });
+    return [];
   } catch (error) {
     console.error('Error fetching announcements:', error);
     return [];
@@ -50,7 +70,13 @@ export const fetchOfferings = async () => {
     if (response.ok) {
       return await response.json();
     }
-    throw new Error('Failed to fetch offerings');
+    const { body } = await readErrorPayload(response);
+    console.error('Offerings fetch failed', {
+      status: response.status,
+      statusText: response.statusText,
+      body
+    });
+    return [];
   } catch (error) {
     console.error('Error fetching offerings:', error);
     return [];
@@ -67,7 +93,13 @@ export const fetchSliderData = async () => {
     if (response.ok) {
       return await response.json();
     }
-    throw new Error('Failed to fetch slider data');
+    const { body } = await readErrorPayload(response);
+    console.error('Slider fetch failed', {
+      status: response.status,
+      statusText: response.statusText,
+      body
+    });
+    return [];
   } catch (error) {
     console.error('Error fetching slider data:', error);
     return [];
@@ -100,7 +132,7 @@ export const useAutoRefresh = (fetchFunction, interval = 30000) => {
 
   useEffect(() => {
     fetchData();
-    
+
     const refreshInterval = setInterval(fetchData, interval);
     return () => clearInterval(refreshInterval);
   }, [interval]);

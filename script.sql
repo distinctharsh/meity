@@ -31,7 +31,6 @@ CREATE TABLE IF NOT EXISTS hero_slides (
 CREATE TABLE IF NOT EXISTS announcements (
     id INT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
-    content TEXT,
     link_url VARCHAR(500),
     link_text VARCHAR(100),
     is_urgent BOOLEAN DEFAULT FALSE,

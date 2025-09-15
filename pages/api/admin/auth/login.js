@@ -36,10 +36,10 @@ export default async function handler(req, res) {
 
     // Generate JWT token
     const token = jwt.sign(
-      { 
-        userId: user.id, 
-        username: user.username, 
-        role: user.role 
+      {
+        userId: user.id,
+        username: user.username,
+        role: user.role
       },
       JWT_SECRET,
       { expiresIn: '24h' }
@@ -47,7 +47,7 @@ export default async function handler(req, res) {
 
     // Return user data (without password) and token
     const { password_hash, ...userWithoutPassword } = user;
-    
+
     res.status(200).json({
       message: 'Login successful',
       token,
@@ -56,6 +56,17 @@ export default async function handler(req, res) {
 
   } catch (error) {
     console.error('Login error:', error);
-    res.status(500).json({ message: 'Internal server error' });
+    let message = 'Internal server error';
+    if (error && error.code === 'ER_NO_SUCH_TABLE') {
+      message = 'Users table not found. Please run script.sql to create schema.';
+    } else if (error && error.code === 'ER_ACCESS_DENIED_ERROR') {
+      message = 'Database access denied. Check MySQL credentials in lib/db.js';
+    } else if (error && error.code === 'ER_BAD_DB_ERROR') {
+      message = 'Database not found. Create meity_clone and run script.sql';
+    }
+    res.status(500).json({
+      message,
+      code: process.env.NODE_ENV !== 'production' ? error.code : undefined
+    });
   }
 }
