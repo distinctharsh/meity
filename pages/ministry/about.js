@@ -21,31 +21,30 @@ export default function AboutUs() {
         </section>
 
         {/* Tabs */}
-        <section className="bg-[#123a6b]">
-          <div className="max-w-6xl mx-auto px-4 -mt-6 pb-6">
-            <div className="bg-[#1c3769] rounded-[14px] px-4 py-2 overflow-x-auto">
-              <ul className="flex items-center gap-2 whitespace-nowrap text-white">
-                {[
-                  { label: 'About Us', href: '/ministry/about', active: true },
-                  { label: 'Our Team', href: '/ministry/our-team' },
-                  { label: 'Our Organisations', href: '/ministry/our-organisation' },
-                  { label: 'Our Performance', href: '/ministry/our-performance' },
-                  { label: 'Our Groups', href: '/ministry/our-groups' },
-                  { label: 'Directory', href: '/ministry/directory' },
-                ].map((tab) => (
-                  <li key={tab.label}>
-                    <a
-                      href={tab.href}
-                      className={`inline-block px-4 py-2 rounded-[10px] font-semibold text-sm md:text-base ${tab.active ? 'bg-white text-[#123a6b]' : 'hover:text-[#d2e1ff]'}`}
-                    >
-                      {tab.label}
-                    </a>
-                  </li>
-                ))}
+        {/* Tab Navigation Section (Fixed to match screenshot) */}
+        <section className="bg-white">
+          <div className="max-w-6xl mx-auto px-4 -mt-6">
+            <div className="bg-[#0c2a5d] rounded-md inline-block px-4 py-2">
+              <ul className="flex flex-wrap items-center space-x-4 text-white text-sm font-medium">
+                <li className="flex items-center space-x-2">
+                  {/* 3-dot vertical icon */}
+                  <span className="flex flex-col justify-center items-center text-white text-xs">
+                    <span className="w-[3px] h-[3px] rounded-full bg-white mb-[2px]"></span>
+                    <span className="w-[3px] h-[3px] rounded-full bg-white mb-[2px]"></span>
+                    <span className="w-[3px] h-[3px] rounded-full bg-white"></span>
+                  </span>
+                  <a href="/ministry/about" className="font-semibold underline">About Us</a>
+                </li>
+                <li><a href="/ministry/our-team" className="hover:underline">Our Team</a></li>
+                <li><a href="/ministry/our-organisation" className="hover:underline">Our Organisations</a></li>
+                <li><a href="/ministry/our-performance" className="hover:underline">Our Performance</a></li>
+                <li><a href="/ministry/our-groups" className="hover:underline">Our Groups</a></li>
+                <li><a href="/ministry/directory" className="hover:underline">Directory</a></li>
               </ul>
             </div>
           </div>
         </section>
+
 
         {/* Main Content */}
         <section className="bg-white py-12">
@@ -85,10 +84,72 @@ export default function AboutUs() {
                   The Ministry is dedicated to a multifaceted set of objectives, aligning with the dynamic landscape
                   of technology and its impact on society:
                 </p>
+
+                <div className="grid md:grid-cols-3 sm:grid-cols-2 gap-4">
+                  {[
+                    {
+                      num: 1,
+                      title: "e-Government",
+                      desc: "Providing e-infrastructure for delivery of e-services",
+                    },
+                    {
+                      num: 2,
+                      title: "e-Industry",
+                      desc: "Promotion of electronics hardware manufacturing and IT-ITeS industry",
+                    },
+                    {
+                      num: 3,
+                      title: "e-Innovation / R&D",
+                      desc: "Implementation of R&D Framework: Enabling creation of Innovation/ R&D Infrastructure",
+                    },
+                    {
+                      num: 4,
+                      title: "e-Learning",
+                      desc: "Providing support for development of e-Skills and Knowledge network",
+                    },
+                    {
+                      num: 5,
+                      title: "e-Security",
+                      desc: "Securing India’s cyber space",
+                    },
+                    {
+                      num: 6,
+                      title: "e-Inclusion",
+                      desc: "Promoting the use of ICT for more inclusive growth",
+                    },
+                    {
+                      num: 7,
+                      title: "e-Diplomacy",
+                      desc: "Promoting the use of ICT in international cooperation",
+                    },
+                    {
+                      num: 8,
+                      title: "Internet Governance",
+                      desc: "Enhancing India's role in global Internet Governance",
+                    },
+                    {
+                      num: 9,
+                      title: "Human Resource Development",
+                      desc: "Development of skilled human resources in ICT",
+                    },
+                  ].map((item) => (
+                    <div key={item.num} className="bg-[#e6edff] p-4 rounded-md">
+                      <div className="text-2xl font-bold text-[#123a6b] mb-1">{item.num}</div>
+                      <div className="font-semibold text-[#123a6b] mb-1">{item.title}</div>
+                      <p className="text-sm text-gray-700">{item.desc}</p>
+                    </div>
+                  ))}
+                </div>
+
               </div>
             </div>
           </div>
         </section>
+
+
+
+
+
 
         <Footer />
       </main>
