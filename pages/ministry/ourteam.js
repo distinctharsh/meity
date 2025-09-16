@@ -2,10 +2,81 @@ import Footer from "@/components/Footer";
 import Pdf from "@/components/icons/Pdf";
 
 export default function OurTeam() {
+
+  const data = [
+    {
+      section: "HON'BLE MINISTER (E&IT)",
+      people: [
+        {
+          name: "Shri Ashwini Vaishnaw",
+          designation: "Hon'ble Minister of Railways; Information and Broadcasting; and Electronics and Information Technology",
+          contact: [
+            { type: "phone", value: "+91-11-24369191 (Office)" },
+            { type: "phone", value: "+91-11-24362626 (Office)" },
+            { type: "fax", value: "+91-11-24366070" },
+            { type: "email", value: "moeit[at]gov[dot]in" },
+          ],
+          address: "1st Floor, Electronics Niketan, 6, CGO Complex, Lodhi Road, New Delhi: 110003",
+        },
+      ],
+    },
+    {
+      section: "OFFICE OF MINISTER (E&IT)",
+      people: [
+        {
+          name: "Shri Abhas Katra Singh",
+          designation: "OSD",
+          contact: [
+            { type: "phone", value: "+91-11-24369191(Office)" },
+            { type: "phone", value: "+91-11-24362626(Office)" },
+            { type: "fax", value: "+91-11-24366070(Fax)" },
+            { type: "email", value: "moeit[at]gov[dot]in, abhas[dot]24[at]gov[dot]in" },
+          ],
+          address: "Electronics Niketan, 6, CGO Complex, Lodhi Road, New Delhi: 110003",
+        },
+      ],
+    },
+    {
+      section: "HON'BLE MINISTER OF STATE (E&IT)",
+      people: [
+        {
+          name: "Shri Jitin Prasada",
+          designation: "Hon'ble Minister of State in the Ministry of Commerce and Industry; and Electronics and Information Technology",
+          contact: [
+            { type: "phone", value: "+91-11-24368757 (Office)" },
+            { type: "phone", value: "+91-11-24368758 (Office)" },
+            { type: "fax", value: "+91-11-24360958" },
+            { type: "email", value: "mos-eit[at]gov[dot]in, test[at]nic[dot]in" },
+          ],
+          address: "1st Floor, Electronics Niketan, 6, CGO Complex, Lodhi Road, New Delhi: 110003",
+        },
+      ],
+    },
+  ];
+
+  function PdfButton({ label, size, href }) {
+    return (
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="flex items-center gap-2 border border-blue-700 rounded-md px-3 py-1.5 text-blue-800 text-[11px] font-semibold tracking-wide hover:bg-blue-50 transition-colors bg-white"
+      >
+        <span className="whitespace-nowrap">{label}</span>
+        <div className="w-px h-4 bg-blue-700" />
+        <div className="flex items-center gap-1">
+          <Pdf className="w-3.5 h-3.5 text-blue-700" />
+          <span className="text-blue-700">PDF</span>
+        </div>
+        <span className="text-gray-600 font-normal">{size}</span>
+      </a>
+    );
+  }
+
+
+
   return (
     <>
-
-
       {/* Inline CSS for the ::before dot */}
       <style>{`
         .dot-before::before {
@@ -21,8 +92,6 @@ export default function OurTeam() {
           background-position: center;
         }
       `}</style>
-
-
 
       <main id="main">
         {/* Hero Section */}
@@ -40,10 +109,9 @@ export default function OurTeam() {
             <p className="text-sm opacity-80 mb-4">
               <a href="/" className="hover:underline">Home</a> / <a href="/ministry" className="hover:underline">Ministry</a>
             </p>
-            <h1 className="text-4xl font-bold">About Us</h1>
+            <h1 className="text-4xl font-bold">Our Team</h1>
           </div>
         </section>
-
 
         {/* Tabs */}
         <section className="bg-white " style={{ marginTop: '-10px', position: 'absolute', width: '100%' }}>
@@ -52,24 +120,23 @@ export default function OurTeam() {
               className="bg-[#162f6a] rounded-xl px-6 py-4 flex items-center space-x-6 overflow-x-auto"
               style={{ marginTop: '-40px', position: 'relative', zIndex: 10 }}
             >
-              {/* Dot SVG Icon – shown ONLY on the active tab */}
+              {/* Tabs: mark Our Team as active on this page */}
+              <a
+                href="/ministry/about"
+                className="text-white/80 hover:text-white whitespace-nowrap"
+                style={{ color: '#fff', fontSize: '1.3rem', fontStyle: 'normal', fontWeight: 400, lineHeight: 'normal', letterSpacing: '-0.1px', textTransform: 'none', position: 'relative' }}
+              >
+                About Us
+              </a>
               <div className="relative flex items-center">
                 <a
-                  href="/ministry/about"
-                  className="text-white font-bold underline relative pl-3 dot-before"
+                  href="/ministry/ourteam"
+                  className="text-white font-bold relative pl-3 dot-before"
                   style={{ color: '#fff', fontSize: '1.3rem', fontStyle: 'normal', fontWeight: 800, lineHeight: 'normal', letterSpacing: '-0.1px', textTransform: 'none', position: 'relative' }}
                 >
-                  About Us
+                  Our Team
                 </a>
               </div>
-
-              {/* Other Tabs */}
-              <a
-                href="/ministry/ourteam"
-                className="text-white/80 hover:text-white whitespace-nowrap" style={{ color: '#fff', fontSize: '1.3rem', fontStyle: 'normal', fontWeight: 400, lineHeight: 'normal', letterSpacing: '-0.1px', textTransform: 'none', position: 'relative' }}
-              >
-                Our Team
-              </a>
               <a
                 href="/ministry/organization"
                 className="text-white/80 hover:text-white whitespace-nowrap" style={{ color: '#fff', fontSize: '1.3rem', fontStyle: 'normal', fontWeight: 400, lineHeight: 'normal', letterSpacing: '-0.1px', textTransform: 'none', position: 'relative' }}
@@ -98,313 +165,141 @@ export default function OurTeam() {
           </div>
         </section>
 
-
         {/* Main Content */}
-        <section className="bg-white py-12">
-          <div className="max-w-6xl mx-auto px-4 grid md:grid-cols-[1fr_2fr] gap-10">
-            {/* Left Box - Vision (shrink to content height) */}
-            <div className="bg-gray-100 p-6 rounded-lg inline-block align-top" style={{ height: 'fit-content', position: 'sticky', top: '200px' }}>
-              <p className="text-xl text-[#123a6b] font-semibold mb-4">
-                e-Development of India as the engine for transition into a developed nation and an empowered society.
-              </p>
-              <p className="uppercase text-sm text-[#3b3b3b] tracking-wide">Vision Statement</p>
+        <section className=" mt-10 py-12 mx-12" style={{ backgroundColor: '#d2dfff', borderRadius: '20px' }}>
+
+
+          <div className="p-8 flex flex-col items-center min-h-[300px] rounded-md">
+            {/* Cards container */}
+            <div className="flex flex-col items-center relative">
+              {/* Top Card with overlapping avatar */}
+              <div className="relative bg-white rounded-xl shadow-md w-[320px] p-12 px-6 flex flex-col items-center z-10">
+                <div className="absolute -top-10 left-1/2 -translate-x-1/2">
+                  <div className="w-20 h-20 rounded-full ring-4 ring-[#d2dfff] bg-white shadow-md overflow-hidden">
+                    <img
+                      src="https://i.pravatar.cc/100?img=10"
+                      alt="Shri Ashwini Vaishnaw"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                </div>
+                <p className="text-[10px] tracking-wide text-[#3a5a97] font-semibold mb-1">HON'BLE MINISTER</p>
+                <p className="font-semibold text-center text-[15px] text-gray-800">Shri Ashwini Vaishnaw</p>
+              </div>
+
+              {/* Vertical Line */}
+              <div style={{ width: '0.9px', height: '150px', backgroundColor: '#000' }}></div>
+
+
+
+              {/* Bottom Card with overlapping avatar */}
+              <div className="relative bg-white rounded-xl shadow-md w-[320px] p-12 px-6 flex flex-col items-center z-10">
+                <div className="absolute -top-10 left-1/2 -translate-x-1/2">
+                  <div className="w-20 h-20 rounded-full ring-4 ring-[#d2dfff] bg-white shadow-md overflow-hidden">
+                    <img
+                      src="https://i.pravatar.cc/100?img=20"
+                      alt="Shri Jitin Prasada"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                </div>
+                <p className="text-[10px] tracking-wide text-[#3a5a97] font-semibold mb-1">HON'BLE MINISTER OF STATE</p>
+                <p className="font-semibold text-center text-[15px] text-gray-800">Shri Jitin Prasada</p>
+              </div>
             </div>
 
-            {/* Right Content - About, Mission, Objectives */}
-            <div className="text-[#333] space-y-6">
-              <p>
-                The Ministry of Electronics and Information Technology (MeitY), under Government of India,
-                is a stand-alone ministerial agency, responsible for formulating and implementing national
-                policies and programs aimed at enabling the continuous development of the electronics and IT industry.
-                MeitY’s focus areas include the development, promotion, and regulation of the electronics and IT industry in India,
-                fostering digital governance, enabling innovation in emerging technologies and promoting cybersecurity
-                initiatives within the country.
-              </p>
 
-              <div>
-                <h2 className="text-xl font-semibold text-[#123a6b] mb-2">Mission</h2>
-                <p>
-                  To promote Digital Governance for empowering citizens, promoting the inclusive and sustainable growth
-                  of the Electronics, IT & ITeS industries, enhancing India’s role in Internet Governance, adopting
-                  a multipronged approach that includes development of human resources, promoting R&D and innovation,
-                  enhancing efficiency through digital services and ensuring a secure cyber space.
-                </p>
-              </div>
+          </div>
 
-              <div>
-                <h2 className="text-xl font-semibold text-[#123a6b] mb-2">Objectives</h2>
-                <p>
-                  The Ministry is dedicated to a multifaceted set of objectives, aligning with the dynamic landscape
-                  of technology and its impact on society:
-                </p>
-
-                <div className="grid md:grid-cols-3 sm:grid-cols-2 gap-4">
-                  {[
-                    {
-                      num: 1,
-                      title: "e-Government",
-                      desc: "Providing e-infrastructure for delivery of e-services",
-                    },
-                    {
-                      num: 2,
-                      title: "e-Industry",
-                      desc: "Promotion of electronics hardware manufacturing and IT-ITeS industry",
-                    },
-                    {
-                      num: 3,
-                      title: "e-Innovation / R&D",
-                      desc: "Implementation of R&D Framework: Enabling creation of Innovation/ R&D Infrastructure",
-                    },
-                    {
-                      num: 4,
-                      title: "e-Learning",
-                      desc: "Providing support for development of e-Skills and Knowledge network",
-                    },
-                    {
-                      num: 5,
-                      title: "e-Security",
-                      desc: "Securing India’s cyber space",
-                    },
-                    {
-                      num: 6,
-                      title: "e-Inclusion",
-                      desc: "Promoting the use of ICT for more inclusive growth",
-                    },
-                    {
-                      num: 7,
-                      title: "e-Diplomacy",
-                      desc: "Promoting the use of ICT in international cooperation",
-                    },
-                    {
-                      num: 8,
-                      title: "Internet Governance",
-                      desc: "Enhancing India's role in global Internet Governance",
-                    },
-                    {
-                      num: 9,
-                      title: "Human Resource Development",
-                      desc: "Development of skilled human resources in ICT",
-                    },
-                  ].map((item) => (
-                    <div key={item.num} className="bg-[#e6edff] p-4 rounded-md">
-                      <div className="text-2xl font-bold text-[#123a6b] mb-1">{item.num}</div>
-                      <div className="font-semibold text-[#123a6b] mb-1">{item.title}</div>
-                      <p className="text-sm text-gray-700">{item.desc}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <h2 className="text-xl font-semibold text-[#123a6b] mb-2">Functions</h2>
-                <p>
-                  Ministry of Electronics and Information Technology<br />
-                  (Electroniki aur Soochana Praudyogiki Mantralaya)<sup>1</sup>
-                </p>
-                <ol className="list-decimal list-inside space-y-2 mt-4 text-sm text-gray-800">
-                  <li>Policy matters relating to information technology; Electronics; and Internet (all matters other than licensing of Internet Service Provider).</li>
-                  <li>
-                    Promotion of internet, IT and IT enabled services.
-                    <ul className="list-[upper-alpha] list-inside ml-5">
-                      <li>Promotion of Digital Transactions excluding Digital Payments.<sup>2</sup></li>
-                    </ul>
-                  </li>
-                  <li>Assistance to other departments in the promotion of E-Governance, E-Commerce, E-Medicine, E-Infrastructure, etc.</li>
-                  <li>Promotion of Information Technology education and Information Technology-based education.</li>
-                  <li>
-                    Matters relating to Cyber Laws, administration of the Information Technology Act. 2000 (21 of 2000) and other IT related laws.
-                    <ul className="list-[upper-alpha] list-inside ml-5">
-                      <li>Matters relating to online gaming.<sup>3</sup></li>
-                      <li>Matters relating to Cyber Security as assigned in the Information Technology Act, 2000 (21 of 2000) (as amended from time to time) and support to other Ministries / Departments on Cyber Security.<sup>4</sup></li>
-                    </ul>
-                  </li>
-                  <li>Matters relating to promotion and manufacturing of Semiconductor Devices in the country.<sup>5</sup></li>
-                  <li>Interaction in IT related matters with international agencies and bodies e.g. Internet for Business Limited (IFB), Institute for Education in Information Society (IBI) and International Code Council — online (ICC).</li>
-                  <li>Initiative on bridging the Digital Divide: Matters relating to Digital India Corporation.<sup>6</sup></li>
-                  <li>Promotion of Standardization, Testing and Quality in IT and standardization of procedure for IT application and Tasks.</li>
-                  <li>Electronics Export and Computer Software Promotion Council (ESC).</li>
-                  <li>National Informatics Centre (NIC).</li>
-                  <li>Initiatives for development of Hardware/Software industry including knowledge-based enterprises, measures for promoting IT exports and competitiveness of the industry.</li>
-                  <li>All matters relating to personnel under the control of the Ministry.<sup>7</sup></li>
-                  <li>Unique Identification Authority of India (UIDAI).<sup>8</sup></li>
-                  <li>Semi-Conductor Laboratory, Mohali.<sup>9</sup></li>
-                </ol>
-              </div>
+          <hr className="w-4/5 mx-auto" />
 
 
-              <div className="mt-10">
-                <h2 className="text-xl font-semibold text-[#123a6b] mb-2">Amendments to Functions</h2>
-                <ol className="list-decimal list-inside space-y-2 text-sm text-gray-800">
-                  <li>
-                    Modified vide Amendment series no. 243 dated 15.10.1999, 257 dated 21.12.2001, 300 dated 26.02.2012 and 327 dated 16.07.2016.
-                  </li>
-                  <li>
-                    Modified vide Amendment series no. 371 dated 17.07.2023.
-                  </li>
-                  <li>
-                    Inserted vide Amendment series no. 370 dated 23.12.2022.
-                  </li>
-                  <li>
-                    Inserted vide Amendment series no. 377 dated 27.09.2024.
-                  </li>
-                  <li>
-                    Modified vide Amendment series no. 368 dated 07.02.2022 (earlier inserted vide no. 279 dated 01.03.2005 and modified vide no. 322 dated 17.03.2016).
-                  </li>
-                  <li>
-                    Modified vide Amendment series no. 345 dated 17.10.2018.
-                  </li>
-                  <li>
-                    Modified vide Amendment series no. 281 dated 01.09.2005, Further modified vide amendment series no. 327 dated 16.07.2016.
-                  </li>
-                  <li>
-                    Inserted vide Amendment series no. 318 dated 12.09.2015 (Earlier inserted under Planning Commission vide Amendment Series no.296 dated 22.02.2010, and in NITI Aayog vide series no.312).
-                  </li>
-                  <li>
-                    Inserted vide Amendment series no. 368 dated 07.02.2022.
-                  </li>
-                </ol>
-              </div>
-
-
-
-
-              <div className="max-w-4xl mx-auto px-4 space-y-10">
-
-                {/* Citizens' Charter */}
-                <div>
-                  <h2 className="text-xl font-semibold text-[#123a6b] mb-2">Citizens' Charter</h2>
-                  <p className="text-gray-700 text-sm mb-4">
-                    A Citizens' Charter represents the commitment of the Organisation towards standard, quality and time frame of
-                    service delivery, grievance redress mechanism, transparency and accountability. Nodal Officers have been appointed
-                    with a view to ensure effective implementation of Citizens’ Charter.
-                  </p>
-
-                  {/* Document Card */}
-                  <div className="flex justify-between items-center bg-gray-100 p-4 rounded-md">
-                    <div className="flex items-center gap-2">
-                      <p className="mb-2 md:mb-0 flex items-center gap-2 text-gray-900 font-medium">
-                        <span className="material-symbols-outlined text-[#0f3c82]">draft</span>
-                        Citizens' Charter
-                      </p>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <Pdf />
-                      <span className="text-xs text-gray-600">439.35 KB</span>
-                      <button className="bg-blue-100 text-blue-600 px-3 pt-1 rounded hover:bg-blue-200"><span aria-hidden="true" className="material-symbols-outlined bhashini-skip-translation" style={{ fontSize: '17px', cursor: 'pointer' }}>visibility</span></button>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Other Documents */}
-                <div>
-                  <h2 className="text-xl font-semibold text-[#123a6b] mb-4">Other Documents</h2>
-
-                  {/* Document Cards */}
-                  <div className="space-y-3">
-                    {/* Document 1 */}
-                    <div className="flex justify-between items-center bg-gray-100 p-4 rounded-md">
-                      <p className="mb-2 md:mb-0 flex items-center gap-2 text-gray-900 font-medium">
-                        <span className="material-symbols-outlined text-[#0f3c82]">draft</span>
-                        Organisational Chart of MeitY
-                      </p>
-                      <div className="flex items-center gap-3">
-                        <Pdf />
-                        <span className="text-xs text-gray-600">28.74 KB</span>
-                        <button className="bg-blue-100 text-blue-600 px-3 pt-1 rounded hover:bg-blue-200"><span aria-hidden="true" className="material-symbols-outlined bhashini-skip-translation" style={{ fontSize: '17px', cursor: 'pointer' }}>visibility</span></button>
-                      </div>
-                    </div>
-
-                    {/* Document 2 */}
-                    <div className="flex justify-between items-center bg-gray-100 p-4 rounded-md">
-                      <p className="mb-2 md:mb-0 flex items-center gap-2 text-gray-900 font-medium">
-                        <span className="material-symbols-outlined text-[#0f3c82]">draft</span>
-                        Groups and their respective Heads/Group Coordinators
-                      </p>
-                      <div className="flex items-center gap-3">
-                        <Pdf />
-                        <span className="text-xs text-gray-600">107.25 KB</span>
-                        <button className="bg-blue-100 text-blue-600 px-3 pt-1 rounded hover:bg-blue-200"><span aria-hidden="true" className="material-symbols-outlined bhashini-skip-translation" style={{ fontSize: '17px', cursor: 'pointer' }}>visibility</span></button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Abbreviations Section */}
-                <div>
-                  <h2 className="text-xl font-semibold text-[#123a6b] mb-2">Other Documents</h2>
-                  <div className="flex justify-between items-center bg-gray-100 p-4 rounded-md">
-
-                    <p className="mb-2 md:mb-0 flex items-center gap-2 text-gray-900 font-medium">
-                      <span className="material-symbols-outlined text-[#0f3c82]">draft</span>
-                      Abbreviations
-                    </p>
-                    <button style={{ background: '#a3bbf3', color: '#162f6a', padding: '4px 8px', cursor: 'pointer' }}>
-
-                      <span aria-hidden="true" className="material-symbols-outlined bhashini-skip-translation" style={{ fontSize: '15px' }}>arrow_right_alt</span>
-                    </button>
-                  </div>
-                </div>
-
-              </div>
-
-
-
-
-              <div className="max-w-3xl mx-auto px-4">
-                <h2 className="text-lg font-semibold text-[#0f3c82] mb-4">Official Language Activities</h2>
-                <p className="text-gray-700 mb-6">
-                  Hindi unit of the Ministry of Electronics and Information Technology is responsible for implementation of Official
-                  Language Policy of the Union and the progressive use of Official Language, Hindi in the Ministry and the Offices/Autonomous
-                  Societies under its control.
-                </p>
-
-                <div className="space-y-4">
-                  {[
-                    { text: "Background", href: "/ministry/about-us/details/Title=Background-AzN4AjMtQWa" },
-                    { text: "Official Language Policy of the Union", href: "/ministry/about-us/details/Title=Official-Language-Policy-of-the-Union-AzN4AjMtQWa" },
-                    { text: "Constitutional Provisions", href: "/ministry/about-us/details/Title=Constitutional-Provisions-AzN4AjMtQWa" },
-                    { text: "Official Language Act", href: "/ministry/about-us/details/Title=Official-Language-Act-AzN4AjMtQWa" },
-                    { text: "The Official Languages (Use for Official Purpose of the Union)", href: "/ministry/about-us/details/Title=The-Official-Languages-(Use-for-Official-Purpose-of-the-Union)-AzN4AjMtQWa" },
-                    { text: "Official Language activities of the Ministry", href: "/ministry/about-us/details/Title=Official-Language-activities-of-the-Ministry-AzN4AjMtQWa" },
-                  ].map(({ text, href }) => (
-                    <div
-                      key={text}
-                      className="flex flex-col md:flex-row items-center justify-between border border-gray-300 rounded-md p-3"
-                    >
-                      <p className="mb-2 md:mb-0 flex items-center gap-2 text-gray-900 font-medium">
-                        <span className="material-symbols-outlined text-[#0f3c82]">draft</span>
-                        {text}
-                      </p>
-                      <a
-                        href={href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-1 text-[#0f3c82] font-semibold hover:text-blue-700"
-                        style={{ background: '#a3bbf3', color: '#162f6a', padding: '8px' }}
-                        aria-label={`Know More about ${text}`}
-                        title={`Know More about ${text}`}
-                      >
-                        <span aria-hidden="true" className="material-symbols-outlined bhashini-skip-translation" style={{ fontSize: '15px' }}>arrow_right_alt</span>
-                      </a>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-
-
-
-            </div>
+          {/* PDF Buttons container outside the blue background */}
+          <div className="max-w-6xl mx-auto px-4 py-10 flex justify-center gap-4">
+            <PdfButton label="FORMER MINISTERS" size="66.37 KB" href="#" />
+            <PdfButton label="LIST OF COUNCIL OF MINISTERS" size="3.30 MB" href="#" />
+            <PdfButton label="LIST OF OFFICERS/STAFF" size="461.13 KB" href="#" />
+            <PdfButton label="FOREIGN DEPUTATION JS LEVEL AND ABOVE" size="365.60 KB" href="#" />
           </div>
         </section>
 
 
+        <div className="max-w-6xl mx-auto px-4 py-10">
+          {data.map((section) => (
+            <div key={section.section} className="mb-10">
+              <div className="bg-blue-800 text-white font-semibold rounded-t-md px-4 py-2 flex items-center gap-3">
+                <span className="inline-flex items-center justify-center w-6 h-6 rounded bg-white/20">
+                  {/* section icon */}
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="w-4 h-4">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 7h10M7 12h10M7 17h6" />
+                  </svg>
+                </span>
+                <span>{section.section}</span>
+              </div>
+              <div className="bg-blue-300 text-blue-900 font-semibold grid grid-cols-[2fr_2fr_3fr] px-4 py-1 text-xs">
+                <div>NAME AND DESIGNATION</div>
+                <div>CONTACT</div>
+                <div>ADDRESS</div>
+              </div>
 
-
-
-
-
-
+              {section.people.map((person, idx) => (
+                <div
+                  key={idx}
+                  className="grid grid-cols-[2fr_2fr_3fr] border border-t-0 border-gray-300 px-4 py-4 text-sm"
+                >
+                  <div>
+                    <p className="font-bold">{person.name}</p>
+                    <p>{person.designation}</p>
+                  </div>
+                  <div className="space-y-1">
+                    {person.contact.map((contact, i) => (
+                      <p key={i} className="flex items-center gap-2">
+                        {contact.type === "phone" && (
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-4 w-4 text-gray-600"
+                            viewBox="0 0 24 24"
+                            fill="currentColor"
+                          >
+                            <path d="M2.003 5.884c-.09-1.04.71-1.93 1.75-2.02l2.51-.22c.87-.08 1.66.46 1.9 1.3l.57 2.07c.2.74-.04 1.53-.62 2.05l-1.12.98a14.99 14.99 0 007.58 7.58l.98-1.12c.52-.58 1.31-.82 2.05-.62l2.07.57c.84.24 1.38 1.03 1.3 1.9l-.22 2.51c-.09 1.04-.98 1.84-2.02 1.75-9.9-.85-17.8-8.74-18.66-18.64z" />
+                          </svg>
+                        )}
+                        {contact.type === "fax" && (
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-4 w-4 text-gray-600"
+                            viewBox="0 0 24 24"
+                            fill="currentColor"
+                          >
+                            <path d="M6 3h12v5H6V3zm-2 6h16a2 2 0 012 2v6a2 2 0 01-2 2H6a2 2 0 01-2-2V11a2 2 0 012-2zm4 2v6h8v-6H8z" />
+                          </svg>
+                        )}
+                        {contact.type === "email" && (
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-4 w-4 text-gray-600"
+                            viewBox="0 0 24 24"
+                            fill="currentColor"
+                          >
+                            <path d="M20 4H4a2 2 0 00-2 2v12a2 2 0 002 2h16a2 2 0 002-2V6a2 2 0 00-2-2zm-1.4 4.25l-6.13 4.09a1 1 0 01-1.06 0L5.28 8.25a1 1 0 111.1-1.66L12 10.3l5.62-3.7a1 1 0 111.1 1.66z" />
+                          </svg>
+                        )}
+                        {contact.type === "email" ? (
+                          <a className="hover:underline" href={`mailto:${contact.value.replace(/\[at\]/g, '@').replace(/\[dot\]/g, '.')}`}>{contact.value}</a>
+                        ) : contact.type === "phone" ? (
+                          <a className="hover:underline" href={`tel:${contact.value.replace(/[^+\d]/g, '')}`}>{contact.value}</a>
+                        ) : (
+                          <span>{contact.value}</span>
+                        )}
+                      </p>
+                    ))}
+                  </div>
+                  <div>{person.address}</div>
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
 
         <Footer />
       </main >
