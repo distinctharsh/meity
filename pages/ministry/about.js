@@ -59,7 +59,7 @@ export default function AboutUs() {
                 <a
                   href="/ministry/about"
                   className="text-white font-bold underline relative pl-3 dot-before"
-                  style={{ color: '#fff', fontSize: '1.6rem', fontStyle: 'normal', fontWeight: 400, lineHeight: 'normal', letterSpacing: '-0.1px', textTransform: 'none', position: 'relative' }}
+                  style={{ color: '#fff', fontSize: '1.3rem', fontStyle: 'normal', fontWeight: 800, lineHeight: 'normal', letterSpacing: '-0.1px', textTransform: 'none', position: 'relative' }}
                 >
                   About Us
                 </a>
@@ -68,25 +68,25 @@ export default function AboutUs() {
               {/* Other Tabs */}
               <a
                 href="/ministry/leadership"
-                className="text-white/80 hover:text-white whitespace-nowrap" style={{ color: '#fff', fontSize: '1.6rem', fontStyle: 'normal', fontWeight: 400, lineHeight: 'normal', letterSpacing: '-0.1px', textTransform: 'none', position: 'relative' }}
+                className="text-white/80 hover:text-white whitespace-nowrap" style={{ color: '#fff', fontSize: '1.3rem', fontStyle: 'normal', fontWeight: 400, lineHeight: 'normal', letterSpacing: '-0.1px', textTransform: 'none', position: 'relative' }}
               >
                 Our Team
               </a>
               <a
                 href="/ministry/organization"
-                className="text-white/80 hover:text-white whitespace-nowrap" style={{ color: '#fff', fontSize: '1.6rem', fontStyle: 'normal', fontWeight: 400, lineHeight: 'normal', letterSpacing: '-0.1px', textTransform: 'none', position: 'relative' }}
+                className="text-white/80 hover:text-white whitespace-nowrap" style={{ color: '#fff', fontSize: '1.3rem', fontStyle: 'normal', fontWeight: 400, lineHeight: 'normal', letterSpacing: '-0.1px', textTransform: 'none', position: 'relative' }}
               >
                 Our Organisations
               </a>
               <a
                 href="/ministry/our-performance"
-                className="text-white/80 hover:text-white whitespace-nowrap" style={{ color: '#fff', fontSize: '1.6rem', fontStyle: 'normal', fontWeight: 400, lineHeight: 'normal', letterSpacing: '-0.1px', textTransform: 'none', position: 'relative' }}
+                className="text-white/80 hover:text-white whitespace-nowrap" style={{ color: '#fff', fontSize: '1.3rem', fontStyle: 'normal', fontWeight: 400, lineHeight: 'normal', letterSpacing: '-0.1px', textTransform: 'none', position: 'relative' }}
               >
                 Our Performance
               </a>
               <a
                 href="/ministry/our-groups"
-                className="text-white/80 hover:text-white whitespace-nowrap" style={{ color: '#fff', fontSize: '1.6rem', fontStyle: 'normal', fontWeight: 400, lineHeight: 'normal', letterSpacing: '-0.1px', textTransform: 'none', position: 'relative' }}
+                className="text-white/80 hover:text-white whitespace-nowrap" style={{ color: '#fff', fontSize: '1.3rem', fontStyle: 'normal', fontWeight: 400, lineHeight: 'normal', letterSpacing: '-0.1px', textTransform: 'none', position: 'relative' }}
               >
                 Our Groups
               </a>
@@ -105,7 +105,7 @@ export default function AboutUs() {
         <section className="bg-white py-12" >
           <div className="max-w-6xl mx-auto px-4 grid md:grid-cols-2 gap-10">
             {/* Left Box - Vision (shrink to content height) */}
-            <div className="bg-gray-100 p-6 rounded-lg inline-block align-top">
+            <div className="bg-gray-100 p-6 rounded-lg inline-block align-top" style={{ height: 'fit-content', position: 'sticky', top: '100px' }}>
               <p className="text-xl text-[#123a6b] font-semibold mb-4">
                 e-Development of India as the engine for transition into a developed nation and an empowered society.
               </p>

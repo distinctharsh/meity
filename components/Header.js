@@ -3,10 +3,11 @@ import AccessibilityBar from "./AccessibilityBar";
 import Bhashini from "./icons/Bhashini";
 import Emblem from "./icons/Emblem";
 import Skip from "./icons/Skip";
+import Image from "next/image";
 
 export default function Header() {
   return (
-    <header className="bg-white py-[10px] px-[52px] border-b border-[#e6e6e6]">
+    <header className="bg-white py-[10px] px-[52px] border-b border-[#e6e6e6] sticky top-0 z-[1000]">
       <div className="w-full mx-auto">
         <div className="grid grid-cols-1 gap-4 md:grid-cols-[3fr_auto_1fr] md:items-end">
           {/* Left Column */}
@@ -43,7 +44,7 @@ export default function Header() {
 
           {/* Middle Column */}
           <div className="flex justify-center mb-[10px] order-3 md:order-none">
-            <img src="./images/digitalindia.svg" alt="Digital India" />
+            <Image src="/images/digitalindia.svg" alt="Digital India" width={100} height={100} />
           </div>
 
           {/* Right Column */}
