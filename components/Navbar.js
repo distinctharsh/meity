@@ -21,6 +21,7 @@ export default function NewNavbar() {
     {
       text: 'Ministry', href: '/ministry', active: router.pathname === '/ministry', dropdown: true, items: [
         { text: 'About Us', href: '/ministry/about' },
+        { text: 'Our Team', href: '/ministry/ourteam' },
         { text: 'Organization', href: '/ministry/organization' },
         { text: 'Leadership', href: '/ministry/leadership' },
       ]
