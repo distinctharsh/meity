@@ -113,10 +113,10 @@ export default function AboutUs() {
             {/* Right Content - About, Mission, Objectives */}
             <div className="text-[#333] space-y-6">
               <p>
-                The Ministry of Electronics and Information Technology (MeitY), under Government of India,
+                The Cabinet Secretariat, under Government of India,
                 is a stand-alone ministerial agency, responsible for formulating and implementing national
                 policies and programs aimed at enabling the continuous development of the electronics and IT industry.
-                MeitY’s focus areas include the development, promotion, and regulation of the electronics and IT industry in India,
+                Cabinet Secretariat’s focus areas include the development, promotion, and regulation of the electronics and IT industry in India,
                 fostering digital governance, enabling innovation in emerging technologies and promoting cybersecurity
                 initiatives within the country.
               </p>
@@ -198,7 +198,7 @@ export default function AboutUs() {
               <div>
                 <h2 className="text-xl font-semibold text-[#123a6b] mb-2">Functions</h2>
                 <p>
-                  Ministry of Electronics and Information Technology<br />
+                  Cabinet Secretariat<br />
                   (Electroniki aur Soochana Praudyogiki Mantralaya)<sup>1</sup>
                 </p>
                 <ol className="list-decimal list-inside space-y-2 mt-4 text-sm text-gray-800">
@@ -305,7 +305,7 @@ export default function AboutUs() {
                     <div className="flex justify-between items-center bg-gray-100 p-4 rounded-md">
                       <p className="mb-2 md:mb-0 flex items-center gap-2 text-gray-900 font-medium">
                         <span className="material-symbols-outlined text-[#0f3c82]">draft</span>
-                        Organisational Chart of MeitY
+                        Organisational Chart of Cabinet Secretariat
                       </p>
                       <div className="flex items-center gap-3">
                         <Pdf />
@@ -353,7 +353,7 @@ export default function AboutUs() {
               <div className="max-w-3xl mx-auto px-4">
                 <h2 className="text-lg font-semibold text-[#0f3c82] mb-4">Official Language Activities</h2>
                 <p className="text-gray-700 mb-6">
-                  Hindi unit of the Ministry of Electronics and Information Technology is responsible for implementation of Official
+                  Hindi unit of the Cabinet Secretariat is responsible for implementation of Official
                   Language Policy of the Union and the progressive use of Official Language, Hindi in the Ministry and the Offices/Autonomous
                   Societies under its control.
                 </p>

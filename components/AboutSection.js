@@ -13,7 +13,7 @@ export default function AboutSection() {
             <h2 className="text-[24px] font-bold text-[#162f6a] m-0 pb-[5px] relative after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-[50px] after:h-[3px] after:bg-[#ff6b35]">About Us</h2>
           </div>
           <p className="text-[15px] text-[#333] leading-[1.8] mb-[30px]">
-            The Ministry of Electronics and Information Technology (MeitY), under Government of India, is a
+            The Cabinet Secretariat, under Government of India, is a
             stand-alone ministerial agency, responsible for formulating and implementing national policies
             and programs aimed at enabling the continuous development of the electronics and IT industry.
             MeitY’s focus areas include the development, promotion, and regulation of the electronics and IT

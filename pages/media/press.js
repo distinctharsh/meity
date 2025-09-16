@@ -33,7 +33,7 @@ export default function PressReleases() {
                         MEITY Launches New Digital Governance Initiative
                       </h3>
                       <p className="text-gray-600 mb-3">
-                        The Ministry of Electronics and Information Technology announces a comprehensive digital governance framework to enhance citizen services and government efficiency across all departments.
+                        The Cabinet Secretariat announces a comprehensive digital governance framework to enhance citizen services and government efficiency across all departments.
                       </p>
                       <div className="flex items-center text-sm text-gray-500">
                         <span className="material-symbols-outlined text-sm mr-2">calendar_today</span>

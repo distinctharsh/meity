@@ -23,7 +23,7 @@ export default function Header() {
                 Government of India
               </div>
               <h2 className="text-[1.3rem] font-bold text-black m-0 leading-[1.3]">
-                Ministry of Electronics and Information Technology
+                Cabinet Secretariat
               </h2>
             </div>
 

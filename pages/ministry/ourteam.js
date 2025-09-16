@@ -1,5 +1,6 @@
 import Footer from "@/components/Footer";
 import Pdf from "@/components/icons/Pdf";
+import Image from "next/image";
 
 export default function OurTeam() {
 
@@ -66,7 +67,6 @@ export default function OurTeam() {
         <div className="w-px h-4 bg-blue-700" />
         <div className="flex items-center gap-1">
           <Pdf className="w-3.5 h-3.5 text-blue-700" />
-          <span className="text-blue-700">PDF</span>
         </div>
         <span className="text-gray-600 font-normal">{size}</span>
       </a>
@@ -166,56 +166,61 @@ export default function OurTeam() {
         </section>
 
         {/* Main Content */}
-        <section className=" mt-10 py-12 mx-12" style={{ backgroundColor: '#d2dfff', borderRadius: '20px' }}>
+        <section className=" mt-10 py-12 mx-4 sm:mx-8 md:mx-12" style={{ backgroundColor: '#d2dfff', borderRadius: '20px' }}>
 
 
           <div className="p-8 flex flex-col items-center min-h-[300px] rounded-md">
             {/* Cards container */}
             <div className="flex flex-col items-center relative">
               {/* Top Card with overlapping avatar */}
-              <div className="relative bg-white rounded-xl shadow-md w-[320px] p-12 px-6 flex flex-col items-center z-10">
+              <div className="relative bg-white rounded-xl shadow-md w-full max-w-[320px] sm:max-w-[340px] md:max-w-[360px] p-10 sm:p-12 px-6 flex flex-col items-center z-10">
                 <div className="absolute -top-10 left-1/2 -translate-x-1/2">
                   <div className="w-20 h-20 rounded-full ring-4 ring-[#d2dfff] bg-white shadow-md overflow-hidden">
-                    <img
-                      src="https://i.pravatar.cc/100?img=10"
+                    <Image
+                      src="/images/our-team/a.jpg"
                       alt="Shri Ashwini Vaishnaw"
+                      width={80}
+                      height={80}
                       className="w-full h-full object-cover"
                     />
                   </div>
                 </div>
-                <p className="text-[10px] tracking-wide text-[#3a5a97] font-semibold mb-1">HON'BLE MINISTER</p>
-                <p className="font-semibold text-center text-[15px] text-gray-800">Shri Ashwini Vaishnaw</p>
+                <p className="text-[10px] sm:text-[11px] tracking-wide text-[#3a5a97] font-semibold mb-1">HON'BLE MINISTER</p>
+                <p className="font-semibold text-center text-[15px] sm:text-[16px] text-gray-800">Shri Ashwini Vaishnaw</p>
               </div>
 
               {/* Vertical Line */}
-              <div style={{ width: '0.9px', height: '150px', backgroundColor: '#000' }}></div>
+              <div className="w-px bg-black h-24 sm:h-32 md:h-[150px] lg:h-48"></div>
 
 
 
               {/* Bottom Card with overlapping avatar */}
-              <div className="relative bg-white rounded-xl shadow-md w-[320px] p-12 px-6 flex flex-col items-center z-10">
+              <div className="relative bg-white rounded-xl shadow-md w-full max-w-[320px] sm:max-w-[340px] md:max-w-[360px] p-10 sm:p-12 px-6 flex flex-col items-center z-10">
                 <div className="absolute -top-10 left-1/2 -translate-x-1/2">
                   <div className="w-20 h-20 rounded-full ring-4 ring-[#d2dfff] bg-white shadow-md overflow-hidden">
-                    <img
-                      src="https://i.pravatar.cc/100?img=20"
+                    <Image
+                      src="/images/our-team/b.jpg"
+                      width={80}
+                      height={80}
                       alt="Shri Jitin Prasada"
                       className="w-full h-full object-cover"
                     />
                   </div>
                 </div>
-                <p className="text-[10px] tracking-wide text-[#3a5a97] font-semibold mb-1">HON'BLE MINISTER OF STATE</p>
-                <p className="font-semibold text-center text-[15px] text-gray-800">Shri Jitin Prasada</p>
+                <p className="text-[10px] sm:text-[11px] tracking-wide text-[#3a5a97] font-semibold mb-1">HON'BLE MINISTER OF STATE</p>
+                <p className="font-semibold text-center text-[15px] sm:text-[16px] text-gray-800">Shri Jitin Prasada</p>
               </div>
             </div>
 
 
           </div>
 
-          <hr className="w-4/5 mx-auto" />
+          <hr className="mx-auto" style={{ width: '97.5%' }} />
+
 
 
           {/* PDF Buttons container outside the blue background */}
-          <div className="max-w-6xl mx-auto px-4 py-10 flex justify-center gap-4">
+          <div className=" px-4 py-10 flex gap-3 sm:gap-4 flex-wrap">
             <PdfButton label="FORMER MINISTERS" size="66.37 KB" href="#" />
             <PdfButton label="LIST OF COUNCIL OF MINISTERS" size="3.30 MB" href="#" />
             <PdfButton label="LIST OF OFFICERS/STAFF" size="461.13 KB" href="#" />

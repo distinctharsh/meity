@@ -5,7 +5,7 @@ const Footer = () => {
     <footer className="bg-[#0B2C6A] text-white py-10">
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex flex-col md:flex-row md:justify-between gap-12">
-          
+
           {/* Left Links Section */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
             <div>
@@ -31,9 +31,9 @@ const Footer = () => {
             </div>
 
             {/* Footer Bottom Text */}
-        <div className="text-left text-gray-300 text-base whitespace-nowrap">
-          This Website belongs to Ministry of Electronics and Information Technology, Government of India
-        </div>
+            <div className="text-left text-gray-300 text-base whitespace-nowrap">
+              This Website belongs to Cabinet Secretariat, Government of India
+            </div>
           </div>
 
           {/* Right Section */}
@@ -63,7 +63,7 @@ const Footer = () => {
           </div>
         </div>
 
-        
+
       </div>
     </footer>
   );
