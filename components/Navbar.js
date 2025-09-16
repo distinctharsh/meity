@@ -28,9 +28,9 @@ export default function NewNavbar() {
     },
     {
       text: 'Offerings', href: '/offerings', active: router.pathname === '/offerings', dropdown: true, items: [
-        { text: 'Services', href: '/offerings/services' },
-        { text: 'Schemes', href: '/offerings/schemes' },
-        { text: 'Initiatives', href: '/offerings/initiatives' },
+        { text: 'Schemes and Services', href: '/offerings/schemes-and-services' },
+        { text: 'Vacancies', href: '/offerings/vacancies' },
+        { text: 'Tenders', href: '/offerings/tenders' },
       ]
     },
     {

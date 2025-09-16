@@ -290,7 +290,7 @@ export default function AboutUs() {
                     <div className="flex items-center gap-3">
                       <Pdf />
                       <span className="text-xs text-gray-600">439.35 KB</span>
-                      <button className="bg-blue-100 text-blue-600 px-3 pt-1 rounded hover:bg-blue-200"><span aria-hidden="true" class="material-symbols-outlined bhashini-skip-translation " style={{ fontSize: '17px', cursor: 'pointer', cursor: 'pointer' }}>visibility</span></button>
+                      <button className="bg-blue-100 text-blue-600 px-3 pt-1 rounded hover:bg-blue-200"><span aria-hidden="true" className="material-symbols-outlined bhashini-skip-translation " style={{ fontSize: '17px', cursor: 'pointer', cursor: 'pointer' }}>visibility</span></button>
                     </div>
                   </div>
                 </div>
@@ -310,7 +310,7 @@ export default function AboutUs() {
                       <div className="flex items-center gap-3">
                         <Pdf />
                         <span className="text-xs text-gray-600">28.74 KB</span>
-                        <button className="bg-blue-100 text-blue-600 px-3 pt-1 rounded hover:bg-blue-200"><span aria-hidden="true" class="material-symbols-outlined bhashini-skip-translation " style={{ fontSize: '17px', cursor: 'pointer' }}>visibility</span></button>
+                        <button className="bg-blue-100 text-blue-600 px-3 pt-1 rounded hover:bg-blue-200"><span aria-hidden="true" className="material-symbols-outlined bhashini-skip-translation " style={{ fontSize: '17px', cursor: 'pointer' }}>visibility</span></button>
                       </div>
                     </div>
 
@@ -323,7 +323,7 @@ export default function AboutUs() {
                       <div className="flex items-center gap-3">
                         <Pdf />
                         <span className="text-xs text-gray-600">107.25 KB</span>
-                        <button className="bg-blue-100 text-blue-600 px-3 pt-1 rounded hover:bg-blue-200"><span aria-hidden="true" class="material-symbols-outlined bhashini-skip-translation " style={{ fontSize: '17px', cursor: 'pointer' }}>visibility</span></button>
+                        <button className="bg-blue-100 text-blue-600 px-3 pt-1 rounded hover:bg-blue-200"><span aria-hidden="true" className="material-symbols-outlined bhashini-skip-translation " style={{ fontSize: '17px', cursor: 'pointer' }}>visibility</span></button>
                       </div>
                     </div>
                   </div>
