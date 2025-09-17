@@ -61,35 +61,43 @@ export default function Reports() {
             position: 'relative'
           }}
         >
-          <div className="max-w-6xl mx-auto">
-            <p className="text-sm opacity-80 mb-4">
-              <a href="/" className="hover:underline">Home</a> / <a href="/documents" className="hover:underline">Documents</a>
+          <div className="max-w-7xl mx-auto">
+            <div className="overlay" style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              background: 'linear-gradient(90deg, rgb(22, 47, 106) 20%, transparent 70%)'
+            }}></div>
+            <p className=" opacity-99 mb-4">
+              <a href="/" className="hover:underline">Home</a> / <a href="/documents" className="underline hover:decoration-yellow-400 hover:decoration-2 hover:underline-offset-2">Documents</a>
             </p>
-            <h1 className="text-4xl font-bold">Reports</h1>
+            <h1 className="text-4xl font-bold opacity-99 text-white">Reports</h1>
           </div>
         </section>
 
         {/* Tabs */}
         <section className="bg-white " style={{ marginTop: '-10px', position: 'absolute', width: '100%' }}>
-          <div className="max-w-6xl mx-auto px-4">
+          <div className="max-w-7xl mx-auto">
             <div
               className="bg-[#162f6a] rounded-xl px-6 py-4 flex items-center space-x-6 overflow-x-auto"
               style={{ marginTop: '-40px', position: 'relative', zIndex: 10 }}
             >
-              <a href="/documents/reports" className="text-white font-bold relative pl-3 dot-before" style={{ color: '#fff', fontSize: '1rem', fontStyle: 'normal', fontWeight: 800, lineHeight: 'normal', letterSpacing: '-0.1px', textTransform: 'none', position: 'relative' }}>Reports</a>
-              <a href="/documents/act-and-policies" className="text-white/80 hover:text-white whitespace-nowrap" style={{ color: '#fff', fontSize: '1rem', fontStyle: 'normal', fontWeight: 400, lineHeight: 'normal', letterSpacing: '-0.1px', textTransform: 'none', position: 'relative' }}>Act and Policies</a>
-              <a href="/documents/orders-and-notices" className="text-white/80 hover:text-white whitespace-nowrap" style={{ color: '#fff', fontSize: '1rem', fontStyle: 'normal', fontWeight: 400, lineHeight: 'normal', letterSpacing: '-0.1px', textTransform: 'none', position: 'relative' }}>Orders and Notices</a>
-              <a href="/documents/publications" className="text-white/80 hover:text-white whitespace-nowrap" style={{ color: '#fff', fontSize: '1rem', fontStyle: 'normal', fontWeight: 400, lineHeight: 'normal', letterSpacing: '-0.1px', textTransform: 'none', position: 'relative' }}>Publications</a>
-              <a href="/documents/press-release" className="text-white/80 hover:text-white whitespace-nowrap" style={{ color: '#fff', fontSize: '1rem', fontStyle: 'normal', fontWeight: 400, lineHeight: 'normal', letterSpacing: '-0.1px', textTransform: 'none', position: 'relative' }}>Press Release</a>
-              <a href="/documents/gazettes-notifications" className="text-white/80 hover:text-white whitespace-nowrap" style={{ color: '#fff', fontSize: '1rem', fontStyle: 'normal', fontWeight: 400, lineHeight: 'normal', letterSpacing: '-0.1px', textTransform: 'none', position: 'relative' }}>Gazettes Notifications</a>
-              <a href="/documents/guidelines" className="text-white/80 hover:text-white whitespace-nowrap" style={{ color: '#fff', fontSize: '1rem', fontStyle: 'normal', fontWeight: 400, lineHeight: 'normal', letterSpacing: '-0.1px', textTransform: 'none', position: 'relative' }}>Guidelines</a>
+              <a href="/documents/reports" className="text-white font-bold relative pl-3 dot-before" style={{ color: '#fff', fontSize: '1.4rem', fontStyle: 'normal', fontWeight: 800, lineHeight: 'normal', letterSpacing: '-0.1px', textTransform: 'none', position: 'relative' }}>Reports</a>
+              <a href="/documents/act-and-policies" className="text-white/80 hover:text-white whitespace-nowrap" style={{ color: '#fff', fontSize: '1.4rem', fontStyle: 'normal', fontWeight: 400, lineHeight: 'normal', letterSpacing: '-0.1px', textTransform: 'none', position: 'relative' }}>Act and Policies</a>
+              <a href="/documents/orders-and-notices" className="text-white/80 hover:text-white whitespace-nowrap" style={{ color: '#fff', fontSize: '1.4rem', fontStyle: 'normal', fontWeight: 400, lineHeight: 'normal', letterSpacing: '-0.1px', textTransform: 'none', position: 'relative' }}>Orders and Notices</a>
+              <a href="/documents/publications" className="text-white/80 hover:text-white whitespace-nowrap" style={{ color: '#fff', fontSize: '1.3rem', fontStyle: 'normal', fontWeight: 400, lineHeight: 'normal', letterSpacing: '-0.1px', textTransform: 'none', position: 'relative' }}>Publications</a>
+              <a href="/documents/press-release" className="text-white/80 hover:text-white whitespace-nowrap" style={{ color: '#fff', fontSize: '1.3rem', fontStyle: 'normal', fontWeight: 400, lineHeight: 'normal', letterSpacing: '-0.1px', textTransform: 'none', position: 'relative' }}>Press Release</a>
+              <a href="/documents/gazettes-notifications" className="text-white/80 hover:text-white whitespace-nowrap" style={{ color: '#fff', fontSize: '1.3rem', fontStyle: 'normal', fontWeight: 400, lineHeight: 'normal', letterSpacing: '-0.1px', textTransform: 'none', position: 'relative' }}>Gazettes Notifications</a>
+              <a href="/documents/guidelines" className="text-white/80 hover:text-white whitespace-nowrap" style={{ color: '#fff', fontSize: '1.4rem', fontStyle: 'normal', fontWeight: 400, lineHeight: 'normal', letterSpacing: '-0.1px', textTransform: 'none', position: 'relative' }}>Guidelines</a>
             </div>
           </div>
         </section>
 
         {/* Main Content */}
         <section className="mt-10 py-10 mx-4 sm:mx-8 md:mx-12" style={{ borderRadius: '20px' }}>
-          <div className="max-w-6xl mx-auto">
+          <div className="max-w-7xl mx-auto">
             {/* Toolbar row */}
             <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-3 mb-4">
               {/* Search */}
