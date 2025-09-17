@@ -1,11 +1,13 @@
 import Footer from "@/components/Footer";
 import { useMemo, useState } from "react";
-
+import Image from "next/image";
 export default function Reports() {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("");
   const [sort, setSort] = useState("Newest");
   const [perPage, setPerPage] = useState(10);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [yearFilter, setYearFilter] = useState("");
 
   const items = [
     { id: 1, title: "Integrated Finances", count: 18, year: 2025, size: "", type: "group" },
@@ -22,13 +24,28 @@ export default function Reports() {
     if (category) {
       list = list.filter((i) => (category === "Group" ? i.type === "group" : i.type !== "group"));
     }
+    if (yearFilter) {
+      list = list.filter((i) => String(i.year || "") === String(yearFilter));
+    }
     if (sort === "Oldest") {
       list = [...list].sort((a, b) => (a.year || 0) - (b.year || 0));
     } else {
       list = [...list].sort((a, b) => (b.year || 0) - (a.year || 0));
     }
-    return list.slice(0, perPage);
-  }, [items, query, category, sort, perPage]);
+    return list;
+  }, [items, query, category, sort, yearFilter]);
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / perPage));
+  const currentSafePage = Math.min(currentPage, totalPages);
+  const startIdx = (currentSafePage - 1) * perPage;
+  const endIdx = startIdx + perPage;
+  const pagedItems = filtered.slice(startIdx, endIdx);
+
+  const years = useMemo(() => {
+    const set = new Set();
+    items.forEach((i) => { if (i.year) set.add(i.year); });
+    return Array.from(set).sort((a, b) => b - a);
+  }, [items]);
 
   return (
     <>
@@ -37,7 +54,7 @@ export default function Reports() {
         <section
           className="bg-[#123a6b] text-white px-4 hero-before"
           style={{
-            background: `url('/images/about-page/head-background.jpg') no-repeat center center`,
+            background: `url('/images/reports/banner.jpg') no-repeat center center`,
             backgroundSize: 'cover',
             paddingTop: '90px',
             paddingBottom: '90px',
@@ -59,13 +76,13 @@ export default function Reports() {
               className="bg-[#162f6a] rounded-xl px-6 py-4 flex items-center space-x-6 overflow-x-auto"
               style={{ marginTop: '-40px', position: 'relative', zIndex: 10 }}
             >
-              <a href="/documents/reports" className="text-white font-bold relative pl-3 dot-before" style={{ color: '#fff', fontSize: '1.3rem', fontStyle: 'normal', fontWeight: 800, lineHeight: 'normal', letterSpacing: '-0.1px', textTransform: 'none', position: 'relative' }}>Reports</a>
-              <a href="/documents/act-and-policies" className="text-white/80 hover:text-white whitespace-nowrap" style={{ color: '#fff', fontSize: '1.3rem', fontStyle: 'normal', fontWeight: 400, lineHeight: 'normal', letterSpacing: '-0.1px', textTransform: 'none', position: 'relative' }}>Act and Policies</a>
-              <a href="/documents/orders-and-notices" className="text-white/80 hover:text-white whitespace-nowrap" style={{ color: '#fff', fontSize: '1.3rem', fontStyle: 'normal', fontWeight: 400, lineHeight: 'normal', letterSpacing: '-0.1px', textTransform: 'none', position: 'relative' }}>Orders and Notices</a>
-              <a href="/documents/publications" className="text-white/80 hover:text-white whitespace-nowrap" style={{ color: '#fff', fontSize: '1.3rem', fontStyle: 'normal', fontWeight: 400, lineHeight: 'normal', letterSpacing: '-0.1px', textTransform: 'none', position: 'relative' }}>Publications</a>
-              <a href="/documents/press-release" className="text-white/80 hover:text-white whitespace-nowrap" style={{ color: '#fff', fontSize: '1.3rem', fontStyle: 'normal', fontWeight: 400, lineHeight: 'normal', letterSpacing: '-0.1px', textTransform: 'none', position: 'relative' }}>Press Release</a>
-              <a href="/documents/gazettes-notifications" className="text-white/80 hover:text-white whitespace-nowrap" style={{ color: '#fff', fontSize: '1.3rem', fontStyle: 'normal', fontWeight: 400, lineHeight: 'normal', letterSpacing: '-0.1px', textTransform: 'none', position: 'relative' }}>Gazettes Notifications</a>
-              <a href="/documents/guidelines" className="text-white/80 hover:text-white whitespace-nowrap" style={{ color: '#fff', fontSize: '1.3rem', fontStyle: 'normal', fontWeight: 400, lineHeight: 'normal', letterSpacing: '-0.1px', textTransform: 'none', position: 'relative' }}>Guidelines</a>
+              <a href="/documents/reports" className="text-white font-bold relative pl-3 dot-before" style={{ color: '#fff', fontSize: '1rem', fontStyle: 'normal', fontWeight: 800, lineHeight: 'normal', letterSpacing: '-0.1px', textTransform: 'none', position: 'relative' }}>Reports</a>
+              <a href="/documents/act-and-policies" className="text-white/80 hover:text-white whitespace-nowrap" style={{ color: '#fff', fontSize: '1rem', fontStyle: 'normal', fontWeight: 400, lineHeight: 'normal', letterSpacing: '-0.1px', textTransform: 'none', position: 'relative' }}>Act and Policies</a>
+              <a href="/documents/orders-and-notices" className="text-white/80 hover:text-white whitespace-nowrap" style={{ color: '#fff', fontSize: '1rem', fontStyle: 'normal', fontWeight: 400, lineHeight: 'normal', letterSpacing: '-0.1px', textTransform: 'none', position: 'relative' }}>Orders and Notices</a>
+              <a href="/documents/publications" className="text-white/80 hover:text-white whitespace-nowrap" style={{ color: '#fff', fontSize: '1rem', fontStyle: 'normal', fontWeight: 400, lineHeight: 'normal', letterSpacing: '-0.1px', textTransform: 'none', position: 'relative' }}>Publications</a>
+              <a href="/documents/press-release" className="text-white/80 hover:text-white whitespace-nowrap" style={{ color: '#fff', fontSize: '1rem', fontStyle: 'normal', fontWeight: 400, lineHeight: 'normal', letterSpacing: '-0.1px', textTransform: 'none', position: 'relative' }}>Press Release</a>
+              <a href="/documents/gazettes-notifications" className="text-white/80 hover:text-white whitespace-nowrap" style={{ color: '#fff', fontSize: '1rem', fontStyle: 'normal', fontWeight: 400, lineHeight: 'normal', letterSpacing: '-0.1px', textTransform: 'none', position: 'relative' }}>Gazettes Notifications</a>
+              <a href="/documents/guidelines" className="text-white/80 hover:text-white whitespace-nowrap" style={{ color: '#fff', fontSize: '1rem', fontStyle: 'normal', fontWeight: 400, lineHeight: 'normal', letterSpacing: '-0.1px', textTransform: 'none', position: 'relative' }}>Guidelines</a>
             </div>
           </div>
         </section>
@@ -138,7 +155,7 @@ export default function Reports() {
 
             {/* List */}
             <div className="divide-y border border-t-0 rounded-b-md">
-              {filtered.map((item) => (
+              {pagedItems.map((item) => (
                 <div key={item.id} className="grid grid-cols-[7fr_2fr_3fr] items-center px-4 py-3 bg-white">
                   <div className="flex items-center gap-2">
                     <span className="material-symbols-outlined text-gray-700">{item.type === 'group' ? 'file_copy' : 'draft'}</span>
@@ -163,16 +180,63 @@ export default function Reports() {
             </div>
 
             {/* Pagination & Archive */}
-            <div className="row items-center mt-8 grid grid-cols-1 md:grid-cols-3">
-              <div></div>
-              <div className="flex justify-center">
+            <div className="row items-center mt-8 grid grid-cols-1 md:grid-cols-2">
+              {/* <div className="flex md:justify-start justify-center mb-3 md:mb-0">
+                <div className="flex items-stretch rounded-md overflow-hidden border border-gray-300 bg-white">
+                  <span className="flex items-center px-2 border-r border-gray-300 text-gray-600">
+                    <span className="material-symbols-outlined">calendar_month</span>
+                  </span>
+                  <select
+                    className="px-3 py-2 bg-white outline-none"
+                    aria-label="Archive by year"
+                    value={yearFilter}
+                    onChange={(e) => { setYearFilter(e.target.value); setCurrentPage(1); }}
+                  >
+                    <option value="">All Years</option>
+                    {years.map((y) => (
+                      <option key={y} value={y}>{y}</option>
+                    ))}
+                  </select>
+                </div>
+              </div> */}
+              <div className="flex justify-end">
                 <nav aria-label="Page navigation">
-                  <ul className="flex items-center gap-2">
-                    <li><button className="px-2 py-1 rounded border text-gray-600" aria-disabled><span className="material-symbols-outlined">chevron_left</span></button></li>
-                    <li><span className="px-3 py-1 rounded bg-blue-600 text-white">1</span></li>
-                    <li><span className="px-3 py-1 rounded border hover:bg-gray-50 cursor-pointer">2</span></li>
-                    <li><span className="px-3 py-1 rounded border hover:bg-gray-50 cursor-pointer">3</span></li>
-                    <li><button className="px-2 py-1 rounded border text-gray-600"><span className="material-symbols-outlined">chevron_right</span></button></li>
+                  <ul className="flex items-center gap-3">
+                    <li>
+                      <button
+                        className="w-8 h-8 inline-flex items-center justify-center rounded-full border text-[#123a6b] disabled:opacity-40"
+                        onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                        disabled={currentSafePage === 1}
+                        aria-label="Previous page"
+                      >
+                        <span className="material-symbols-outlined text-[18px]">chevron_left</span>
+                      </button>
+                    </li>
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+                      <li key={p}>
+                        <button
+                          onClick={() => setCurrentPage(p)}
+                          className={
+                            p === currentSafePage
+                              ? "w-8 h-8 rounded-full bg-[#c7d7ff] text-[#123a6b] font-semibold"
+                              : "w-8 h-8 rounded-full text-[#123a6b] hover:bg-[#e8efff]"
+                          }
+                          aria-current={p === currentSafePage ? "page" : undefined}
+                        >
+                          {p}
+                        </button>
+                      </li>
+                    ))}
+                    <li>
+                      <button
+                        className="w-8 h-8 inline-flex items-center justify-center rounded-full border text-[#123a6b] disabled:opacity-40"
+                        onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                        disabled={currentSafePage === totalPages}
+                        aria-label="Next page"
+                      >
+                        <span className="material-symbols-outlined text-[18px]">chevron_right</span>
+                      </button>
+                    </li>
                   </ul>
                 </nav>
               </div>
