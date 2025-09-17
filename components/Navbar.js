@@ -42,9 +42,8 @@ export default function NewNavbar() {
     },
     {
       text: 'Media', href: '/media', active: router.pathname === '/media', dropdown: true, items: [
-        { text: 'Gallery', href: '/media/gallery' },
+        { text: 'Photos', href: '/media/photos' },
         { text: 'Videos', href: '/media/videos' },
-        { text: 'Press Releases', href: '/media/press' },
       ]
     },
     {
