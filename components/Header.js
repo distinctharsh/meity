@@ -7,28 +7,36 @@ import Image from "next/image";
 
 export default function Header() {
   return (
-    <header className="bg-white py-[28px] px-[120px] border-b border-[#e6e6e6] sticky top-0 z-[1000]">
+    <header className="bg-white py-[28px] px-4 md:px-[120px] border-b border-[#e6e6e6] sticky top-0 z-[1000]">
       <div className="w-full mx-auto">
         <div className="grid grid-cols-1 gap-4 md:grid-cols-[3fr_auto_1fr] md:items-end">
           {/* Left Column */}
-          <div className="flex flex-col md:flex-row md:items-end gap-3 order-2 md:order-none">
-            {/* Emblem */}
-            <div className="flex items-center flex-none">
-              <Emblem />
+          <div className="flex flex-col md:flex-row md:items-end gap-3 order-2 md:order-none w-full">
+            {/* Top row: Emblem + Text */}
+            <div className="flex items-start gap-3">
+              {/* Emblem */}
+              <div className="flex items-center flex-none">
+                <Emblem />
+              </div>
+
+              {/* Text */}
+              <div className="flex flex-col justify-center leading-[1.2] min-w-0 py-2 md:flex-1">
+                <div className="text-[1.5rem] text-black mb-[15px] font-normal leading-[18px] tracking-[-0.08px]">
+                  Government of India
+                </div>
+                <h2 className="text-[1.8rem] font-bold text-black mb-[8px] leading-[1.3]">
+                  Cabinet Secretariat
+                </h2>
+              </div>
             </div>
 
-            {/* Text */}
-            <div className="flex flex-col justify-center leading-[1.2] min-w-0 py-2 md:flex-1">
-              <div className="text-[1.5rem] text-black mb-[15px] font-normal leading-[18px] tracking-[-0.08px]">
-                Government of India
-              </div>
-              <h2 className="text-[1.8rem] font-bold text-black mb-[8px] leading-[1.3]">
-                Cabinet Secretariat
-              </h2>
+            {/* Digital India (mobile only, above search) */}
+            <div className="md:hidden w-full flex justify-center my-2">
+              <Image src="/images/digitalindia.svg" alt="Digital India" width={120} height={120} />
             </div>
 
             {/* Search */}
-            <div className="flex items-center md:ml-5 mb-[10px] md:mb-0 md:mr-5 order-4 md:order-none w-full md:w-auto justify-center md:justify-start">
+            <div className="flex items-center md:ml-5 mb-[10px] md:mb-0 md:mr-5 order-4 md:order-none w-full md:w-auto justify-center md:justify-start mt-2">
               <div className="flex items-center border-[2px] border-[#ebeaea] border-b-[3px] border-b-[#123a6b] rounded-t-[12px] overflow-hidden w-full max-w-[320px] md:max-w-[400px] md:w-[300px] bg-white">
                 <input
                   type="text"
@@ -42,8 +50,8 @@ export default function Header() {
             </div>
           </div>
 
-          {/* Middle Column */}
-          <div className="flex justify-center mb-[10px] order-3 md:order-none">
+          {/* Middle Column (desktop/tablet only) */}
+          <div className="hidden md:flex justify-center mb-[10px] order-3 md:order-none">
             <Image src="/images/digitalindia.svg" alt="Digital India" width={100} height={100} />
           </div>
 

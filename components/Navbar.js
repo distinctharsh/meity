@@ -71,17 +71,6 @@ export default function NewNavbar() {
       <div className="px-[7%]">
         {/* Bar container */}
         <div className="flex items-center justify-between h-14">
-          {/* Left: Mobile toggle (shown on small screens) */}
-          <button
-            className="bg-transparent border-0 text-[24px] cursor-pointer p-2 text-[#333] md:hidden"
-            onClick={toggleMobileMenu}
-            aria-expanded={mobileMenuOpen}
-            aria-label="Toggle navigation"
-          >
-            <span className="material-symbols-outlined">
-              {mobileMenuOpen ? 'close' : 'menu'}
-            </span>
-          </button>
 
           {/* Center/Right: Links container */}
           <div
@@ -138,7 +127,19 @@ export default function NewNavbar() {
             </ul>
           </div>
 
-          {/* Right spacer to balance the mobile toggle on desktop */}
+          {/* Right: Mobile toggle (shown on small screens) */}
+          <button
+            className="bg-transparent border-0 text-[24px] cursor-pointer p-2 text-[#333] md:hidden"
+            onClick={toggleMobileMenu}
+            aria-expanded={mobileMenuOpen}
+            aria-label="Toggle navigation"
+          >
+            <span className="material-symbols-outlined">
+              {mobileMenuOpen ? 'close' : 'menu'}
+            </span>
+          </button>
+
+          {/* Right spacer on desktop */}
           <div className="hidden md:block w-6" />
         </div>
       </div>
