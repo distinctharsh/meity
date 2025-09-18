@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
 
-console.log('🚀 Setting up MEITY CMS Admin Panel...\n');
+console.log('🚀 Setting up Cabinet Secretariat CMS Admin Panel...\n');
 
 // Check if package.json exists
 if (!fs.existsSync('package.json')) {
@@ -37,7 +37,7 @@ JWT_SECRET=your-super-secret-jwt-key-change-in-production-${Date.now()}
 NEXTAUTH_URL=http://localhost:3000
 NEXTAUTH_SECRET=your-nextauth-secret-${Date.now()}
 `;
-  
+
   fs.writeFileSync(envFile, envContent);
   console.log('✅ Created .env.local file');
 } else {

@@ -42,22 +42,16 @@ export default function NewNavbar() {
       text: 'Ministry', href: '/ministry', active: isActive('/ministry'), dropdown: true, items: [
         { text: 'About Us', href: '/ministry/about' },
         { text: 'Our Team', href: '/ministry/ourteam' },
-        { text: 'Organization', href: '/ministry/organization' },
-        { text: 'Leadership', href: '/ministry/leadership' },
       ]
     },
     {
       text: 'Offerings', href: '/offerings', active: isActive('/offerings'), dropdown: true, items: [
         { text: 'Schemes and Services', href: '/offerings/schemes-and-services' },
-        { text: 'Vacancies', href: '/offerings/vacancies' },
-        { text: 'Tenders', href: '/offerings/tenders' },
       ]
     },
     {
       text: 'Documents', href: '/documents', active: isActive('/documents'), dropdown: true, items: [
         { text: 'Reports', href: '/documents/reports' },
-        { text: 'Publications', href: '/documents/publications' },
-        { text: 'Circulars', href: '/documents/circulars' },
       ]
     },
     {
@@ -68,13 +62,7 @@ export default function NewNavbar() {
     },
     {
       text: 'Connect', href: '#', dropdown: true, items: [
-        { text: 'Contact Us', href: '#' },
-        { text: 'Directory', href: '#' },
-        { text: 'RTI', href: '#' },
-        { text: 'Grievance Redressal', href: '#' },
-        { text: "Visitor's Pass", href: '#' },
-        { text: 'Citizen Engagement', href: '#' },
-        { text: 'Parliament Questions', href: '#' },
+        { text: 'Contact Us', href: '/connect/contact-us' },
       ]
     },
   ];

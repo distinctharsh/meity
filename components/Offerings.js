@@ -80,7 +80,7 @@ export default function Offerings() {
             </div>
 
             <div className="bg-[#162f6a] text-white rounded-[8px] py-9 px-6 min-h-[220px] flex items-center">
-              <div className="flex items-center gap-2">MeitY Performance Smartboard <FiChevronRight /></div>
+              <div className="flex items-center gap-2">Cabinet Secretariat Performance Smartboard <FiChevronRight /></div>
             </div>
 
             <div className="mt-3 flex justify-end">

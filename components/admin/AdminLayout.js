@@ -38,7 +38,7 @@ const AdminLayout = ({ children }) => {
   const handleLogout = async () => {
     try {
       const response = await fetch('/api/admin/auth/logout', { method: 'POST' });
-      
+
       if (response.ok) {
         localStorage.removeItem('admin_token');
         router.push('/admin/login');
@@ -47,7 +47,7 @@ const AdminLayout = ({ children }) => {
         const errorData = await response.json().catch(() => ({}));
         const errorMessage = errorData.message || `HTTP ${response.status}: ${response.statusText}`;
         console.error('Logout error:', errorMessage);
-        
+
         // Even if logout API fails, clear local storage and redirect
         localStorage.removeItem('admin_token');
         router.push('/admin/login');
@@ -55,7 +55,7 @@ const AdminLayout = ({ children }) => {
       }
     } catch (error) {
       console.error('Logout network error:', error);
-      
+
       // Handle different types of network errors
       let errorMessage = 'Network error occurred';
       if (error.name === 'TypeError' && error.message.includes('fetch')) {
@@ -65,7 +65,7 @@ const AdminLayout = ({ children }) => {
       } else {
         errorMessage = `Network error: ${error.message}. Proceeding with local logout.`;
       }
-      
+
       // Even if logout API fails, clear local storage and redirect
       localStorage.removeItem('admin_token');
       router.push('/admin/login');
@@ -87,8 +87,8 @@ const AdminLayout = ({ children }) => {
   return (
     <>
       <Head>
-        <title>Admin Panel - MEITY CMS</title>
-        <meta name="description" content="MEITY CMS Admin Panel" />
+        <title>Admin Panel - Cabinet Secretariat CMS</title>
+        <meta name="description" content="Cabinet Secretariat CMS Admin Panel" />
       </Head>
       <div className="min-h-screen bg-gray-50 flex">
         {/* Mobile sidebar */}
@@ -114,7 +114,7 @@ const AdminLayout = ({ children }) => {
                     <span className="text-white font-bold text-sm">M</span>
                   </div>
                   <div>
-                    <h1 className="text-xl font-bold text-gray-900">MEITY CMS</h1>
+                    <h1 className="text-xl font-bold text-gray-900">Cabinet Secretariat CMS</h1>
                     <p className="text-xs text-gray-500">Admin Panel</p>
                   </div>
                 </div>
@@ -124,11 +124,10 @@ const AdminLayout = ({ children }) => {
                   <Link
                     key={item.name}
                     href={item.href}
-                    className={`${
-                      router.pathname === item.href
-                        ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-600'
-                        : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
-                    } group flex items-center px-3 py-3 text-sm font-medium rounded-lg transition-colors duration-200`}
+                    className={`${router.pathname === item.href
+                      ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-600'
+                      : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                      } group flex items-center px-3 py-3 text-sm font-medium rounded-lg transition-colors duration-200`}
                     onClick={() => setSidebarOpen(false)}
                   >
                     <span className="mr-3 text-lg">{item.icon}</span>
@@ -174,7 +173,7 @@ const AdminLayout = ({ children }) => {
                       <span className="text-white font-bold text-lg">M</span>
                     </div>
                     <div>
-                      <h1 className="text-xl font-bold text-gray-900">MEITY CMS</h1>
+                      <h1 className="text-xl font-bold text-gray-900">Cabinet Secretariat CMS</h1>
                       <p className="text-xs text-gray-500">Admin Panel</p>
                     </div>
                   </div>
@@ -184,11 +183,10 @@ const AdminLayout = ({ children }) => {
                     <Link
                       key={item.name}
                       href={item.href}
-                      className={`${
-                        router.pathname === item.href
-                          ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-600'
-                          : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
-                      } group flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors duration-200`}
+                      className={`${router.pathname === item.href
+                        ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-600'
+                        : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                        } group flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors duration-200`}
                     >
                       <span className="mr-4 text-lg">{item.icon}</span>
                       <div className="flex-1">
@@ -242,12 +240,12 @@ const AdminLayout = ({ children }) => {
                 <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center mr-2">
                   <span className="text-white font-bold text-sm">M</span>
                 </div>
-                <span className="text-lg font-semibold text-gray-900">MEITY CMS</span>
+                <span className="text-lg font-semibold text-gray-900">Cabinet Secretariat CMS</span>
               </div>
               <div className="w-10"></div>
             </div>
           </div>
-          
+
           {/* Main content area */}
           <main className="flex-1 bg-gray-50">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">

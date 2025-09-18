@@ -154,7 +154,7 @@ export default function Documents() {
                         Annual Report 2023-24
                       </h3>
                       <p className="text-gray-600 mb-3">
-                        Comprehensive annual performance report of MEITY initiatives
+                        Comprehensive annual performance report of Cabinet Secretariat initiatives
                       </p>
                       <div className="flex items-center text-sm text-gray-500">
                         <span className="material-symbols-outlined text-sm mr-2">calendar_today</span>

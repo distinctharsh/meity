@@ -176,7 +176,7 @@ export default function Media() {
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <h3 className="text-xl font-semibold text-[#123a6b] mb-2">
-                        MEITY Launches New Digital Governance Initiative
+                        Cabinet Secretariat Launches New Digital Governance Initiative
                       </h3>
                       <p className="text-gray-600 mb-3">
                         The Ministry announces a comprehensive digital governance framework to enhance citizen services and government efficiency.

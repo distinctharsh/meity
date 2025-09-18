@@ -51,7 +51,7 @@ export default function AdminLogin() {
   return (
     <>
       <Head>
-        <title>Admin Login - MEITY CMS</title>
+        <title>Admin Login - Cabinet Secretariat CMS</title>
       </Head>
       <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-md w-full space-y-8">
@@ -65,7 +65,7 @@ export default function AdminLogin() {
               Admin Login
             </h2>
             <p className="mt-2 text-center text-sm text-gray-600">
-              MEITY Content Management System
+              Cabinet Secretariat Content Management System
             </p>
           </div>
           <form className="mt-8 space-y-6" onSubmit={handleSubmit}>

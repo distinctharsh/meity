@@ -12,7 +12,7 @@ const recentDocs = [
 ];
 
 const importantLinks = [
-  "MeitY Dashboard",
+  "Cabinet Secretariat Dashboard",
   "Interested in Applying for Tender?",
   "Public Grievances",
   "Section 69A of IT Act",

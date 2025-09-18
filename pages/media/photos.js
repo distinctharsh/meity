@@ -13,7 +13,7 @@ export default function Photos() {
       date: new Date(2024, 2, 16).getTime(),
       count: 6,
       img: "https://www.meity.gov.in/static/uploads/2024/02/WhatsApp-Image-2022-10-28-at-3.10.46-PM-768x512.jpeg",
-      alt: "Special Campaign Image having Minsiter of MEITY"
+      alt: "Special Campaign Image having Minsiter of Cabinet Secretariat"
     },
     {
       id: 2,

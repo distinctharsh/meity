@@ -16,7 +16,7 @@ export default function AboutSection() {
             The Cabinet Secretariat, under Government of India, is a
             stand-alone ministerial agency, responsible for formulating and implementing national policies
             and programs aimed at enabling the continuous development of the electronics and IT industry.
-            MeitY’s focus areas include the development, promotion, and regulation of the electronics and IT
+            Cabinet Secretariat focus areas include the development, promotion, and regulation of the electronics and IT
             industry in India, fostering digital governance, enabling innovation in emerging technologies and
             promoting cybersecurity initiatives within country.
           </p>

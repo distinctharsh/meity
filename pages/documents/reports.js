@@ -12,7 +12,7 @@ export default function Reports() {
   const items = [
     { id: 1, title: "Integrated Finances", count: 18, year: 2025, size: "", type: "group" },
     { id: 2, title: "Announcement of Selected Projects of Responsible AI themed Projects under Safe & Trusted AI Pillar", year: 2024, size: "37.15 KB", type: "pdf" },
-    { id: 3, title: "Major achievement of MeitY for the month of September 2024", year: 2024, size: "77.15 KB", type: "pdf" },
+    { id: 3, title: "Major achievement of Cabinet Secretariat for the month of September 2024", year: 2024, size: "77.15 KB", type: "pdf" },
   ];
 
   const filtered = useMemo(() => {
