@@ -47,6 +47,18 @@ export default function Header() {
                   <span className="material-symbols-outlined">search</span>
                 </button>
               </div>
+              {/* Mobile hamburger to the right of search */}
+              <button
+                className="ml-3 bg-transparent border-0 text-[24px] cursor-pointer p-2 text-[#123a6b] md:hidden"
+                onClick={() => {
+                  if (typeof window !== 'undefined') {
+                    window.dispatchEvent(new Event('toggle-navbar'));
+                  }
+                }}
+                aria-label="Toggle navigation"
+              >
+                <span className="material-symbols-outlined">menu</span>
+              </button>
             </div>
           </div>
 

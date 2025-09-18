@@ -1,5 +1,5 @@
 "use client";
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 
@@ -7,6 +7,19 @@ export default function NewNavbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
   const router = useRouter();
+
+  // Listen for header-dispatched toggle for mobile navbar
+  useEffect(() => {
+    const handler = () => setMobileMenuOpen((prev) => !prev);
+    if (typeof window !== 'undefined') {
+      window.addEventListener('toggle-navbar', handler);
+    }
+    return () => {
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('toggle-navbar', handler);
+      }
+    };
+  }, []);
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
@@ -71,6 +84,11 @@ export default function NewNavbar() {
       <div className="px-[7%]">
         {/* Bar container */}
         <div className="flex items-center justify-between h-14">
+          {/* Listen for header-triggered toggle on mobile */}
+          {typeof window !== 'undefined' && (
+            // eslint-disable-next-line react-hooks/rules-of-hooks
+            (function () { })()
+          )}
 
           {/* Center/Right: Links container */}
           <div
@@ -127,9 +145,9 @@ export default function NewNavbar() {
             </ul>
           </div>
 
-          {/* Right: Mobile toggle (shown on small screens) */}
+          {/* Right: Mobile toggle is controlled from Header; keep hidden here */}
           <button
-            className="bg-transparent border-0 text-[24px] cursor-pointer p-2 text-[#333] md:hidden"
+            className="hidden md:hidden"
             onClick={toggleMobileMenu}
             aria-expanded={mobileMenuOpen}
             aria-label="Toggle navigation"
