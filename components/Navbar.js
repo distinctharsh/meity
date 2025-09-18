@@ -16,10 +16,17 @@ export default function NewNavbar() {
     setActiveDropdown(activeDropdown === index ? null : index);
   };
 
+  // Determine if a nav item should be marked active for current route
+  const isActive = (href) => {
+    if (!href || href === '#') return false;
+    if (href === '/') return router.pathname === '/';
+    return router.pathname === href || router.pathname.startsWith(href + '/');
+  };
+
   const navItems = [
-    { text: 'Home', href: '/', active: router.pathname === '/', dropdown: false },
+    { text: 'Home', href: '/', active: isActive('/'), dropdown: false },
     {
-      text: 'Ministry', href: '/ministry', active: router.pathname === '/ministry', dropdown: true, items: [
+      text: 'Ministry', href: '/ministry', active: isActive('/ministry'), dropdown: true, items: [
         { text: 'About Us', href: '/ministry/about' },
         { text: 'Our Team', href: '/ministry/ourteam' },
         { text: 'Organization', href: '/ministry/organization' },
@@ -27,21 +34,21 @@ export default function NewNavbar() {
       ]
     },
     {
-      text: 'Offerings', href: '/offerings', active: router.pathname === '/offerings', dropdown: true, items: [
+      text: 'Offerings', href: '/offerings', active: isActive('/offerings'), dropdown: true, items: [
         { text: 'Schemes and Services', href: '/offerings/schemes-and-services' },
         { text: 'Vacancies', href: '/offerings/vacancies' },
         { text: 'Tenders', href: '/offerings/tenders' },
       ]
     },
     {
-      text: 'Documents', href: '/documents', active: router.pathname === '/documents', dropdown: true, items: [
+      text: 'Documents', href: '/documents', active: isActive('/documents'), dropdown: true, items: [
         { text: 'Reports', href: '/documents/reports' },
         { text: 'Publications', href: '/documents/publications' },
         { text: 'Circulars', href: '/documents/circulars' },
       ]
     },
     {
-      text: 'Media', href: '/media', active: router.pathname === '/media', dropdown: true, items: [
+      text: 'Media', href: '/media', active: isActive('/media'), dropdown: true, items: [
         { text: 'Photos', href: '/media/photos' },
         { text: 'Videos', href: '/media/videos' },
       ]
@@ -61,7 +68,7 @@ export default function NewNavbar() {
 
   return (
     <nav className="bg-white shadow-[0_2px_4px_rgba(0,0,0,0.1)] border-t border-[#d0d0d0] sticky top-[120px] z-[999]">
-      <div className="px-[4%]">
+      <div className="px-[7%]">
         {/* Bar container */}
         <div className="flex items-center justify-between h-14">
           {/* Left: Mobile toggle (shown on small screens) */}
@@ -80,7 +87,7 @@ export default function NewNavbar() {
           <div
             className={`flex-1 md:flex  ${mobileMenuOpen ? 'block' : 'hidden'} md:block`}
           >
-            <ul className="flex flex-col md:flex-row md:items-center gap-2 md:gap-6 m-0 p-0">
+            <ul className="flex flex-col md:flex-row md:items-center justify-between m-0 p-0 w-full">
               {navItems.map((item, index) => (
                 <li
                   key={index}
@@ -88,9 +95,9 @@ export default function NewNavbar() {
                 >
                   <Link
                     href={item.href}
-                    className={`flex items-center justify-between md:justify-start no-underline rounded-md px-4 py-2 text-[16px] font-semibold transition-colors duration-200 ${item.active
-                      ? `text-[#123a6b] border-b-8 border-[#123a6b] ${item.text !== 'Home' ? 'bg-[#d2dfff]' : ''}`
-                      : `text-[#1b1b1b] hover:text-[#123a6b] ${item.text !== 'Home' ? 'hover:bg-[#d2dfff]' : ''}`
+                    className={`flex items-center justify-between md:justify-start no-underline rounded-md px-4 py-3 text-[16px] font-semibold transition-colors duration-200 ${item.active
+                      ? `text-[#162f6a] border-b-8 border-[#162f6a] ${item.text !== 'Home' ? 'bg-[#fff]' : ''}`
+                      : `text-[#1b1b1b] hover:text-[#162f6a] ${item.text !== 'Home' ? 'hover:bg-[#d2dfff]' : ''}`
                       }`}
 
 
@@ -101,7 +108,7 @@ export default function NewNavbar() {
                       }
                     }}
                   >
-                    <span className="leading-none">{item.text}</span>
+                    <span className="leading-none text-[22px] " style={{ fontWeight: '600' }}>{item.text}</span>
                     {item.dropdown && (
                       <span className="material-symbols-outlined ml-2 text-[20px] md:transform md:transition-transform md:duration-200 md:group-hover:rotate-180">expand_more</span>
                     )}

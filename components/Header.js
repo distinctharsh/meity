@@ -7,7 +7,7 @@ import Image from "next/image";
 
 export default function Header() {
   return (
-    <header className="bg-white py-[10px] px-[52px] border-b border-[#e6e6e6] sticky top-0 z-[1000]">
+    <header className="bg-white py-[28px] px-[120px] border-b border-[#e6e6e6] sticky top-0 z-[1000]">
       <div className="w-full mx-auto">
         <div className="grid grid-cols-1 gap-4 md:grid-cols-[3fr_auto_1fr] md:items-end">
           {/* Left Column */}
@@ -19,10 +19,10 @@ export default function Header() {
 
             {/* Text */}
             <div className="flex flex-col justify-center leading-[1.2] min-w-0 py-2 md:flex-1">
-              <div className="text-[1.1rem] text-black mb-[14px] font-normal leading-[18px] tracking-[-0.08px]">
+              <div className="text-[1.5rem] text-black mb-[15px] font-normal leading-[18px] tracking-[-0.08px]">
                 Government of India
               </div>
-              <h2 className="text-[1.3rem] font-bold text-black m-0 leading-[1.3]">
+              <h2 className="text-[1.8rem] font-bold text-black mb-[8px] leading-[1.3]">
                 Cabinet Secretariat
               </h2>
             </div>
@@ -33,9 +33,9 @@ export default function Header() {
                 <input
                   type="text"
                   placeholder="Search..."
-                  className="flex-1 border-0 outline-none py-[11px] px-[9px] text-[14px] font-sans border-r border-[#ebeaea] placeholder:text-[16px] placeholder:text-[#453636]"
+                  className="flex-1 border-0 outline-none py-[10px] px-[9px] text-[14px] font-sans border-r border-[#ebeaea] placeholder:text-[16px] placeholder:text-[#453636]"
                 />
-                <button className="bg-transparent border-0 px-4 cursor-pointer text-[#123a6b] text-[20px] border-l border-[#ebeaea]" title="Search">
+                <button className="bg-transparent border-0 px-4 pt-2 cursor-pointer text-[#123a6b] text-[20px] border-l border-[#ebeaea]" title="Search">
                   <span className="material-symbols-outlined">search</span>
                 </button>
               </div>
