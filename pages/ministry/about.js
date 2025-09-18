@@ -103,7 +103,7 @@ export default function AboutUs() {
         <section className="bg-white py-12">
           <div className="max-w-6xl mx-auto px-4 grid md:grid-cols-[1fr_2fr] gap-10">
             {/* Left Box - Vision (shrink to content height) */}
-            <div className="bg-gray-100 p-6 rounded-lg inline-block align-top" style={{ height: 'fit-content', position: 'sticky', top: '200px' }}>
+            <div className="bg-gray-100 p-6 rounded-lg inline-block align-top" style={{ height: 'fit-content', position: 'sticky', top: '250px' }}>
               <p className="text-xl text-[#123a6b] font-semibold mb-4">
                 e-Development of India as the engine for transition into a developed nation and an empowered society.
               </p>
