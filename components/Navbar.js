@@ -90,7 +90,7 @@ export default function NewNavbar() {
                 >
                   <Link
                     href={item.href}
-                    className={`flex items-center justify-between md:justify-start no-underline rounded-md px-4 py-3 text-[16px] font-semibold transition-colors duration-200 ${item.active
+                    className={`flex items-center justify-between md:justify-start no-underline  px-4 py-3 text-[16px] font-semibold transition-colors duration-200 ${item.active
                       ? `text-[#162f6a] border-b-8 border-[#162f6a] ${item.text !== 'Home' ? 'bg-[#fff]' : ''}`
                       : `text-[#1b1b1b] hover:text-[#162f6a] ${item.text !== 'Home' ? 'hover:bg-[#d2dfff]' : ''}`
                       }`}
