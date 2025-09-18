@@ -7,7 +7,7 @@ import Image from "next/image";
 
 export default function Header() {
   return (
-    <header className="bg-white py-[28px] px-4 md:px-[120px] border-b border-[#e6e6e6] sticky top-0 z-[1000]">
+    <header className="bg-white py-[28px] px-4 md:px-[120px] border-b border-[#e6e6e6] sticky top-0 z-[998]">
       <div className="w-full mx-auto">
         <div className="grid grid-cols-1 gap-4 md:grid-cols-[3fr_auto_1fr] md:items-end">
           {/* Left Column */}

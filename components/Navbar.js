@@ -90,11 +90,11 @@ export default function NewNavbar() {
             (function () { })()
           )}
 
-          {/* Center/Right: Links container */}
+          {/* Desktop links */}
           <div
-            className={`flex-1 md:flex  ${mobileMenuOpen ? 'block' : 'hidden'} md:block`}
+            className={`flex-1 hidden md:flex`}
           >
-            <ul className="flex flex-col md:flex-row md:items-center justify-between m-0 p-0 w-full">
+            <ul className="flex flex-row md:items-center justify-between m-0 p-0 w-full">
               {navItems.map((item, index) => (
                 <li
                   key={index}
@@ -161,6 +161,71 @@ export default function NewNavbar() {
           <div className="hidden md:block w-6" />
         </div>
       </div>
+
+      {/* Mobile drawer and backdrop */}
+      <>
+        {/* Backdrop */}
+        <div
+          className={`md:hidden fixed inset-0 bg-black/30 transition-opacity duration-200 z-[1200] ${mobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
+          onClick={toggleMobileMenu}
+        />
+
+        {/* Drawer */}
+        <aside
+          className={`md:hidden fixed top-0 right-0 h-full w-[80%] max-w-[360px] bg-white shadow-[0_10px_30px_rgba(0,0,0,0.2)] transform transition-transform duration-300 z-[1201] ${mobileMenuOpen ? 'translate-x-0' : 'translate-x-full'}`}
+          role="dialog"
+          aria-modal="true"
+        >
+          <div className="flex items-center justify-between px-4 h-14 border-b border-[#eee]">
+            <span className="text-[18px] font-semibold text-[#162f6a]">Menu</span>
+            <button className="bg-transparent border-0 p-2 text-[#333]" aria-label="Close" onClick={toggleMobileMenu}>
+              <span className="material-symbols-outlined text-[22px]">close</span>
+            </button>
+          </div>
+          <ul className="m-0 p-2">
+            {navItems.map((item, index) => (
+              <li key={index} className="">
+                <Link
+                  href={item.href}
+                  className={`flex items-center justify-between no-underline px-4 py-3 text-[16px] font-semibold ${item.active ? 'text-[#162f6a]' : 'text-[#1b1b1b]'}`}
+                  onClick={(e) => {
+                    if (item.dropdown) {
+                      e.preventDefault();
+                      setActiveDropdown(activeDropdown === index ? null : index);
+                    } else {
+                      setMobileMenuOpen(false);
+                    }
+                  }}
+                >
+                  <span>{item.text}</span>
+                  {item.dropdown && (
+                    <span className="material-symbols-outlined text-[20px]">expand_more</span>
+                  )}
+                </Link>
+
+                {/* Mobile dropdown items */}
+                {item.dropdown && item.items && (
+                  <div className={`${activeDropdown === index ? 'block' : 'hidden'}`}>
+                    <ul className="pl-6">
+                      {item.items.map((subItem, subIndex) => (
+                        <li key={subIndex}>
+                          <Link
+                            href={subItem.href}
+                            className="block no-underline text-[15px] text-[#162f6a] py-2"
+                            onClick={() => setMobileMenuOpen(false)}
+                          >
+                            {subItem.text}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </li>
+            ))}
+          </ul>
+        </aside>
+      </>
     </nav>
   );
 }
