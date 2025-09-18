@@ -46,7 +46,7 @@ export default function EventQuote() {
               </span>
 
               <a href="#" className="inline-flex items-center gap-2 bg-[#162f6a] text-white py-[10px] px-5 rounded-[4px] no-underline font-medium text-[0.9rem] transition-all hover:bg-[#fff] hover:-translate-y-[2px] shadow-[0_4px_12px_rgba(0,0,0,0.1)]">
-                <span aria-hidden="true" class Name="material-symbols-outlined">open_in_new</span>
+                <span aria-hidden="true" class Name="material-symbols-outlined"></span>
                 VIEW EVENT
               </a>
             </div>
