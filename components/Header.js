@@ -20,7 +20,7 @@ export default function Header() {
               </div>
 
               {/* Text */}
-              <div className="flex flex-col justify-center leading-[1.2] min-w-0 py-2 md:flex-1">
+              <div className="flex flex-col justify-center leading-[1.2] min-w-0 mt-[25px] md:flex-1">
                 <div className="text-[1.5rem] text-black mb-[15px] font-normal leading-[18px] tracking-[-0.08px]">
                   Government of India
                 </div>
@@ -36,8 +36,8 @@ export default function Header() {
             </div>
 
             {/* Search */}
-            <div className="flex items-center md:ml-5 mb-[10px] md:mb-0 md:mr-5 order-4 md:order-none w-full md:w-auto justify-center md:justify-start mt-2">
-              <div className="flex items-center border-[2px] border-[#ebeaea] border-b-[3px] border-b-[#123a6b] rounded-t-[12px] overflow-hidden w-full max-w-[320px] md:max-w-[400px] md:w-[300px] bg-white">
+            <div className="flex items-center md:ml-5  md:mb-0 md:mr-5 order-4 md:order-none w-full md:w-auto justify-center md:justify-start ">
+              <div className="flex items-center border-[2px] border-[#ebeaea] border-b-[3px] border-b-[#123a6b] rounded-t-[12px] overflow-hidden w-full max-w-[320px] md:max-w-[400px] md:w-[300px] bg-white mb-[10px]">
                 <input
                   type="text"
                   placeholder="Search..."
