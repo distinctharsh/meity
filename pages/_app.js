@@ -3,6 +3,9 @@ import "../styles/globals.css";
 import Navbar from '../components/Navbar';
 import Header from "@/components/Header";
 import GoToTop from "@/components/GoToTop";
+import dynamic from 'next/dynamic';
+const CookieBanner = dynamic(() => import('@/components/CookieBanner'), { ssr: false });
+const LangAlternates = dynamic(() => import('@/components/LangAlternates'), { ssr: false });
 import { useRouter } from 'next/router';
 
 export default function App({ Component, pageProps }) {
@@ -13,9 +16,11 @@ export default function App({ Component, pageProps }) {
 
   return (
     <>
+      <LangAlternates />
       {!isAdminPage && <Header />}
       {!isAdminPage && <Navbar />}
       <Component {...pageProps} />
+      <CookieBanner />
       <GoToTop />
     </>
   );

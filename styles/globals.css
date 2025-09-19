@@ -1,9 +1,23 @@
 @import "tailwindcss";
 @import "./slider.css";
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&display=swap");
 
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  /* Typography scale (Desktop default) */
+  --gi-h1: 36px;
+  /* Heading 1 */
+  --gi-h2: 24px;
+  /* Heading 2 */
+  --gi-h3: 20px;
+  /* Heading 3 / Subtitle */
+  --gi-p1: 16px;
+  /* Paragraph 1 */
+  --gi-p2: 14px;
+  /* Paragraph 2 */
+  --gi-small: 12px;
+  /* Small Text 1 */
 }
 
 @theme inline {
@@ -20,3 +34,369 @@
   }
 }
 
+/* Mobile typographic scale */
+@media (max-width: 767px) {
+  :root {
+    --gi-h1: 24px;
+    --gi-h2: 20px;
+    --gi-h3: 16px;
+    --gi-p1: 14px;
+    --gi-p2: 12px;
+    --gi-small: 10px;
+  }
+}
+
+/* Base font family: Noto Sans as mandated */
+html,
+body {
+  font-family: "Noto Sans", system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  color: var(--color-foreground, #111);
+}
+
+/* Weight helpers */
+.gi-w-regular {
+  font-weight: 400;
+}
+
+.gi-w-medium {
+  font-weight: 500;
+}
+
+.gi-w-semi {
+  font-weight: 600;
+}
+
+.gi-w-bold {
+  font-weight: 700;
+}
+
+/* Headings and text utilities following DBIM sizes; line-height 1.2–1.5 */
+.gi-h1 {
+  font-size: var(--gi-h1);
+  line-height: 1.2;
+  font-weight: 700;
+}
+
+.gi-h2 {
+  font-size: var(--gi-h2);
+  line-height: 1.25;
+  font-weight: 700;
+}
+
+.gi-h3 {
+  font-size: var(--gi-h3);
+  line-height: 1.3;
+  font-weight: 600;
+}
+
+.gi-p1 {
+  font-size: var(--gi-p1);
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+.gi-p2 {
+  font-size: var(--gi-p2);
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+.gi-small {
+  font-size: var(--gi-small);
+  line-height: 1.4;
+  font-weight: 500;
+}
+
+/* Accessibility utility classes (scoped on :root for easy toggling) */
+:root.a11y-dark-contrast {
+  filter: contrast(1.2);
+}
+
+:root.a11y-invert {
+  filter: invert(1);
+}
+
+:root.a11y-low-saturation {
+  filter: saturate(0.2);
+}
+
+:root.a11y-text-lg {
+  font-size: 112.5%;
+}
+
+:root.a11y-text-sm {
+  font-size: 87.5%;
+}
+
+:root.a11y-highlight-links a {
+  outline: 2px dashed #ff9800;
+  outline-offset: 2px;
+}
+
+:root.a11y-hide-images img,
+:root.a11y-hide-images picture,
+:root.a11y-hide-images video {
+  display: none !important;
+}
+
+:root.a11y-default-cursor * {
+  cursor: default !important;
+}
+
+/* DBIM Functional Colour Palette Tokens */
+:root {
+  --color-linen: #EBEAEA;
+  --color-inclusive: #FFFFFF;
+  --color-deep-earthy-brown: #150202;
+  --color-black: #000000;
+  --color-deep-blue: #1D0A69;
+  --color-liberty-green: #198754;
+  --color-mustard-yellow: #FFC107;
+  --color-coral-red: #DC3545;
+  --color-blue: #0D6EFD;
+  --color-grey-01: #C6C6C6;
+  --color-grey-02: #8E8E8E;
+  --color-grey-03: #606060;
+}
+
+/* Background utilities */
+.bg-linen {
+  background-color: var(--color-linen) !important;
+}
+
+.bg-inclusive {
+  background-color: var(--color-inclusive) !important;
+}
+
+.bg-deep-earthy-brown {
+  background-color: var(--color-deep-earthy-brown) !important;
+}
+
+.bg-black {
+  background-color: var(--color-black) !important;
+}
+
+.bg-deep-blue {
+  background-color: var(--color-deep-blue) !important;
+}
+
+.bg-liberty-green {
+  background-color: var(--color-liberty-green) !important;
+}
+
+.bg-mustard-yellow {
+  background-color: var(--color-mustard-yellow) !important;
+}
+
+.bg-coral-red {
+  background-color: var(--color-coral-red) !important;
+}
+
+.bg-blue-func {
+  background-color: var(--color-blue) !important;
+}
+
+.bg-grey-01 {
+  background-color: var(--color-grey-01) !important;
+}
+
+.bg-grey-02 {
+  background-color: var(--color-grey-02) !important;
+}
+
+.bg-grey-03 {
+  background-color: var(--color-grey-03) !important;
+}
+
+/* Text utilities */
+.text-linen {
+  color: var(--color-linen) !important;
+}
+
+.text-inclusive {
+  color: var(--color-inclusive) !important;
+}
+
+.text-deep-earthy-brown {
+  color: var(--color-deep-earthy-brown) !important;
+}
+
+.text-black {
+  color: var(--color-black) !important;
+}
+
+.text-deep-blue {
+  color: var(--color-deep-blue) !important;
+}
+
+.text-liberty-green {
+  color: var(--color-liberty-green) !important;
+}
+
+.text-mustard-yellow {
+  color: var(--color-mustard-yellow) !important;
+}
+
+.text-coral-red {
+  color: var(--color-coral-red) !important;
+}
+
+.text-blue-func {
+  color: var(--color-blue) !important;
+}
+
+.text-grey-01 {
+  color: var(--color-grey-01) !important;
+}
+
+.text-grey-02 {
+  color: var(--color-grey-02) !important;
+}
+
+.text-grey-03 {
+  color: var(--color-grey-03) !important;
+}
+
+/* Border utilities */
+.border-linen {
+  border-color: var(--color-linen) !important;
+}
+
+.border-inclusive {
+  border-color: var(--color-inclusive) !important;
+}
+
+.border-deep-earthy-brown {
+  border-color: var(--color-deep-earthy-brown) !important;
+}
+
+.border-black {
+  border-color: var(--color-black) !important;
+}
+
+.border-deep-blue {
+  border-color: var(--color-deep-blue) !important;
+}
+
+.border-liberty-green {
+  border-color: var(--color-liberty-green) !important;
+}
+
+.border-mustard-yellow {
+  border-color: var(--color-mustard-yellow) !important;
+}
+
+.border-coral-red {
+  border-color: var(--color-coral-red) !important;
+}
+
+.border-blue-func {
+  border-color: var(--color-blue) !important;
+}
+
+.border-grey-01 {
+  border-color: var(--color-grey-01) !important;
+}
+
+.border-grey-02 {
+  border-color: var(--color-grey-02) !important;
+}
+
+.border-grey-03 {
+  border-color: var(--color-grey-03) !important;
+}
+
+/* Icon system per DBIM (sizes include 2px visual padding) */
+.gi-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: content-box;
+}
+
+.gi-icon svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.gi-icon--24 {
+  width: 24px;
+  height: 24px;
+  padding: 2px;
+}
+
+.gi-icon--32 {
+  width: 32px;
+  height: 32px;
+  padding: 2px;
+}
+
+.gi-icon--48 {
+  width: 48px;
+  height: 48px;
+  padding: 2px;
+}
+
+.gi-icon--64 {
+  width: 64px;
+  height: 64px;
+  padding: 2px;
+}
+
+/* Line vs Filled color styles (use darkest shade or inclusive white) */
+.gi-icon--line {
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+}
+
+.gi-icon--filled {
+  fill: currentColor;
+}
+
+/* Recommended colors */
+.gi-icon--deep-blue {
+  color: var(--color-deep-blue);
+}
+
+.gi-icon--white {
+  color: var(--color-inclusive);
+}
+
+/* Logo lockup helpers */
+.gi-logo--on-dark {
+  color: var(--color-inclusive);
+}
+
+.gi-logo--on-light {
+  color: var(--color-deep-blue);
+}
+
+.gi-logo-gap-sm {
+  gap: 8px;
+}
+
+.gi-logo-gap-md {
+  gap: 12px;
+}
+
+.gi-logo-gap-lg {
+  gap: 16px;
+}
+
+/* Headshot framing utilities (1:1, face centered, white bg) */
+.gi-headshot {
+  background: #fff;
+  aspect-ratio: 1/1;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gi-headshot img {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+}

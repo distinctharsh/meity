@@ -73,7 +73,14 @@ export default function Header() {
               <button className="bg-transparent border-0 cursor-pointer p-[6px]" title="Login">
                 <Skip />
               </button>
-              <button className="bg-transparent border-0 cursor-pointer p-[6px] border-x border-[#162f6a]" title="Language">
+              <button className="bg-transparent border-0 cursor-pointer p-[6px] border-x border-[#162f6a]" title="Language" onClick={async () => {
+                try {
+                  const current = document.documentElement.lang || 'en';
+                  const next = current === 'en' ? 'hi' : 'en';
+                  await fetch('/api/lang', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ lang: next }) });
+                  location.reload();
+                } catch (e) { console.error(e); }
+              }}>
                 <Bhashini />
               </button>
               <AccessibilityBar />
