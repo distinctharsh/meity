@@ -143,9 +143,9 @@ const SocialMediaPreview = ({
   }, []);
 
   return (
-    <div className="w-full min-h-[525px] bg-[#25355a] py-4 px-4 flex flex-col">
+    <div className="w-full min-h-[525px] bg-[#25355a] py-4 flex flex-col">
       {/* Header */}
-      <div className="flex items-center mb-4 justify-center sm:justify-start sm:pl-8">
+      <div className="gi-container flex items-center mb-4 justify-center sm:justify-start">
         <SocialMedia className="w-8 h-8 text-white mr-2" />
         <h2 className="text-white text-xl font-bold leading-none m-0">
           In Social Media
@@ -153,7 +153,7 @@ const SocialMediaPreview = ({
       </div>
 
       {/* Social Media Grid */}
-      <div className="px-5">
+      <div className="gi-container">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
 
           {/* Twitter Section */}

@@ -67,7 +67,7 @@ export default function SchemesAndServices() {
             position: 'relative'
           }}
         >
-          <div className="max-w-6xl mx-auto">
+          <div className="gi-container">
             <p className="text-sm opacity-80 mb-4">
               <a href="/" className="hover:underline">Home</a> / <a href="/offerings" className="hover:underline">Offerings</a>
             </p>
@@ -77,7 +77,7 @@ export default function SchemesAndServices() {
 
         {/* Tabs */}
         <section className="bg-white " style={{ marginTop: '-10px', position: 'absolute', width: '100%' }}>
-          <div className="max-w-6xl mx-auto px-4">
+          <div className="gi-container">
             <div
               className="bg-[#162f6a] rounded-xl px-6 py-4 flex items-center space-x-6 overflow-x-auto"
               style={{ marginTop: '-40px', position: 'relative', zIndex: 10 }}
@@ -108,8 +108,8 @@ export default function SchemesAndServices() {
         </section>
 
         {/* Main Content */}
-        <section className="mt-10 py-10 mx-4 sm:mx-8 md:mx-12" style={{ borderRadius: '20px' }}>
-          <div className="p-4 sm:p-6 md:p-8">
+        <section className="mt-10 py-10" style={{ borderRadius: '20px' }}>
+          <div className="gi-container p-4 sm:p-6 md:p-8">
             {/* Toolbar: Search left, Filters right */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
               {/* Search (left) */}

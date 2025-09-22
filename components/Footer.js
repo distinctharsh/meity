@@ -3,7 +3,7 @@ import Image from "next/image";
 const Footer = () => {
   return (
     <footer className="bg-[#0B2C6A] text-white py-10">
-      <div className="max-w-7xl mx-auto px-4">
+      <div className="gi-container">
         <div className="flex flex-col md:flex-row md:justify-between gap-12">
 
           {/* Left Links Section */}

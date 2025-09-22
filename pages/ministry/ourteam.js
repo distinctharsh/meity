@@ -105,7 +105,7 @@ export default function OurTeam() {
             position: 'relative'
           }}
         >
-          <div className="max-w-6xl mx-auto">
+          <div className="gi-container">
             <p className="text-sm opacity-80 mb-4">
               <a href="/" className="hover:underline">Home</a> / <a href="/ministry" className="hover:underline">Ministry</a>
             </p>
@@ -115,7 +115,7 @@ export default function OurTeam() {
 
         {/* Tabs */}
         <section className="bg-white " style={{ marginTop: '-10px', position: 'absolute', width: '100%' }}>
-          <div className="max-w-6xl mx-auto px-4">
+          <div className="gi-container">
             <div
               className="bg-[#162f6a] rounded-xl px-6 py-4 flex items-center space-x-6 overflow-x-auto"
               style={{ marginTop: '-40px', position: 'relative', zIndex: 10 }}
@@ -166,10 +166,9 @@ export default function OurTeam() {
         </section>
 
         {/* Main Content */}
-        <section className=" mt-10 py-12 mx-4 sm:mx-8 md:mx-12" style={{ backgroundColor: '#d2dfff', borderRadius: '20px' }}>
+        <section className=" mt-10 py-12" style={{ backgroundColor: '#d2dfff', borderRadius: '20px' }}>
 
-
-          <div className="p-8 flex flex-col items-center min-h-[300px] rounded-md">
+          <div className="gi-container p-8 flex flex-col items-center min-h-[300px] rounded-md">
             {/* Cards container */}
             <div className="flex flex-col items-center relative">
               {/* Top Card with overlapping avatar */}
@@ -229,7 +228,7 @@ export default function OurTeam() {
         </section>
 
 
-        <div className="max-w-6xl mx-auto px-4 py-10">
+        <div className="gi-container py-10">
           {data.map((section) => (
             <div key={section.section} className="mb-10">
               <div className="bg-blue-800 text-white font-semibold rounded-t-md px-4 py-2 flex items-center gap-3">

@@ -36,7 +36,7 @@ export default function AboutUs() {
             position: 'relative'
           }}
         >
-          <div className="max-w-6xl mx-auto">
+          <div className="gi-container">
             <p className="text-sm opacity-80 mb-4">
               <a href="/" className="hover:underline">Home</a> / <a href="/ministry" className="hover:underline">Ministry</a>
             </p>
@@ -47,7 +47,7 @@ export default function AboutUs() {
 
         {/* Tabs */}
         <section className="bg-white " style={{ marginTop: '-10px', position: 'absolute', width: '100%' }}>
-          <div className="max-w-6xl mx-auto px-4">
+          <div className="gi-container">
             <div
               className="bg-[#162f6a] rounded-xl px-6 py-4 flex items-center space-x-6 overflow-x-auto"
               style={{ marginTop: '-40px', position: 'relative', zIndex: 10 }}
@@ -101,7 +101,7 @@ export default function AboutUs() {
 
         {/* Main Content */}
         <section className="bg-white py-12">
-          <div className="max-w-6xl mx-auto px-4 grid md:grid-cols-[1fr_2fr] gap-10">
+          <div className="gi-container grid md:grid-cols-[1fr_2fr] gap-10">
             {/* Left Box - Vision (shrink to content height) */}
             <div className="bg-gray-100 p-6 rounded-lg inline-block align-top" style={{ height: 'fit-content', position: 'sticky', top: '250px' }}>
               <p className="text-xl text-[#123a6b] font-semibold mb-4">
