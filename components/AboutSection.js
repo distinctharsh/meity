@@ -5,7 +5,7 @@ import Image from "next/image";
 export default function AboutSection() {
   return (
     <section className="py-15 bg-white">
-      <div className="flex flex-col gap-10 max-w-[1200px] mx-auto px-5 md:flex-row md:items-start md:justify-between">
+      <div className="gi-container flex flex-col gap-10 md:flex-row md:items-start md:justify-between">
         {/* Left Column - Content */}
         <div className="md:flex-[2]">
           <div className="flex items-center mb-5">

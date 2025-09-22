@@ -45,7 +45,7 @@ export default function Videos() {
             position: 'relative'
           }}
         >
-          <div className="max-w-7xl mx-auto">
+          <div className="gi-container">
             <div className="overlay" style={{
               position: 'absolute',
               top: 0,
@@ -63,7 +63,7 @@ export default function Videos() {
 
         {/* Tabs */}
         <section className="bg-white" style={{ marginTop: '-10px', position: 'absolute', width: '100%' }}>
-          <div className="max-w-7xl mx-auto">
+          <div className="gi-container">
             <div
               className="bg-[#162f6a] rounded-xl px-6 py-4 flex items-center space-x-6 overflow-x-auto"
               style={{ marginTop: '-40px', position: 'relative', zIndex: 10 }}
@@ -75,8 +75,8 @@ export default function Videos() {
         </section>
 
         {/* Main Content */}
-        <section className="mt-8 py-1 mx-4 sm:mx-8 md:mx-12" style={{ borderRadius: '20px' }}>
-          <div className="max-w-7xl mx-auto">
+        <section className="mt-8 py-1" style={{ borderRadius: '20px' }}>
+          <div className="gi-container">
             {/* Toolbar row */}
             <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-3 mb-6">
 

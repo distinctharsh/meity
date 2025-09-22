@@ -15,7 +15,7 @@ export default function Contact() {
             position: 'relative'
           }}
         >
-          <div className="max-w-7xl mx-auto relative z-[1]">
+          <div className="gi-container relative z-[1]">
             <p className="opacity-99 mb-4">
               <a href="/" className="hover:underline">Home</a> / <a href="/connect/contact-us" className="underline hover:decoration-yellow-400 hover:decoration-2 hover:underline-offset-2">Contact</a>
             </p>
@@ -26,7 +26,7 @@ export default function Contact() {
 
         {/* Tabs */}
         <section className="bg-white" style={{ marginTop: '-10px', position: 'absolute', width: '100%' }}>
-          <div className="max-w-7xl mx-auto">
+          <div className="gi-container">
             <div
               className="bg-[#162f6a] rounded-xl px-6 py-4 flex items-center space-x-6 overflow-x-auto"
               style={{ marginTop: '-40px', position: 'relative', zIndex: 10 }}
@@ -40,7 +40,7 @@ export default function Contact() {
 
         {/* Main content */}
         <section className="maincontent">
-          <div className="max-w-7xl mx-auto my-12 px-4">
+          <div className="gi-container my-12">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 justify-center">
               {/* Left column */}
               <div className="lg:col-span-4">
