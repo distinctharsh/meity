@@ -1,6 +1,5 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
-import Accessibility from "./icons/Accessibility";
 import Image from "next/image";
 
 const DEFAULT_OPTIONS = [
