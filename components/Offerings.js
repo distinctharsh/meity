@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Offering from "./icons/Offering";
 import { FiChevronRight } from 'react-icons/fi';
+import WhatsNew from "../components/icons/whats-new";
 
 export default function Offerings() {
   const [activeTab, setActiveTab] = useState("schemes");
@@ -73,7 +74,7 @@ export default function Offerings() {
           <aside className="flex-[0_0_30%] flex flex-col w-full">
             <div className="flex gap-3 items-center mb-3">
               <div className="[&>svg]:block" aria-hidden>
-                <img src="/images/icons/whats-new.svg" alt="Whats New" />
+                <WhatsNew />
               </div>
               <h3 className="text-[20px] text-[#123a6b] m-0 font-bold">What's New</h3>
             </div>
