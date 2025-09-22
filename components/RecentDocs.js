@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import Document from './icons/Document';
-import ImportantLink from './icons/ImportantLink';
-import UserPersonas from './icons/UserPersonas';
 
 const recentDocs = [
   { title: "Orders And Notices", description: "Observance of Vigilance Awareness Week-2025- Digital Initiatives-reg" },
@@ -70,7 +68,7 @@ const RecentDocs = () => {
         {/* User Personas */}
         <div className="flex flex-col items-center justify-center flex-[1]">
           <div className="flex items-center mb-3">
-            <UserPersonas className="w-5 h-5 mr-2" />
+            <img src="/images/icons/user-personas.svg" alt="User Personas" />
             <h3 className="text-[#202A3A] text-[1.4rem] font-bold leading-none tracking-tight m-0">Explore User Personas</h3>
           </div>
 
@@ -107,7 +105,7 @@ const RecentDocs = () => {
         {/* Important Links */}
         <div className="flex flex-col items-start flex-[1] ml-[20px]">
           <div className="flex items-center mb-3">
-            <ImportantLink className="w-5 h-5 mr-2" />
+            <img src="/images/icons/important-link.svg" alt="Important Link" />
             <h3 className="text-[#202A3A] text-[1.4rem] font-bold leading-none tracking-tight m-0">Important Links</h3>
           </div>
           <ul className="m-0 p-0 w-full mt-2 border-r-4 border-[#0a2e60] bg-white rounded-none shadow-none">

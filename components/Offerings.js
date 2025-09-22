@@ -1,6 +1,5 @@
 import { useState } from "react";
 import Offering from "./icons/Offering";
-import WhatsNew from './icons/WhatsNew';
 import { FiChevronRight } from 'react-icons/fi';
 
 export default function Offerings() {
@@ -74,7 +73,7 @@ export default function Offerings() {
           <aside className="flex-[0_0_30%] flex flex-col w-full">
             <div className="flex gap-3 items-center mb-3">
               <div className="[&>svg]:block" aria-hidden>
-                <WhatsNew />
+                <img src="/images/icons/whats-new.svg" alt="Whats New" />
               </div>
               <h3 className="text-[20px] text-[#123a6b] m-0 font-bold">What's New</h3>
             </div>
