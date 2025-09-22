@@ -151,7 +151,7 @@ export default function AccessibilityBar() {
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: 12 }}>
               {options.map((opt, idx) => (
                 <div key={opt.name} className={`option-card ${opt.active ? 'active' : ''}`} role="button" tabIndex={0} aria-pressed={opt.active} aria-label={opt.name} onClick={() => toggleOption(idx)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') toggleOption(idx) }} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: 12, border: '1px solid #e6e6e6', borderRadius: 8, cursor: 'pointer' }}>
-                  <div className="accessibility-icon" dangerouslySetInnerHTML={{ __html: opt.icon }} />
+                  <img src={`/${opt.icon}`} alt={opt.name} />
                   <p aria-hidden style={{ marginTop: 8, textTransform: 'uppercase', fontSize: 12, textAlign: 'center' }}>{opt.name}</p>
                 </div>
               ))}

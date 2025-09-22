@@ -1,8 +1,6 @@
 "use client";
 import AccessibilityBar from "./AccessibilityBar";
-import Bhashini from "./icons/Bhashini";
 import Emblem from "./icons/Emblem";
-import Skip from "./icons/Skip";
 import Image from "next/image";
 
 export default function Header() {
@@ -71,7 +69,7 @@ export default function Header() {
           <div className="flex justify-center md:justify-end gap-[18px] mb-[10px] order-1 md:order-none">
             <div className="flex gap-3 items-center">
               <button className="bg-transparent border-0 cursor-pointer p-[6px]" title="Login">
-                <Skip />
+                <img src="/images/icons/skip.svg" alt="Skip" />
               </button>
               <button className="bg-transparent border-0 cursor-pointer p-[6px] border-x border-[#162f6a]" title="Language" onClick={async () => {
                 try {
@@ -81,7 +79,7 @@ export default function Header() {
                   location.reload();
                 } catch (e) { console.error(e); }
               }}>
-                <Bhashini />
+                <img src="/images/icons/bhashini.svg" alt="Bhashini" />
               </button>
               <AccessibilityBar />
             </div>

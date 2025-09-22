@@ -1,5 +1,5 @@
 "use client";
-import { FaSitemap, FaUsers, FaThLarge, FaChartBar } from "react-icons/fa";
+import { FaUsers, FaThLarge, FaChartBar } from "react-icons/fa";
 import Image from "next/image";
 
 export default function AboutSection() {
@@ -9,7 +9,7 @@ export default function AboutSection() {
         {/* Left Column - Content */}
         <div className="md:flex-[2]">
           <div className="flex items-center mb-5">
-            <FaSitemap className="text-[28px] text-[#162f6a] mr-[15px]" />
+            <img src="/images/icons/ministry.svg" alt="Ministry" className="mr-[15px]" />
             <h2 className="text-[24px] font-bold text-[#162f6a] m-0 pb-[5px] relative after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-[50px] after:h-[3px] after:bg-[#ff6b35]">About Us</h2>
           </div>
           <p className="text-[15px] text-[#333] leading-[1.8] mb-[30px]">
