@@ -25,8 +25,8 @@ export default function Offerings() {
   };
 
   return (
-    <section className="py-9 px-4 bg-[#f1f1f2]">
-      <div className="max-w-[1200px] mx-auto px-4">
+    <section className="py-9 bg-[#f1f1f2]">
+      <div className="gi-container">
         <div className="flex gap-6 items-start flex-col md:flex-row">
           <div className="flex-[1_1_68%] w-full">
             <div className="flex gap-3 items-center mb-3">

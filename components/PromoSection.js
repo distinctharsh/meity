@@ -55,8 +55,8 @@ const PromoSection = () => {
     if (!mounted) return null;
 
     return (
-        <div className="w-full py-10 px-4 md:px-8 lg:px-16">
-            <div className="flex flex-row gap-4 items-stretch h-[300px]">
+        <div className="w-full bg-transparent py-10">
+            <div className="gi-container flex flex-row gap-4 items-stretch h-[300px]">
 
                 {/* Image Section – zyada space le raha hai */}
                 <div className="flex-[2] h-full bg-gray-100 rounded-lg overflow-hidden relative">

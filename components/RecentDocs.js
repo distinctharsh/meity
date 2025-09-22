@@ -36,8 +36,8 @@ const RecentDocs = () => {
   };
 
   return (
-    <div className="w-full min-h-[500px] flex justify-center items-start bg-white py-4">
-      <div className="flex flex-row justify-between items-start w-full max-w-[1640px] px-4">
+    <div className="w-full min-h-[500px] bg-white py-4">
+      <div className="gi-container flex flex-row justify-between items-start w-full">
 
         {/* Recent Documents */}
         <div className="flex flex-col items-start flex-[2] mr-[0px]">

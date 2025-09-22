@@ -48,7 +48,7 @@ const PartnerLogoCarousel = () => {
 
   return (
     <div className="w-full bg-gray-100 py-8">
-      <div className="max-w-6xl mx-auto px-4">        
+      <div className="gi-container">
         <div className="relative group">
           {/* Scroll Container */}
           <div
@@ -59,9 +59,9 @@ const PartnerLogoCarousel = () => {
           >
             {logos.map((logo, index) => (
               <div key={index} className="flex-shrink-0 w-40 h-24 bg-white rounded-xl shadow-lg border-2 border-gray-300 flex items-center justify-center p-3 relative">
-                <Image 
-                  src={logo} 
-                  alt={`Partner logo ${index + 1}`} 
+                <Image
+                  src={logo}
+                  alt={`Partner logo ${index + 1}`}
                   fill
                   style={{ objectFit: "contain" }}
                   className="object-contain"

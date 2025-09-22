@@ -17,16 +17,14 @@ export default function Home() {
     <>
       <main id="main" >
         <HeroSlider />
-        <div className="gi-container">
-          <AnnouncementBar />
-          <PmQuote />
-          <AboutSection />
-          <Offerings />
-          <RecentDocs />
-          <SocialMediaFeed />
-          <PromoSection />
-          <PartnerLogoCarousel />
-        </div>
+        <AnnouncementBar />
+        <PmQuote />
+        <AboutSection />
+        <Offerings />
+        <RecentDocs />
+        <SocialMediaFeed />
+        <PromoSection />
+        <PartnerLogoCarousel />
       </main>
       <Footer />
     </>
