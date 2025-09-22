@@ -53,6 +53,19 @@ body {
   color: var(--color-foreground, #111);
 }
 
+/* Consistent horizontal container spacing (match Header/Navbar px) */
+.gi-container {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+@media (min-width: 768px) {
+  .gi-container {
+    padding-left: 120px;
+    padding-right: 120px;
+  }
+}
+
 /* Weight helpers */
 .gi-w-regular {
   font-weight: 400;
