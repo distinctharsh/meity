@@ -1,5 +1,6 @@
 import Footer from "@/components/Footer";
 import Pdf from "@/components/icons/Pdf";
+import SubNavTabs from "@/components/SubNavTabs";
 
 export default function AboutUs() {
   return (
@@ -45,58 +46,8 @@ export default function AboutUs() {
         </section>
 
 
-        {/* Tabs */}
-        <section className="bg-white " style={{ marginTop: '-10px', position: 'absolute', width: '100%' }}>
-          <div className="gi-container">
-            <div
-              className="bg-[#162f6a] rounded-xl px-6 py-4 flex items-center space-x-6 overflow-x-auto"
-              style={{ marginTop: '-40px', position: 'relative', zIndex: 10 }}
-            >
-              {/* Dot SVG Icon – shown ONLY on the active tab */}
-              <div className="relative flex items-center">
-                <a
-                  href="/ministry/about"
-                  className="text-white font-bold underline relative pl-3 dot-before"
-                  style={{ color: '#fff', fontSize: '1.3rem', fontStyle: 'normal', fontWeight: 800, lineHeight: 'normal', letterSpacing: '-0.1px', textTransform: 'none', position: 'relative' }}
-                >
-                  About Us
-                </a>
-              </div>
-
-              {/* Other Tabs */}
-              <a
-                href="/ministry/leadership"
-                className="text-white/80 hover:text-white whitespace-nowrap" style={{ color: '#fff', fontSize: '1.3rem', fontStyle: 'normal', fontWeight: 400, lineHeight: 'normal', letterSpacing: '-0.1px', textTransform: 'none', position: 'relative' }}
-              >
-                Our Team
-              </a>
-              <a
-                href="/ministry/organization"
-                className="text-white/80 hover:text-white whitespace-nowrap" style={{ color: '#fff', fontSize: '1.3rem', fontStyle: 'normal', fontWeight: 400, lineHeight: 'normal', letterSpacing: '-0.1px', textTransform: 'none', position: 'relative' }}
-              >
-                Our Organisations
-              </a>
-              <a
-                href="/ministry/our-performance"
-                className="text-white/80 hover:text-white whitespace-nowrap" style={{ color: '#fff', fontSize: '1.3rem', fontStyle: 'normal', fontWeight: 400, lineHeight: 'normal', letterSpacing: '-0.1px', textTransform: 'none', position: 'relative' }}
-              >
-                Our Performance
-              </a>
-              <a
-                href="/ministry/our-groups"
-                className="text-white/80 hover:text-white whitespace-nowrap" style={{ color: '#fff', fontSize: '1.3rem', fontStyle: 'normal', fontWeight: 400, lineHeight: 'normal', letterSpacing: '-0.1px', textTransform: 'none', position: 'relative' }}
-              >
-                Our Groups
-              </a>
-              <a
-                href="/ministry/directory"
-                className="text-white/80 hover:text-white whitespace-nowrap" style={{ color: '#fff', fontSize: '1.6rem', fontStyle: 'normal', fontWeight: 400, lineHeight: 'normal', letterSpacing: '-0.1px', textTransform: 'none', position: 'relative' }}
-              >
-                Directory
-              </a>
-            </div>
-          </div>
-        </section>
+        {/* Tabs (DB-driven) */}
+        <SubNavTabs pagePath="/ministry/about" />
 
 
         {/* Main Content */}
