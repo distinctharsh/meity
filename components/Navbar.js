@@ -6,6 +6,8 @@ import { useRouter } from 'next/router';
 export default function NewNavbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
+  const [navItems, setNavItems] = useState([]);
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
 
   // Listen for header-dispatched toggle for mobile navbar
@@ -18,6 +20,38 @@ export default function NewNavbar() {
       if (typeof window !== 'undefined') {
         window.removeEventListener('toggle-navbar', handler);
       }
+    };
+  }, []);
+
+  // Fetch navigation from DB-backed API and prepare structure
+  useEffect(() => {
+    let isMounted = true;
+    async function loadNav() {
+      try {
+        const res = await fetch('/api/navigation');
+        if (!res.ok) throw new Error('Failed to load navigation');
+        const data = await res.json();
+
+        // Transform API tree into component's expected shape
+        const transform = (items) =>
+          items.map((it) => ({
+            text: it.text,
+            href: it.href || '#',
+            dropdown: (it.children && it.children.length > 0) || false,
+            items: it.children ? transform(it.children) : [],
+          }));
+
+        const prepared = transform(data);
+        if (isMounted) setNavItems(prepared);
+      } catch (e) {
+        console.error('Navbar: navigation fetch error', e);
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    }
+    loadNav();
+    return () => {
+      isMounted = false;
     };
   }, []);
 
@@ -36,37 +70,6 @@ export default function NewNavbar() {
     return router.pathname === href || router.pathname.startsWith(href + '/');
   };
 
-  const navItems = [
-    { text: 'Home', href: '/', active: isActive('/'), dropdown: false },
-    {
-      text: 'Ministry', href: '/ministry', active: isActive('/ministry'), dropdown: true, items: [
-        { text: 'About Us', href: '/ministry/about' },
-        { text: 'Our Team', href: '/ministry/ourteam' },
-      ]
-    },
-    {
-      text: 'Offerings', href: '/offerings', active: isActive('/offerings'), dropdown: true, items: [
-        { text: 'Schemes and Services', href: '/offerings/schemes-and-services' },
-      ]
-    },
-    {
-      text: 'Documents', href: '/documents', active: isActive('/documents'), dropdown: true, items: [
-        { text: 'Reports', href: '/documents/reports' },
-      ]
-    },
-    {
-      text: 'Media', href: '/media', active: isActive('/media'), dropdown: true, items: [
-        { text: 'Photos', href: '/media/photos' },
-        { text: 'Videos', href: '/media/videos' },
-      ]
-    },
-    {
-      text: 'Connect', href: '#', dropdown: true, items: [
-        { text: 'Contact Us', href: '/connect/contact-us' },
-      ]
-    },
-  ];
-
   return (
     <nav className="bg-white shadow-[0_2px_4px_rgba(0,0,0,0.1)] border-t border-[#d0d0d0] sticky top-[154px] z-[999]">
       <div className="px-[7%]">
@@ -83,14 +86,14 @@ export default function NewNavbar() {
             className={`flex-1 hidden md:flex`}
           >
             <ul className="flex flex-row md:items-center justify-between m-0 p-0 w-full">
-              {navItems.map((item, index) => (
+              {(loading ? [] : navItems).map((item, index) => (
                 <li
                   key={index}
                   className={`group relative md:w-auto w-full`}
                 >
                   <Link
                     href={item.href}
-                    className={`flex items-center justify-between md:justify-start no-underline  px-4 py-3 text-[16px] font-semibold transition-colors duration-200 ${item.active
+                    className={`flex items-center justify-between md:justify-start no-underline  px-4 py-3 text-[16px] font-semibold transition-colors duration-200 ${(isActive(item.href) || (item.items && item.items.some((si) => isActive(si.href))))
                       ? `text-[#162f6a] border-b-8 border-[#162f6a] ${item.text !== 'Home' ? 'bg-[#fff]' : ''}`
                       : `text-[#1b1b1b] hover:text-[#162f6a] ${item.text !== 'Home' ? 'hover:bg-[#d2dfff]' : ''}`
                       }`}
@@ -171,11 +174,11 @@ export default function NewNavbar() {
             </button>
           </div>
           <ul className="m-0 p-2">
-            {navItems.map((item, index) => (
+            {(loading ? [] : navItems).map((item, index) => (
               <li key={index} className="">
                 <Link
                   href={item.href}
-                  className={`flex items-center justify-between no-underline px-4 py-3 text-[16px] font-semibold ${item.active ? 'text-[#162f6a]' : 'text-[#1b1b1b]'}`}
+                  className={`flex items-center justify-between no-underline px-4 py-3 text-[16px] font-semibold ${isActive(item.href) ? 'text-[#162f6a]' : 'text-[#1b1b1b]'}`}
                   onClick={(e) => {
                     if (item.dropdown) {
                       e.preventDefault();

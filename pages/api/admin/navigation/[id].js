@@ -27,9 +27,24 @@ export default async function handler(req, res) {
     try {
       const { name, link, parent_id, display_order, is_active } = req.body;
 
+      // Fetch current row to support partial updates
+      const [rows] = await pool.query('SELECT * FROM navigation_items WHERE id = ?', [id]);
+      if (!rows.length) {
+        return res.status(404).json({ message: 'Navigation item not found' });
+      }
+      const current = rows[0];
+
+      const next = {
+        name: name !== undefined ? name : current.name,
+        link: link !== undefined ? link : current.link,
+        parent_id: parent_id !== undefined ? parent_id : current.parent_id,
+        display_order: display_order !== undefined ? display_order : current.display_order,
+        is_active: is_active !== undefined ? is_active : current.is_active,
+      };
+
       const [result] = await pool.query(
         'UPDATE navigation_items SET name = ?, link = ?, parent_id = ?, display_order = ?, is_active = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
-        [name, link, parent_id, display_order || 0, is_active !== false, id]
+        [next.name, next.link, next.parent_id, next.display_order, next.is_active, id]
       );
 
       if (result.affectedRows === 0) {
