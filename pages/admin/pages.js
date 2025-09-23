@@ -30,6 +30,71 @@ export default function PagesManagement() {
     }
   };
 
+  async function loadCatalog() {
+    try {
+      const res = await fetch('/api/admin/components');
+      const data = res.ok ? await res.json() : [];
+      setCatalog(data);
+    } catch (e) { console.error('Catalog load error', e); }
+  }
+
+  async function loadPageBlocks(pageId) {
+    try {
+      const res = await fetch(`/api/admin/page-components?page_id=${pageId}`);
+      const data = res.ok ? await res.json() : [];
+      setPageBlocks(data);
+    } catch (e) { console.error('Blocks load error', e); }
+  }
+
+  const addBlock = async () => {
+    if (!editing?.id) return alert('Save the page first, then add components.');
+    if (!newBlock.component_id) return alert('Select a component');
+    try {
+      const payload = {
+        page_id: editing.id,
+        component_id: Number(newBlock.component_id),
+        display_order: Number(newBlock.display_order) || 0,
+        props_json: newBlock.props_json,
+        is_active: true,
+      };
+      const res = await fetch('/api/admin/page-components', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      if (res.ok) {
+        setNewBlock({ component_id: '', display_order: 0, props_json: '{}' });
+        await loadPageBlocks(editing.id);
+      } else {
+        const j = await res.json().catch(() => ({}));
+        alert(j.message || 'Failed to add component');
+      }
+    } catch (e) {
+      console.error('Add block error', e);
+      alert('Failed to add component');
+    }
+  };
+
+  const deleteBlock = async (id) => {
+    if (!confirm('Remove this component from the page?')) return;
+    try {
+      const res = await fetch(`/api/admin/page-components/${id}`, { method: 'DELETE' });
+      if (res.ok) await loadPageBlocks(editing.id);
+      else alert('Delete failed');
+    } catch (e) { console.error('Delete block error', e); alert('Delete failed'); }
+  };
+
+  const updateBlockOrder = async (blk, delta) => {
+    try {
+      const res = await fetch(`/api/admin/page-components/${blk.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ display_order: (blk.display_order || 0) + delta })
+      });
+      if (res.ok) await loadPageBlocks(editing.id);
+    } catch (e) { console.error('Order update error', e); }
+  };
+
   const handleAdd = () => {
     setEditing(null);
     setShowForm(true);
@@ -164,6 +229,9 @@ function PageForm({ onClose, onSaved, templates, editing }) {
     display_order: 0,
   });
   const [saving, setSaving] = useState(false);
+  const [catalog, setCatalog] = useState([]);
+  const [pageBlocks, setPageBlocks] = useState([]);
+  const [newBlock, setNewBlock] = useState({ component_id: '', display_order: 0, props_json: '{}' });
 
   useEffect(() => {
     if (editing) {
@@ -179,6 +247,9 @@ function PageForm({ onClose, onSaved, templates, editing }) {
         is_active: editing.is_active !== false,
         display_order: editing.display_order ?? 0,
       });
+      // Load component catalog and existing page components
+      loadCatalog();
+      loadPageBlocks(editing.id);
     }
   }, [editing]);
 
@@ -307,6 +378,56 @@ function PageForm({ onClose, onSaved, templates, editing }) {
                     </div>
                   </div>
                 ))}
+              </div>
+            </div>
+          )}
+
+          {/* Page Components (only after page exists) */}
+          {editing?.id && (
+            <div className="mt-6">
+              <h3 className="text-lg font-semibold">Page Components</h3>
+              <p className="text-sm text-gray-500 mb-2">Attach reusable components below the main template content.</p>
+              <div className="border rounded p-3 space-y-3">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-3 items-start">
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium text-gray-700">Component</label>
+                    <select value={newBlock.component_id} onChange={(e) => setNewBlock((p) => ({ ...p, component_id: e.target.value }))} className="mt-1 w-full border rounded px-3 py-2">
+                      <option value="">Select component</option>
+                      {catalog.map((c) => (
+                        <option key={c.id} value={c.id}>{c.name} ({c.component_key})</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">Order</label>
+                    <input type="number" value={newBlock.display_order} onChange={(e) => setNewBlock((p) => ({ ...p, display_order: e.target.value }))} className="mt-1 w-full border rounded px-3 py-2" />
+                  </div>
+                  <div className="md:col-span-4">
+                    <label className="block text-sm font-medium text-gray-700">Props (JSON)</label>
+                    <textarea rows={4} value={newBlock.props_json} onChange={(e) => setNewBlock((p) => ({ ...p, props_json: e.target.value }))} className="mt-1 w-full border rounded px-3 py-2 font-mono text-sm" placeholder='{"title":"My Section"}' />
+                  </div>
+                  <div className="md:col-span-4 text-right">
+                    <button type="button" onClick={addBlock} className="bg-gray-100 hover:bg-gray-200 px-3 py-2 rounded">Add Component</button>
+                  </div>
+                </div>
+
+                <div className="divide-y">
+                  {pageBlocks.length === 0 ? (
+                    <div className="text-sm text-gray-500">No components attached yet.</div>
+                  ) : pageBlocks.map((blk) => (
+                    <div key={blk.id} className="py-3 flex items-start justify-between">
+                      <div>
+                        <div className="font-medium">{blk.component_name} <span className="text-xs text-gray-500">({blk.component_key})</span></div>
+                        <div className="text-xs text-gray-500">Order: {blk.display_order}</div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <button type="button" onClick={() => updateBlockOrder(blk, -1)} className="text-xs px-2 py-1 bg-gray-100 rounded">Up</button>
+                        <button type="button" onClick={() => updateBlockOrder(blk, +1)} className="text-xs px-2 py-1 bg-gray-100 rounded">Down</button>
+                        <button type="button" onClick={() => deleteBlock(blk.id)} className="text-xs px-2 py-1 bg-red-100 text-red-700 rounded">Remove</button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           )}
