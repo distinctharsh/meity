@@ -20,9 +20,8 @@ function isExternal(url) {
 
 function normalizeHref(link, childrenCount) {
   if (!link) return childrenCount > 0 ? '#' : '#';
-  if (isExternal(link)) return link; // keep absolute/external as-is
-  if (link.startsWith('/')) return `/p${link}`; // internal slug -> /p/slug
-  return link; // fallback
+  // Keep as provided for internal routes; external absolute URLs also allowed
+  return link;
 }
 
 export default async function handler(req, res) {

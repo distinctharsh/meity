@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { fetchWithCacheBusting } from '@/utils/api';
 
 export default function NewNavbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -28,7 +29,7 @@ export default function NewNavbar() {
     let isMounted = true;
     async function loadNav() {
       try {
-        const res = await fetch('/api/navigation');
+        const res = await fetchWithCacheBusting('/api/navigation');
         if (!res.ok) throw new Error('Failed to load navigation');
         const data = await res.json();
 
