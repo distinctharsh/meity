@@ -7,11 +7,22 @@ function buildTree(items, parentId = null) {
     .map((item) => ({
       id: item.id,
       text: item.name,
-      href: item.link || (item.children_count > 0 ? '#' : '#'),
+      href: normalizeHref(item.link, item.children_count),
       dropdown: true,
       display_order: item.display_order ?? 0,
       children: buildTree(items, item.id),
     }));
+}
+
+function isExternal(url) {
+  return typeof url === 'string' && /^(?:[a-z]+:)?\/\//i.test(url);
+}
+
+function normalizeHref(link, childrenCount) {
+  if (!link) return childrenCount > 0 ? '#' : '#';
+  if (isExternal(link)) return link; // keep absolute/external as-is
+  if (link.startsWith('/')) return `/p${link}`; // internal slug -> /p/slug
+  return link; // fallback
 }
 
 export default async function handler(req, res) {

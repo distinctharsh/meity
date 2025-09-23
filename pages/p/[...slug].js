@@ -21,7 +21,12 @@ export async function getServerSideProps(context) {
       if (page.tabs_json && typeof page.tabs_json === 'string') page.tabs_json = JSON.parse(page.tabs_json);
       if (page.content_json && typeof page.content_json === 'string') page.content_json = JSON.parse(page.content_json);
     } catch (e) {}
-    return { props: { page } };
+    // Ensure JSON-serializable props (convert Date objects)
+    const serializable = { ...page };
+    ['created_at', 'updated_at'].forEach((k) => {
+      if (serializable[k] instanceof Date) serializable[k] = serializable[k].toISOString();
+    });
+    return { props: { page: serializable } };
   } catch (err) {
     console.error('SSR page fetch error', err);
     return { notFound: true };
