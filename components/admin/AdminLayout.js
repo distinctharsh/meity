@@ -11,8 +11,6 @@ const AdminLayout = ({ children }) => {
   const navigation = [
     { name: 'Dashboard', href: '/admin', icon: '📊', description: 'Overview & Statistics' },
     { name: 'Navigation', href: '/admin/navigation', icon: '🧭', description: 'Menu management' },
-    { name: 'Subnav Tabs', href: '/admin/subnav', icon: '🗂️', description: 'Per-page tabs/links' },
-    { name: 'Page Headers', href: '/admin/page-headers', icon: '🏷️', description: 'Hero & breadcrumb per-page' },
     { name: 'Announcements', href: '/admin/announcements', icon: '📢', description: 'Site announcements' },
     // { name: 'Offerings', href: '/admin/offerings', icon: '🎯', description: 'Services & offerings' },
     // { name: 'Pages', href: '/admin/pages', icon: '📄', description: 'Create & manage pages' },
