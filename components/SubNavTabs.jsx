@@ -7,12 +7,14 @@ export default function SubNavTabs({ pagePath }) {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
+  const effectivePath = pagePath || router?.pathname || '';
 
   useEffect(() => {
     let mounted = true;
     async function load() {
       try {
-        const res = await fetchWithCacheBusting(`/api/subnav?path=${encodeURIComponent(pagePath)}`);
+        if (!effectivePath) return;
+        const res = await fetchWithCacheBusting(`/api/subnav?path=${encodeURIComponent(effectivePath)}`);
         const data = res.ok ? await res.json() : [];
         if (mounted) setItems(data);
       } catch (e) {
@@ -23,7 +25,7 @@ export default function SubNavTabs({ pagePath }) {
     }
     load();
     return () => { mounted = false; };
-  }, [pagePath]);
+  }, [effectivePath]);
 
   const isActive = (href) => {
     if (!href) return false;

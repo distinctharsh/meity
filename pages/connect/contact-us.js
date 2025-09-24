@@ -1,4 +1,5 @@
 import Footer from "@/components/Footer";
+import SubNavTabs from "@/components/SubNavTabs";
 
 export default function Contact() {
   return (
@@ -24,19 +25,8 @@ export default function Contact() {
           <div className="absolute inset-0" style={{ background: 'linear-gradient(90deg, rgb(22, 47, 106) 20%, transparent 70%)' }} />
         </section>
 
-        {/* Tabs */}
-        <section className="bg-white" style={{ marginTop: '-10px', position: 'absolute', width: '100%' }}>
-          <div className="gi-container">
-            <div
-              className="bg-[#162f6a] rounded-xl px-6 py-4 flex items-center space-x-6 overflow-x-auto"
-              style={{ marginTop: '-40px', position: 'relative', zIndex: 10 }}
-            >
-              <a href="#" className="text-white/80 hover:text-white whitespace-nowrap" style={{ color: '#fff', fontSize: '1.4rem', fontStyle: 'normal', fontWeight: 600, lineHeight: 'normal', letterSpacing: '-0.1px', textTransform: 'none', position: 'relative' }}>Contact us</a>
-              <a href="#" className="  relative pl-3 dot-before" style={{ color: '#fff', fontSize: '1.4rem', fontStyle: 'normal', fontWeight: 400, lineHeight: 'normal', letterSpacing: '-0.1px', textTransform: 'none', position: 'relative' }}>Directory</a>
-              <a href="#" className="  relative pl-3 dot-before" style={{ color: '#fff', fontSize: '1.4rem', fontStyle: 'normal', fontWeight: 400, lineHeight: 'normal', letterSpacing: '-0.1px', textTransform: 'none', position: 'relative' }}>RTI</a>
-            </div>
-          </div>
-        </section>
+        {/* Tabs (DB-driven for current route) */}
+        <SubNavTabs />
 
         {/* Main content */}
         <section className="maincontent">

@@ -1,4 +1,5 @@
 import Footer from "@/components/Footer";
+import SubNavTabs from "@/components/SubNavTabs";
 
 export default function Leadership() {
   return (
@@ -17,6 +18,9 @@ export default function Leadership() {
             </div>
           </div>
         </section>
+
+        {/* Tabs (DB-driven for current route) */}
+        <SubNavTabs />
 
         {/* Minister */}
         <section className="py-16">

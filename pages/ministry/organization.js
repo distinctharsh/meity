@@ -1,4 +1,5 @@
 import Footer from "@/components/Footer";
+import SubNavTabs from "@/components/SubNavTabs";
 
 export default function Organization() {
   return (
@@ -17,6 +18,8 @@ export default function Organization() {
             </div>
           </div>
         </section>
+        {/* Tabs (DB-driven for current route) */}
+        <SubNavTabs />
 
         {/* Key Departments */}
         <section className="py-16">

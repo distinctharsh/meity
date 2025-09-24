@@ -1,6 +1,7 @@
 import Footer from "@/components/Footer";
 import { useMemo, useState } from "react";
 import Image from "next/image";
+import SubNavTabs from "@/components/SubNavTabs";
 export default function Photos() {
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState("Newest");
@@ -97,18 +98,8 @@ export default function Photos() {
           </div>
         </section>
 
-        {/* Tabs */}
-        <section className="bg-white " style={{ marginTop: '-10px', position: 'absolute', width: '100%' }}>
-          <div className="gi-container">
-            <div
-              className="bg-[#162f6a] rounded-xl px-6 py-4 flex items-center space-x-6 overflow-x-auto"
-              style={{ marginTop: '-40px', position: 'relative', zIndex: 10 }}
-            >
-              <a href="/documents/photos" className="text-white font-bold relative pl-3 dot-before" style={{ color: '#fff', fontSize: '1.4rem', fontStyle: 'normal', fontWeight: 800, lineHeight: 'normal', letterSpacing: '-0.1px', textTransform: 'none', position: 'relative' }}>Photos</a>
-              <a href="/documents/videos" className="text-white/80 hover:text-white whitespace-nowrap" style={{ color: '#fff', fontSize: '1.4rem', fontStyle: 'normal', fontWeight: 400, lineHeight: 'normal', letterSpacing: '-0.1px', textTransform: 'none', position: 'relative' }}>Videos</a>
-            </div>
-          </div>
-        </section>
+        {/* Tabs (DB-driven for current route) */}
+        <SubNavTabs />
 
         {/* Main Content */}
         <section className="mt-10 py-10" style={{ borderRadius: '20px' }}>
