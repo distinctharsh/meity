@@ -72,7 +72,7 @@ export default function NewNavbar() {
   };
 
   return (
-    <nav className="bg-white shadow-[0_2px_4px_rgba(0,0,0,0.1)] border-t border-[#d0d0d0] sticky top-[154px] z-[999]">
+    <nav className="bg-white shadow-[0_2px_4px_rgba(0,0,0,0.1)] border-t border-[#d0d0d0] sticky top-[154px] z-[299]">
       <div className="px-[7%]">
         {/* Bar container */}
         <div className="flex items-center justify-between h-14">

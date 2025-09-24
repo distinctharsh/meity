@@ -10,16 +10,16 @@ const AdminLayout = ({ children }) => {
 
   const navigation = [
     { name: 'Dashboard', href: '/admin', icon: '📊', description: 'Overview & Statistics' },
-    { name: 'Hero Slider', href: '/admin/slider', icon: '🖼️', description: 'Manage homepage slider' },
-    { name: 'Announcements', href: '/admin/announcements', icon: '📢', description: 'Site announcements' },
-    { name: 'Offerings', href: '/admin/offerings', icon: '🎯', description: 'Services & offerings' },
-    { name: 'Pages', href: '/admin/pages', icon: '📄', description: 'Create & manage pages' },
-    { name: 'Templates', href: '/admin/templates', icon: '🧩', description: 'Page templates' },
-    { name: 'Page Headers', href: '/admin/page-headers', icon: '🏷️', description: 'Hero & breadcrumb per-page' },
-    { name: 'Subnav Tabs', href: '/admin/subnav', icon: '🗂️', description: 'Per-page tabs/links' },
     { name: 'Navigation', href: '/admin/navigation', icon: '🧭', description: 'Menu management' },
+    { name: 'Subnav Tabs', href: '/admin/subnav', icon: '🗂️', description: 'Per-page tabs/links' },
+    { name: 'Page Headers', href: '/admin/page-headers', icon: '🏷️', description: 'Hero & breadcrumb per-page' },
+    { name: 'Announcements', href: '/admin/announcements', icon: '📢', description: 'Site announcements' },
+    // { name: 'Offerings', href: '/admin/offerings', icon: '🎯', description: 'Services & offerings' },
+    // { name: 'Pages', href: '/admin/pages', icon: '📄', description: 'Create & manage pages' },
+    // { name: 'Hero Slider', href: '/admin/slider', icon: '🖼️', description: 'Manage homepage slider' },
+    // { name: 'Templates', href: '/admin/templates', icon: '🧩', description: 'Page templates' },
     { name: 'Media Library', href: '/admin/media', icon: '📁', description: 'Files & images' },
-    { name: 'Settings', href: '/admin/settings', icon: '⚙️', description: 'System settings' },
+    // { name: 'Settings', href: '/admin/settings', icon: '⚙️', description: 'System settings' },
   ];
 
   useEffect(() => {
