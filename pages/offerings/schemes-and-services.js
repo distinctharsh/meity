@@ -2,6 +2,7 @@ import Footer from "@/components/Footer";
 import Image from "next/image";
 import { useMemo, useState } from "react";
 import SubNavTabs from "@/components/SubNavTabs";
+import PageHeader from "@/components/PageHeader";
 
 export default function SchemesAndServices() {
   const [category, setCategory] = useState("");
@@ -57,24 +58,8 @@ export default function SchemesAndServices() {
   return (
     <>
       <main id="main">
-        {/* Hero Section */}
-        <section
-          className="bg-[#123a6b] text-white px-4 hero-before"
-          style={{
-            background: `url('/images/schemes-services/banner.jpg') no-repeat center center`,
-            backgroundSize: 'cover',
-            paddingTop: '90px',
-            paddingBottom: '90px',
-            position: 'relative'
-          }}
-        >
-          <div className="gi-container">
-            <p className="text-sm opacity-80 mb-4">
-              <a href="/" className="hover:underline">Home</a> / <a href="/offerings" className="hover:underline">Offerings</a>
-            </p>
-            <h1 className="text-4xl font-bold">Schemes and Services</h1>
-          </div>
-        </section>
+        {/* Dynamic Page Header */}
+        <PageHeader pagePath="/offerings/schemes-and-services" />
         {/* Tabs (DB-driven for current route) */}
         <SubNavTabs />
 

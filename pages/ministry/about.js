@@ -1,6 +1,7 @@
 import Footer from "@/components/Footer";
 import Pdf from "@/components/icons/Pdf";
 import SubNavTabs from "@/components/SubNavTabs";
+import PageHeader from "@/components/PageHeader";
 
 export default function AboutUs() {
   return (
@@ -26,28 +27,12 @@ export default function AboutUs() {
 
 
       <main id="main">
-        {/* Hero Section */}
-        <section
-          className="bg-[#123a6b] text-white px-4 hero-before"
-          style={{
-            background: `url('/images/about-page/head-background.jpg') no-repeat center center`,
-            backgroundSize: 'cover',
-            paddingTop: '90px',
-            paddingBottom: '90px',
-            position: 'relative'
-          }}
-        >
-          <div className="gi-container">
-            <p className="text-sm opacity-80 mb-4">
-              <a href="/" className="hover:underline">Home</a> / <a href="/ministry" className="hover:underline">Ministry</a>
-            </p>
-            <h1 className="text-4xl font-bold">About Us</h1>
-          </div>
-        </section>
+        {/* Dynamic Page Header */}
+        <PageHeader pagePath="/ministry/about" />
 
 
         {/* Tabs (DB-driven) */}
-        <SubNavTabs pagePath="/ministry/about" />
+        <SubNavTabs />
 
 
         {/* Main Content */}

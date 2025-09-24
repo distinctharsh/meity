@@ -1,6 +1,7 @@
 import Footer from "@/components/Footer";
 import { useMemo, useState } from "react";
 import SubNavTabs from "@/components/SubNavTabs";
+import PageHeader from "@/components/PageHeader";
 
 export default function Videos() {
   const [query, setQuery] = useState("");
@@ -35,32 +36,8 @@ export default function Videos() {
   return (
     <>
       <main id="main">
-        {/* Hero Section */}
-        <section
-          className="bg-[#123a6b] text-white px-4 hero-before"
-          style={{
-            background: `url('/images/media/banner.jpg') no-repeat center center`,
-            backgroundSize: 'cover',
-            paddingTop: '90px',
-            paddingBottom: '90px',
-            position: 'relative'
-          }}
-        >
-          <div className="gi-container">
-            <div className="overlay" style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              width: '100%',
-              height: '100%',
-              background: 'linear-gradient(90deg, rgb(22, 47, 106) 20%, transparent 70%)'
-            }}></div>
-            <p className=" opacity-99 mb-4">
-              <a href="/" className="hover:underline">Home</a> / <a href="/media" className="underline hover:decoration-yellow-400 hover:decoration-2 hover:underline-offset-2">Media</a>
-            </p>
-            <h1 className="text-4xl font-bold opacity-99 text-white">Videos</h1>
-          </div>
-        </section>
+        {/* Dynamic Page Header */}
+        <PageHeader pagePath="/media/videos" />
         {/* Tabs (DB-driven for current route) */}
         <SubNavTabs />
 
