@@ -115,7 +115,7 @@ const AdminLayout = ({ children }) => {
               <div className="flex-shrink-0 flex items-center px-4">
                 <div className="flex items-center">
                   <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center mr-3">
-                    <span className="text-white font-bold text-sm">M</span>
+                    <span className="text-white font-bold text-sm">CS</span>
                   </div>
                   <div>
                     <h1 className="text-xl font-bold text-gray-900">Cabinet Secretariat CMS</h1>
@@ -174,7 +174,7 @@ const AdminLayout = ({ children }) => {
                 <div className="flex items-center flex-shrink-0 px-6">
                   <div className="flex items-center">
                     <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center mr-3">
-                      <span className="text-white font-bold text-lg">M</span>
+                      <span className="text-white font-bold text-lg">CS</span>
                     </div>
                     <div>
                       <h1 className="text-xl font-bold text-gray-900">Cabinet Secretariat CMS</h1>
@@ -242,7 +242,7 @@ const AdminLayout = ({ children }) => {
               </button>
               <div className="flex items-center">
                 <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center mr-2">
-                  <span className="text-white font-bold text-sm">M</span>
+                  <span className="text-white font-bold text-sm">CS</span>
                 </div>
                 <span className="text-lg font-semibold text-gray-900">Cabinet Secretariat CMS</span>
               </div>
