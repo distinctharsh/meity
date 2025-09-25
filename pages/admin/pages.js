@@ -212,7 +212,8 @@ function PageForm({ onClose, onSaved, editing }) {
             let staticExists = false;
             try {
               const r = await fetch(slug, { headers: { 'x-skip-cms': '1' }, cache: 'no-store' });
-              staticExists = r.ok;
+              const isCms = r.headers?.get?.('x-cms-page') === '1';
+              staticExists = r.ok && !isCms;
             } catch {}
 
             // 2) cms page check
@@ -267,11 +268,12 @@ function PageForm({ onClose, onSaved, editing }) {
       }
       if (!cancelled) setRouteCheck(prev => ({ ...prev, checking: true }));
       try {
-        // 1) Check if a static route exists (skip CMS rewrite)
+        // 1) Check if a static route exists (skip CMS rewrite). Treat CMS catch-all as NOT static.
         let staticExists = false;
         try {
           const res = await fetch(slug, { headers: { 'x-skip-cms': '1' }, cache: 'no-store' });
-          staticExists = res.ok; // 200 for an existing static page
+          const isCms = res.headers?.get?.('x-cms-page') === '1';
+          staticExists = res.ok && !isCms; // only true for real static routes
         } catch {}
 
         // 2) Check if a CMS page already exists for the slug

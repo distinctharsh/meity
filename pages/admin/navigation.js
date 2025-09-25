@@ -253,12 +253,48 @@ const NavigationForm = ({ item, navigationItems, onSubmit, onCancel }) => {
     await onSubmit(formData);
   };
 
+  const ensureLeadingSlash = (s) => {
+    if (!s) return s;
+    return s.startsWith('/') ? s : '/' + s;
+  };
+
+  const isExternal = (url) => /^https?:\/\//i.test(url || '');
+
+  const getParentById = (id) => navigationItems.find((it) => String(it.id) === String(id));
+
+  const joinParentChild = (parentLink, childPart) => {
+    const base = (parentLink || '').replace(/\/$/, '');
+    const child = (childPart || '').replace(/^\//, '');
+    return child ? `${base}/${child}` : `${base}/`;
+  };
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value
-    }));
+    setFormData(prev => {
+      let next = { ...prev, [name]: type === 'checkbox' ? checked : value };
+      if (name === 'parent_id') {
+        const parent = getParentById(value);
+        const parentLink = parent?.link || '';
+        if (parentLink && !isExternal(next.link)) {
+          // Auto-prefix when a parent is chosen
+          const currentChild = next.link && next.link.startsWith(parentLink)
+            ? next.link.slice(parentLink.length)
+            : next.link;
+          next.link = joinParentChild(parentLink, currentChild);
+        }
+      }
+      if (name === 'link') {
+        // When typing link, if a parent is selected and it's not an external URL, keep parent prefix
+        const parent = getParentById(prev.parent_id);
+        const parentLink = parent?.link || '';
+        if (parentLink && !isExternal(value)) {
+          next.link = joinParentChild(parentLink, value);
+        } else if (!isExternal(value)) {
+          next.link = ensureLeadingSlash(value);
+        }
+      }
+      return next;
+    });
   };
 
   const topLevelItems = navigationItems.filter(item => !item.parent_id);
@@ -270,10 +306,9 @@ const NavigationForm = ({ item, navigationItems, onSubmit, onCancel }) => {
       </h2>
       
       <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Name */}
         <div>
-          <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-            Name *
-          </label>
+          <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name *</label>
           <input
             type="text"
             id="name"
@@ -286,25 +321,9 @@ const NavigationForm = ({ item, navigationItems, onSubmit, onCancel }) => {
           />
         </div>
 
+        {/* Parent Item */}
         <div>
-          <label htmlFor="link" className="block text-sm font-medium text-gray-700">
-            Link URL
-          </label>
-          <input
-            type="text"
-            id="link"
-            name="link"
-            value={formData.link}
-            onChange={handleChange}
-            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-            placeholder="/about or https://example.com"
-          />
-        </div>
-
-        <div>
-          <label htmlFor="parent_id" className="block text-sm font-medium text-gray-700">
-            Parent Item
-          </label>
+          <label htmlFor="parent_id" className="block text-sm font-medium text-gray-700">Parent Item</label>
           <select
             id="parent_id"
             name="parent_id"
@@ -314,17 +333,29 @@ const NavigationForm = ({ item, navigationItems, onSubmit, onCancel }) => {
           >
             <option value="">Top Level (No Parent)</option>
             {topLevelItems.map(parent => (
-              <option key={parent.id} value={parent.id}>
-                {parent.name}
-              </option>
+              <option key={parent.id} value={parent.id}>{parent.name}</option>
             ))}
           </select>
         </div>
 
+        {/* Link URL (auto-prefixed by parent) */}
         <div>
-          <label htmlFor="display_order" className="block text-sm font-medium text-gray-700">
-            Display Order
-          </label>
+          <label htmlFor="link" className="block text-sm font-medium text-gray-700">Link URL</label>
+          <input
+            type="text"
+            id="link"
+            name="link"
+            value={formData.link}
+            onChange={handleChange}
+            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+            placeholder="/about or https://example.com"
+          />
+          <p className="text-xs text-gray-500 mt-1">If a parent is selected, we’ll prefix its link automatically. External URLs are kept as is.</p>
+        </div>
+
+        {/* Display Order */}
+        <div>
+          <label htmlFor="display_order" className="block text-sm font-medium text-gray-700">Display Order</label>
           <input
             type="number"
             id="display_order"

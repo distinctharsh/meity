@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import pool from '@/lib/db';
 import PageHeader from '@/components/PageHeader';
 import Footer from '@/components/Footer';
@@ -25,6 +25,8 @@ export async function getServerSideProps(context) {
     ['created_at', 'updated_at'].forEach((k) => {
       if (serializable[k] instanceof Date) serializable[k] = serializable[k].toISOString();
     });
+    // Mark this response as a CMS-rendered page for client-side route checks
+    try { context.res.setHeader('x-cms-page', '1'); } catch {}
     return { props: { page: serializable } };
   } catch (err) {
     console.error('SSR page fetch error', err);
@@ -35,13 +37,17 @@ export async function getServerSideProps(context) {
 export default function DynamicPage({ page }) {
   const html = page?.content_json?.html || '';
   const css = page?.content_json?.css || '';
+  const [hydrated, setHydrated] = useState(false);
+  useEffect(() => { setHydrated(true); }, []);
   return (
     <main id="main">
       {/* Attach dynamic Page Header if configured for this page path */}
       <PageHeader pagePath={page?.slug} />
       {css ? <style dangerouslySetInnerHTML={{ __html: css }} /> : null}
-      <div className="gi-container">
-        <div dangerouslySetInnerHTML={{ __html: html }} />
+      <div className="gi-container" suppressHydrationWarning>
+        {hydrated ? (
+          <div dangerouslySetInnerHTML={{ __html: html }} suppressHydrationWarning />
+        ) : null}
       </div>
       <Footer />
     </main>
