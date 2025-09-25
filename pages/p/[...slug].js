@@ -1,5 +1,7 @@
 import React from 'react';
 import pool from '@/lib/db';
+import PageHeader from '@/components/PageHeader';
+import Footer from '@/components/Footer';
 
 export async function getServerSideProps(context) {
   const slugArr = context.params.slug || [];
@@ -35,10 +37,13 @@ export default function DynamicPage({ page }) {
   const css = page?.content_json?.css || '';
   return (
     <main id="main">
+      {/* Attach dynamic Page Header if configured for this page path */}
+      <PageHeader pagePath={page?.slug} />
       {css ? <style dangerouslySetInnerHTML={{ __html: css }} /> : null}
       <div className="gi-container">
         <div dangerouslySetInnerHTML={{ __html: html }} />
       </div>
+      <Footer />
     </main>
   );
 }
