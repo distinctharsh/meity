@@ -154,6 +154,11 @@ function PageForm({ onClose, onSaved, editing }) {
     display_order: 0,
   });
   const [saving, setSaving] = useState(false);
+  const [navOptions, setNavOptions] = useState([]);
+  const [useNavDropdown, setUseNavDropdown] = useState(true);
+  const [navLoading, setNavLoading] = useState(true);
+  const [routeCheck, setRouteCheck] = useState({ checking: false, staticExists: false, cmsExists: false, conflict: false, message: '' });
+  const [navConflicts, setNavConflicts] = useState({}); // { '/ministry/about': { staticExists, cmsExists, conflict, message } }
 
   useEffect(() => {
     if (editing) {
@@ -168,8 +173,81 @@ function PageForm({ onClose, onSaved, editing }) {
         is_active: editing.is_active !== false,
         display_order: editing.display_order ?? 0,
       });
+      // If the slug isn't present in navigation, allow manual entry view
+      setUseNavDropdown(true);
     }
   }, [editing]);
+
+  // Load navigation as dropdown options
+  useEffect(() => {
+    let mounted = true;
+    async function loadNav() {
+      setNavLoading(true);
+      try {
+        const res = await fetch('/api/admin/navigation');
+        const items = res.ok ? (await res.json()) : [];
+        // Build label with hierarchy e.g., Parent / Child
+        const byId = new Map(items.map(i => [i.id, i]));
+        const labelFor = (it) => {
+          let label = it.name || '';
+          let p = it.parent_id ? byId.get(it.parent_id) : null;
+          const parts = [label];
+          while (p) {
+            parts.unshift(p.name || '');
+            p = p.parent_id ? byId.get(p.parent_id) : null;
+          }
+          return parts.filter(Boolean).join(' / ');
+        };
+        const options = items
+          .filter(it => (it.link && it.link.trim() !== '') && (it.is_active !== false))
+          .map(it => ({ value: it.link, label: `${labelFor(it)} — ${it.link}` }));
+        if (mounted) setNavOptions(options);
+
+        // Bulk check for conflicts on each option and disable those with conflicts
+        try {
+          const checks = await Promise.all(options.map(async (opt) => {
+            const slug = opt.value.startsWith('/') ? opt.value : '/' + opt.value;
+
+            // 1) static route check
+            let staticExists = false;
+            try {
+              const r = await fetch(slug, { headers: { 'x-skip-cms': '1' }, cache: 'no-store' });
+              staticExists = r.ok;
+            } catch {}
+
+            // 2) cms page check
+            let cmsExists = false;
+            try {
+              const pathNoSlash = slug.replace(/^\//, '');
+              const r2 = await fetch(`/api/pages/${pathNoSlash}`, { headers: { 'x-cms-check': '1' }, cache: 'no-store' });
+              cmsExists = r2.ok;
+            } catch {}
+
+            // If editing and option equals the page's current slug, don't treat as conflict
+            if (editing && ('/' + pathNoSlash) === ensureLeadingSlash(editing.slug)) {
+              cmsExists = false;
+            }
+
+            const conflict = staticExists || cmsExists;
+            const message = staticExists
+              ? 'Static page exists at this path'
+              : (cmsExists ? 'CMS page exists at this path' : '');
+            return [opt.value, { staticExists, cmsExists, conflict, message }];
+          }));
+          if (mounted) setNavConflicts(Object.fromEntries(checks));
+        } catch (e) {
+          if (mounted) setNavConflicts({});
+        }
+      } catch (e) {
+        console.error('Load navigation for page form failed', e);
+        if (mounted) setNavOptions([]);
+      } finally {
+        if (mounted) setNavLoading(false);
+      }
+    }
+    loadNav();
+    return () => { mounted = false; };
+  }, []);
 
   const updateField = (key, value) => setForm(prev => ({ ...prev, [key]: value }));
 
@@ -177,6 +255,52 @@ function PageForm({ onClose, onSaved, editing }) {
     if (!s) return s;
     return s.startsWith('/') ? s : '/' + s;
   };
+
+  // Check for route conflicts whenever slug changes
+  useEffect(() => {
+    let cancelled = false;
+    async function check() {
+      const slug = ensureLeadingSlash((form.slug || '').trim());
+      if (!slug) {
+        if (!cancelled) setRouteCheck({ checking: false, staticExists: false, cmsExists: false, conflict: false, message: '' });
+        return;
+      }
+      if (!cancelled) setRouteCheck(prev => ({ ...prev, checking: true }));
+      try {
+        // 1) Check if a static route exists (skip CMS rewrite)
+        let staticExists = false;
+        try {
+          const res = await fetch(slug, { headers: { 'x-skip-cms': '1' }, cache: 'no-store' });
+          staticExists = res.ok; // 200 for an existing static page
+        } catch {}
+
+        // 2) Check if a CMS page already exists for the slug
+        let cmsExists = false;
+        try {
+          const pathNoSlash = slug.replace(/^\//, '');
+          const res2 = await fetch(`/api/pages/${pathNoSlash}`, { headers: { 'x-cms-check': '1' }, cache: 'no-store' });
+          cmsExists = res2.ok;
+        } catch {}
+
+        // When editing, allow same page id; API doesn't return id here, so keep strict warning if cmsExists and slug !== original
+        let conflict = false;
+        let message = '';
+        if (staticExists) {
+          conflict = true;
+          message = 'A static page already exists at this path. Pick another navigation link or use a different path.';
+        } else if (cmsExists && (!editing || (editing && ensureLeadingSlash(editing.slug) !== slug))) {
+          conflict = true;
+          message = 'A CMS page already exists at this path. Choose a different link/path.';
+        }
+
+        if (!cancelled) setRouteCheck({ checking: false, staticExists, cmsExists, conflict, message });
+      } catch (e) {
+        if (!cancelled) setRouteCheck({ checking: false, staticExists: false, cmsExists: false, conflict: false, message: '' });
+      }
+    }
+    const t = setTimeout(check, 300);
+    return () => { cancelled = true; clearTimeout(t); };
+  }, [form.slug, editing]);
 
   const save = async (e) => {
     e.preventDefault();
@@ -221,9 +345,43 @@ function PageForm({ onClose, onSaved, editing }) {
               <input value={form.title} onChange={(e) => updateField('title', e.target.value)} required className="mt-1 w-full border rounded px-3 py-2" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">Slug (path)</label>
-              <input value={form.slug} onChange={(e) => updateField('slug', e.target.value)} required placeholder="/ministry/about" className="mt-1 w-full border rounded px-3 py-2" />
-              <p className="text-xs text-gray-500 mt-1">This page will be available at <code>/p&lt;slug&gt;</code>. Example: slug "/ministry/about" &rarr; URL "/p/ministry/about"</p>
+              <div className="flex items-center justify-between">
+                <label className="block text-sm font-medium text-gray-700">Path</label>
+                <label className="text-xs text-gray-600 flex items-center gap-2">
+                  <input type="checkbox" className="mr-1" checked={useNavDropdown} onChange={(e) => setUseNavDropdown(e.target.checked)} />
+                  Pick from navigation
+                </label>
+              </div>
+              {useNavDropdown ? (
+                <select
+                  className="mt-1 w-full border rounded px-3 py-2"
+                  value={form.slug || ''}
+                  onChange={(e) => updateField('slug', e.target.value)}
+                >
+                  <option value="">{navLoading ? 'Loading navigation…' : 'Select a navigation link'}</option>
+                  {navOptions.map(opt => {
+                    const info = navConflicts[opt.value] || {};
+                    const disabled = !!info.conflict;
+                    const label = disabled ? `${opt.label} — (${info.message || 'already exists'})` : opt.label;
+                    return (
+                      <option key={opt.value} value={opt.value} disabled={disabled} title={info.message || ''}>
+                        {label}
+                      </option>
+                    );
+                  })}
+                </select>
+              ) : (
+                <input value={form.slug} onChange={(e) => updateField('slug', e.target.value)} placeholder="/ministry/about" className="mt-1 w-full border rounded px-3 py-2" />
+              )}
+              <p className="text-xs text-gray-500 mt-1">This page will be available at <code>/p&lt;slug&gt;</code>. Example: slug "/ministry/about" → URL "/p/ministry/about"</p>
+              {form.slug ? (
+                <p className="text-xs text-blue-700 mt-1">Preview URL: <code>/p{ensureLeadingSlash(form.slug)}</code></p>
+              ) : null}
+              {routeCheck.message ? (
+                <p className={`text-xs mt-1 ${routeCheck.conflict ? 'text-red-700' : 'text-gray-600'}`}>
+                  {routeCheck.checking ? 'Checking route… ' : ''}{routeCheck.message}
+                </p>
+              ) : null}
             </div>
             <div className="flex items-center space-x-2 mt-6">
               <input id="is_active" type="checkbox" checked={form.is_active} onChange={(e) => updateField('is_active', e.target.checked)} />
@@ -265,7 +423,7 @@ function PageForm({ onClose, onSaved, editing }) {
 
           <div className="flex justify-end space-x-3 pt-2">
             <button type="button" onClick={onClose} className="px-4 py-2 border rounded">Cancel</button>
-            <button disabled={saving} className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-60">{saving ? 'Saving...' : 'Save Page'}</button>
+            <button disabled={saving || routeCheck.conflict || routeCheck.checking || !form.slug} className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-60">{saving ? 'Saving...' : 'Save Page'}</button>
           </div>
         </form>
       </div>

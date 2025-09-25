@@ -11,6 +11,10 @@ export async function middleware(req) {
   if (req.method !== 'GET') return NextResponse.next();
   if (IGNORE_PREFIXES.some((p) => pathname.startsWith(p))) return NextResponse.next();
 
+  // Allow admin/tools to bypass CMS rewrite for route existence checks
+  const skipCms = req.headers.get('x-skip-cms');
+  if (skipCms === '1') return NextResponse.next();
+
   // Root path handled by existing index page
   if (pathname === '/') return NextResponse.next();
 
