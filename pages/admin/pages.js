@@ -373,9 +373,9 @@ function PageForm({ onClose, onSaved, editing }) {
               ) : (
                 <input value={form.slug} onChange={(e) => updateField('slug', e.target.value)} placeholder="/ministry/about" className="mt-1 w-full border rounded px-3 py-2" />
               )}
-              <p className="text-xs text-gray-500 mt-1">This page will be available at <code>/p&lt;slug&gt;</code>. Example: slug "/ministry/about" → URL "/p/ministry/about"</p>
+              <p className="text-xs text-gray-500 mt-1">This page will be available at <code>&lt;slug&gt;</code>. Example: slug "/ministry/about" → URL "/ministry/about"</p>
               {form.slug ? (
-                <p className="text-xs text-blue-700 mt-1">Preview URL: <code>/p{ensureLeadingSlash(form.slug)}</code></p>
+                <p className="text-xs text-blue-700 mt-1">Preview URL: <code>{ensureLeadingSlash(form.slug)}</code></p>
               ) : null}
               {routeCheck.message ? (
                 <p className={`text-xs mt-1 ${routeCheck.conflict ? 'text-red-700' : 'text-gray-600'}`}>

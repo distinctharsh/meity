@@ -18,21 +18,8 @@ export async function middleware(req) {
   // Root path handled by existing index page
   if (pathname === '/') return NextResponse.next();
 
-  try {
-    // Call internal API to check if a CMS page exists for this slug
-    const slug = pathname.startsWith('/') ? pathname.slice(1) : pathname;
-    const url = `${nextUrl.origin}/api/pages/${slug}`; // our API returns 200 if page exists
-    const res = await fetch(url, { headers: { 'x-cms-check': '1' }, cache: 'no-store' });
-
-    if (res.ok) {
-      // Rewrite to our internal renderer at /p/<slug>
-      const rewriteUrl = new URL(`/p${pathname}`, nextUrl.origin);
-      return NextResponse.rewrite(rewriteUrl);
-    }
-  } catch (e) {
-    // Fail open (continue normal routing) on any error
-  }
-
+  // No rewrite needed anymore. We now render CMS pages directly via pages/[...slug].js
+  // Static pages keep highest priority; dynamic catch-all will handle CMS if exists.
   return NextResponse.next();
 }
 
