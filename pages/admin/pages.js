@@ -369,7 +369,7 @@ function PageForm({ onClose, onSaved, editing }) {
                       <option key={opt.value} value={opt.value} disabled={disabled} title={info.message || ''}>
                         {label}
                       </option>
-                    );00
+                    );
                   })}
                 </select>
               ) : (
