@@ -30,7 +30,10 @@ export default function NewNavbar() {
     async function loadNav() {
       try {
         const res = await fetchWithCacheBusting('/api/navigation');
-        if (!res.ok) throw new Error('Failed to load navigation');
+        if (!res.ok) {
+          console.error('Failed to load navigation:', res.status, res.statusText);
+          return; // Return early instead of throwing error
+        }
         const data = await res.json();
 
         // Transform API tree into component's expected shape
