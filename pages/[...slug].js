@@ -35,18 +35,48 @@ export async function getServerSideProps(context) {
 }
 
 export default function DynamicPage({ page }) {
-  const html = page?.content_json?.html || '';
-  const css = page?.content_json?.css || '';
+  const rawHtml = page?.content_json?.html || '';
+  const rawCss = page?.content_json?.css || '';
+  // Strip any <script> tags from user-provided HTML for safety
+  const safeHtml = rawHtml.replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, '');
+
+  // Naive CSS scoping: prefix selectors with .cms-content, including inside @media
+  const scopeSelectors = (cssText, scope) => {
+    if (!cssText) return '';
+    // Handle @media blocks first
+    const scopedMedia = cssText.replace(/@media[^{]+{([\s\S]*?)}/g, (full, inner) => {
+      const innerScoped = scopeSelectors(inner, scope);
+      return full.replace(inner, innerScoped);
+    });
+    // Now scope simple rules (not at-rules)
+    return scopedMedia.replace(/(^|})([^@}][^{]+){/g, (match, brace, selectorPart) => {
+      // Split multiple selectors
+      const scopedSel = selectorPart
+        .split(',')
+        .map((s) => s.trim())
+        .filter(Boolean)
+        .map((s) => {
+          // Avoid scoping keyframes selectors etc.
+          if (s.startsWith('@') || s.length === 0) return s;
+          // If selector is html/body, still prefix to avoid global effects
+          return `${scope} ${s}`;
+        })
+        .join(', ');
+      return `${brace}${scopedSel}{`;
+    });
+  };
+
+  const scopedCss = scopeSelectors(rawCss, '.cms-content');
   const [hydrated, setHydrated] = useState(false);
   useEffect(() => { setHydrated(true); }, []);
   return (
     <main id="main">
       {/* Attach dynamic Page Header if configured for this page path */}
       <PageHeader pagePath={page?.slug} />
-      {css ? <style dangerouslySetInnerHTML={{ __html: css }} /> : null}
+      {scopedCss ? <style dangerouslySetInnerHTML={{ __html: scopedCss }} /> : null}
       <div className="gi-container" suppressHydrationWarning>
         {hydrated ? (
-          <div dangerouslySetInnerHTML={{ __html: html }} suppressHydrationWarning />
+          <div className="cms-content" dangerouslySetInnerHTML={{ __html: safeHtml }} suppressHydrationWarning />
         ) : null}
       </div>
       <Footer />
