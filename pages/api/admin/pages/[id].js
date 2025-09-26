@@ -18,8 +18,19 @@ export default async function handler(req, res) {
     }
   } else if (req.method === 'PUT') {
     try {
-      const { title, slug, parent_id, hero_title, hero_subtitle, hero_image_url, content_html, content_css, is_active, display_order } = req.body;
-      const contentJson = JSON.stringify({ html: content_html || '', css: content_css || '' });
+      const { title, slug, parent_id, hero_title, hero_subtitle, hero_image_url, content_html, content_css, content_js, content_json, is_active, display_order } = req.body;
+      // Accept combined content_json or legacy fields
+      let contentObj = { html: '', css: '', js: '' };
+      if (content_json && typeof content_json === 'object') {
+        contentObj.html = content_json.html || '';
+        contentObj.css = content_json.css || '';
+        contentObj.js = content_json.js || '';
+      } else {
+        contentObj.html = content_html || '';
+        contentObj.css = content_css || '';
+        contentObj.js = content_js || '';
+      }
+      const contentJson = JSON.stringify(contentObj);
       const [result] = await pool.query(
         `UPDATE pages SET title = ?, slug = ?, parent_id = ?, hero_title = ?, hero_subtitle = ?, hero_image_url = ?, tabs_json = ?, content_json = ?, is_active = ?, display_order = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?`,
         [title, slug, parent_id || null, hero_title || null, hero_subtitle || null, hero_image_url || null, null, contentJson, is_active !== false, display_order ?? 0, id]

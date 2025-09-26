@@ -1,5 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import AdminLayout from '@/components/admin/AdminLayout';
+
+import dynamic from 'next/dynamic';
+
+const MonacoEditor = dynamic(() => import('@monaco-editor/react'), { ssr: false });
 
 export default function PagesManagement() {
   const [pages, setPages] = useState([]);
@@ -23,6 +27,8 @@ export default function PagesManagement() {
       setLoading(false);
     }
   };
+
+  
 
   const handleAdd = () => {
     setEditing(null);
@@ -141,6 +147,7 @@ export default function PagesManagement() {
   );
 }
 
+// Using Monaco-based code editors (HTML/CSS/JS) with live preview
 function PageForm({ onClose, onSaved, editing }) {
   const [form, setForm] = useState({
     title: '',
@@ -150,6 +157,8 @@ function PageForm({ onClose, onSaved, editing }) {
     hero_image_url: '',
     content_html: '',
     content_css: '',
+    content_js: '',
+    no_scope: false,
     is_active: true,
     display_order: 0,
   });
@@ -170,6 +179,8 @@ function PageForm({ onClose, onSaved, editing }) {
         hero_image_url: editing.hero_image_url || '',
         content_html: safeExtractHtml(editing?.content_json),
         content_css: safeExtractCss(editing?.content_json),
+        content_js: safeExtractJs(editing?.content_json),
+        no_scope: (typeof editing?.content_json === 'string' ? (JSON.parse(editing.content_json)?.no_scope === true) : (editing?.content_json?.no_scope === true)) || false,
         is_active: editing.is_active !== false,
         display_order: editing.display_order ?? 0,
       });
@@ -252,6 +263,42 @@ function PageForm({ onClose, onSaved, editing }) {
 
   const updateField = (key, value) => setForm(prev => ({ ...prev, [key]: value }));
 
+  // Lazy-load Prettier in the browser for formatting
+  const ensurePrettierLoaded = async () => {
+    if (typeof window === 'undefined') return null;
+    if (window.prettier && window.prettierPlugins) return window.prettier;
+    const loadScript = (src) => new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      s.src = src;
+      s.async = true;
+      s.onload = resolve;
+      s.onerror = reject;
+      document.head.appendChild(s);
+    });
+    try {
+      await loadScript('https://unpkg.com/prettier@2.8.8/standalone.js');
+      await loadScript('https://unpkg.com/prettier@2.8.8/parser-html.js');
+      await loadScript('https://unpkg.com/prettier@2.8.8/parser-postcss.js');
+      await loadScript('https://unpkg.com/prettier@2.8.8/parser-babel.js');
+      return window.prettier;
+    } catch (e) {
+      console.warn('Prettier load failed', e);
+      return null;
+    }
+  };
+
+  const formatWithPrettier = async (lang, code) => {
+    const prettier = await ensurePrettierLoaded();
+    if (!prettier || !window.prettierPlugins) return code;
+    try {
+      const parser = lang === 'html' ? 'html' : (lang === 'css' ? 'css' : 'babel');
+      return prettier.format(code || '', { parser, plugins: window.prettierPlugins });
+    } catch (e) {
+      console.warn('Prettier format failed', e);
+      return code;
+    }
+  };
+
   const ensureLeadingSlash = (s) => {
     if (!s) return s;
     return s.startsWith('/') ? s : '/' + s;
@@ -304,6 +351,14 @@ function PageForm({ onClose, onSaved, editing }) {
     return () => { cancelled = true; clearTimeout(t); };
   }, [form.slug, editing]);
 
+  // Build the live preview document when code changes
+  const previewDoc = useMemo(
+    () => buildPreviewDoc(form.content_html, form.content_css, form.content_js),
+    [form.content_html, form.content_css, form.content_js]
+  );
+
+  // removed stray previewDoc from PagesManagement
+
   const save = async (e) => {
     e.preventDefault();
     setSaving(true);
@@ -311,7 +366,16 @@ function PageForm({ onClose, onSaved, editing }) {
       const payload = {
         ...form,
         slug: ensureLeadingSlash(form.slug.trim()),
+        content_json: {
+          html: form.content_html || '',
+          css: form.content_css || '',
+          js: form.content_js || '',
+          no_scope: !!form.no_scope,
+        },
       };
+      delete payload.content_html;
+      delete payload.content_css;
+      delete payload.content_js;
       const url = editing ? `/api/admin/pages/${editing.id}` : '/api/admin/pages';
       const method = editing ? 'PUT' : 'POST';
       const res = await fetch(url, {
@@ -407,20 +471,83 @@ function PageForm({ onClose, onSaved, editing }) {
             </div>
           </div>
 
-
-          {/* Raw HTML/CSS editor */}
+          {/* Code Editors: HTML, CSS, JS with Live Preview */}
           <div className="mt-6">
-            <h3 className="text-lg font-semibold">Page Content</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
-              <div className="md:col-span-1">
-                <label className="block text-sm font-medium text-gray-700">HTML</label>
-                <textarea rows={14} value={form.content_html} onChange={(e) => updateField('content_html', e.target.value)} className="mt-1 w-full border rounded px-3 py-2 font-mono text-sm" placeholder="<div>Your HTML here</div>" />
+            <h3 className="text-lg font-semibold">Page Code</h3>
+            <div className="flex items-center justify-between mt-1">
+              <p className="text-xs text-gray-500">Write raw HTML, CSS, and JavaScript. Live preview is shown alongside. Use the quick insert buttons for common snippets.</p>
+              <label className="text-xs text-gray-700 flex items-center gap-2">
+                <input type="checkbox" checked={form.no_scope} onChange={(e) => updateField('no_scope', e.target.checked)} />
+                Disable CSS scoping (apply CSS globally)
+              </label>
+            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-3">
+              <div className="space-y-3">
+                <div className="border rounded">
+                  <div className="flex items-center justify-between px-2 py-1 border-b bg-gray-50">
+                    <span className="text-xs font-medium">HTML</span>
+                    <div className="flex flex-wrap gap-1">
+                      <button type="button" className="px-2 py-0.5 text-xs border rounded" onClick={() => updateField('content_html', (form.content_html||'') + '\n<div class="container">\n\t<h1>Heading</h1>\n\t<p>Paragraph</p>\n</div>\n')}>div+h1+p</button>
+                      <button type="button" className="px-2 py-0.5 text-xs border rounded" onClick={() => updateField('content_html', (form.content_html||'') + '\n<section class="section">\n\t<h2>Section</h2>\n</section>\n')}>section</button>
+                      <button type="button" className="px-2 py-0.5 text-xs border rounded" onClick={() => updateField('content_html', (form.content_html||'') + '\n<a href="#" class="btn">Link</a>\n')}>link</button>
+                      <button type="button" className="px-2 py-0.5 text-xs border rounded" onClick={() => updateField('content_html', (form.content_html||'') + '\n<div class="grid">\n  <div class="card">Card 1</div>\n  <div class="card">Card 2</div>\n</div>\n')}>grid</button>
+                      <button type="button" className="px-2 py-0.5 text-xs border rounded bg-gray-100" onClick={async () => {
+                        const formatted = await formatWithPrettier('html', form.content_html||'');
+                        updateField('content_html', formatted);
+                      }}>Format</button>
+                    </div>
+                  </div>
+                  <MonacoEditor height={220} language="html" value={form.content_html || ''} onChange={(v) => updateField('content_html', v || '')} options={{ minimap: { enabled: false }, fontSize: 13, wordWrap: 'on', lineNumbers: 'on' }} />
+                </div>
+                <div className="border rounded">
+                  <div className="flex items-center justify-between px-2 py-1 border-b bg-gray-50">
+                    <span className="text-xs font-medium">CSS</span>
+                    <div className="flex flex-wrap gap-1">
+                      <button type="button" className="px-2 py-0.5 text-xs border rounded" onClick={() => updateField('content_css', (form.content_css||'') + '\n.container{max-width:1200px;margin:0 auto;padding:16px;}\n')}>.container</button>
+                      <button type="button" className="px-2 py-0.5 text-xs border rounded" onClick={() => updateField('content_css', (form.content_css||'') + '\n.btn{display:inline-block;background:#2563eb;color:#fff;padding:8px 12px;border-radius:6px;}\n')}>.btn</button>
+                      <button type="button" className="px-2 py-0.5 text-xs border rounded" onClick={() => updateField('content_css', (form.content_css||'') + '\n.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem;}\n.card{border:1px solid #e5e7eb;border-radius:8px;padding:12px;}\n')}>grid/card</button>
+                      <button type="button" className="px-2 py-0.5 text-xs border rounded" onClick={() => updateField('content_css', (form.content_css||'') + '\n@media (max-width: 768px){\n  .grid{grid-template-columns:1fr;}\n}\n')}>@media</button>
+                      <button type="button" className="px-2 py-0.5 text-xs border rounded bg-gray-100" onClick={async () => {
+                        const formatted = await formatWithPrettier('css', form.content_css||'');
+                        updateField('content_css', formatted);
+                      }}>Format</button>
+                    </div>
+                  </div>
+                  <MonacoEditor height={180} language="css" value={form.content_css || ''} onChange={(v) => updateField('content_css', v || '')} options={{ minimap: { enabled: false }, fontSize: 13, wordWrap: 'on', lineNumbers: 'on' }} />
+                </div>
+                <div className="border rounded">
+                  <div className="flex items-center justify-between px-2 py-1 border-b bg-gray-50">
+                    <span className="text-xs font-medium">JavaScript</span>
+                    <div className="flex flex-wrap gap-1">
+                      <button type="button" className="px-2 py-0.5 text-xs border rounded" onClick={() => updateField('content_js', (form.content_js||'') + '\ndocument.addEventListener("DOMContentLoaded",()=>{\n\tconsole.log("Ready");\n});\n')}>DOMContentLoaded</button>
+                      <button type="button" className="px-2 py-0.5 text-xs border rounded" onClick={() => updateField('content_js', (form.content_js||'') + '\nconst el=document.querySelector(".btn");\nif(el){ el.addEventListener("click",(e)=>{ e.preventDefault(); alert("Clicked"); }); }\n')}>.btn click</button>
+                      <button type="button" className="px-2 py-0.5 text-xs border rounded" onClick={() => updateField('content_js', (form.content_js||'') + '\nwindow.addEventListener("resize",()=>{ console.log("Resized", window.innerWidth); });\n')}>onresize</button>
+                      <button type="button" className="px-2 py-0.5 text-xs border rounded bg-gray-100" onClick={async () => {
+                        const formatted = await formatWithPrettier('js', form.content_js||'');
+                        updateField('content_js', formatted);
+                      }}>Format</button>
+                    </div>
+                  </div>
+                  <MonacoEditor height={180} language="javascript" value={form.content_js || ''} onChange={(v) => updateField('content_js', v || '')} options={{ minimap: { enabled: false }, fontSize: 13, wordWrap: 'on', lineNumbers: 'on' }} />
+                </div>
               </div>
-              <div className="md:col-span-1">
-                <label className="block text-sm font-medium text-gray-700">CSS</label>
-                <textarea rows={14} value={form.content_css} onChange={(e) => updateField('content_css', e.target.value)} className="mt-1 w-full border rounded px-3 py-2 font-mono text-sm" placeholder=".myclass { color: red; }" />
+
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <h4 className="text-sm font-medium">Live Preview</h4>
+                  <button type="button" className="px-2 py-1 text-xs border rounded" onClick={() => { updateField('content_html', form.content_html); }}>Refresh</button>
+                </div>
+                <div className="border rounded overflow-hidden">
+                  <iframe
+                    title="preview"
+                    className="w-full h-[620px] bg-white"
+                    sandbox="allow-scripts allow-same-origin"
+                    srcDoc={previewDoc}
+                  />
+                </div>
               </div>
             </div>
+            <p className="text-xs text-gray-500 mt-2">Note: This code is inserted as-is (including scripts). Ensure only trusted admins can edit pages.</p>
           </div>
 
           <div className="flex justify-end space-x-3 pt-2">
@@ -451,4 +578,35 @@ function safeExtractCss(content_json) {
   } catch {
     return '';
   }
+}
+
+function safeExtractJs(content_json) {
+  try {
+    if (!content_json) return '';
+    const j = typeof content_json === 'string' ? JSON.parse(content_json) : content_json;
+    return j?.js || '';
+  } catch {
+    return '';
+  }
+}
+
+function buildPreviewDoc(html = '', css = '', js = '') {
+  // Minimal HTML document with embedded CSS and JS for the iframe preview
+  return `<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      html, body { margin: 0; padding: 12px; box-sizing: border-box; font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; }
+      ${css || ''}
+    </style>
+  </head>
+  <body>
+    ${html || ''}
+    <script>
+      try { ${js || ''} } catch (e) { console.error('Preview script error:', e); }
+    </script>
+  </body>
+</html>`;
 }

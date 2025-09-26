@@ -15,7 +15,7 @@ export default async function handler(req, res) {
     }
   } else if (req.method === 'POST') {
     try {
-      const { title, slug, parent_id, template_id, hero_title, hero_subtitle, hero_image_url, content_html, content_css, is_active = true, display_order = 0 } = req.body;
+      const { title, slug, parent_id, template_id, hero_title, hero_subtitle, hero_image_url, content_html, content_css, content_js, content_json, is_active = true, display_order = 0 } = req.body;
       if (!title || !slug) {
         return res.status(400).json({ message: 'title and slug are required' });
       }
@@ -36,7 +36,19 @@ export default async function handler(req, res) {
       if (!tplId) {
         return res.status(500).json({ message: 'No active page template found. Please create a template first.' });
       }
-      const contentJson = JSON.stringify({ html: content_html || '', css: content_css || '' });
+      // Accept either combined content_json or legacy content_html/content_css/content_js
+      let contentObj = { html: '', css: '', js: '', no_scope: false };
+      if (content_json && typeof content_json === 'object') {
+        contentObj.html = content_json.html || '';
+        contentObj.css = content_json.css || '';
+        contentObj.js = content_json.js || '';
+        contentObj.no_scope = content_json.no_scope === true;
+      } else {
+        contentObj.html = content_html || '';
+        contentObj.css = content_css || '';
+        contentObj.js = content_js || '';
+      }
+      const contentJson = JSON.stringify(contentObj);
       const [result] = await pool.query(
         `INSERT INTO pages (title, slug, parent_id, template_id, hero_title, hero_subtitle, hero_image_url, tabs_json, content_json, is_active, display_order)
          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,

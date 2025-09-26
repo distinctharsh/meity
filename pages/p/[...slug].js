@@ -33,15 +33,56 @@ export async function getServerSideProps(context) {
 }
 
 export default function DynamicPage({ page }) {
-  const html = page?.content_json?.html || '';
-  const css = page?.content_json?.css || '';
+  const rawHtml = page?.content_json?.html || '';
+  const rawCss = page?.content_json?.css || '';
+  const rawJs = page?.content_json?.js || '';
+  const noScope = page?.content_json?.no_scope === true;
+
+  const safeHtml = rawHtml.replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, '');
+
+  const scopeSelectors = (cssText, scope) => {
+    if (!cssText) return '';
+    const scopedMedia = cssText.replace(/@media[^{}]+{([\s\S]*?)}/g, (full, inner) => {
+      const innerScoped = scopeSelectors(inner, scope);
+      return full.replace(inner, innerScoped);
+    });
+    return scopedMedia.replace(/(^|})([^@}][^{]+){/g, (match, brace, selectorPart) => {
+      const scopedSel = selectorPart
+        .split(',')
+        .map((s) => s.trim())
+        .filter(Boolean)
+        .map((s) => (s.startsWith('@') || s.length === 0 ? s : `${scope} ${s}`))
+        .join(', ');
+      return `${brace}${scopedSel}{`;
+    });
+  };
+
+  const scopedCss = noScope ? rawCss : scopeSelectors(rawCss, '.cms-content');
+
+  React.useEffect(() => {
+    const id = 'cms-inline-js';
+    const prev = document.getElementById(id);
+    if (prev) prev.remove();
+    if (rawJs && typeof window !== 'undefined') {
+      const s = document.createElement('script');
+      s.id = id;
+      s.type = 'text/javascript';
+      s.defer = false;
+      s.textContent = rawJs;
+      document.body.appendChild(s);
+    }
+    return () => {
+      const el = document.getElementById(id);
+      if (el) el.remove();
+    };
+  }, [rawJs]);
+
   return (
     <main id="main">
-      {/* Attach dynamic Page Header if configured for this page path */}
       <PageHeader pagePath={page?.slug} />
-      {css ? <style dangerouslySetInnerHTML={{ __html: css }} /> : null}
-      <div className="gi-container">
-        <div dangerouslySetInnerHTML={{ __html: html }} />
+      {scopedCss ? <style dangerouslySetInnerHTML={{ __html: scopedCss }} /> : null}
+      <div className="gi-container" suppressHydrationWarning>
+        <div className="cms-content" dangerouslySetInnerHTML={{ __html: safeHtml }} suppressHydrationWarning />
       </div>
       <Footer />
     </main>
