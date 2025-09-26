@@ -168,6 +168,9 @@ function PageForm({ onClose, onSaved, editing }) {
   const [navLoading, setNavLoading] = useState(true);
   const [routeCheck, setRouteCheck] = useState({ checking: false, staticExists: false, cmsExists: false, conflict: false, message: '' });
   const [navConflicts, setNavConflicts] = useState({}); // { '/ministry/about': { staticExists, cmsExists, conflict, message } }
+  const [activeTab, setActiveTab] = useState('html');
+  const [leftPanePct, setLeftPanePct] = useState(60);
+  const [dragging, setDragging] = useState(false);
 
   useEffect(() => {
     if (editing) {
@@ -299,6 +302,25 @@ function PageForm({ onClose, onSaved, editing }) {
     }
   };
 
+  // Handle splitter drag to resize editor/preview
+  useEffect(() => {
+    const onMove = (e) => {
+      if (!dragging) return;
+      const container = document.getElementById('cms-editor-split');
+      if (!container) return;
+      const rect = container.getBoundingClientRect();
+      const pct = ((e.clientX - rect.left) / rect.width) * 100;
+      setLeftPanePct(Math.max(30, Math.min(75, pct)));
+    };
+    const onUp = () => setDragging(false);
+    window.addEventListener('mousemove', onMove);
+    window.addEventListener('mouseup', onUp);
+    return () => {
+      window.removeEventListener('mousemove', onMove);
+      window.removeEventListener('mouseup', onUp);
+    };
+  }, [dragging]);
+
   const ensureLeadingSlash = (s) => {
     if (!s) return s;
     return s.startsWith('/') ? s : '/' + s;
@@ -399,12 +421,12 @@ function PageForm({ onClose, onSaved, editing }) {
 
   return (
     <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg shadow-lg w-full max-w-3xl max-h-[95vh] overflow-y-auto">
+      <div className="bg-white rounded-lg shadow-lg w-full max-w-7xl h-[92vh] overflow-hidden flex flex-col">
         <div className="px-6 py-4 border-b flex items-center justify-between">
           <h2 className="text-xl font-semibold">{editing ? 'Edit Page' : 'Create Page'}</h2>
           <button onClick={onClose} className="text-gray-600 hover:text-gray-900">✕</button>
         </div>
-        <form onSubmit={save} className="p-6 space-y-5">
+        <form onSubmit={save} className="p-6 space-y-5 flex-1 overflow-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700">Title</label>
@@ -471,79 +493,78 @@ function PageForm({ onClose, onSaved, editing }) {
             </div>
           </div>
 
-          {/* Code Editors: HTML, CSS, JS with Live Preview */}
+          {/* Code Editors: Tabbed Monaco with Resizable Live Preview */}
           <div className="mt-6">
             <h3 className="text-lg font-semibold">Page Code</h3>
             <div className="flex items-center justify-between mt-1">
-              <p className="text-xs text-gray-500">Write raw HTML, CSS, and JavaScript. Live preview is shown alongside. Use the quick insert buttons for common snippets.</p>
+              <p className="text-xs text-gray-500">Write raw HTML, CSS, and JavaScript. Live preview on the right. Drag the divider to resize.</p>
               <label className="text-xs text-gray-700 flex items-center gap-2">
                 <input type="checkbox" checked={form.no_scope} onChange={(e) => updateField('no_scope', e.target.checked)} />
                 Disable CSS scoping (apply CSS globally)
               </label>
             </div>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-3">
-              <div className="space-y-3">
-                <div className="border rounded">
-                  <div className="flex items-center justify-between px-2 py-1 border-b bg-gray-50">
-                    <span className="text-xs font-medium">HTML</span>
-                    <div className="flex flex-wrap gap-1">
-                      <button type="button" className="px-2 py-0.5 text-xs border rounded" onClick={() => updateField('content_html', (form.content_html||'') + '\n<div class="container">\n\t<h1>Heading</h1>\n\t<p>Paragraph</p>\n</div>\n')}>div+h1+p</button>
-                      <button type="button" className="px-2 py-0.5 text-xs border rounded" onClick={() => updateField('content_html', (form.content_html||'') + '\n<section class="section">\n\t<h2>Section</h2>\n</section>\n')}>section</button>
-                      <button type="button" className="px-2 py-0.5 text-xs border rounded" onClick={() => updateField('content_html', (form.content_html||'') + '\n<a href="#" class="btn">Link</a>\n')}>link</button>
-                      <button type="button" className="px-2 py-0.5 text-xs border rounded" onClick={() => updateField('content_html', (form.content_html||'') + '\n<div class="grid">\n  <div class="card">Card 1</div>\n  <div class="card">Card 2</div>\n</div>\n')}>grid</button>
-                      <button type="button" className="px-2 py-0.5 text-xs border rounded bg-gray-100" onClick={async () => {
-                        const formatted = await formatWithPrettier('html', form.content_html||'');
-                        updateField('content_html', formatted);
-                      }}>Format</button>
-                    </div>
+            <div id="cms-editor-split" className="mt-3 h-[68vh] border rounded overflow-hidden bg-white flex">
+              {/* Left pane: tabs + editor */}
+              <div className="h-full flex flex-col" style={{ width: `${leftPanePct}%` }}>
+                <div className="flex items-center justify-between border-b bg-gray-50 px-2 h-10">
+                  <div className="flex items-center gap-1">
+                    {['html','css','js'].map(t => (
+                      <button key={t} type="button" className={`px-3 py-1 text-xs rounded ${activeTab===t ? 'bg-white border shadow-sm' : 'hover:bg-gray-100'}`} onClick={() => setActiveTab(t)}>{t.toUpperCase()}</button>
+                    ))}
                   </div>
-                  <MonacoEditor height={220} language="html" value={form.content_html || ''} onChange={(v) => updateField('content_html', v || '')} options={{ minimap: { enabled: false }, fontSize: 13, wordWrap: 'on', lineNumbers: 'on' }} />
+                  <div className="flex items-center gap-1">
+                    {activeTab==='html' && (
+                      <div className="flex gap-1">
+                        <button type="button" className="px-2 py-0.5 text-xs border rounded" onClick={() => updateField('content_html', (form.content_html||'') + '\n<div class="container">\n\t<h1>Heading</h1>\n\t<p>Paragraph</p>\n</div>\n')}>div+h1+p</button>
+                        <button type="button" className="px-2 py-0.5 text-xs border rounded" onClick={() => updateField('content_html', (form.content_html||'') + '\n<section class="section">\n\t<h2>Section</h2>\n</section>\n')}>section</button>
+                        <button type="button" className="px-2 py-0.5 text-xs border rounded" onClick={() => updateField('content_html', (form.content_html||'') + '\n<a href=\"#\" class=\"btn\">Link</a>\n')}>link</button>
+                      </div>
+                    )}
+                    {activeTab==='css' && (
+                      <div className="flex gap-1">
+                        <button type="button" className="px-2 py-0.5 text-xs border rounded" onClick={() => updateField('content_css', (form.content_css||'') + '\n.container{max-width:1200px;margin:0 auto;padding:16px;}\n')}>.container</button>
+                        <button type="button" className="px-2 py-0.5 text-xs border rounded" onClick={() => updateField('content_css', (form.content_css||'') + '\n.btn{display:inline-block;background:#2563eb;color:#fff;padding:8px 12px;border-radius:6px;}\n')}>.btn</button>
+                      </div>
+                    )}
+                    {activeTab==='js' && (
+                      <div className="flex gap-1">
+                        <button type="button" className="px-2 py-0.5 text-xs border rounded" onClick={() => updateField('content_js', (form.content_js||'') + '\ndocument.addEventListener(\"DOMContentLoaded\",()=>{\n\tconsole.log(\"Ready\");\n});\n')}>DOMContentLoaded</button>
+                        <button type="button" className="px-2 py-0.5 text-xs border rounded" onClick={() => updateField('content_js', (form.content_js||'') + '\nconst el=document.querySelector(\".btn\");\nif(el){ el.addEventListener(\"click\",(e)=>{ e.preventDefault(); alert(\"Clicked\"); }); }\n')}>.btn click</button>
+                      </div>
+                    )}
+                    <button type="button" className="px-2 py-0.5 text-xs border rounded bg-gray-100" onClick={async () => {
+                      if (activeTab==='html') updateField('content_html', await formatWithPrettier('html', form.content_html||''));
+                      if (activeTab==='css') updateField('content_css', await formatWithPrettier('css', form.content_css||''));
+                      if (activeTab==='js') updateField('content_js', await formatWithPrettier('js', form.content_js||''));
+                    }}>Format</button>
+                  </div>
                 </div>
-                <div className="border rounded">
-                  <div className="flex items-center justify-between px-2 py-1 border-b bg-gray-50">
-                    <span className="text-xs font-medium">CSS</span>
-                    <div className="flex flex-wrap gap-1">
-                      <button type="button" className="px-2 py-0.5 text-xs border rounded" onClick={() => updateField('content_css', (form.content_css||'') + '\n.container{max-width:1200px;margin:0 auto;padding:16px;}\n')}>.container</button>
-                      <button type="button" className="px-2 py-0.5 text-xs border rounded" onClick={() => updateField('content_css', (form.content_css||'') + '\n.btn{display:inline-block;background:#2563eb;color:#fff;padding:8px 12px;border-radius:6px;}\n')}>.btn</button>
-                      <button type="button" className="px-2 py-0.5 text-xs border rounded" onClick={() => updateField('content_css', (form.content_css||'') + '\n.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem;}\n.card{border:1px solid #e5e7eb;border-radius:8px;padding:12px;}\n')}>grid/card</button>
-                      <button type="button" className="px-2 py-0.5 text-xs border rounded" onClick={() => updateField('content_css', (form.content_css||'') + '\n@media (max-width: 768px){\n  .grid{grid-template-columns:1fr;}\n}\n')}>@media</button>
-                      <button type="button" className="px-2 py-0.5 text-xs border rounded bg-gray-100" onClick={async () => {
-                        const formatted = await formatWithPrettier('css', form.content_css||'');
-                        updateField('content_css', formatted);
-                      }}>Format</button>
-                    </div>
-                  </div>
-                  <MonacoEditor height={180} language="css" value={form.content_css || ''} onChange={(v) => updateField('content_css', v || '')} options={{ minimap: { enabled: false }, fontSize: 13, wordWrap: 'on', lineNumbers: 'on' }} />
-                </div>
-                <div className="border rounded">
-                  <div className="flex items-center justify-between px-2 py-1 border-b bg-gray-50">
-                    <span className="text-xs font-medium">JavaScript</span>
-                    <div className="flex flex-wrap gap-1">
-                      <button type="button" className="px-2 py-0.5 text-xs border rounded" onClick={() => updateField('content_js', (form.content_js||'') + '\ndocument.addEventListener("DOMContentLoaded",()=>{\n\tconsole.log("Ready");\n});\n')}>DOMContentLoaded</button>
-                      <button type="button" className="px-2 py-0.5 text-xs border rounded" onClick={() => updateField('content_js', (form.content_js||'') + '\nconst el=document.querySelector(".btn");\nif(el){ el.addEventListener("click",(e)=>{ e.preventDefault(); alert("Clicked"); }); }\n')}>.btn click</button>
-                      <button type="button" className="px-2 py-0.5 text-xs border rounded" onClick={() => updateField('content_js', (form.content_js||'') + '\nwindow.addEventListener("resize",()=>{ console.log("Resized", window.innerWidth); });\n')}>onresize</button>
-                      <button type="button" className="px-2 py-0.5 text-xs border rounded bg-gray-100" onClick={async () => {
-                        const formatted = await formatWithPrettier('js', form.content_js||'');
-                        updateField('content_js', formatted);
-                      }}>Format</button>
-                    </div>
-                  </div>
-                  <MonacoEditor height={180} language="javascript" value={form.content_js || ''} onChange={(v) => updateField('content_js', v || '')} options={{ minimap: { enabled: false }, fontSize: 13, wordWrap: 'on', lineNumbers: 'on' }} />
+                <div className="flex-1">
+                  {activeTab==='html' && (
+                    <MonacoEditor height="100%" language="html" value={form.content_html || ''} onChange={(v) => updateField('content_html', v || '')} options={{ minimap: { enabled: false }, fontSize: 14, wordWrap: 'on', lineNumbers: 'on' }} />
+                  )}
+                  {activeTab==='css' && (
+                    <MonacoEditor height="100%" language="css" value={form.content_css || ''} onChange={(v) => updateField('content_css', v || '')} options={{ minimap: { enabled: false }, fontSize: 14, wordWrap: 'on', lineNumbers: 'on' }} />
+                  )}
+                  {activeTab==='js' && (
+                    <MonacoEditor height="100%" language="javascript" value={form.content_js || ''} onChange={(v) => updateField('content_js', v || '')} options={{ minimap: { enabled: false }, fontSize: 14, wordWrap: 'on', lineNumbers: 'on' }} />
+                  )}
                 </div>
               </div>
 
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <h4 className="text-sm font-medium">Live Preview</h4>
-                  <button type="button" className="px-2 py-1 text-xs border rounded" onClick={() => { updateField('content_html', form.content_html); }}>Refresh</button>
+              {/* Splitter */}
+              <div className="w-1.5 cursor-col-resize bg-gray-100 hover:bg-gray-200" onMouseDown={() => setDragging(true)} title="Drag to resize" />
+
+              {/* Right pane: preview */}
+              <div className="h-full flex-1 flex flex-col">
+                <div className="flex items-center justify-between border-b bg-gray-50 px-2 h-10">
+                  <h4 className="text-xs font-medium">Live Preview</h4>
+                  <div className="flex items-center gap-2">
+                    <button type="button" className="px-2 py-0.5 text-xs border rounded" onClick={() => { updateField('content_html', form.content_html); }}>Refresh</button>
+                  </div>
                 </div>
-                <div className="border rounded overflow-hidden">
-                  <iframe
-                    title="preview"
-                    className="w-full h-[620px] bg-white"
-                    sandbox="allow-scripts allow-same-origin"
-                    srcDoc={previewDoc}
-                  />
+                <div className="flex-1">
+                  <iframe title="preview" className="w-full h-full bg-white" sandbox="allow-scripts allow-same-origin" srcDoc={previewDoc} />
                 </div>
               </div>
             </div>
