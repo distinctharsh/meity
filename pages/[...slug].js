@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import pool from '@/lib/db';
 import PageHeader from '@/components/PageHeader';
+import SubNavTabs from '@/components/SubNavTabs';
 import Footer from '@/components/Footer';
 
 export async function getServerSideProps(context) {
@@ -38,7 +39,6 @@ export default function DynamicPage({ page }) {
   const rawHtml = page?.content_json?.html || '';
   const rawCss = page?.content_json?.css || '';
   const rawJs = page?.content_json?.js || '';
-  const noScope = page?.content_json?.no_scope === true;
   // Strip any <script> tags from user-provided HTML for safety
   const safeHtml = rawHtml.replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, '');
 
@@ -68,7 +68,7 @@ export default function DynamicPage({ page }) {
     });
   };
 
-  const scopedCss = noScope ? rawCss : scopeSelectors(rawCss, '.cms-content');
+  const scopedCss = scopeSelectors(rawCss, '.cms-content');
   const [hydrated, setHydrated] = useState(false);
   useEffect(() => { setHydrated(true); }, []);
 
@@ -111,6 +111,8 @@ export default function DynamicPage({ page }) {
     <main id="main">
       {/* Attach dynamic Page Header if configured for this page path */}
       <PageHeader pagePath={page?.slug} />
+      {/* Sub navigation derived from main nav (like About page) */}
+      <SubNavTabs pagePath={page?.slug} />
       <style dangerouslySetInnerHTML={{ __html: baseScopedCss }} />
       {scopedCss ? <style dangerouslySetInnerHTML={{ __html: scopedCss }} /> : null}
       <div className="gi-container" suppressHydrationWarning>

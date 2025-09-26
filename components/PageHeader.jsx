@@ -1,7 +1,16 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
 
-export default function PageHeader({ pagePath }) {
+// Helper: title-case from slug/segment
+function toTitleCase(str = '') {
+  return str
+    .replace(/[-_/]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .replace(/\b\w/g, (m) => m.toUpperCase());
+}
+
+export default function PageHeader({ pagePath, fallbackHeading, fallbackSubheading, fallbackBackgroundUrl }) {
   const router = useRouter();
   const effectivePath = pagePath || router?.pathname || '';
   const [cfg, setCfg] = useState(null);
@@ -22,15 +31,36 @@ export default function PageHeader({ pagePath }) {
     return () => { mounted = false; };
   }, [effectivePath]);
 
-  if (!cfg) return null;
+  // Compute derived breadcrumb info
+  const crumbs = useMemo(() => {
+    const parts = (effectivePath || '').split('/').filter(Boolean);
+    if (parts.length <= 1) return null;
+    const parent = `/${parts[0]}`;
+    return { parent_label: toTitleCase(parts[0]), parent_href: parent };
+  }, [effectivePath]);
 
-  const textColor = cfg.text_color || '#ffffff';
+  // Build final config with sensible defaults if API returned null
+  const final = useMemo(() => {
+    const base = cfg || {};
+    return {
+      heading: base.heading || fallbackHeading || toTitleCase((effectivePath || '').split('/').filter(Boolean).slice(-1)[0] || ''),
+      subheading: base.subheading || fallbackSubheading || '',
+      background_url: base.background_url || fallbackBackgroundUrl || '/images/headers/about-default.jpg',
+      overlay: base.overlay !== undefined ? base.overlay : true,
+      breadcrumb_enabled: base.breadcrumb_enabled !== undefined ? base.breadcrumb_enabled : true,
+      text_color: base.text_color || '#ffffff',
+      parent_label: base.parent_label || crumbs?.parent_label || null,
+      parent_href: base.parent_href || crumbs?.parent_href || null,
+    };
+  }, [cfg, fallbackHeading, fallbackSubheading, fallbackBackgroundUrl, effectivePath, crumbs]);
+
+  const textColor = final.text_color || '#ffffff';
 
   return (
     <section
       className="bg-[#123a6b] text-white px-4 hero-before"
       style={{
-        background: `url('${cfg.background_url}') no-repeat center center`,
+        background: final.background_url ? `url('${final.background_url}') no-repeat center center` : undefined,
         backgroundSize: 'cover',
         paddingTop: '90px',
         paddingBottom: '90px',
@@ -38,26 +68,26 @@ export default function PageHeader({ pagePath }) {
       }}
     >
       <div className="gi-container">
-        {cfg.overlay ? (
+        {final.overlay ? (
           <div className="overlay" style={{
             position: 'absolute', top: 0, left: 0, width: '100%', height: '100%',
             background: 'linear-gradient(90deg, rgb(22, 47, 106) 20%, transparent 70%)'
           }} />
         ) : null}
-        {cfg.breadcrumb_enabled ? (
+        {final.breadcrumb_enabled ? (
           <p className="opacity-99 mb-4" style={{ position: 'relative', zIndex: 1, color: textColor }}>
             <a href="/" className="hover:underline" style={{ color: textColor }}>Home</a>
-            {cfg.parent_label && cfg.parent_href ? (
+            {final.parent_label && final.parent_href ? (
               <>
                 {' '}/{' '}
-                <a href={cfg.parent_href} className="hover:underline" style={{ color: textColor }}>{cfg.parent_label}</a>
+                <a href={final.parent_href} className="hover:underline" style={{ color: textColor }}>{final.parent_label}</a>
               </>
             ) : null}
           </p>
         ) : null}
-        <h1 className="text-4xl font-bold" style={{ position: 'relative', zIndex: 1, color: textColor }}>{cfg.heading}</h1>
-        {cfg.subheading ? (
-          <p className="text-xl md:text-2xl opacity-90" style={{ position: 'relative', zIndex: 1, color: textColor }}>{cfg.subheading}</p>
+        <h1 className="text-4xl font-bold" style={{ position: 'relative', zIndex: 1, color: textColor }}>{final.heading}</h1>
+        {final.subheading ? (
+          <p className="text-xl md:text-2xl opacity-90" style={{ position: 'relative', zIndex: 1, color: textColor }}>{final.subheading}</p>
         ) : null}
       </div>
     </section>
