@@ -158,7 +158,6 @@ function PageForm({ onClose, onSaved, editing }) {
     content_html: '',
     content_css: '',
     content_js: '',
-    no_scope: false,
     is_active: true,
     display_order: 0,
   });
@@ -183,7 +182,6 @@ function PageForm({ onClose, onSaved, editing }) {
         content_html: safeExtractHtml(editing?.content_json),
         content_css: safeExtractCss(editing?.content_json),
         content_js: safeExtractJs(editing?.content_json),
-        no_scope: (typeof editing?.content_json === 'string' ? (JSON.parse(editing.content_json)?.no_scope === true) : (editing?.content_json?.no_scope === true)) || false,
         is_active: editing.is_active !== false,
         display_order: editing.display_order ?? 0,
       });
@@ -392,7 +390,6 @@ function PageForm({ onClose, onSaved, editing }) {
           html: form.content_html || '',
           css: form.content_css || '',
           js: form.content_js || '',
-          no_scope: !!form.no_scope,
         },
       };
       delete payload.content_html;
@@ -498,10 +495,7 @@ function PageForm({ onClose, onSaved, editing }) {
             <h3 className="text-lg font-semibold">Page Code</h3>
             <div className="flex items-center justify-between mt-1">
               <p className="text-xs text-gray-500">Write raw HTML, CSS, and JavaScript. Live preview on the right. Drag the divider to resize.</p>
-              <label className="text-xs text-gray-700 flex items-center gap-2">
-                <input type="checkbox" checked={form.no_scope} onChange={(e) => updateField('no_scope', e.target.checked)} />
-                Disable CSS scoping (apply CSS globally)
-              </label>
+              <span className="text-[10px] text-gray-500">CSS is safely scoped to this page only.</span>
             </div>
             <div id="cms-editor-split" className="mt-3 h-[68vh] border rounded overflow-hidden bg-white flex">
               {/* Left pane: tabs + editor */}
