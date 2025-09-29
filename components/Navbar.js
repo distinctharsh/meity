@@ -110,10 +110,12 @@ export default function NewNavbar() {
                       }
                     }}
                   >
-                    <span className="leading-none text-[22px] " style={{ fontWeight: '600' }}>{item.text}</span>
-                    {item.dropdown && (
-                      <span className="material-symbols-outlined ml-2 text-[20px] md:transform md:transition-transform md:duration-200 md:group-hover:rotate-180">expand_more</span>
-                    )}
+                    <span className="flex items-center">
+                      <span className="leading-none text-[22px] " style={{ fontWeight: '600' }}>{item.text}</span>
+                      {item.dropdown && (
+                        <span className="material-symbols-outlined ml-2 text-[20px] md:transform md:transition-transform md:duration-200 md:group-hover:rotate-180">expand_more</span>
+                      )}
+                    </span>
                   </Link>
 
                   {/* Dropdown */}
@@ -192,12 +194,13 @@ export default function NewNavbar() {
                     }
                   }}
                 >
-                  <span>{item.text}</span>
-                  {item.dropdown && (
-                    <span className="material-symbols-outlined text-[20px]">expand_more</span>
-                  )}
+                  <span className="flex items-center justify-between w-full">
+                    <span>{item.text}</span>
+                    {item.dropdown && (
+                      <span className="material-symbols-outlined text-[20px]">expand_more</span>
+                    )}
+                  </span>
                 </Link>
-
                 {/* Mobile dropdown items */}
                 {item.dropdown && item.items && (
                   <div className={`${activeDropdown === index ? 'block' : 'hidden'}`}>
