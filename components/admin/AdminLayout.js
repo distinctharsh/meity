@@ -16,7 +16,7 @@ const AdminLayout = ({ children }) => {
     // { name: 'Subnav Tabs', href: '/admin/subnav', icon: '🗂️', description: 'Per-page tabs/links' },
     // { name: 'Offerings', href: '/admin/offerings', icon: '🎯', description: 'Services & offerings' },
     { name: 'Pages', href: '/admin/pages', icon: '📄', description: 'Create & manage pages' },
-    // { name: 'Hero Slider', href: '/admin/slider', icon: '🖼️', description: 'Manage homepage slider' },
+    { name: 'Hero Slider', href: '/admin/slider', icon: '🖼️', description: 'Manage homepage slider' },
     // { name: 'Templates', href: '/admin/templates', icon: '🧩', description: 'Page templates' },
     // { name: 'Media Library', href: '/admin/media', icon: '📁', description: 'Files & images' },
     // { name: 'Settings', href: '/admin/settings', icon: '⚙️', description: 'System settings' },

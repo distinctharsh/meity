@@ -1,15 +1,8 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
-import Image from "next/image";
 
 const HeroSlider = () => {
-  const sliderImages = [
-    "/images/slider/slider1.jpg",
-    "/images/slider/slider2.jpg",
-    "/images/slider/slider3.jpg",
-    "/images/slider/slider4.jpg",
-  ];
-
+  const [slides, setSlides] = useState([]);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
   const [progress, setProgress] = useState(0);
@@ -17,9 +10,25 @@ const HeroSlider = () => {
 
   const duration = 5000; // 5 sec per slide
 
+  // Load slides from DB (public API)
+  useEffect(() => {
+    let mounted = true;
+    async function load() {
+      try {
+        const res = await fetch('/api/slider', { cache: 'no-store' });
+        const data = res.ok ? (await res.json()) : [];
+        if (mounted) setSlides(Array.isArray(data) ? data : []);
+      } catch (e) {
+        if (mounted) setSlides([]);
+      }
+    }
+    load();
+    return () => { mounted = false; };
+  }, []);
+
   // Auto play logic
   useEffect(() => {
-    if (!isPlaying) return;
+    if (!isPlaying || (slides.length === 0)) return;
 
     let start = Date.now();
 
@@ -28,7 +37,7 @@ const HeroSlider = () => {
       const percent = (timePassed / duration) * 100;
 
       if (percent >= 100) {
-        setCurrentSlide((prev) => (prev + 1) % sliderImages.length);
+        setCurrentSlide((prev) => (prev + 1) % slides.length);
         start = Date.now();
         setProgress(0);
       } else {
@@ -37,7 +46,7 @@ const HeroSlider = () => {
     }, 50);
 
     return () => clearInterval(intervalRef.current);
-  }, [isPlaying, currentSlide]);
+  }, [isPlaying, currentSlide, slides.length]);
 
   const goToSlide = (index) => {
     setCurrentSlide(index);
@@ -45,12 +54,14 @@ const HeroSlider = () => {
   };
 
   const goToPrevious = () => {
-    setCurrentSlide((prev) => (prev - 1 + sliderImages.length) % sliderImages.length);
+    if (!slides.length) return;
+    setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
     setProgress(0);
   };
 
   const goToNext = () => {
-    setCurrentSlide((prev) => (prev + 1) % sliderImages.length);
+    if (!slides.length) return;
+    setCurrentSlide((prev) => (prev + 1) % slides.length);
     setProgress(0);
   };
 
@@ -59,22 +70,45 @@ const HeroSlider = () => {
     setProgress(0);
   };
 
+  if (!slides.length) {
+    return (
+      <div className="relative w-full overflow-hidden" style={{ height: '50vh' }}>
+        <div className="w-full h-full flex items-center justify-center bg-gray-100">
+          <p className="text-gray-600">No slides available</p>
+        </div>
+      </div>
+    );
+  }
+
+  const active = slides[currentSlide] || {};
+
   return (
     <div className="relative w-full overflow-hidden">
       <div className="relative w-full" style={{ height: '70vh' }}>
-        {sliderImages.map((image, index) => (
+        {slides.map((s, index) => (
           <div
-            key={index}
+            key={s.id ?? index}
             className={`absolute inset-0 opacity-0 transition-opacity duration-300 ${index === currentSlide ? 'opacity-100 z-[1]' : ''}`}
           >
-            <Image
-              src={image}
-              alt={`Slide ${index + 1}`}
-              width={1600}
-              height={900}
-              className="w-full h-full object-contain"  // Changed to object-contain to avoid cropping
-              priority={index === 0}
+            <img
+              src={s.image_url}
+              alt={s.title || `Slide ${index + 1}`}
+              className="w-full h-full object-contain"
             />
+            {/* Overlay content */}
+            {(s.title || s.description || (s.link_url && s.link_text)) && (
+              <div className="absolute inset-0 bg-black/20 flex items-end">
+                <div className="p-6 md:p-10 text-white max-w-3xl">
+                  {s.title ? <h2 className="text-2xl md:text-4xl font-bold mb-2 drop-shadow">{s.title}</h2> : null}
+                  {s.description ? <p className="text-base md:text-lg mb-4 opacity-95">{s.description}</p> : null}
+                  {s.link_url && s.link_text ? (
+                    <a href={s.link_url} className="inline-block bg-white text-blue-700 px-4 py-2 rounded-md font-semibold hover:bg-gray-100">
+                      {s.link_text}
+                    </a>
+                  ) : null}
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </div>
@@ -89,7 +123,7 @@ const HeroSlider = () => {
 
       {/* Indicators with progress */}
       <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-2.5 z-[5]">
-        {sliderImages.map((_, index) => (
+        {slides.map((_, index) => (
           <div
             key={index}
             className={`relative w-[30px] h-[6px] rounded bg-[rgba(255,255,255,0.3)] overflow-hidden cursor-pointer ${index === currentSlide ? 'bg-[rgba(255,255,255,0.5)]' : ''}`}
