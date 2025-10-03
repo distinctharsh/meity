@@ -11,6 +11,8 @@ const SliderForm = ({ slide, onSubmit, onCancel }) => {
     is_active: true
   });
   const [loading, setLoading] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState('');
 
   useEffect(() => {
     if (slide) {
@@ -28,6 +30,15 @@ const SliderForm = ({ slide, onSubmit, onCancel }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    // Basic client-side validation to avoid API 'Image URL is required'
+    if (!formData.image_url || String(formData.image_url).trim() === '') {
+      alert('Please upload an image or provide an image URL.');
+      return;
+    }
+    if (uploading) {
+      alert('Please wait for the image upload to finish.');
+      return;
+    }
     setLoading(true);
 
     try {
@@ -72,6 +83,56 @@ const SliderForm = ({ slide, onSubmit, onCancel }) => {
               />
             </div>
 
+            {/* Image Upload */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Upload Image
+              </label>
+              <div className="mt-1 flex items-center gap-3">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={async (e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    setUploadError('');
+                    setUploading(true);
+                    try {
+                      const fd = new FormData();
+                      fd.append('file', file);
+                      // If current image is an uploaded one, request deletion
+                      if (formData.image_url && formData.image_url.startsWith('/uploads/slider/')) {
+                        fd.append('old_path', `public${formData.image_url}`);
+                      }
+                      const res = await fetch('/api/admin/upload', { method: 'POST', body: fd });
+                      if (!res.ok) {
+                        const err = await res.json().catch(() => ({}));
+                        throw new Error(err.message || 'Upload failed');
+                      }
+                      const data = await res.json();
+                      setFormData((prev) => ({ ...prev, image_url: data.url }));
+                    } catch (err) {
+                      setUploadError(err.message || 'Upload failed');
+                    } finally {
+                      setUploading(false);
+                    }
+                  }}
+                  className="block w-full text-sm text-gray-900 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                />
+              </div>
+              {uploadError && (
+                <p className="mt-2 text-sm text-red-600">{uploadError}</p>
+              )}
+              {uploading && (
+                <p className="mt-2 text-sm text-gray-500">Uploading...</p>
+              )}
+              {formData.image_url && (
+                <div className="mt-3">
+                  <img src={formData.image_url} alt="Selected" className="h-28 w-full object-cover rounded border" />
+                </div>
+              )}
+            </div>
+
             <div>
               <label htmlFor="description" className="block text-sm font-medium text-gray-700">
                 Description
@@ -87,32 +148,21 @@ const SliderForm = ({ slide, onSubmit, onCancel }) => {
               />
             </div>
 
+            {/* In case someone still wants to paste URL manually, keep this optional field */}
             <div>
               <label htmlFor="image_url" className="block text-sm font-medium text-gray-700">
-                Image URL
+                Or paste Image URL (optional)
               </label>
               <input
-                type="url"
+                type="text"
                 id="image_url"
                 name="image_url"
                 value={formData.image_url}
                 onChange={handleChange}
                 className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-white"
-                placeholder="https://example.com/image.jpg"
-                required
+                placeholder="/uploads/slider/your-image.jpg or https://..."
               />
-              {formData.image_url && (
-                <div className="mt-2">
-                  <img
-                    src={formData.image_url}
-                    alt="Preview"
-                    className="h-32 w-full object-cover rounded border"
-                    onError={(e) => {
-                      e.target.style.display = 'none';
-                    }}
-                  />
-                </div>
-              )}
+              <p className="mt-1 text-xs text-gray-500">You can paste a relative path like <code>/uploads/slider/abc.jpg</code> or a full URL.</p>
             </div>
 
             <div>
@@ -186,7 +236,7 @@ const SliderForm = ({ slide, onSubmit, onCancel }) => {
                 </button>
                 <button
                   type="submit"
-                  disabled={loading}
+                  disabled={loading || uploading || !formData.image_url}
                   className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {loading ? 'Saving...' : (slide ? 'Update Slide' : 'Create Slide')}
