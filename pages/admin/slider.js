@@ -136,16 +136,33 @@ export default function HeroSliderManagement() {
         </div>
 
         {showForm && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-              <SliderForm
-                slide={editingSlide}
-                onSubmit={handleFormSubmit}
-                onCancel={() => {
-                  setShowForm(false);
-                  setEditingSlide(null);
-                }}
-              />
+          <div className="fixed inset-0 z-50 flex items-center justify-center">
+            {/* Backdrop */}
+            <div
+              className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+              onClick={() => { setShowForm(false); setEditingSlide(null); }}
+            />
+            {/* Modal */}
+            <div className="relative bg-white border border-gray-200 shadow-2xl rounded-xl w-full max-w-4xl max-h-[92vh] overflow-hidden animate-[fadeIn_.15s_ease-out]">
+              {/* Modal header */}
+              <div className="flex items-center justify-between px-5 py-3 border-b bg-gray-50/70">
+                <h3 className="text-lg font-semibold text-gray-900">{editingSlide ? 'Edit Slide' : 'Add New Slide'}</h3>
+                <button
+                  onClick={() => { setShowForm(false); setEditingSlide(null); }}
+                  className="p-2 rounded-md text-gray-500 hover:text-gray-900 hover:bg-gray-100"
+                  aria-label="Close"
+                >
+                  ✕
+                </button>
+              </div>
+              {/* Modal body */}
+              <div className="p-0 overflow-y-auto" style={{ maxHeight: 'calc(92vh - 52px)' }}>
+                <SliderForm
+                  slide={editingSlide}
+                  onSubmit={handleFormSubmit}
+                  onCancel={() => { setShowForm(false); setEditingSlide(null); }}
+                />
+              </div>
             </div>
           </div>
         )}
@@ -200,18 +217,28 @@ export default function HeroSliderManagement() {
                       </p>
                     )}
                   </div>
-                  <div className="flex-shrink-0 flex space-x-2">
+                  <div className="flex-shrink-0 flex items-center space-x-2">
                     <button
                       onClick={() => handleEdit(slide)}
-                      className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                      className="p-2 rounded-md text-blue-600 hover:text-blue-800 hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-200"
+                      title="Edit"
+                      aria-label="Edit slide"
                     >
-                      Edit
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+                        <path d="M21.731 2.269a2.625 2.625 0 0 0-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 0 0 0-3.712z" />
+                        <path d="M3 17.25V21h3.75L19.435 8.315l-3.712-3.712L3 17.25z" />
+                      </svg>
                     </button>
                     <button
                       onClick={() => handleDelete(slide.id)}
-                      className="text-red-600 hover:text-red-800 text-sm font-medium"
+                      className="p-2 rounded-md text-red-600 hover:text-red-800 hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-200"
+                      title="Delete"
+                      aria-label="Delete slide"
                     >
-                      Delete
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+                        <path d="M9 3a1 1 0 0 0-1 1v1H4.5a.75.75 0 0 0 0 1.5h15a.75.75 0 0 0 0-1.5H16V4a1 1 0 0 0-1-1H9z" />
+                        <path d="M6.5 7h11l-.84 11.2A2 2 0 0 1 14.67 20H9.33a2 2 0 0 1-1.99-1.8L6.5 7z" />
+                      </svg>
                     </button>
                   </div>
                 </div>

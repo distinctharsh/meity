@@ -79,44 +79,52 @@ const HeroSlider = () => {
       </div>
     );
   }
-
   const active = slides[currentSlide] || {};
 
   return (
     <div className="relative w-full overflow-hidden">
       <div className="relative w-full" style={{ height: '70vh' }}>
-        {slides.map((s, index) => (
-          <div
-            key={s.id ?? index}
-            className={`absolute inset-0 opacity-0 transition-opacity duration-300 ${index === currentSlide ? 'opacity-100 z-[1]' : ''}`}
-          >
-            <img
-              src={s.image_url}
-              alt={s.title || `Slide ${index + 1}`}
-              className="w-full h-full object-contain"
-            />
-            {/* Overlay content */}
-            {(s.title || s.description || (s.link_url && s.link_text)) && (
-              <div className="absolute inset-0 bg-black/20 flex items-end">
-                <div className="p-6 md:p-10 text-white max-w-3xl">
-                  {s.title ? <h2 className="text-2xl md:text-4xl font-bold mb-2 drop-shadow">{s.title}</h2> : null}
-                  {s.description ? <p className="text-base md:text-lg mb-4 opacity-95">{s.description}</p> : null}
-                  {s.link_url && s.link_text ? (
-                    <a href={s.link_url} className="inline-block bg-white text-blue-700 px-4 py-2 rounded-md font-semibold hover:bg-gray-100">
-                      {s.link_text}
-                    </a>
-                  ) : null}
+        {slides.map((s, index) => {
+          const SlideContent = (
+            <>
+              <img
+                src={s.image_url}
+                alt={s.title || `Slide ${index + 1}`}
+                className="w-full h-full object-contain"
+              />
+              {(s.title || s.description || (s.link_url && s.link_text)) && (
+                <div className="absolute inset-0 bg-black/20 flex items-end">
+                  <div className="p-6 md:p-10 text-white max-w-3xl">
+                    {s.title ? <h2 className="text-2xl md:text-4xl font-bold mb-2 drop-shadow">{s.title}</h2> : null}
+                    {s.description ? <p className="text-base md:text-lg mb-4 opacity-95">{s.description}</p> : null}
+                    {s.link_url && s.link_text ? (
+                      <span className="inline-block bg-white text-blue-700 px-4 py-2 rounded-md font-semibold hover:bg-gray-100">
+                        {s.link_text}
+                      </span>
+                    ) : null}
+                  </div>
                 </div>
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
+              )}
+            </>
+          );
 
-      {/* Arrows */}
-      <button className="absolute top-1/2 -translate-y-1/2 left-5 bg-[rgba(0,0,0,0.6)] text-white border-0 text-[24px] w-10 h-10 rounded-full cursor-pointer z-[5]" onClick={goToPrevious}>
-        &#10094;
-      </button>
+          return (
+            <div
+              key={s.id ?? index}
+              className={`absolute inset-0 opacity-0 transition-opacity duration-300 ${index === currentSlide ? 'opacity-100 z-[1]' : ''}`}
+            >
+              {s.link_url ? (
+                <a href={s.link_url} className="block w-full h-full" aria-label={s.title || `Slide ${index + 1}`}>
+                  {SlideContent}
+                </a>
+              ) : (
+                <div className="block w-full h-full" aria-label={s.title || `Slide ${index + 1}`}>
+                  {SlideContent}
+                </div>
+              )}
+            </div>
+          );
+        })}
       <button className="absolute top-1/2 -translate-y-1/2 right-5 bg-[rgba(0,0,0,0.6)] text-white border-0 text-[24px] w-10 h-10 rounded-full cursor-pointer z-[5]" onClick={goToNext}>
         &#10095;
       </button>
@@ -143,6 +151,7 @@ const HeroSlider = () => {
       <button className="absolute bottom-2 right-5 w-8 h-8 rounded-full border-0 bg-[rgba(0,0,0,0.6)] text-white text-[16px] cursor-pointer z-[5]" onClick={togglePlayPause}>
         {isPlaying ? "⏸" : "▶"}
       </button>
+    </div>
     </div>
   );
 };
