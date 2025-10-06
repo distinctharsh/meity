@@ -18,7 +18,9 @@ export default function App({ Component, pageProps }) {
       <LangAlternates />
       {!isAdminPage && <Header />}
       {!isAdminPage && <Navbar />}
-      <Component {...pageProps} />
+      <main id="main-content" tabIndex={-1} className="outline-none focus:outline-none">
+        <Component {...pageProps} />
+      </main>
       <CookieBanner />
       <GoToTop />
     </>

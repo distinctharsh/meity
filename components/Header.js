@@ -68,9 +68,21 @@ export default function Header() {
           {/* Right Column */}
           <div className="flex justify-center md:justify-end gap-[18px] mb-[10px] order-1 md:order-none">
             <div className="flex gap-3 items-center">
-              <button className="bg-transparent border-0 cursor-pointer p-[6px]" title="Login">
-                <img src="/images/icons/skip.svg" alt="Skip" />
-              </button>
+              <a
+                href="#main-content"
+                onClick={(e) => {
+                  // Let the hash change happen, then focus the main region for screen readers/keyboard users
+                  setTimeout(() => {
+                    const main = document.getElementById('main-content');
+                    if (main) main.focus();
+                  }, 0);
+                }}
+                className="bg-transparent border-0 cursor-pointer p-[6px] inline-flex"
+                aria-label="Skip to main content"
+                title="Skip to main content"
+              >
+                <img src="/images/icons/skip.svg" alt="Skip to main content" />
+              </a>
               <button className="bg-transparent border-0 cursor-pointer p-[6px] border-x border-[#162f6a]" title="Language" onClick={async () => {
                 try {
                   const current = document.documentElement.lang || 'en';
