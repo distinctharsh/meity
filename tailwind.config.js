@@ -6,9 +6,12 @@ module.exports = {
     "./app/**/*.{js,jsx,ts,tsx,mdx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        // Ensure Tailwind's `font-sans` uses Noto Sans across the project
+        sans: ['"Noto Sans"', 'sans-serif'],
+      },
+    },
   },
   plugins: [],
 };
-
-
