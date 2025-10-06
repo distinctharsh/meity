@@ -1,6 +1,21 @@
 @import "tailwindcss";
 @import "./slider.css";
-@import url("https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&display=swap");
+/* Self-hosted Noto Sans; remove external Google Fonts import */
+@font-face {
+  font-family: "Noto Sans";
+  src: url("/Noto_Sans/NotoSans-VariableFont_wdth,wght.ttf") format("truetype-variations");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Noto Sans";
+  src: url("/Noto_Sans/NotoSans-Italic-VariableFont_wdth,wght.ttf") format("truetype-variations");
+  font-weight: 100 900;
+  font-style: italic;
+  font-display: swap;
+}
 
 :root {
   --background: #ffffff;
@@ -14,7 +29,6 @@
   /* Heading 3 / Subtitle */
   --gi-p1: 16px;
   /* Paragraph 1 */
-  --gi-p2: 14px;
   /* Paragraph 2 */
   --gi-small: 12px;
   /* Small Text 1 */
@@ -23,10 +37,10 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* Set Tailwind v4 default sans to Noto Sans */
+  --font-sans: "Noto Sans", sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
-
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
