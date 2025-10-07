@@ -1,7 +1,6 @@
 "use client";
 import AccessibilityBar from "./AccessibilityBar";
 import Emblem from "./icons/Emblem";
-import Image from "next/image";
 
 export default function Header() {
   return (
@@ -30,14 +29,7 @@ export default function Header() {
 
             {/* Digital India (mobile only, above search) */}
             <div className="md:hidden w-full flex justify-center my-2">
-              <Image
-                src="/images/digitalindia.svg"
-                alt="Digital India"
-                width={120}
-                height={120}
-                sizes="(max-width: 768px) 120px, 120px"
-                style={{ height: 'auto' }}
-              />
+              <img src="/images/digitalindia.svg" alt="Digital India" width={120} height={120} style={{ width: 120, height: 'auto' }} />
             </div>
 
             {/* Search */}
@@ -69,14 +61,7 @@ export default function Header() {
 
           {/* Middle Column (desktop/tablet only) */}
           <div className="hidden md:flex justify-center mb-[10px] order-3 md:order-none">
-            <Image
-              src="/images/digitalindia.svg"
-              alt="Digital India"
-              width={100}
-              height={100}
-              sizes="(max-width: 1024px) 100px, 100px"
-              style={{ height: 'auto' }}
-            />
+            <img src="/images/digitalindia.svg" alt="Digital India" width={100} height={100} style={{ width: 100, height: 'auto' }} />
           </div>
 
           {/* Right Column */}

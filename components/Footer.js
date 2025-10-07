@@ -36,34 +36,40 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Right Section */}
           <div className="flex flex-col items-center md:items-end space-y-4">
             <h4 className="text-lg font-semibold whitespace-nowrap">SUBSCRIBE FOR UPDATES</h4>
 
             {/* Social Icons */}
             <div className="flex space-x-4">
-              <a href="#"><Image src="/images/footer/x.jpg" alt="Twitter" width={28} height={28} /></a>
-              <a href="#"><Image src="/images/footer/youtube.jpg" alt="YouTube" width={28} height={28} /></a>
-              <a href="#"><Image src="/images/footer/facebook.jpg" alt="Facebook" width={28} height={28} /></a>
-              <a href="#"><Image src="/images/footer/instagram.jpg" alt="Instagram" width={28} height={28} /></a>
+              <a href="#" aria-label="Twitter">
+                <img src="/images/footer/x.jpg" alt="Twitter" width={28} height={28} style={{ width: '28px', height: '28px', objectFit: 'contain' }} />
+              </a>
+              <a href="#" aria-label="YouTube">
+                <img src="/images/footer/youtube.jpg" alt="YouTube" width={28} height={28} style={{ width: '28px', height: '28px', objectFit: 'contain' }} />
+              </a>
+              <a href="#" aria-label="Facebook">
+                <img src="/images/footer/facebook.jpg" alt="Facebook" width={28} height={28} style={{ width: '28px', height: '28px', objectFit: 'contain' }} />
+              </a>
+              <a href="#" aria-label="Instagram">
+                <img src="/images/footer/instagram.jpg" alt="Instagram" width={28} height={28} style={{ width: '28px', height: '28px', objectFit: 'contain' }} />
+              </a>
             </div>
 
             {/* Logos */}
             <div className="flex space-x-8">
               <div className="bg-white p-3 rounded-lg">
-                <Image src="/images/footer/mygovmerisarkar.jpg" alt="MyGov" width={140} height={60} />
+                <img src="/images/footer/mygovmerisarkar.jpg" alt="MyGov" width={140} height={60} style={{ width: '140px', height: 'auto', objectFit: 'contain' }} />
               </div>
               <div className="bg-white p-3 rounded-lg">
-                <Image src="/images/footer/indiaportal.svg" alt="India Portal" width={140} height={60} />
+                <img src="/images/footer/indiaportal.svg" alt="India Portal" width={140} height={60} style={{ width: '140px', height: 'auto', objectFit: 'contain' }} />
               </div>
             </div>
 
             {/* Last Updated */}
             <p className="text-sm text-gray-300 whitespace-nowrap">Last Updated On: 12.09.2025</p>
+
           </div>
         </div>
-
-
       </div>
     </footer>
   );

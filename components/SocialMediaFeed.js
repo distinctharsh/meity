@@ -223,17 +223,20 @@ const SocialMediaPreview = ({
               <h3 className="text-gray-800 font-semibold text-center">Instagram</h3>
             </div>
             <div className="h-[400px] overflow-y-auto p-2">
-              { /* Instagram post embedded here */}
-              <div className="w-full h-full min-h-0">
-                <iframe
-                  src="https://www.instagram.com/p/CdEhFSNMbC7/embed/captioned"
-                  className="w-full h-full border-0"
-                  allowFullScreen
-                  scrolling="yes"
-                  loading="lazy"
-                  title="Instagram Post"
+              {/* Replace Instagram embed with a static thumbnail linking out to avoid third-party script errors */}
+              <a
+                href="https://www.instagram.com/p/CdEhFSNMbC7/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block w-full rounded overflow-hidden border"
+                aria-label="Open Instagram post"
+              >
+                <img
+                  src="/images/promo/digital-personal-data.jpg"
+                  alt="Instagram preview"
+                  className="w-full h-[350px] object-cover"
                 />
-              </div>
+              </a>
             </div>
           </div>
 

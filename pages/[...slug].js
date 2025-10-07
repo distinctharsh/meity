@@ -99,7 +99,8 @@ export default function DynamicPage({ page }) {
       s.id = id;
       s.type = 'text/javascript';
       s.defer = false;
-      s.textContent = rawJs;
+      // Wrap user-provided JS to avoid breaking the app on errors
+      s.textContent = `try{\n${rawJs}\n}catch(e){console.error('CMS inline JS error:', e);}`;
       document.body.appendChild(s);
     }
     return () => {
