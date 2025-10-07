@@ -65,6 +65,7 @@ const PromoSection = () => {
                         alt="Digital Personal Data Protection"
                         fill
                         style={{ objectFit: "cover" }}
+                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 66vw, 50vw"
                     />
                 </div>
 
@@ -109,12 +110,14 @@ const PromoSection = () => {
                                 key={banner.id}
                                 className={`absolute inset-0 transition-opacity duration-300 ${activeSlide === banner.id ? "opacity-100" : "opacity-0"}`}
                             >
-                                <a href={banner.link} target="_blank" rel="noopener noreferrer" className="w-full h-full block">
+                                {/* Anchor must be positioned for next/image fill */}
+                                <a href={banner.link} target="_blank" rel="noopener noreferrer" className="w-full h-full block relative">
                                     <Image
                                         src={banner.imgSrc}
                                         alt={banner.alt}
                                         fill
                                         style={{ objectFit: "cover" }}
+                                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 33vw, 25vw"
                                     />
                                 </a>
                             </div>
