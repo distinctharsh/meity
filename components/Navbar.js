@@ -75,10 +75,10 @@ export default function NewNavbar() {
   };
 
   return (
-    <nav className="bg-white shadow-[0_2px_4px_rgba(0,0,0,0.1)] border-t border-[#d0d0d0] sticky top-[154px] z-[299]">
+    <nav className="bg-white shadow-[0_2px_4px_rgba(0,0,0,0.1)] border-t border-[#d0d0d0] sticky top-[154px] z-[299]" style={{borderBottom: '2px solid #162f6a'}}>
       <div className="px-[7%]">
         {/* Bar container */}
-        <div className="flex items-center justify-between h-14">
+        <div className="flex items-center justify-between h-13">
           {/* Listen for header-triggered toggle on mobile */}
           {typeof window !== 'undefined' && (
             // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -111,7 +111,7 @@ export default function NewNavbar() {
                     }}
                   >
                     <span className="flex items-center">
-                      <span className="leading-none text-[22px] " style={{ fontWeight: '600' }}>{item.text}</span>
+                      <span className="leading-none text-[20px] " style={{ fontWeight: '600' }}>{item.text}</span>
                       {item.dropdown && (
                         <svg
                           className="ml-2 w-5 h-5 md:transform md:transition-transform md:duration-200 md:group-hover:rotate-180"

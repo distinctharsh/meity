@@ -57,11 +57,17 @@ export default function Header() {
                 <span className="material-symbols-outlined">menu</span>
               </button>
             </div>
+
+                {/* Middle Column (desktop/tablet only) */}
+          <div className="hidden md:flex justify-center mb-[10px] order-3 md:order-none">
+            <img src="/images/digitalindia.svg" alt="Digital India" width={100} height={100} style={{ width: 100, height: 'auto' }} />
+          </div>
+
           </div>
 
           {/* Middle Column (desktop/tablet only) */}
           <div className="hidden md:flex justify-center mb-[10px] order-3 md:order-none">
-            <img src="/images/digitalindia.svg" alt="Digital India" width={100} height={100} style={{ width: 100, height: 'auto' }} />
+            
           </div>
 
           {/* Right Column */}
