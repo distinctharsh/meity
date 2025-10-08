@@ -31,7 +31,7 @@ const Footer = () => {
             </div>
 
             {/* Footer Bottom Text */}
-            <div className="text-left text-gray-300 text-base whitespace-nowrap">
+            <div className="text-left text-gray-300 text-base">
               This Website belongs to Cabinet Secretariat, Government of India
             </div>
           </div>
