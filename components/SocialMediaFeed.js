@@ -9,26 +9,50 @@ const getEmbedUrl = (url = '') => {
     const urlObj = new URL(url);
     const hostname = urlObj.hostname;
 
-    // Handle Twitter/X.com URLs
+    // Twitter/X
+    if (hostname.includes('platform.twitter.com')) {
+      // Already an embed URL. Validate it has an id param, otherwise it's unusable.
+      const idParam = urlObj.searchParams.get('id');
+      return idParam ? url : '';
+    }
     if (hostname.includes('twitter.com') || hostname.includes('x.com')) {
-      // Extract tweet ID from URL
-      const tweetId = url.split('/').pop().split('?')[0];
-      return `https://platform.twitter.com/embed/Tweet.html?dnt=true&embedId=twitter-widget&hideCard=false&hideThread=true&id=${tweetId}&lang=en&theme=light&widgetsVersion=2615f7e52b7e0%3A1702314776716&width=550`;
+      // Support /status/<id>, /statuses/<id>, and /i/web/status/<id>
+      const m = url.match(/(?:status(?:es)?|i\/web\/status)\/(\d+)/);
+      const tweetId = m ? m[1] : '';
+      return tweetId
+        ? `https://platform.twitter.com/embed/Tweet.html?dnt=true&embedId=twitter-widget&hideCard=false&hideThread=true&id=${tweetId}&lang=en&theme=light&widgetsVersion=2615f7e52b7e0%3A1702314776716&width=550`
+        : '';
     }
 
+    // Facebook post/plugin
     if (hostname.includes('facebook.com')) {
+      // Pass-through if it's already the plugins URL
+      if (urlObj.pathname.includes('/plugins/post.php')) return url;
       return `https://www.facebook.com/plugins/post.php?href=${encodeURIComponent(url)}&show_text=true&width=500`;
     }
 
+    // Instagram post/reel/tv
     if (hostname.includes('instagram.com')) {
-      return `https://www.instagram.com/p/${url.split('/').filter(Boolean).pop()}/embed`;
+      // Pass-through if already /embed/
+      if (urlObj.pathname.includes('/embed')) return url;
+      const parts = urlObj.pathname.split('/').filter(Boolean);
+      const type = parts[0];
+      const code = parts[1] || '';
+      if ((type === 'p' || type === 'reel' || type === 'reels' || type === 'tv') && code) {
+        const t = type === 'reels' ? 'reel' : type; // normalize reels -> reel
+        return `https://www.instagram.com/${t}/${code}/embed`;
+      }
+      return '';
     }
 
+    // YouTube
     if (hostname.includes('youtube.com') || hostname.includes('youtu.be')) {
-      const videoId = url.includes('youtube.com')
-        ? new URLSearchParams(new URL(url).search).get('v')
-        : url.split('/').pop().split('?')[0];
-      return `https://www.youtube.com/embed/${videoId}?rel=0`;
+      // Pass-through if already /embed or /embed/
+      if (urlObj.pathname.startsWith('/embed')) return url;
+      const videoId = urlObj.hostname.includes('youtube.com')
+        ? new URLSearchParams(urlObj.search).get('v')
+        : urlObj.pathname.split('/').pop().split('?')[0];
+      return videoId ? `https://www.youtube.com/embed/${videoId}?rel=0` : '';
     }
 
     return '';
@@ -59,7 +83,7 @@ const SocialMediaPreview = ({
     'https://www.youtube.com/watch?v=9bZkp7q19f0'
   ],
   facebookPosts = [
-    'https://www.facebook.com/meityindia/posts/pfbid0ETpZZhBirRP1kqcFF1ff5qSGjFEMeMkepThq1gn8tocj6oxibTo9xFrfcBZ8f6oCl',
+    'https://www.facebook.com/meityindia/posts/944312881217817?ref=embed_post',
     'https://www.facebook.com/meityindia/posts/pfbid02Phw2HNHCngvQczo35v4HnSdPBAyLU1bTFH8JHHy1hwQi7ckoZdRAEbJcPuGL3Q8il',
     'https://www.facebook.com/meityindia/posts/pfbid024ambHS6Fa5u3UKxt5WXTDwg6ATRoQf3pbUDEF37EyC928mmAFixm14mxezuerMUrl',
     'https://www.facebook.com/meityindia/posts/pfbid0joj5xRsfsRdzVfbmCnYxL672yNBxn6k4ZB7NZvd8ViuApCMri43nDerpXZjdvTa1l'
@@ -67,22 +91,68 @@ const SocialMediaPreview = ({
   // Single Twitter URL
   twitterUrl = "https://x.com/GoI_MeitY/status/1959913113169305755",
   facebookUrl = "https://www.facebook.com/harshsinghjii",
-  instagramUrl = "https://www.instagram.com/distinctharsh"
+  instagramUrl = "https://www.instagram.com/distinctharsh",
+  enableEmbeds = true
 }) => {
   const [currentPreview, setCurrentPreview] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [apiData, setApiData] = useState(null);
+  const [apiError, setApiError] = useState(null);
+
+  useEffect(() => {
+    let abort = false;
+    (async () => {
+      try {
+        const res = await fetch('/api/social-posts');
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        if (!abort) setApiData(data);
+        console.debug('Social API data loaded', data);
+      } catch (e) {
+        if (!abort) setApiError(e.message || 'Failed to load');
+        console.warn('Social API load error:', e);
+      }
+    })();
+    return () => { abort = true; };
+  }, []);
+
+  // Prefer DB data, fallback to props
+  const youtubeList = (apiData?.youtube || [])
+    .map(p => p.post_url)
+    .filter(Boolean);
+  const facebookList = (apiData?.facebook || [])
+    .map(p => p.post_url)
+    .filter(Boolean);
+  const twitterFromApi = (apiData?.twitter || [])
+    .map(p => p.post_url)
+    .filter(Boolean);
+  const instagramFromApi = (apiData?.instagram || [])
+    .map(p => p.post_url)
+    .filter(Boolean);
+
+  const ytList = youtubeList.length ? youtubeList : youtubeVideos;
+  const fbList = facebookList.length ? facebookList : facebookPosts;
+  const twUrl = twitterFromApi[0] || twitterUrl;
+  const igUrl = instagramFromApi[0] || instagramUrl;
+
+  // Precompute embed URLs and validity
+  const twList = twitterFromApi.length ? twitterFromApi : (twitterUrl ? [twitterUrl] : []);
+  const twEmbeds = twList.map(u => ({ url: u, embed: getEmbedUrl(u) })).filter(x => !!x.embed);
+  const fbEmbeds = fbList.map(u => ({ url: u, embed: getEmbedUrl(u) })).filter(x => !!x.embed);
+  const igList = instagramFromApi.length ? instagramFromApi : (instagramUrl ? [instagramUrl] : []);
+  const igEmbeds = igList.map(u => ({ url: u, embed: getEmbedUrl(u) })).filter(x => !!x.embed);
 
   const socialMediaItems = [
     // Twitter section
     {
       type: 'twitter',
-      url: twitterUrl,
+      url: twUrl,
       title: 'X (Twitter)',
-      embedUrl: getEmbedUrl(twitterUrl),
+      embedUrl: getEmbedUrl(twUrl),
       isSingle: true
     },
     // Multiple YouTube videos
-    ...youtubeVideos.map((videoUrl, index) => ({
+    ...ytList.map((videoUrl, index) => ({
       type: 'youtube',
       url: videoUrl,
       title: `Video ${index + 1}`,
@@ -92,16 +162,16 @@ const SocialMediaPreview = ({
     // Other social media
     {
       type: 'facebook',
-      url: facebookUrl,
+      url: fbList[0] || facebookUrl,
       title: 'Facebook',
-      embedUrl: getEmbedUrl(facebookUrl),
+      embedUrl: getEmbedUrl(fbList[0] || facebookUrl),
       isSingle: true
     },
     {
       type: 'instagram',
-      url: instagramUrl,
+      url: igUrl,
       title: 'Instagram',
-      embedUrl: getEmbedUrl(instagramUrl),
+      embedUrl: getEmbedUrl(igUrl),
       isSingle: true
     },
   ].filter(item => item.url);
@@ -152,23 +222,52 @@ const SocialMediaPreview = ({
         </h2>
       </div>
 
+      {/* API status */}
+      {apiError && (
+        <div className="gi-container text-sm text-red-200 mb-2">Social feed failed to load from admin. Showing defaults. ({apiError})</div>
+      )}
+
       {/* Social Media Grid */}
       <div className="gi-container">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
 
           {/* Twitter Section */}
-          <div className="bg-white rounded-lg shadow overflow-hidden">
+          <div className="bg-white rounded-lg shadow overflow-hidden flex flex-col">
             <div className="p-3 border-b">
               <h3 className="text-gray-800 font-semibold text-center">X</h3>
+              {twList.length === 0 && (<p className="text-center text-xs text-gray-500 m-0">No Twitter URLs configured</p>)}
             </div>
-            <div className="h-[400px]">
-              <iframe
-                src={socialMediaItems.find(item => item.type === 'twitter')?.embedUrl}
-                className="w-full h-full border-0"
-                allowFullScreen
-                loading="lazy"
-                title="Twitter Post"
-              />
+            <div className="h-[400px] overflow-y-auto p-2">
+              {twList.length > 0 ? (
+                twList.map((tUrl, index) => {
+                  const embed = getEmbedUrl(tUrl);
+                  return enableEmbeds && embed ? (
+                    <div key={index} className="pb-4 mb-2 border-b last:pb-0 last:mb-0 last:border-none">
+                      <iframe
+                        src={embed}
+                        className="w-full h-[350px] border-0"
+                        allowFullScreen
+                        loading="lazy"
+                        title={`Twitter Post ${index + 1}`}
+                      />
+                    </div>
+                  ) : (
+                    <div key={index} className="pb-2">
+                      <a
+                        href={tUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 underline"
+                        aria-label={`Open Twitter post ${index + 1}`}
+                      >
+                        Open on X (Twitter) #{index + 1}
+                      </a>
+                    </div>
+                  );
+                })
+              ) : (
+                <div className="text-center text-gray-500 p-6">No valid Twitter post URLs configured.</div>
+              )}
             </div>
           </div>
 
@@ -176,10 +275,11 @@ const SocialMediaPreview = ({
           <div className="bg-white rounded-lg shadow overflow-hidden">
             <div className="p-3 border-b">
               <h3 className="text-gray-800 font-semibold text-center">Youtube</h3>
+              {ytList.length === 0 && (<p className="text-center text-xs text-gray-500 m-0">No videos configured</p>)}
             </div>
-            <div className="p-2 h-[400px] overflow-y-auto flex flex-col gap-3">
-              {youtubeVideos.slice(0, 3).map((videoUrl, index) => (
-                <div key={index} className="flex-1 min-h-[120px]">
+            <div className="p-2 h-[400px] overflow-y-auto">
+              {ytList.slice(0, 3).map((videoUrl, index) => (
+                <div key={index} className="pb-4 mb-2 border-b last:pb-0 last:mb-0 last:border-none">
                   <div className="aspect-video w-full rounded overflow-hidden">
                     <iframe
                       title={`YouTube Video ${index + 1}`}
@@ -199,21 +299,43 @@ const SocialMediaPreview = ({
           <div className="bg-white rounded-lg shadow overflow-hidden flex flex-col">
             <div className="p-3 border-b">
               <h3 className="text-gray-800 font-semibold text-center">Facebook</h3>
+              {fbList.length === 0 && (<p className="text-center text-xs text-gray-500 m-0">No posts configured</p>)}
             </div>
             <div className="h-[400px] overflow-y-auto p-2 space-y-4">
-              {facebookPosts.map((postUrl, index) => (
-                <div key={index} className="mb-4 last:mb-0">
-                  <iframe
-                    title={`FacebookPost${index}`}
-                    src={`https://www.facebook.com/plugins/post.php?href=${encodeURIComponent(postUrl)}&show_text=true&width=100%`}
-                    className="w-full h-[350px] border-0"
-                    scrolling="no"
-                    allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
-                    allowFullScreen
-                    loading="lazy"
-                  />
-                </div>
-              ))}
+              {fbEmbeds.length > 0 ? fbEmbeds.map(({url: postUrl, embed}, index) => (
+                enableEmbeds ? (
+                  <div key={index} className="mb-4 last:mb-0">
+                    <iframe
+                      title={`FacebookPost${index}`}
+                      src={embed}
+                      className="w-full h-[350px] border-0"
+                      scrolling="no"
+                      allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+                      allowFullScreen
+                      loading="lazy"
+                      sandbox="allow-scripts allow-same-origin allow-popups"
+                      referrerPolicy="no-referrer-when-downgrade"
+                    />
+                  </div>
+                ) : (
+                  <a
+                    key={index}
+                    href={postUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block rounded overflow-hidden border"
+                    aria-label={`Open Facebook post ${index + 1}`}
+                  >
+                    <img
+                      src="/images/promo/digital-personal-data.jpg"
+                      alt={`Facebook preview ${index + 1}`}
+                      className="w-full h-[350px] object-cover"
+                    />
+                  </a>
+                )
+              )) : (
+                <div className="text-center text-gray-500 p-6">No valid Facebook post URLs configured.</div>
+              )}
             </div>
           </div>
 
@@ -221,22 +343,59 @@ const SocialMediaPreview = ({
           <div className="bg-white rounded-lg shadow overflow-hidden flex flex-col">
             <div className="p-3 border-b">
               <h3 className="text-gray-800 font-semibold text-center">Instagram</h3>
+              {igList.length === 0 && (<p className="text-center text-xs text-gray-500 m-0">No Instagram URLs configured</p>)}
             </div>
-            <div className="h-[400px] overflow-y-auto p-2">
-              {/* Replace Instagram embed with a static thumbnail linking out to avoid third-party script errors */}
-              <a
-                href="https://www.instagram.com/p/CdEhFSNMbC7/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block w-full rounded overflow-hidden border"
-                aria-label="Open Instagram post"
-              >
-                <img
-                  src="/images/promo/digital-personal-data.jpg"
-                  alt="Instagram preview"
-                  className="w-full h-[350px] object-cover"
-                />
-              </a>
+            <div className="h-[400px] overflow-y-auto p-2 space-y-4">
+              {igEmbeds.length > 0 ? igEmbeds.map(({ url: iUrl, embed }, index) => (
+                enableEmbeds ? (
+                  <div key={index} className="w-full">
+                    <iframe
+                      src={embed}
+                      className="w-full h-[350px] border-0"
+                      allowFullScreen
+                      scrolling="yes"
+                      loading="lazy"
+                      title={`Instagram Post ${index + 1}`}
+                      sandbox="allow-scripts allow-same-origin allow-popups"
+                      referrerPolicy="no-referrer-when-downgrade"
+                    />
+                  </div>
+                ) : (
+                  <a
+                    key={index}
+                    href={iUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block w-full rounded overflow-hidden border"
+                    aria-label={`Open Instagram post ${index + 1}`}
+                  >
+                    <img
+                      src="/images/promo/digital-personal-data.jpg"
+                      alt={`Instagram preview ${index + 1}`}
+                      className="w-full h-[350px] object-cover"
+                    />
+                  </a>
+                )
+              )) : (
+                igList.length > 0 ? (
+                  <div className="flex flex-col gap-2">
+                    {igList.map((iUrl, idx) => (
+                      <a
+                        key={idx}
+                        href={iUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-pink-600 underline"
+                        aria-label={`Open Instagram post ${idx + 1}`}
+                      >
+                        Open on Instagram #{idx + 1}
+                      </a>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center text-gray-500 p-6">No valid Instagram post URLs configured.</div>
+                )
+              )}
             </div>
           </div>
 

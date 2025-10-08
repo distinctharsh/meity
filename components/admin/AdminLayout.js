@@ -15,6 +15,7 @@ const AdminLayout = ({ children }) => {
     { name: 'Announcements', href: '/admin/announcements', icon: '📢', description: 'Site announcements' },
     { name: 'Pages', href: '/admin/pages', icon: '📄', description: 'Create & manage pages' },
     { name: 'Hero Slider', href: '/admin/slider', icon: '🖼️', description: 'Manage homepage slider' },
+    { name: 'Social Feed', href: '/admin/social', icon: '🔗', description: 'Manage social posts' },
   ];
 
   useEffect(() => {
