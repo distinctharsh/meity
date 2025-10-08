@@ -84,7 +84,7 @@ export default function AdminSocialPage() {
       )}
 
       {(creating || editing) && (
-        <div className="bg-white rounded-lg shadow p-4">
+        <div className="bg-white rounded-lg shadow p-4 border border-gray-300">
           <h2 className="text-lg font-semibold mb-4">{editing ? 'Edit Post' : 'Add Post'}</h2>
           <SocialPostForm
             initial={editing}

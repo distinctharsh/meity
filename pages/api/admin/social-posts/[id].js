@@ -8,15 +8,15 @@ export default async function handler(req, res) {
 
   try {
     if (req.method === 'PUT') {
-      const { platform, content = '', image_url = '', post_url, display_order = 0, is_active = true } = req.body || {};
+      const { platform, post_url, display_order = 0, is_active = true } = req.body || {};
       if (!platform || !post_url) {
         return res.status(400).json({ message: 'platform and post_url are required' });
       }
       await pool.query(
         `UPDATE social_media_posts
-         SET platform = ?, content = ?, image_url = ?, post_url = ?, display_order = ?, is_active = ?
+         SET platform = ?, post_url = ?, display_order = ?, is_active = ?
          WHERE id = ?`,
-        [platform, content, image_url, post_url, Number(display_order) || 0, !!is_active, Number(id)]
+        [platform, post_url, Number(display_order) || 0, !!is_active, Number(id)]
       );
       const [rows] = await pool.query(`SELECT * FROM social_media_posts WHERE id = ?`, [Number(id)]);
       return res.status(200).json(rows[0]);

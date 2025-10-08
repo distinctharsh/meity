@@ -99,8 +99,6 @@ CREATE TABLE IF NOT EXISTS recent_documents (
 CREATE TABLE IF NOT EXISTS social_media_posts (
     id INT AUTO_INCREMENT PRIMARY KEY,
     platform VARCHAR(50) NOT NULL,
-    content TEXT,
-    image_url VARCHAR(500),
     post_url VARCHAR(500),
     display_order INT DEFAULT 0,
     is_active BOOLEAN DEFAULT TRUE,

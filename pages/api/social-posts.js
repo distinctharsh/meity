@@ -6,7 +6,7 @@ export default async function handler(req, res) {
   }
   try {
     const [rows] = await pool.query(
-      `SELECT platform, content, image_url, post_url
+      `SELECT platform, post_url
        FROM social_media_posts
        WHERE is_active = TRUE
        ORDER BY display_order ASC, id ASC`
@@ -54,11 +54,7 @@ export default async function handler(req, res) {
       }
 
       if (result[platform]) {
-        result[platform].push({
-          content: r.content || '',
-          image_url: r.image_url || '',
-          post_url
-        });
+        result[platform].push({ post_url });
       }
     }
 

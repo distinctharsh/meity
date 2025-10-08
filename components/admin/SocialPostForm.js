@@ -4,8 +4,6 @@ export default function SocialPostForm({ initial, onCancel, onSaved }) {
   const [form, setForm] = useState({
     platform: 'twitter',
     post_url: '',
-    content: '',
-    image_url: '',
     display_order: 0,
     is_active: true,
   });
@@ -16,8 +14,6 @@ export default function SocialPostForm({ initial, onCancel, onSaved }) {
       setForm({
         platform: initial.platform || 'twitter',
         post_url: initial.post_url || '',
-        content: initial.content || '',
-        image_url: initial.image_url || '',
         display_order: initial.display_order || 0,
         is_active: initial.is_active !== undefined ? initial.is_active : true,
       });
@@ -84,7 +80,7 @@ export default function SocialPostForm({ initial, onCancel, onSaved }) {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium text-gray-700">Platform</label>
-          <select name="platform" value={form.platform} onChange={handleChange} className="mt-1 block w-full border-gray-300 rounded-md">
+          <select name="platform" value={form.platform} onChange={handleChange} className="mt-1 block w-full border border-gray-300 rounded-md">
             <option value="twitter">Twitter</option>
             <option value="youtube">YouTube</option>
             <option value="facebook">Facebook</option>
@@ -93,23 +89,15 @@ export default function SocialPostForm({ initial, onCancel, onSaved }) {
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700">Post URL</label>
-          <input name="post_url" value={form.post_url} onChange={handleChange} className="mt-1 block w-full border-gray-300 rounded-md" placeholder="https://..." />
+          <input name="post_url" value={form.post_url} onChange={handleChange} className="mt-1 block w-full border border-gray-300 rounded-md" placeholder="https://..." />
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700">Display Order</label>
-          <input type="number" name="display_order" value={form.display_order} onChange={handleChange} className="mt-1 block w-full border-gray-300 rounded-md" />
+          <input type="number" name="display_order" value={form.display_order} onChange={handleChange} className="mt-1 block w-full border border-gray-300 rounded-md" />
         </div>
         <div className="flex items-center">
           <input id="is_active" type="checkbox" name="is_active" checked={form.is_active} onChange={handleChange} className="h-4 w-4 text-blue-600 border-gray-300 rounded" />
           <label htmlFor="is_active" className="ml-2 text-sm text-gray-700">Active</label>
-        </div>
-        <div className="md:col-span-2">
-          <label className="block text-sm font-medium text-gray-700">Content (optional)</label>
-          <textarea name="content" value={form.content} onChange={handleChange} rows={3} className="mt-1 block w-full border-gray-300 rounded-md" />
-        </div>
-        <div className="md:col-span-2">
-          <label className="block text-sm font-medium text-gray-700">Image URL (optional)</label>
-          <input name="image_url" value={form.image_url} onChange={handleChange} className="mt-1 block w-full border-gray-300 rounded-md" placeholder="/uploads/... or https://..." />
         </div>
       </div>
 
