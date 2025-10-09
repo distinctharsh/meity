@@ -4,7 +4,8 @@ import Emblem from "./icons/Emblem";
 
 export default function Header() {
   return (
-    <header id="site-header" className="bg-white py-[12px] px-4 md:px-[120px] border-b border-[#e6e6e6] sticky top-0 z-[998]">
+    <>
+    <header id="site-header" className="bg-white py-[12px] px-4 md:px-[120px] border-b border-[#e6e6e6] md:sticky md:top-0 md:z-[998]">
       <div className="w-full mx-auto py-4">
         <div className="grid grid-cols-1 gap-2 md:gap-4 md:grid-cols-[3fr_auto_1fr] md:items-end">
           {/* Left Column */}
@@ -32,8 +33,8 @@ export default function Header() {
               <img src="/images/digitalindia.svg" alt="Digital India" width={120} height={120} style={{ width: 120, height: 'auto' }} />
             </div>
 
-            {/* Search */}
-            <div className="flex items-center md:ml-5 md:mb-0 md:mr-5 order-4 md:order-none w-full md:w-auto justify-center md:justify-start ">
+            {/* Search (desktop only) */}
+            <div className="hidden md:flex items-center md:ml-5 md:mb-0 md:mr-5 order-4 md:order-none w-full md:w-auto justify-center md:justify-start ">
               <div className="flex items-center border-[2px] border-[#ebeaea] border-b-[3px] border-b-[#123a6b] rounded-t-[12px] overflow-hidden w-full max-w-[320px] md:max-w-[400px] md:w-[300px] bg-white mb-0 md:mb-[10px]">
                 <input
                   type="text"
@@ -44,18 +45,6 @@ export default function Header() {
                   <span className="material-symbols-outlined">search</span>
                 </button>
               </div>
-              {/* Mobile hamburger to the right of search */}
-              <button
-                className="ml-3 bg-transparent border-0 text-[24px] cursor-pointer p-2 text-[#123a6b] md:hidden"
-                onClick={() => {
-                  if (typeof window !== 'undefined') {
-                    window.dispatchEvent(new Event('toggle-navbar'));
-                  }
-                }}
-                aria-label="Toggle navigation"
-              >
-                <span className="material-symbols-outlined">menu</span>
-              </button>
             </div>
 
             {/* Middle Column (desktop/tablet only) */}
@@ -104,5 +93,35 @@ export default function Header() {
         </div>
       </div>
     </header>
+
+    {/* Mobile sticky top bar: search + toggle */}
+    <div className="md:hidden sticky top-0 z-[999] bg-white border-b border-[#e6e6e6] px-4 py-2">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center flex-1">
+          <div className="flex items-center border-[2px] border-[#ebeaea] border-b-[3px] border-b-[#123a6b] rounded-t-[12px] overflow-hidden w-full max-w-[320px] bg-white">
+            <input
+              type="text"
+              placeholder="Search..."
+              className="flex-1 border-0 outline-none py-[10px] px-[9px] text-[14px] font-sans border-r border-[#ebeaea] placeholder:text-[16px] placeholder:text-[#453636]"
+            />
+            <button className="bg-transparent border-0 px-4 pt-2 cursor-pointer text-[#123a6b] text-[20px] border-l border-[#ebeaea]" title="Search">
+              <span className="material-symbols-outlined">search</span>
+            </button>
+          </div>
+        </div>
+        <button
+          className="ml-3 bg-transparent border-0 text-[24px] cursor-pointer p-2 text-[#123a6b]"
+          onClick={() => {
+            if (typeof window !== 'undefined') {
+              window.dispatchEvent(new Event('toggle-navbar'));
+            }
+          }}
+          aria-label="Toggle navigation"
+        >
+          <span className="material-symbols-outlined">menu</span>
+        </button>
+      </div>
+    </div>
+    </>
   );
 }

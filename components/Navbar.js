@@ -100,7 +100,7 @@ export default function NewNavbar() {
   };
 
   return (
-    <nav className="bg-white shadow-[0_2px_4px_rgba(0,0,0,0.1)] border-t border-[#d0d0d0] sticky z-[299]" style={{ borderBottom: '2px solid #162f6a', top: stickyTop }}>
+    <nav className="hidden md:block bg-white shadow-[0_2px_4px_rgba(0,0,0,0.1)] border-t border-[#d0d0d0] sticky z-[299]" style={{ borderBottom: '2px solid #162f6a', top: stickyTop }}>
       <div className="px-[7%]">
         {/* Bar container */}
         <div className="flex items-center justify-between h-13">
