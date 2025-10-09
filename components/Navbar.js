@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { fetchWithCacheBusting } from '@/utils/api';
+import { createPortal } from 'react-dom';
 
 export default function NewNavbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -10,6 +11,7 @@ export default function NewNavbar() {
   const [navItems, setNavItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [stickyTop, setStickyTop] = useState(0);
+  const [mounted, setMounted] = useState(false);
   const router = useRouter();
 
   // Listen for header-dispatched toggle for mobile navbar
@@ -40,6 +42,11 @@ export default function NewNavbar() {
       window.removeEventListener('resize', calc);
       window.removeEventListener('scroll', calc);
     };
+  }, []);
+
+  // Mark as mounted for safe portal usage (avoids SSR mismatch)
+  useEffect(() => {
+    setMounted(true);
   }, []);
 
   // Fetch navigation from DB-backed API and prepare structure
@@ -188,82 +195,85 @@ export default function NewNavbar() {
         </div>
       </div>
 
-      {/* Mobile drawer and backdrop */}
-      <>
-        {/* Backdrop */}
-        <div
-          className={`md:hidden fixed inset-0 bg-black/30 transition-opacity duration-200 z-[1200] ${mobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
-          onClick={toggleMobileMenu}
-        />
+      {/* Mobile drawer and backdrop via Portal (escapes nav stacking context) */}
+      {mounted && createPortal(
+        <>
+          {/* Backdrop */}
+          <div
+            className={`md:hidden fixed inset-0 bg-black/30 transition-opacity duration-200 z-[5000] ${mobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
+            onClick={toggleMobileMenu}
+          />
 
-        {/* Drawer */}
-        <aside
-          className={`md:hidden fixed top-0 right-0 h-full w-[80%] max-w-[360px] bg-white shadow-[0_10px_30px_rgba(0,0,0,0.2)] transform transition-transform duration-300 z-[1201] ${mobileMenuOpen ? 'translate-x-0' : 'translate-x-full'}`}
-          role="dialog"
-          aria-modal="true"
-        >
-          <div className="flex items-center justify-between px-4 h-14 border-b border-[#eee]">
-            <span className="text-[18px] font-semibold text-[#162f6a]">Menu</span>
-            <button className="bg-transparent border-0 p-2 text-[#333]" aria-label="Close" onClick={toggleMobileMenu}>
-              <span className="material-symbols-outlined text-[22px]">close</span>
-            </button>
-          </div>
-          <ul className="m-0 p-2">
-            {(loading ? [] : navItems).map((item, index) => (
-              <li key={index} className="">
-                <Link
-                  href={item.href}
-                  className={`flex items-center justify-between no-underline px-4 py-3 text-[16px] font-semibold ${isActive(item.href) ? 'text-[#162f6a]' : 'text-[#1b1b1b]'}`}
-                  onClick={(e) => {
-                    if (item.dropdown) {
-                      e.preventDefault();
-                      setActiveDropdown(activeDropdown === index ? null : index);
-                    } else {
-                      setMobileMenuOpen(false);
-                    }
-                  }}
-                >
-                  <span className="flex items-center justify-between w-full">
-                    <span>{item.text}</span>
-                    {item.dropdown && (
-                      <svg
-                        className="w-5 h-5"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        aria-hidden="true"
-                      >
-                        <polyline points="6 9 12 15 18 9"></polyline>
-                      </svg>
-                    )}
-                  </span>
-                </Link>
-                {/* Mobile dropdown items */}
-                {item.dropdown && item.items && (
-                  <div className={`${activeDropdown === index ? 'block' : 'hidden'}`}>
-                    <ul className="pl-6">
-                      {item.items.map((subItem, subIndex) => (
-                        <li key={subIndex}>
-                          <Link
-                            href={subItem.href}
-                            className="block no-underline text-[15px] text-[#162f6a] py-2"
-                            onClick={() => setMobileMenuOpen(false)}
-                          >
-                            {subItem.text}
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-              </li>
-            ))}
-          </ul>
-        </aside>
-      </>
+          {/* Drawer */}
+          <aside
+            className={`md:hidden fixed top-0 right-0 h-full w-[80%] max-w-[360px] bg-white shadow-[0_10px_30px_rgba(0,0,0,0.2)] transform transition-transform duration-300 z-[5001] ${mobileMenuOpen ? 'translate-x-0' : 'translate-x-full'}`}
+            role="dialog"
+            aria-modal="true"
+          >
+            <div className="flex items-center justify-between px-4 h-14 border-b border-[#eee]">
+              <span className="text-[18px] font-semibold text-[#162f6a]">Menu</span>
+              <button className="bg-transparent border-0 p-2 text-[#333]" aria-label="Close" onClick={toggleMobileMenu}>
+                <span className="material-symbols-outlined text-[22px]">close</span>
+              </button>
+            </div>
+            <ul className="m-0 p-2">
+              {(loading ? [] : navItems).map((item, index) => (
+                <li key={index} className="">
+                  <Link
+                    href={item.href}
+                    className={`flex items-center justify-between no-underline px-4 py-3 text-[16px] font-semibold ${isActive(item.href) ? 'text-[#162f6a]' : 'text-[#1b1b1b]'}`}
+                    onClick={(e) => {
+                      if (item.dropdown) {
+                        e.preventDefault();
+                        setActiveDropdown(activeDropdown === index ? null : index);
+                      } else {
+                        setMobileMenuOpen(false);
+                      }
+                    }}
+                  >
+                    <span className="flex items-center justify-between w-full">
+                      <span>{item.text}</span>
+                      {item.dropdown && (
+                        <svg
+                          className="w-5 h-5"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          aria-hidden="true"
+                        >
+                          <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                      )}
+                    </span>
+                  </Link>
+                  {/* Mobile dropdown items */}
+                  {item.dropdown && item.items && (
+                    <div className={`${activeDropdown === index ? 'block' : 'hidden'}`}>
+                      <ul className="pl-6">
+                        {item.items.map((subItem, subIndex) => (
+                          <li key={subIndex}>
+                            <Link
+                              href={subItem.href}
+                              className="block no-underline text-[15px] text-[#162f6a] py-2"
+                              onClick={() => setMobileMenuOpen(false)}
+                            >
+                              {subItem.text}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </aside>
+        </>,
+        document.body
+      )}
     </nav>
   );
 }
