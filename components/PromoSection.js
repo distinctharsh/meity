@@ -55,11 +55,11 @@ const PromoSection = () => {
     if (!mounted) return null;
 
     return (
-        <div className="w-full bg-transparent py-10">
-            <div className="gi-container flex flex-row gap-4 items-stretch h-[300px]">
+        <div className="w-full bg-transparent py-6 md:py-10">
+            <div className="gi-container flex flex-col md:flex-row gap-4 items-stretch md:h-[300px]">
 
                 {/* Image Section – zyada space le raha hai */}
-                <div className="flex-[2] h-full bg-gray-100 rounded-lg overflow-hidden relative">
+                <div className="relative w-full bg-gray-100 rounded-lg overflow-hidden md:h-full md:flex-[2] aspect-[16/9] md:aspect-auto">
                     <Image
                         src="/images/promo/digital-personal-data.jpg"
                         alt="Digital Personal Data Protection"
@@ -70,7 +70,7 @@ const PromoSection = () => {
                 </div>
 
                 {/* Video Section with gaps */}
-                <div className="flex-1 h-full bg-blue-100 rounded-lg overflow-hidden relative mx-2">
+                <div className="relative w-full bg-blue-100 rounded-lg overflow-hidden md:h-full md:flex-1 md:mx-2 aspect-[16/9] md:aspect-auto">
                     <video
                         src="https://playhls.media.nic.in/igot_vod/MyGov/NOV24/video/studentmustknow.mp4"
                         poster="https://ccps.digifootprint.gov.in/static//uploads/2025/04/1788fb793d870f1ee49f02201be384e1.jpg"
@@ -81,7 +81,7 @@ const PromoSection = () => {
                 </div>
 
                 {/* Carousel Section */}
-                <div className="flex-1 h-full bg-white rounded-lg overflow-hidden relative">
+                <div className="relative w-full bg-white rounded-lg overflow-hidden md:h-full md:flex-1 aspect-[16/9] md:aspect-auto">
                     <button
                         onClick={handlePrev}
                         className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-gray-200 rounded-full p-2 hover:bg-gray-300 z-10"
