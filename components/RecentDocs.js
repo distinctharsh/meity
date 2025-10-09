@@ -37,16 +37,16 @@ const RecentDocs = () => {
 
   return (
     <div className="w-full min-h-[500px] bg-white py-4">
-      <div className="gi-container flex flex-row justify-between items-start w-full">
+      <div className="gi-container flex flex-col md:flex-row justify-between items-start w-full gap-6">
 
         {/* Recent Documents */}
-        <div className="flex flex-col items-start flex-[2] mr-[0px]">
+        <div className="flex flex-col items-start w-full md:flex-[2] md:mr-0">
           <div className="flex items-center mb-3">
             <Document className="w-5 h-5 mr-2" />
             <h3 className="text-[#202A3A] text-[1.4rem] font-bold leading-none tracking-tight m-0">Recent Documents</h3>
           </div>
 
-          <div className="grid grid-cols-2 gap-x-4 gap-y-3 mt-2 w-full">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-3 mt-2 w-full">
             {recentDocs.map((doc, i) => (
               <div
                 key={i}
@@ -66,7 +66,7 @@ const RecentDocs = () => {
         </div>
 
         {/* User Personas */}
-        <div className="flex flex-col items-center justify-center flex-[1]">
+        <div className="flex flex-col items-center justify-center w-full md:flex-[1] md:mt-0">
           <div className="flex items-center mb-3">
             <img src="/images/icons/user-personas.svg" alt="User Personas" />
             <h3 className="text-[#202A3A] text-[1.4rem] font-bold leading-none tracking-tight m-0">Explore User Personas</h3>
@@ -103,7 +103,7 @@ const RecentDocs = () => {
         </div>
 
         {/* Important Links */}
-        <div className="flex flex-col items-start flex-[1] ml-[20px]">
+        <div className="flex flex-col items-start w-full md:flex-[1] md:ml-[20px]">
           <div className="flex items-center mb-3">
             <img src="/images/icons/important-link.svg" alt="Important Link" />
             <h3 className="text-[#202A3A] text-[1.4rem] font-bold leading-none tracking-tight m-0">Important Links</h3>

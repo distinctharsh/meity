@@ -4,8 +4,8 @@ import Emblem from "./icons/Emblem";
 
 export default function Header() {
   return (
-    <header className="bg-white py-[12px] px-4 md:px-[120px] border-b border-[#e6e6e6] sticky top-0 z-[998]">
-      <div className="w-full mx-auto">
+    <header id="site-header" className="bg-white py-[12px] px-4 md:px-[120px] border-b border-[#e6e6e6] sticky top-0 z-[998]">
+      <div className="w-full mx-auto py-4">
         <div className="grid grid-cols-1 gap-2 md:gap-4 md:grid-cols-[3fr_auto_1fr] md:items-end">
           {/* Left Column */}
           <div className="flex flex-col md:flex-row md:items-end gap-3 order-2 md:order-none w-full">
@@ -60,7 +60,7 @@ export default function Header() {
 
             {/* Middle Column (desktop/tablet only) */}
             <div className="hidden md:flex justify-center mb-[10px] order-3 md:order-none">
-              <img src="/images/digitalindia.svg" alt="Digital India" width={100} height={100} style={{ width: 100, height: 'auto' }} />
+              <img src="/images/digitalindia.svg" alt="Digital India" width={100} height={100} style={{ width: 130, height: 'auto' }} />
             </div>
 
           </div>
@@ -71,7 +71,7 @@ export default function Header() {
           </div>
 
           {/* Right Column */}
-          <div className="flex justify-center md:justify-end gap-[18px] mb-0 md:mb-[10px] order-1 md:order-none">
+          <div className="flex justify-end md:justify-end gap-[18px] mb-0 md:mb-[10px] order-1 md:order-none">
             <div className="flex gap-3 items-center">
               <a
                 href="#main-content"

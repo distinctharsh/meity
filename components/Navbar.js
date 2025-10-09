@@ -9,6 +9,7 @@ export default function NewNavbar() {
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [navItems, setNavItems] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [stickyTop, setStickyTop] = useState(0);
   const router = useRouter();
 
   // Listen for header-dispatched toggle for mobile navbar
@@ -21,6 +22,23 @@ export default function NewNavbar() {
       if (typeof window !== 'undefined') {
         window.removeEventListener('toggle-navbar', handler);
       }
+    };
+  }, []);
+
+  // Set sticky top to match header height (no gap below header)
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const calc = () => {
+      const el = document.getElementById('site-header');
+      const h = el ? el.getBoundingClientRect().height : 0;
+      setStickyTop(Math.max(0, Math.round(h)));
+    };
+    calc();
+    window.addEventListener('resize', calc);
+    window.addEventListener('scroll', calc); // header height can change with sticky effects
+    return () => {
+      window.removeEventListener('resize', calc);
+      window.removeEventListener('scroll', calc);
     };
   }, []);
 
@@ -75,7 +93,7 @@ export default function NewNavbar() {
   };
 
   return (
-    <nav className="bg-white shadow-[0_2px_4px_rgba(0,0,0,0.1)] border-t border-[#d0d0d0] sticky top-[154px] z-[299]" style={{borderBottom: '2px solid #162f6a'}}>
+    <nav className="bg-white shadow-[0_2px_4px_rgba(0,0,0,0.1)] border-t border-[#d0d0d0] sticky z-[299]" style={{ borderBottom: '2px solid #162f6a', top: stickyTop }}>
       <div className="px-[7%]">
         {/* Bar container */}
         <div className="flex items-center justify-between h-13">
