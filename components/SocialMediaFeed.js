@@ -96,6 +96,7 @@ const SocialMediaPreview = ({
 }) => {
   const [currentPreview, setCurrentPreview] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [mobileIndex, setMobileIndex] = useState(0);
   const [apiData, setApiData] = useState(null);
   const [apiError, setApiError] = useState(null);
 
@@ -176,6 +177,17 @@ const SocialMediaPreview = ({
     },
   ].filter(item => item.url);
 
+  // Build slides for mobile carousel: exactly 4 cards mirroring desktop sections
+  const mobileSlides = [
+    { key: 'yt', type: 'youtube', title: 'Youtube' },
+    { key: 'ig', type: 'instagram', title: 'Instagram' },
+    { key: 'tw', type: 'twitter', title: 'X' },
+    { key: 'fb', type: 'facebook', title: 'Facebook' },
+  ];
+
+  const nextMobile = () => setMobileIndex(prev => (prev + 1) % Math.max(1, mobileSlides.length));
+  const prevMobile = () => setMobileIndex(prev => (prev - 1 + Math.max(1, mobileSlides.length)) % Math.max(1, mobileSlides.length));
+
   const openPreview = (index) => {
     setCurrentIndex(index);
     setCurrentPreview(socialMediaItems[index]);
@@ -227,9 +239,142 @@ const SocialMediaPreview = ({
         <div className="gi-container text-sm text-red-200 mb-2">Social feed failed to load from admin. Showing defaults. ({apiError})</div>
       )}
 
-      {/* Social Media Grid */}
-      <div className="gi-container">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* Mobile Slider */}
+      <div className="gi-container md:hidden">
+        <div className="relative bg-white rounded-lg shadow overflow-hidden">
+          {/* Header of current card */}
+          <div className="p-3 border-b">
+            <h3 className="text-gray-800 font-semibold text-center">{mobileSlides[mobileIndex]?.title || 'Social'}</h3>
+          </div>
+          {/* Slide body renders the same multi-item content as desktop */}
+          <div className="p-2">
+            {(() => {
+              const slide = mobileSlides[mobileIndex];
+              if (!slide) return <div className="text-center text-gray-500 p-6">No social items configured.</div>;
+              if (slide.type === 'youtube') {
+                return (
+                  <div className="h-[360px] overflow-y-auto">
+                    {ytList.slice(0, 3).map((videoUrl, index) => (
+                      <div key={index} className="pb-4 mb-2 border-b last:pb-0 last:mb-0 last:border-none">
+                        <div className="aspect-video w-full rounded overflow-hidden">
+                          <iframe
+                            title={`YouTube Video ${index + 1}`}
+                            src={getEmbedUrl(videoUrl)}
+                            className="w-full h-full"
+                            frameBorder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowFullScreen
+                            loading="lazy"
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                );
+              }
+              if (slide.type === 'instagram') {
+                return (
+                  <div className="h-[360px] overflow-y-auto space-y-4">
+                    {igEmbeds.length > 0 ? igEmbeds.map(({ url: iUrl, embed }, index) => (
+                      enableEmbeds ? (
+                        <div key={index} className="w-full">
+                          <iframe
+                            src={embed}
+                            className="w-full h-[320px] border-0"
+                            allowFullScreen
+                            scrolling="yes"
+                            loading="lazy"
+                            title={`Instagram Post ${index + 1}`}
+                            sandbox="allow-scripts allow-same-origin allow-popups"
+                            referrerPolicy="no-referrer-when-downgrade"
+                          />
+                        </div>
+                      ) : (
+                        <a key={index} href={iUrl} target="_blank" rel="noopener noreferrer" className="block w-full rounded overflow-hidden border" aria-label={`Open Instagram post ${index + 1}`}>
+                          <img src="/images/promo/digital-personal-data.jpg" alt={`Instagram preview ${index + 1}`} className="w-full h-[320px] object-cover" />
+                        </a>
+                      )
+                    )) : (
+                      igList.length > 0 ? (
+                        <div className="flex flex-col gap-2">
+                          {igList.map((iUrl, idx) => (
+                            <a key={idx} href={iUrl} target="_blank" rel="noopener noreferrer" className="text-pink-600 underline" aria-label={`Open Instagram post ${idx + 1}`}>Open on Instagram #{idx + 1}</a>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="text-center text-gray-500 p-6">No valid Instagram post URLs configured.</div>
+                      )
+                    )}
+                  </div>
+                );
+              }
+              if (slide.type === 'twitter') {
+                return (
+                  <div className="h-[360px] overflow-y-auto">
+                    {twList.length > 0 ? (
+                      twList.map((tUrl, index) => {
+                        const embed = getEmbedUrl(tUrl);
+                        return enableEmbeds && embed ? (
+                          <div key={index} className="pb-4 mb-2 border-b last:pb-0 last:mb-0 last:border-none">
+                            <iframe src={embed} className="w-full h-[320px] border-0" allowFullScreen loading="lazy" title={`Twitter Post ${index + 1}`} />
+                          </div>
+                        ) : (
+                          <div key={index} className="pb-2">
+                            <a href={tUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline" aria-label={`Open Twitter post ${index + 1}`}>Open on X (Twitter) #{index + 1}</a>
+                          </div>
+                        );
+                      })
+                    ) : (
+                      <div className="text-center text-gray-500 p-6">No valid Twitter post URLs configured.</div>
+                    )}
+                  </div>
+                );
+              }
+              if (slide.type === 'facebook') {
+                return (
+                  <div className="h-[360px] overflow-y-auto space-y-4">
+                    {fbEmbeds.length > 0 ? fbEmbeds.map(({url: postUrl, embed}, index) => (
+                      enableEmbeds ? (
+                        <div key={index} className="mb-4 last:mb-0">
+                          <iframe title={`FacebookPost${index}`} src={embed} className="w-full h-[320px] border-0" scrolling="no" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share" allowFullScreen loading="lazy" sandbox="allow-scripts allow-same-origin allow-popups" referrerPolicy="no-referrer-when-downgrade" />
+                        </div>
+                      ) : (
+                        <a key={index} href={postUrl} target="_blank" rel="noopener noreferrer" className="block rounded overflow-hidden border" aria-label={`Open Facebook post ${index + 1}`}> 
+                          <img src="/images/promo/digital-personal-data.jpg" alt={`Facebook preview ${index + 1}`} className="w-full h-[320px] object-cover" />
+                        </a>
+                      )
+                    )) : (
+                      <div className="text-center text-gray-500 p-6">No valid Facebook post URLs configured.</div>
+                    )}
+                  </div>
+                );
+              }
+              return <div className="text-center text-gray-500 p-6">No social items configured.</div>;
+            })()}
+          </div>
+
+          {/* Controls */}
+          {mobileSlides.length > 1 && (
+            <>
+              <button onClick={prevMobile} aria-label="Previous" className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/40 text-white rounded-full w-8 h-8 flex items-center justify-center">
+                <FaChevronLeft />
+              </button>
+              <button onClick={nextMobile} aria-label="Next" className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/40 text-white rounded-full w-8 h-8 flex items-center justify-center">
+                <FaChevronRight />
+              </button>
+              <div className="flex items-center justify-center gap-2 pb-3">
+                {mobileSlides.map((_, i) => (
+                  <button key={i} className={`w-2 h-2 rounded-full ${i === mobileIndex ? 'bg-[#25355a]' : 'bg-gray-300'}`} onClick={() => setMobileIndex(i)} aria-label={`Go to slide ${i+1}`} />
+                ))}
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+
+      {/* Social Media Grid for md+ */}
+      <div className="gi-container hidden md:block">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
 
           {/* Twitter Section */}
           <div className="bg-white rounded-lg shadow overflow-hidden flex flex-col">
