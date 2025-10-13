@@ -16,11 +16,8 @@ CREATE TABLE IF NOT EXISTS cms_users (
 -- Hero Slider Management
 CREATE TABLE IF NOT EXISTS hero_slides (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    title VARCHAR(255),
-    description TEXT,
     image_url VARCHAR(500) NOT NULL,
     link_url VARCHAR(500),
-    link_text VARCHAR(100),
     display_order INT DEFAULT 0,
     is_active BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

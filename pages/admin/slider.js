@@ -129,9 +129,13 @@ export default function HeroSliderManagement() {
           <h1 className="text-3xl font-bold text-gray-900">Hero Slider Management</h1>
           <button
             onClick={handleAdd}
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+            className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300 shadow cursor-pointer"
+            aria-label="Add new slide"
+            title="Add new slide"
           >
-            Add New Slide
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 5v14M5 12h14" />
+            </svg>
           </button>
         </div>
 
@@ -184,14 +188,14 @@ export default function HeroSliderManagement() {
                       <button
                         onClick={() => index > 0 && handleReorder(index, index - 1)}
                         disabled={index === 0}
-                        className="text-gray-400 hover:text-gray-600 disabled:opacity-50"
+                        className="text-gray-400 hover:text-gray-600 disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
                       >
                         ↑
                       </button>
                       <button
                         onClick={() => index < slides.length - 1 && handleReorder(index, index + 1)}
                         disabled={index === slides.length - 1}
-                        className="text-gray-400 hover:text-gray-600 disabled:opacity-50"
+                        className="text-gray-400 hover:text-gray-600 disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
                       >
                         ↓
                       </button>
@@ -200,17 +204,14 @@ export default function HeroSliderManagement() {
                   <div className="flex-shrink-0">
                     <img
                       src={slide.image_url}
-                      alt={slide.title || 'Slide'}
+                      alt="Slide"
                       className="h-16 w-24 object-cover rounded"
                     />
                   </div>
                   <div className="flex-1 min-w-0">
                     <h3 className="text-sm font-medium text-gray-900 truncate">
-                      {slide.title || 'Untitled Slide'}
+                      Slide #{index + 1}
                     </h3>
-                    <p className="text-sm text-gray-500 truncate">
-                      {slide.description || 'No description'}
-                    </p>
                     {slide.link_url && (
                       <p className="text-xs text-blue-600 truncate">
                         Link: {slide.link_url}
@@ -220,18 +221,17 @@ export default function HeroSliderManagement() {
                   <div className="flex-shrink-0 flex items-center space-x-2">
                     <button
                       onClick={() => handleEdit(slide)}
-                      className="p-2 rounded-md text-blue-600 hover:text-blue-800 hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-200"
+                      className="p-2 rounded-md text-blue-600 hover:text-blue-800 hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-200 cursor-pointer"
                       title="Edit"
                       aria-label="Edit slide"
                     >
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
-                        <path d="M21.731 2.269a2.625 2.625 0 0 0-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 0 0 0-3.712z" />
-                        <path d="M3 17.25V21h3.75L19.435 8.315l-3.712-3.712L3 17.25z" />
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-5 h-5">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687 1.687m-2.496-0.79l-8.74 8.74a2.25 2.25 0 00-.57.99l-.53 2.122a.75.75 0 00.91.91l2.122-.53a2.25 2.25 0 00.99-.57l8.74-8.74m-2.496-0.79l2.496 0.79M16.862 4.487a1.875 1.875 0 112.652 2.652" />
                       </svg>
                     </button>
                     <button
                       onClick={() => handleDelete(slide.id)}
-                      className="p-2 rounded-md text-red-600 hover:text-red-800 hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-200"
+                      className="p-2 rounded-md text-red-600 hover:text-red-800 hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-200 cursor-pointer"
                       title="Delete"
                       aria-label="Delete slide"
                     >

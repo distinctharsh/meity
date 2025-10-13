@@ -25,15 +25,15 @@ export default async function handler(req, res) {
     }
   } else if (req.method === 'PUT') {
     try {
-      const { title, description, image_url, link_url, link_text, display_order, is_active } = req.body;
+      const { image_url, link_url, display_order, is_active } = req.body;
 
       if (!image_url) {
         return res.status(400).json({ message: 'Image URL is required' });
       }
 
       const [result] = await pool.query(
-        'UPDATE hero_slides SET title = ?, description = ?, image_url = ?, link_url = ?, link_text = ?, display_order = ?, is_active = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
-        [title, description, image_url, link_url, link_text, display_order || 0, is_active !== false, id]
+        'UPDATE hero_slides SET image_url = ?, link_url = ?, display_order = ?, is_active = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
+        [image_url, link_url, display_order || 0, is_active !== false, id]
       );
 
       if (result.affectedRows === 0) {

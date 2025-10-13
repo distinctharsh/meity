@@ -8,7 +8,7 @@ export default async function handler(req, res) {
   try {
     // Public endpoint: only return active slides in display order
     const [rows] = await pool.query(
-      'SELECT id, title, description, image_url, link_url, link_text FROM hero_slides WHERE is_active = TRUE ORDER BY display_order ASC, created_at DESC'
+      'SELECT id, image_url, link_url FROM hero_slides WHERE is_active = TRUE ORDER BY display_order ASC, created_at DESC'
     );
 
     // Basic no-cache to keep homepage fresh

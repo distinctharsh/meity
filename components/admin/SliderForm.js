@@ -2,11 +2,8 @@ import { useState, useEffect } from 'react';
 
 const SliderForm = ({ slide, onSubmit, onCancel }) => {
   const [formData, setFormData] = useState({
-    title: '',
-    description: '',
     image_url: '',
     link_url: '',
-    link_text: '',
     display_order: 0,
     is_active: true
   });
@@ -17,11 +14,8 @@ const SliderForm = ({ slide, onSubmit, onCancel }) => {
   useEffect(() => {
     if (slide) {
       setFormData({
-        title: slide.title || '',
-        description: slide.description || '',
         image_url: slide.image_url || '',
         link_url: slide.link_url || '',
-        link_text: slide.link_text || '',
         display_order: slide.display_order || 0,
         is_active: slide.is_active !== undefined ? slide.is_active : true
       });
@@ -68,21 +62,6 @@ const SliderForm = ({ slide, onSubmit, onCancel }) => {
         {/* Form Section */}
         <div>
           <form onSubmit={handleSubmit} className="space-y-5">
-            <div>
-              <label htmlFor="title" className="block text-sm font-medium text-gray-700">
-                Title
-              </label>
-              <input
-                type="text"
-                id="title"
-                name="title"
-                value={formData.title}
-                onChange={handleChange}
-                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-white"
-                placeholder="Enter slide title"
-              />
-            </div>
-
             {/* Image Upload */}
             <div>
               <label className="block text-sm font-medium text-gray-700">
@@ -133,20 +112,7 @@ const SliderForm = ({ slide, onSubmit, onCancel }) => {
               )}
             </div>
 
-            <div>
-              <label htmlFor="description" className="block text-sm font-medium text-gray-700">
-                Description
-              </label>
-              <textarea
-                id="description"
-                name="description"
-                rows={3}
-                value={formData.description}
-                onChange={handleChange}
-                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-white"
-                placeholder="Enter slide description"
-              />
-            </div>
+            
 
             {/* In case someone still wants to paste URL manually, keep this optional field */}
             <div>
@@ -177,21 +143,6 @@ const SliderForm = ({ slide, onSubmit, onCancel }) => {
                 onChange={handleChange}
                 className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-white"
                 placeholder="https://example.com"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="link_text" className="block text-sm font-medium text-gray-700">
-                Link Text (Optional)
-              </label>
-              <input
-                type="text"
-                id="link_text"
-                name="link_text"
-                value={formData.link_text}
-                onChange={handleChange}
-                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-white"
-                placeholder="Learn More"
               />
             </div>
 

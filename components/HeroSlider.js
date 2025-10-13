@@ -137,22 +137,10 @@ const HeroSlider = () => {
             <>
               <img
                 src={s.image_url}
-                alt={s.title || `Slide ${index + 1}`}
+                alt={`Slide ${index + 1}`}
                 className="w-full h-full object-contain"
               />
-              {(s.title || s.description || (s.link_url && s.link_text)) && (
-                <div className="absolute inset-0 bg-black/20 flex items-end">
-                  <div className="p-6 md:p-10 text-white max-w-3xl">
-                    {s.title ? <h2 className="text-2xl md:text-4xl font-bold mb-2 drop-shadow">{s.title}</h2> : null}
-                    {s.description ? <p className="text-base md:text-lg mb-4 opacity-95">{s.description}</p> : null}
-                    {s.link_url && s.link_text ? (
-                      <span className="inline-block bg-white text-blue-700 px-4 py-2 rounded-md font-semibold hover:bg-gray-100">
-                        {s.link_text}
-                      </span>
-                    ) : null}
-                  </div>
-                </div>
-              )}
+              {/* No overlay CTA since link_text is removed. Slide remains clickable if link_url exists. */}
             </>
           );
 
@@ -162,11 +150,11 @@ const HeroSlider = () => {
               className={`absolute inset-0 opacity-0 transition-opacity duration-300 ${index === currentSlide ? 'opacity-100 z-[1]' : ''}`}
             >
               {s.link_url ? (
-                <a href={s.link_url} className="block w-full h-full" aria-label={s.title || `Slide ${index + 1}`}>
+                <a href={s.link_url} className="block w-full h-full" aria-label={`Slide ${index + 1}`}>
                   {SlideContent}
                 </a>
               ) : (
-                <div className="block w-full h-full" aria-label={s.title || `Slide ${index + 1}`}>
+                <div className="block w-full h-full" aria-label={`Slide ${index + 1}`}>
                   {SlideContent}
                 </div>
               )}

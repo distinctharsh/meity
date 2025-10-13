@@ -19,15 +19,15 @@ export default async function handler(req, res) {
     }
   } else if (req.method === 'POST') {
     try {
-      const { title, description, image_url, link_url, link_text, display_order, is_active } = req.body;
+      const { image_url, link_url, display_order, is_active } = req.body;
 
       if (!image_url) {
         return res.status(400).json({ message: 'Image URL is required' });
       }
 
       const [result] = await pool.query(
-        'INSERT INTO hero_slides (title, description, image_url, link_url, link_text, display_order, is_active) VALUES (?, ?, ?, ?, ?, ?, ?)',
-        [title, description, image_url, link_url, link_text, display_order || 0, is_active !== false]
+        'INSERT INTO hero_slides (image_url, link_url, display_order, is_active) VALUES (?, ?, ?, ?)',
+        [image_url, link_url, display_order || 0, is_active !== false]
       );
 
       res.status(201).json({ 
