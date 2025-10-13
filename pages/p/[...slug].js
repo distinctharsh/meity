@@ -51,7 +51,13 @@ export default function DynamicPage({ page }) {
         .split(',')
         .map((s) => s.trim())
         .filter(Boolean)
-        .map((s) => (s.startsWith('@') || s.length === 0 ? s : `${scope} ${s}`))
+        .map((s) => {
+          if (s.startsWith('@') || s.length === 0) return s;
+          if (s.startsWith(scope)) return s;
+          const rootMapped = s.replace(/^(html|body|:root)(\b|\s)/, `${scope}$2`);
+          if (rootMapped !== s) return rootMapped;
+          return `${scope} ${s}`;
+        })
         .join(', ');
       return `${brace}${scopedSel}{`;
     });

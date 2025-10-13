@@ -42,7 +42,7 @@ export default function DynamicPage({ page }) {
   // Strip any <script> tags from user-provided HTML for safety
   const safeHtml = rawHtml.replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, '');
 
-  // Naive CSS scoping: prefix selectors with .cms-content, including inside @media
+  // Scoped CSS: prefix selectors with .cms-content, including inside @media
   const scopeSelectors = (cssText, scope) => {
     if (!cssText) return '';
     // Handle @media blocks first
@@ -60,7 +60,13 @@ export default function DynamicPage({ page }) {
         .map((s) => {
           // Avoid scoping keyframes selectors etc.
           if (s.startsWith('@') || s.length === 0) return s;
-          // If selector is html/body, still prefix to avoid global effects
+          // If selector already starts with scope, keep as-is
+          if (s.startsWith(scope)) return s;
+          // If selector targets the document root, map it directly to the scope root
+          // e.g., 'body', 'html', ':root', or 'body ...' → replace leading token with scope
+          const rootMapped = s.replace(/^(html|body|:root)(\b|\s)/, `${scope}$2`);
+          if (rootMapped !== s) return rootMapped;
+          // Default: scope as descendant of the container
           return `${scope} ${s}`;
         })
         .join(', ');
