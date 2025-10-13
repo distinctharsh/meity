@@ -606,6 +606,22 @@ function safeExtractJs(content_json) {
 }
 
 function buildPreviewDoc(html = '', css = '', js = '') {
+  // Sanitize content to remove unwanted links and references
+  const sanitizeContent = (content) => {
+    if (!content) return content;
+    return content
+      // Remove GitHub links
+      .replace(/https?:\/\/github\.com[^"'\s]*/gi, '')
+      // Remove MDJAdmin references
+      .replace(/MDJAdmin/gi, '')
+      // Remove any other unwanted promotional links (add more patterns as needed)
+      .replace(/https?:\/\/[^\s]*MDJ[^\s]*/gi, '');
+  };
+
+  const cleanHtml = sanitizeContent(html);
+  const cleanCss = sanitizeContent(css);
+  const cleanJs = sanitizeContent(js);
+
   // Minimal HTML document with embedded CSS and JS for the iframe preview
   return `<!DOCTYPE html>
 <html>
@@ -614,13 +630,13 @@ function buildPreviewDoc(html = '', css = '', js = '') {
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <style>
       html, body { margin: 0; padding: 12px; box-sizing: border-box; font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; }
-      ${css || ''}
+      ${cleanCss}
     </style>
   </head>
   <body>
-    ${html || ''}
+    ${cleanHtml}
     <script>
-      try { ${js || ''} } catch (e) { console.error('Preview script error:', e); }
+      try { ${cleanJs} } catch (e) { console.error('Preview script error:', e); }
     </script>
   </body>
 </html>`;
