@@ -204,9 +204,17 @@ const HeroSlider = () => {
         ))}
       </div>
 
-      {/* Play Pause Button */}
-      <button className="absolute bottom-2 right-5 w-8 h-8 rounded-full border-0 bg-[rgba(0,0,0,0.6)] text-white text-[16px] cursor-pointer z-[5]" onClick={togglePlayPause}>
-        {isPlaying ? "⏸" : "▶"}
+      {/* Play/Pause Button */}
+      <button
+        type="button"
+        aria-label={isPlaying ? "Pause carousel" : "Play carousel"}
+        tabIndex={0}
+        className="absolute bottom-2 right-5 bg-[#150202] text-white border-0 w-9 h-9 md:w-9 md:h-9 rounded-full cursor-pointer z-[5] p-0 flex items-center justify-center"
+        onClick={togglePlayPause}
+      >
+        <span aria-hidden="true" className="material-symbols-outlined text-[20px] md:text-[22px]">
+          {isPlaying ? 'pause' : 'play_arrow'}
+        </span>
       </button>
     </div>
     </div>
