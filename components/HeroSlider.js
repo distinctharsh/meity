@@ -162,12 +162,28 @@ const HeroSlider = () => {
           );
         })}
       {/* Left/Previous Arrow */}
-      <button className="absolute top-1/2 -translate-y-1/2 left-5 bg-[rgba(0,0,0,0.6)] text-white border-0 text-[24px] w-10 h-10 rounded-full cursor-pointer z-[5]" onClick={goToPrevious}>
-        &#10094;
+      <button
+        type="button"
+        aria-label="Previous Slide"
+        tabIndex={0}
+        className="absolute top-1/2 -translate-y-1/2 left-5 bg-[#150202] text-white border-0 w-10 h-10 md:w-9 md:h-9 cursor-pointer z-[5] p-0 flex items-center justify-center"
+        onClick={goToPrevious}
+      >
+        <span aria-hidden="true" className="material-symbols-outlined text-[22px] md:text-[24px]">
+          chevron_left
+        </span>
       </button>
       {/* Right/Next Arrow */}
-      <button className="absolute top-1/2 -translate-y-1/2 right-5 bg-[rgba(0,0,0,0.6)] text-white border-0 text-[24px] w-10 h-10 rounded-full cursor-pointer z-[5]" onClick={goToNext}>
-        &#10095;
+      <button
+        type="button"
+        aria-label="Next Slide"
+        tabIndex={0}
+        className="absolute top-1/2 -translate-y-1/2 right-5 bg-[#150202] text-white border-0 w-10 h-10 md:w-9 md:h-9 cursor-pointer z-[5] p-0 flex items-center justify-center"
+        onClick={goToNext}
+      >
+        <span aria-hidden="true" className="material-symbols-outlined text-[22px] md:text-[24px]">
+          chevron_right
+        </span>
       </button>
 
       {/* Indicators with progress */}
