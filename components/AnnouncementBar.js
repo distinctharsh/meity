@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { fetchAnnouncements } from "@/utils/api";
 import { parseBoolean } from "@/utils/debug";
+import Announcement from "./icons/Announcement";
 
 export default function AnnouncementBar() {
   const [isPaused, setIsPaused] = useState(false);
@@ -56,7 +57,7 @@ export default function AnnouncementBar() {
         <div className="gi-container flex items-center py-[6px] px-3 overflow-hidden text-[14px]">
           <div className="flex items-center font-bold text-[#12306b] mr-3 gap-1">
             <span className="mr-1">Announcements</span>
-            <span className="text-[16px]">🔊</span>
+           <Announcement />
           </div>
           <div className="flex-1 text-center text-[#1a1a1a]">
             No announcements available
@@ -72,9 +73,7 @@ export default function AnnouncementBar() {
         {/* Left side: Title + Sound icon */}
         <div className="flex items-center font-bold text-[#12306b] mr-3 gap-1">
           <span className="mr-1">Announcements</span>
-          <span className={`text-[16px] transition-colors duration-200 ${(isPaused || isHovered) ? 'text-gray-400' : 'text-green-600'}`}>
-            {(isPaused || isHovered) ? "🔇" : "🔊"}
-          </span>
+          <Announcement />
         </div>
 
         {/* Marquee text */}

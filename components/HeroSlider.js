@@ -186,22 +186,23 @@ const HeroSlider = () => {
         </span>
       </button>
 
-      {/* Indicators with progress */}
-      <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-2.5 z-[5]">
-        {slides.map((_, index) => (
-          <div
-            key={index}
-            className={`relative w-[30px] h-[6px] rounded bg-[rgba(255,255,255,0.3)] overflow-hidden cursor-pointer ${index === currentSlide ? 'bg-[rgba(255,255,255,0.5)]' : ''}`}
-            onClick={() => goToSlide(index)}
-          >
-            {index === currentSlide && (
-              <span
-                className="block h-full bg-white rounded transition-[width] duration-100"
-                style={{ width: `${progress}%` }}
-              ></span>
-            )}
+      {/* Indicators with progress (pill + dots), positioned near play/pause */}
+      <div className="absolute bottom-2 right-44 z-[5]">
+        <div className="relative flex items-center gap-2 px-3 py-3 rounded-full bg-[#dbe7ff] shadow-sm overflow-hidden">
+          {/* Dots (left) */}
+          <div className="flex items-center gap-3 relative z-10">
+            {slides.map((_, index) => (
+              <button
+                key={index}
+                type="button"
+                aria-label={`Go to slide ${index + 1}`}
+                className={`w-2.5 h-2.5 cursor-pointer border-0 ${index === currentSlide ? 'bg-[#0f2a5b] rounded-none' : 'bg-[#7aa2ff] rounded-full'}`}
+                onClick={() => goToSlide(index)}
+              />
+            ))}
           </div>
-        ))}
+          {/* Progress segment removed as requested */}
+        </div>
       </div>
 
       {/* Play/Pause Button */}
@@ -209,7 +210,7 @@ const HeroSlider = () => {
         type="button"
         aria-label={isPlaying ? "Pause carousel" : "Play carousel"}
         tabIndex={0}
-        className="absolute bottom-2 right-5 bg-[#150202] text-white border-0 w-9 h-9 md:w-9 md:h-9 rounded-full cursor-pointer z-[5] p-0 flex items-center justify-center"
+        className="absolute bottom-2 right-20 bg-[#150202] text-white border-0 w-9 h-9 md:w-9 md:h-9 rounded-full cursor-pointer z-[5] p-0 flex items-center justify-center"
         onClick={togglePlayPause}
       >
         <span aria-hidden="true" className="material-symbols-outlined text-[20px] md:text-[22px]">
