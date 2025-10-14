@@ -3,11 +3,8 @@ import { useState, useEffect } from 'react';
 const OfferingForm = ({ offering, onSubmit, onCancel }) => {
   const [formData, setFormData] = useState({
     title: '',
-    description: '',
-    icon: '',
     link_url: '',
     category: '',
-    display_order: 0,
     is_active: true
   });
   const [loading, setLoading] = useState(false);
@@ -16,11 +13,8 @@ const OfferingForm = ({ offering, onSubmit, onCancel }) => {
     if (offering) {
       setFormData({
         title: offering.title || '',
-        description: offering.description || '',
-        icon: offering.icon || '',
         link_url: offering.link_url || '',
         category: offering.category || '',
-        display_order: offering.display_order || 0,
         is_active: offering.is_active !== undefined ? offering.is_active : true
       });
     }
@@ -73,52 +67,7 @@ const OfferingForm = ({ offering, onSubmit, onCancel }) => {
           />
         </div>
 
-        <div>
-          <label htmlFor="description" className="block text-sm font-medium text-gray-700">
-            Description *
-          </label>
-          <textarea
-            id="description"
-            name="description"
-            rows={3}
-            value={formData.description}
-            onChange={handleChange}
-            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-            placeholder="Enter offering description"
-            required
-          />
-        </div>
-
-        <div>
-          <label htmlFor="icon" className="block text-sm font-medium text-gray-700">
-            Icon
-          </label>
-          <div className="mt-1">
-            <input
-              type="text"
-              id="icon"
-              name="icon"
-              value={formData.icon}
-              onChange={handleChange}
-              className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-              placeholder="Select or enter emoji"
-            />
-            <div className="mt-2 flex flex-wrap gap-2">
-              {iconOptions.map((icon) => (
-                <button
-                  key={icon}
-                  type="button"
-                  onClick={() => setFormData(prev => ({ ...prev, icon }))}
-                  className={`p-2 rounded border ${
-                    formData.icon === icon ? 'border-blue-500 bg-blue-50' : 'border-gray-300'
-                  }`}
-                >
-                  {icon}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
+        
 
         <div>
           <label htmlFor="category" className="block text-sm font-medium text-gray-700">
@@ -133,11 +82,8 @@ const OfferingForm = ({ offering, onSubmit, onCancel }) => {
           >
             <option value="">Select Category</option>
             <option value="schemes">Schemes</option>
-            <option value="services">Services</option>
-            <option value="initiatives">Initiatives</option>
-            <option value="programs">Programs</option>
-            <option value="tools">Tools</option>
-            <option value="resources">Resources</option>
+            <option value="vacancies">Vacancies</option>
+            <option value="whats_new">What's New</option>
           </select>
         </div>
 
@@ -156,20 +102,7 @@ const OfferingForm = ({ offering, onSubmit, onCancel }) => {
           />
         </div>
 
-        <div>
-          <label htmlFor="display_order" className="block text-sm font-medium text-gray-700">
-            Display Order
-          </label>
-          <input
-            type="number"
-            id="display_order"
-            name="display_order"
-            value={formData.display_order}
-            onChange={handleChange}
-            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-            min="0"
-          />
-        </div>
+
 
         <div className="flex items-center">
           <input

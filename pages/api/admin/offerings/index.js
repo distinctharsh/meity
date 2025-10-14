@@ -19,15 +19,17 @@ export default async function handler(req, res) {
     }
   } else if (req.method === 'POST') {
     try {
-      const { title, description, icon, link_url, category, display_order, is_active } = req.body;
-
-      if (!title || !description) {
-        return res.status(400).json({ message: 'Title and description are required' });
+      const { title, link_url, category, is_active } = req.body;
+      if (!title || !category) {
+        return res.status(400).json({ message: 'title and category are required' });
       }
+      // Determine next display_order within the same category
+      const [orderRows] = await pool.query('SELECT COALESCE(MAX(display_order), -1) AS max_order FROM offerings WHERE category = ?', [category]);
+      const nextOrder = (orderRows?.[0]?.max_order ?? -1) + 1;
 
       const [result] = await pool.query(
         'INSERT INTO offerings (title, description, icon, link_url, category, display_order, is_active) VALUES (?, ?, ?, ?, ?, ?, ?)',
-        [title, description, icon, link_url, category, display_order || 0, is_active !== false]
+        [title, '', null, link_url || null, category, nextOrder, is_active !== false]
       );
 
       res.status(201).json({ 
