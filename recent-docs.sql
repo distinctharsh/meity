@@ -1,0 +1,19 @@
+-- Recent Documents table (row-per-item), idempotent
+
+CREATE TABLE IF NOT EXISTS recent_docs (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  title VARCHAR(500) NOT NULL,
+  description TEXT NOT NULL,
+  link_url VARCHAR(1000) NULL,
+  display_order INT NOT NULL DEFAULT 0,
+  is_active TINYINT(1) NOT NULL DEFAULT 1,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- Add columns if missing (for existing installs)
+ALTER TABLE recent_docs ADD COLUMN IF NOT EXISTS title VARCHAR(500) NOT NULL;
+ALTER TABLE recent_docs ADD COLUMN IF NOT EXISTS description TEXT NOT NULL;
+ALTER TABLE recent_docs ADD COLUMN IF NOT EXISTS link_url VARCHAR(1000) NULL;
+ALTER TABLE recent_docs ADD COLUMN IF NOT EXISTS display_order INT NOT NULL DEFAULT 0;
+ALTER TABLE recent_docs ADD COLUMN IF NOT EXISTS is_active TINYINT(1) NOT NULL DEFAULT 1;
