@@ -16,6 +16,7 @@ const AdminLayout = ({ children }) => {
     { name: 'Pages', href: '/admin/pages', icon: '📄', description: 'Create & manage pages' },
     { name: 'Hero Slider', href: '/admin/slider', icon: '🖼️', description: 'Manage homepage slider' },
     { name: 'Social Feed', href: '/admin/social', icon: '🔗', description: 'Manage social posts' },
+    { name: 'PM Quote', href: '/admin/pm-quotes', icon: '🗣️', description: 'Manage Prime Minister quote' },
   ];
 
   useEffect(() => {
