@@ -37,8 +37,8 @@ const upload = multer({
   }
 });
 
-// Configure multer for multiple files
-const uploadMultiple = upload.array('files', 10);
+// Accept both single and multiple files (fields 'file' or 'files')
+const uploadAny = upload.any();
 
 export const config = {
   api: {
@@ -51,19 +51,28 @@ export default async function handler(req, res) {
     return res.status(405).json({ message: 'Method not allowed' });
   }
 
-  uploadMultiple(req, res, async (err) => {
+  uploadAny(req, res, async (err) => {
     if (err) {
-      return res.status(400).json({ message: err.message });
-    }
-
-    if (!req.files || req.files.length === 0) {
-      return res.status(400).json({ message: 'No files uploaded' });
+      return res.status(400).json({ message: err.message || 'Upload error' });
     }
 
     try {
+      // Normalize: if single file was sent as 'file', multer.any() still populates req.files
+      const files = Array.isArray(req.files) ? req.files : [];
+      if (!files.length) {
+        return res.status(400).json({ message: 'No files uploaded. Use form field name "file" or "files" with multipart/form-data.' });
+      }
+
       const uploadedFiles = [];
 
-      for (const file of req.files) {
+      // Resolve an uploader user id if possible
+      let uploaderId = 1;
+      try {
+        const [urows] = await pool.query('SELECT id FROM cms_users ORDER BY id ASC LIMIT 1');
+        if (urows && urows.length) uploaderId = urows[0].id;
+      } catch {}
+
+      for (const file of files) {
         const filePath = `/uploads/${file.filename}`;
         
         // Insert file info into database
@@ -75,7 +84,7 @@ export default async function handler(req, res) {
             filePath,
             file.mimetype,
             file.size,
-            1 // Default admin user ID
+            uploaderId
           ]
         );
 
@@ -106,7 +115,11 @@ export default async function handler(req, res) {
         }
       });
 
-      res.status(500).json({ message: 'Internal server error' });
+      // Helpful DB errors
+      if (error && (error.code === 'ER_NO_REFERENCED_ROW_2' || error.code === 'ER_NO_REFERENCED_ROW')) {
+        return res.status(500).json({ message: 'No admin user found for uploaded_by. Please create an admin user first and try again.' });
+      }
+      res.status(500).json({ message: error?.message || 'Internal server error' });
     }
   });
 }

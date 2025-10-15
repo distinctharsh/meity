@@ -157,6 +157,23 @@ CREATE TABLE IF NOT EXISTS media_library (
     FOREIGN KEY (uploaded_by) REFERENCES cms_users(id)
 );
 
+-- Reports table for Documents > Reports page
+CREATE TABLE IF NOT EXISTS reports (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  title VARCHAR(500) NOT NULL,
+  type ENUM('pdf','group','link') NOT NULL DEFAULT 'pdf',
+  year INT NULL,
+  size VARCHAR(50) NULL,
+  file_url VARCHAR(1000) NULL,
+  item_count INT NULL,
+  display_order INT NOT NULL DEFAULT 0,
+  is_active BOOLEAN NOT NULL DEFAULT TRUE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX idx_reports_active (is_active),
+  INDEX idx_reports_year (year)
+);
+
 -- Site Settings
 CREATE TABLE IF NOT EXISTS site_settings (
     id INT AUTO_INCREMENT PRIMARY KEY,

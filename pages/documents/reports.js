@@ -1,5 +1,5 @@
 import Footer from "@/components/Footer";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import SubNavTabs from "@/components/SubNavTabs";
 import PageHeader from "@/components/PageHeader";
@@ -10,12 +10,38 @@ export default function Reports() {
   const [perPage, setPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   const [yearFilter, setYearFilter] = useState("");
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  const items = [
-    { id: 1, title: "Integrated Finances", count: 18, year: 2025, size: "", type: "group" },
-    { id: 2, title: "Announcement of Selected Projects of Responsible AI themed Projects under Safe & Trusted AI Pillar", year: 2024, size: "37.15 KB", type: "pdf" },
-    { id: 3, title: "Major achievement of Cabinet Secretariat for the month of September 2024", year: 2024, size: "77.15 KB", type: "pdf" },
-  ];
+  useEffect(() => {
+    let mounted = true;
+    async function load() {
+      try {
+        setLoading(true);
+        const res = await fetch('/api/documents/reports');
+        if (!res.ok) throw new Error('Failed to load reports');
+        const data = await res.json();
+        // Normalize to existing UI shape
+        const mapped = (data || []).map(r => ({
+          id: r.id,
+          title: r.title,
+          type: r.type || 'pdf',
+          year: r.year || null,
+          size: r.size || '',
+          count: r.item_count || null,
+          file_url: r.file_url || null,
+        }));
+        if (mounted) setItems(mapped);
+      } catch (e) {
+        if (mounted) setError(e.message || 'Failed to load reports');
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    }
+    load();
+    return () => { mounted = false; }
+  }, []);
 
   const filtered = useMemo(() => {
     let list = items;
@@ -126,7 +152,13 @@ export default function Reports() {
 
             {/* List */}
             <div className="divide-y border border-t-0 rounded-b-md">
-              {pagedItems.map((item) => (
+              {loading ? (
+                <div className="px-4 py-6 text-center text-gray-500">Loading reports...</div>
+              ) : error ? (
+                <div className="px-4 py-6 text-center text-red-600">{error}</div>
+              ) : pagedItems.length === 0 ? (
+                <div className="px-4 py-6 text-center text-gray-500">No reports found.</div>
+              ) : pagedItems.map((item) => (
                 <div key={item.id} className="grid grid-cols-[7fr_2fr_3fr] items-center px-4 py-3 bg-white">
                   <div className="flex items-center gap-2">
                     <span className="material-symbols-outlined text-gray-700">{item.type === 'group' ? 'file_copy' : 'draft'}</span>
@@ -141,7 +173,7 @@ export default function Reports() {
                         <small className="text-gray-700">{item.size}</small>
                       </div>
                     ) : <span />}
-                    <a href="#" className="inline-flex items-center gap-2 uppercase text-sm px-3 py-1.5 rounded bg-blue-100 text-blue-800 hover:bg-blue-200">
+                    <a href={item.file_url || '#'} target={item.file_url ? '_blank' : undefined} rel={item.file_url ? 'noreferrer' : undefined} className="inline-flex items-center gap-2 uppercase text-sm px-3 py-1.5 rounded bg-blue-100 text-blue-800 hover:bg-blue-200">
                       <span aria-hidden="true" className="material-symbols-outlined">visibility</span>
                       {item.type === 'group' ? 'View All' : 'View'}
                     </a>
