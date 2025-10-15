@@ -6,7 +6,7 @@ export default async function handler(req, res) {
   if (!path) return res.status(400).json({ message: 'path is required, e.g. /ministry/about' });
   try {
     const [rows] = await pool.query(
-      'SELECT id, page_path, heading, subheading, background_url, parent_label, parent_href, overlay, breadcrumb_enabled, text_color FROM page_headers WHERE page_path = ? LIMIT 1',
+      'SELECT id, page_path, background_url FROM page_headers WHERE page_path = ? LIMIT 1',
       [path]
     );
     if (!rows.length) return res.status(200).json(null);

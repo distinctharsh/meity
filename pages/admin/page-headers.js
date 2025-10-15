@@ -5,10 +5,11 @@ export default function PageHeadersAdmin() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filterPath, setFilterPath] = useState('');
+  const [pageOptions, setPageOptions] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState(null);
 
-  useEffect(() => { refresh(); }, []);
+  useEffect(() => { refresh(); loadPages(); }, []);
 
   async function refresh(path) {
     setLoading(true);
@@ -21,6 +22,21 @@ export default function PageHeadersAdmin() {
       console.error('Load page headers error', e);
       setItems([]);
     } finally { setLoading(false); }
+  }
+
+  async function loadPages() {
+    try {
+      const res = await fetch('/api/admin/pages');
+      if (!res.ok) return setPageOptions([]);
+      const rows = await res.json();
+      const opts = (rows || [])
+        .filter(r => r.slug)
+        .map(r => ({ value: r.slug, label: r.slug }));
+      setPageOptions(opts);
+    } catch (e) {
+      console.error('Load pages error', e);
+      setPageOptions([]);
+    }
   }
 
   const handleAdd = () => { setEditing(null); setShowForm(true); };
@@ -61,22 +77,16 @@ export default function PageHeadersAdmin() {
         ) : (
           <div className="bg-white rounded-lg shadow divide-y">
             <div className="grid grid-cols-12 gap-4 px-4 py-3 text-sm font-semibold text-gray-600">
-              <div className="col-span-3">Page Path</div>
-              <div className="col-span-3">Heading</div>
-              <div className="col-span-3">Background</div>
-              <div className="col-span-1">Overlay</div>
-              <div className="col-span-1">Breadcrumb</div>
+              <div className="col-span-6">Page Path</div>
+              <div className="col-span-5">Background</div>
               <div className="col-span-1 text-right">Actions</div>
             </div>
             {items.length === 0 ? (
               <div className="px-4 py-8 text-center text-gray-500">No headers yet. Click Add Header.</div>
             ) : items.map((it) => (
               <div key={it.id} className="grid grid-cols-12 gap-4 px-4 py-3 items-center text-sm">
-                <div className="col-span-3 text-gray-700">{it.page_path}</div>
-                <div className="col-span-3 font-medium">{it.heading}</div>
-                <div className="col-span-3 text-gray-600 truncate">{it.background_url}</div>
-                <div className="col-span-1">{it.overlay ? 'Yes' : 'No'}</div>
-                <div className="col-span-1">{it.breadcrumb_enabled ? 'Yes' : 'No'}</div>
+                <div className="col-span-6 text-gray-700">{it.page_path}</div>
+                <div className="col-span-5 text-gray-600 truncate">{it.background_url || '-'}</div>
                 <div className="col-span-1 flex items-center justify-end gap-2">
                   <button onClick={() => handleEdit(it)} className="px-2 py-1 text-xs bg-blue-100 text-blue-700 rounded hover:bg-blue-200">Edit</button>
                   <button onClick={() => handleDelete(it.id)} className="px-2 py-1 text-xs bg-red-100 text-red-700 rounded hover:bg-red-200">Delete</button>
@@ -89,6 +99,7 @@ export default function PageHeadersAdmin() {
         {showForm && (
           <HeaderForm
             editing={editing}
+            pageOptions={pageOptions}
             onClose={() => { setShowForm(false); setEditing(null); }}
             onSaved={async () => { setShowForm(false); setEditing(null); await refresh(); }}
           />
@@ -98,22 +109,15 @@ export default function PageHeadersAdmin() {
   );
 }
 
-function HeaderForm({ editing, onClose, onSaved }) {
-  const [form, setForm] = useState({ page_path: '', heading: '', subheading: '', background_url: '', parent_label: '', parent_href: '', overlay: true, breadcrumb_enabled: true, text_color: '#ffffff' });
+function HeaderForm({ editing, onClose, onSaved, pageOptions }) {
+  const [form, setForm] = useState({ page_path: '', background_url: '' });
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     if (editing) {
       setForm({
         page_path: editing.page_path,
-        heading: editing.heading,
-        subheading: editing.subheading || '',
-        background_url: editing.background_url,
-        parent_label: editing.parent_label || '',
-        parent_href: editing.parent_href || '',
-        overlay: !!editing.overlay,
-        breadcrumb_enabled: !!editing.breadcrumb_enabled,
-        text_color: editing.text_color || '#ffffff',
+        background_url: editing.background_url || '',
       });
     }
   }, [editing]);
@@ -148,39 +152,16 @@ function HeaderForm({ editing, onClose, onSaved }) {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700">Page Path</label>
-              <input value={form.page_path} onChange={(e) => update('page_path', e.target.value)} placeholder="/ministry/about" required className="mt-1 w-full border rounded px-3 py-2" />
+              <select value={form.page_path} onChange={(e) => update('page_path', e.target.value)} required className="mt-1 w-full border rounded px-3 py-2">
+                <option value="">Select a page path</option>
+                {pageOptions.map(opt => (
+                  <option key={opt.value} value={opt.value}>{opt.label}</option>
+                ))}
+              </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">Heading</label>
-              <input value={form.heading} onChange={(e) => update('heading', e.target.value)} required className="mt-1 w-full border rounded px-3 py-2" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Subheading</label>
-              <input value={form.subheading} onChange={(e) => update('subheading', e.target.value)} className="mt-1 w-full border rounded px-3 py-2" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Background URL</label>
-              <input value={form.background_url} onChange={(e) => update('background_url', e.target.value)} placeholder="/images/.../banner.jpg" required className="mt-1 w-full border rounded px-3 py-2" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Parent Label (breadcrumb)</label>
-              <input value={form.parent_label} onChange={(e) => update('parent_label', e.target.value)} className="mt-1 w-full border rounded px-3 py-2" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Parent Href</label>
-              <input value={form.parent_href} onChange={(e) => update('parent_href', e.target.value)} placeholder="/ministry" className="mt-1 w-full border rounded px-3 py-2" />
-            </div>
-            <div className="flex items-center gap-2">
-              <input id="overlay" type="checkbox" checked={form.overlay} onChange={(e) => update('overlay', e.target.checked)} />
-              <label htmlFor="overlay" className="text-sm text-gray-700">Overlay</label>
-            </div>
-            <div className="flex items-center gap-2">
-              <input id="breadcrumb_enabled" type="checkbox" checked={form.breadcrumb_enabled} onChange={(e) => update('breadcrumb_enabled', e.target.checked)} />
-              <label htmlFor="breadcrumb_enabled" className="text-sm text-gray-700">Breadcrumb Enabled</label>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Text Color</label>
-              <input type="text" value={form.text_color} onChange={(e) => update('text_color', e.target.value)} placeholder="#ffffff" className="mt-1 w-full border rounded px-3 py-2" />
+              <label className="block text-sm font-medium text-gray-700">Background URL (optional)</label>
+              <input value={form.background_url} onChange={(e) => update('background_url', e.target.value)} placeholder="/images/.../banner.jpg" className="mt-1 w-full border rounded px-3 py-2" />
             </div>
           </div>
 
@@ -193,3 +174,4 @@ function HeaderForm({ editing, onClose, onSaved }) {
     </div>
   );
 }
+
