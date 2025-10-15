@@ -6,7 +6,7 @@ import pool from '@/lib/db';
 // Configure multer for file uploads
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    const uploadDir = path.join(process.cwd(), 'public', 'uploads');
+    const uploadDir = path.join(process.cwd(), 'public', 'report_document');
     if (!fs.existsSync(uploadDir)) {
       fs.mkdirSync(uploadDir, { recursive: true });
     }
@@ -73,7 +73,7 @@ export default async function handler(req, res) {
       } catch {}
 
       for (const file of files) {
-        const filePath = `/uploads/${file.filename}`;
+        const filePath = `/report_document/${file.filename}`;
         
         // Insert file info into database
         const [result] = await pool.query(

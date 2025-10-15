@@ -32,8 +32,10 @@ export default async function handler(req, res) {
       let finalSize = size;
       try {
         if (!finalSize && typeof file_url === 'string' && file_url) {
-          // Support paths like /uploads/..., /images/..., or absolute public paths
-          let rel = file_url.startsWith('/') ? file_url : `/${file_url}`;
+          // Support paths like /report_document/..., /uploads/..., or absolute public paths
+          // On Windows, path.join ignores previous segments if rel startswith '/'
+          // so ensure rel has no leading slash
+          let rel = file_url.startsWith('/') ? file_url.slice(1) : file_url;
           // next.js serves from projectRoot/public
           const projectRoot = process.cwd();
           const localPath = path.join(projectRoot, 'public', rel);

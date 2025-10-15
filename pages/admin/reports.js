@@ -45,7 +45,14 @@ export default function AdminReportsPage() {
     <AdminLayout>
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold text-gray-900">Reports</h1>
-        <button onClick={() => { setCreating(true); setEditing(null); }} className="px-4 py-2 bg-blue-600 text-white rounded-md">Add Report</button>
+        <button
+          onClick={() => { setCreating(true); setEditing(null); }}
+          className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-blue-600 text-white hover:bg-blue-700 cursor-pointer"
+          aria-label="Add report"
+          title="Add report"
+        >
+          <span aria-hidden="true" className="material-symbols-outlined">add</span>
+        </button>
       </div>
 
       {loading && <p>Loading...</p>}
@@ -77,8 +84,22 @@ export default function AdminReportsPage() {
                   <td className="px-4 py-2 text-sm text-gray-700">{r.display_order}</td>
                   <td className="px-4 py-2 text-sm text-gray-700">{r.is_active ? 'Yes' : 'No'}</td>
                   <td className="px-4 py-2 text-sm text-right space-x-2">
-                    <button onClick={() => { setEditing(r); setCreating(false); }} className="px-3 py-1 border rounded">Edit</button>
-                    <button onClick={() => onDelete(r.id)} className="px-3 py-1 border rounded text-red-600">Delete</button>
+                    <button
+                      onClick={() => { setEditing(r); setCreating(false); }}
+                      className="inline-flex items-center justify-center w-9 h-9 rounded-full border hover:bg-gray-50 cursor-pointer"
+                      aria-label="Edit report"
+                      title="Edit report"
+                    >
+                      <span aria-hidden="true" className="material-symbols-outlined">edit</span>
+                    </button>
+                    <button
+                      onClick={() => onDelete(r.id)}
+                      className="inline-flex items-center justify-center w-9 h-9 rounded-full border text-red-600 hover:bg-red-50 cursor-pointer"
+                      aria-label="Delete report"
+                      title="Delete report"
+                    >
+                      <span aria-hidden="true" className="material-symbols-outlined">delete</span>
+                    </button>
                   </td>
                 </tr>
               ))}
