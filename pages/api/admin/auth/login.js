@@ -62,7 +62,7 @@ export default async function handler(req, res) {
     } else if (error && error.code === 'ER_ACCESS_DENIED_ERROR') {
       message = 'Database access denied. Check MySQL credentials in lib/db.js';
     } else if (error && error.code === 'ER_BAD_DB_ERROR') {
-      message = 'Database not found. Create meity_clone and run script.sql';
+      message = 'Database not found. Create cabsec_cms and run script.sql';
     }
     res.status(500).json({
       message,

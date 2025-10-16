@@ -21,6 +21,7 @@ const AdminLayout = ({ children }) => {
     { name: 'Offerings', href: '/admin/offerings', icon: '🎯', description: 'Manage Schemes, Vacancies, What\'s New' },
     { name: 'Recent Documents', href: '/admin/recent-docs', icon: '📄', description: 'Manage recent documents' },
     { name: 'Reports', href: '/admin/reports', icon: '📑', description: 'Manage Documents > Reports' },
+    { name: 'Our Team', href: '/admin/our-team', icon: '👥', description: 'Manage ministry team' },
   ];
 
   useEffect(() => {

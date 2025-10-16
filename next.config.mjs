@@ -4,6 +4,10 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  images: {
+    // Avoid hostname configuration issues in dev/varied environments
+    unoptimized: true,
+  },
   // Disable caching for API routes to ensure real-time updates
   async headers() {
     return [

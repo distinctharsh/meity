@@ -18,10 +18,10 @@ async function setupDatabase() {
 
 
     // Create database
-    await connection.query('CREATE DATABASE IF NOT EXISTS meity_clone');
+    await connection.query('CREATE DATABASE IF NOT EXISTS cabsec_cms');
 
     // Use the database
-    await connection.query('USE meity_clone');
+    await connection.query('USE cabsec_cms');
 
     // Read and execute the schema
     const schemaPath = path.join(__dirname, 'lib', 'cms-schema.sql');
