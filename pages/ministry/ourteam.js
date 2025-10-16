@@ -1,6 +1,8 @@
 import Footer from "@/components/Footer";
 import Pdf from "@/components/icons/Pdf";
 import Image from "next/image";
+import PageHeader from "@/components/PageHeader";
+import SubNavTabs from "@/components/SubNavTabs";
 
 export default function OurTeam() {
 
@@ -94,76 +96,11 @@ export default function OurTeam() {
       `}</style>
 
       <main id="main">
-        {/* Hero Section */}
-        <section
-          className="bg-[#123a6b] text-white px-4 hero-before"
-          style={{
-            background: `url('/images/about-page/head-background.jpg') no-repeat center center`,
-            backgroundSize: 'cover',
-            paddingTop: '90px',
-            paddingBottom: '90px',
-            position: 'relative'
-          }}
-        >
-          <div className="gi-container">
-            <p className="text-sm opacity-80 mb-4">
-              <a href="/" className="hover:underline">Home</a> / <a href="/ministry" className="hover:underline">Ministry</a>
-            </p>
-            <h1 className="text-4xl font-bold">Our Team</h1>
-          </div>
-        </section>
+        {/* Dynamic Page Header (default) */}
+        <PageHeader pagePath="/ministry/ourteam" />
 
-        {/* Tabs */}
-        <section className="bg-white " style={{ marginTop: '-10px', position: 'absolute', width: '100%' }}>
-          <div className="gi-container">
-            <div
-              className="bg-[#162f6a] rounded-xl px-6 py-4 flex items-center space-x-6 overflow-x-auto"
-              style={{ marginTop: '-40px', position: 'relative', zIndex: 10 }}
-            >
-              {/* Tabs: mark Our Team as active on this page */}
-              <a
-                href="/ministry/about"
-                className="text-white/80 hover:text-white whitespace-nowrap"
-                style={{ color: '#fff', fontSize: '1.3rem', fontStyle: 'normal', fontWeight: 400, lineHeight: 'normal', letterSpacing: '-0.1px', textTransform: 'none', position: 'relative' }}
-              >
-                About Us
-              </a>
-              <div className="relative flex items-center">
-                <a
-                  href="/ministry/ourteam"
-                  className="text-white font-bold relative pl-3 dot-before"
-                  style={{ color: '#fff', fontSize: '1.3rem', fontStyle: 'normal', fontWeight: 800, lineHeight: 'normal', letterSpacing: '-0.1px', textTransform: 'none', position: 'relative' }}
-                >
-                  Our Team
-                </a>
-              </div>
-              <a
-                href="/ministry/organization"
-                className="text-white/80 hover:text-white whitespace-nowrap" style={{ color: '#fff', fontSize: '1.3rem', fontStyle: 'normal', fontWeight: 400, lineHeight: 'normal', letterSpacing: '-0.1px', textTransform: 'none', position: 'relative' }}
-              >
-                Our Organisations
-              </a>
-              <a
-                href="/ministry/our-performance"
-                className="text-white/80 hover:text-white whitespace-nowrap" style={{ color: '#fff', fontSize: '1.3rem', fontStyle: 'normal', fontWeight: 400, lineHeight: 'normal', letterSpacing: '-0.1px', textTransform: 'none', position: 'relative' }}
-              >
-                Our Performance
-              </a>
-              <a
-                href="/ministry/our-groups"
-                className="text-white/80 hover:text-white whitespace-nowrap" style={{ color: '#fff', fontSize: '1.3rem', fontStyle: 'normal', fontWeight: 400, lineHeight: 'normal', letterSpacing: '-0.1px', textTransform: 'none', position: 'relative' }}
-              >
-                Our Groups
-              </a>
-              <a
-                href="/ministry/directory"
-                className="text-white/80 hover:text-white whitespace-nowrap" style={{ color: '#fff', fontSize: '1.6rem', fontStyle: 'normal', fontWeight: 400, lineHeight: 'normal', letterSpacing: '-0.1px', textTransform: 'none', position: 'relative' }}
-              >
-                Directory
-              </a>
-            </div>
-          </div>
-        </section>
+        {/* Tabs (default DB-driven) */}
+        <SubNavTabs />
 
         {/* Main Content */}
         <section className=" mt-10 py-12" style={{ backgroundColor: '#d2dfff', borderRadius: '20px' }}>
