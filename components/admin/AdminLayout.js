@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
+import Script from 'next/script';
 
 const AdminLayout = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -93,7 +94,10 @@ const AdminLayout = ({ children }) => {
       <Head>
         <title>Admin Panel - Cabinet Secretariat CMS</title>
         <meta name="description" content="Cabinet Secretariat CMS Admin Panel" />
+        <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/jquery.dataTables.min.css" />
       </Head>
+      <Script src="https://code.jquery.com/jquery-3.7.1.min.js" strategy="beforeInteractive" />
+      <Script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js" strategy="afterInteractive" />
       <div className="min-h-screen bg-gray-50 flex">
         {/* Mobile sidebar */}
         <div className={`fixed inset-0 z-40 lg:hidden ${sidebarOpen ? 'block' : 'hidden'}`}>

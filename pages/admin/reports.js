@@ -25,6 +25,43 @@ export default function AdminReportsPage() {
 
   useEffect(() => { load(); }, []);
 
+  // Initialize jQuery DataTable when items are loaded and not in form mode
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const w = window;
+    const $ = w.$ || w.jQuery;
+    if (!$) return; // jQuery not yet loaded
+    if (!items || items.length === 0) return; // nothing to render
+    if (creating || editing) return; // avoid when form open
+
+    const selector = '#reports-table';
+    try {
+      if ($.fn.dataTable.isDataTable(selector)) {
+        $(selector).DataTable().destroy();
+      }
+      $(selector).DataTable({
+        paging: true,
+        searching: true,
+        info: true,
+        order: [[0, 'desc']],
+        autoWidth: false,
+        responsive: true,
+        columnDefs: [
+          { orderable: false, targets: -1 }, // actions column
+        ],
+      });
+    } catch (e) {
+      // swallow init errors gracefully
+      console.error('DataTable init failed', e);
+    }
+
+    return () => {
+      if ($ && $.fn.dataTable.isDataTable(selector)) {
+        $(selector).DataTable().destroy();
+      }
+    };
+  }, [items, creating, editing]);
+
   const onSaved = async () => {
     setCreating(false);
     setEditing(null);
@@ -60,30 +97,30 @@ export default function AdminReportsPage() {
 
       {!loading && !creating && !editing && (
         <div className="overflow-x-auto bg-white rounded-lg shadow">
-          <table className="min-w-full divide-y divide-gray-200">
+          <table id="reports-table" className="min-w-full divide-y divide-gray-200 table-fixed">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">#</th>
-                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
-                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
-                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Year</th>
-                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Size</th>
-                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order</th>
-                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Active</th>
-                <th className="px-4 py-2"></th>
+                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-12">#</th>
+                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/2">Title</th>
+                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-20">Type</th>
+                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-20">Year</th>
+                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-24">Size</th>
+                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-20">Order</th>
+                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-20">Active</th>
+                <th className="px-4 py-2 w-28"></th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {items.map((r) => (
                 <tr key={r.id}>
-                  <td className="px-4 py-2 text-sm text-gray-700">{r.id}</td>
-                  <td className="px-4 py-2 text-sm text-gray-700">{r.title}</td>
-                  <td className="px-4 py-2 text-sm text-gray-700 capitalize">{r.type}</td>
-                  <td className="px-4 py-2 text-sm text-gray-700">{r.year || '-'}</td>
-                  <td className="px-4 py-2 text-sm text-gray-700">{r.size || '-'}</td>
-                  <td className="px-4 py-2 text-sm text-gray-700">{r.display_order}</td>
-                  <td className="px-4 py-2 text-sm text-gray-700">{r.is_active ? 'Yes' : 'No'}</td>
-                  <td className="px-4 py-2 text-sm text-right space-x-2">
+                  <td className="px-4 py-2 text-sm text-gray-700 whitespace-nowrap">{r.id}</td>
+                  <td className="px-4 py-2 text-sm text-gray-700 w-1/2 overflow-hidden text-ellipsis whitespace-nowrap">{r.title}</td>
+                  <td className="px-4 py-2 text-sm text-gray-700 capitalize whitespace-nowrap">{r.type}</td>
+                  <td className="px-4 py-2 text-sm text-gray-700 whitespace-nowrap">{r.year || '-'}</td>
+                  <td className="px-4 py-2 text-sm text-gray-700 whitespace-nowrap">{r.size || '-'}</td>
+                  <td className="px-4 py-2 text-sm text-gray-700 whitespace-nowrap">{r.display_order}</td>
+                  <td className="px-4 py-2 text-sm text-gray-700 whitespace-nowrap">{r.is_active ? 'Yes' : 'No'}</td>
+                  <td className="px-4 py-2 text-sm text-right space-x-2 w-28 whitespace-nowrap">
                     <button
                       onClick={() => { setEditing(r); setCreating(false); }}
                       className="inline-flex items-center justify-center w-9 h-9 rounded-full border hover:bg-gray-50 cursor-pointer"
