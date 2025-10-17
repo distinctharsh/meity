@@ -115,7 +115,7 @@ export default function NavigationManagement() {
   const renderNavigationTree = (items, level = 0) => {
     return items.map(item => (
       <div key={item.id} className={`${level > 0 ? 'ml-6' : ''}`}>
-        <div className="flex items-center justify-between p-3 bg-white border rounded-lg mb-2">
+        <div className="flex items-center justify-between p-3 bg-white/70 border border-gray-200 rounded-xl mb-2 shadow-sm backdrop-blur-sm">
           <div className="flex items-center">
             <span className="text-gray-400 mr-2">{'  '.repeat(level)}</span>
             <span className="font-medium">{item.name}</span>
@@ -128,7 +128,7 @@ export default function NavigationManagement() {
               {item.is_active ? 'ACTIVE' : 'INACTIVE'}
             </span>
           </div>
-          <div className="flex space-x-2">
+          <div className="flex items-center space-x-2">
             <button
               onClick={() => toggleActive(item.id, item.is_active)}
               className={`px-2 py-1 text-xs rounded ${
@@ -141,15 +141,24 @@ export default function NavigationManagement() {
             </button>
             <button
               onClick={() => handleEdit(item)}
-              className="px-2 py-1 text-xs bg-blue-100 text-blue-700 rounded hover:bg-blue-200"
+              className="p-2 rounded-md text-blue-600 hover:text-blue-800 hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-200 cursor-pointer"
+              title="Edit"
+              aria-label="Edit"
             >
-              Edit
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-5 h-5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687 1.687m-2.496-0.79l-8.74 8.74a2.25 2.25 0 00-.57.99l-.53 2.122a.75.75 0 00.91.91l2.122-.53a2.25 2.25 0 00.99-.57l8.74-8.74m-2.496-0.79l2.496 0.79M16.862 4.487a1.875 1.875 0 112.652 2.652" />
+              </svg>
             </button>
             <button
               onClick={() => handleDelete(item.id)}
-              className="px-2 py-1 text-xs bg-red-100 text-red-700 rounded hover:bg-red-200"
+              className="p-2 rounded-md text-red-600 hover:text-red-800 hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-200 cursor-pointer"
+              title="Delete"
+              aria-label="Delete"
             >
-              Delete
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+                <path d="M9 3a1 1 0 0 0-1 1v1H4.5a.75.75 0 0 0 0 1.5h15a.75.75 0 0 0 0-1.5H16V4a1 1 0 0 0-1-1H9z" />
+                <path d="M6.5 7h11l-.84 11.2A2 2 0 0 1 14.67 20H9.33a2 2 0 0 1-1.99-1.8L6.5 7z" />
+              </svg>
             </button>
           </div>
         </div>
@@ -188,24 +197,50 @@ export default function NavigationManagement() {
           <h1 className="text-3xl font-bold text-gray-900">Navigation Management</h1>
           <button
             onClick={handleAdd}
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+            className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300 shadow cursor-pointer"
+            aria-label="Add Navigation Item"
+            title="Add Navigation Item"
           >
-            Add Navigation Item
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 5v14M5 12h14" />
+            </svg>
           </button>
         </div>
 
         {showForm && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg p-6 w-full max-w-md">
-              <NavigationForm
-                item={editingItem}
-                navigationItems={navigationItems}
-                onSubmit={handleFormSubmit}
-                onCancel={() => {
-                  setShowForm(false);
-                  setEditingItem(null);
-                }}
-              />
+          <div className="fixed inset-0 z-50 flex items-center justify-center">
+            <div
+              className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+              onClick={() => {
+                setShowForm(false);
+                setEditingItem(null);
+              }}
+            />
+            <div className="relative bg-white border border-gray-200 shadow-2xl rounded-xl w-full max-w-4xl max-h-[92vh] overflow-hidden">
+              <div className="flex items-center justify-between px-5 py-3 border-b bg-gray-50/70">
+                <h3 className="text-lg font-semibold text-gray-900">{editingItem ? 'Edit Navigation Item' : 'Add Navigation Item'}</h3>
+                <button
+                  onClick={() => {
+                    setShowForm(false);
+                    setEditingItem(null);
+                  }}
+                  className="p-2 rounded-md text-gray-500 hover:text-gray-900 hover:bg-gray-100"
+                  aria-label="Close"
+                >
+                  ✕
+                </button>
+              </div>
+              <div className="p-6 overflow-y-auto" style={{ maxHeight: 'calc(92vh - 52px)' }}>
+                <NavigationForm
+                  item={editingItem}
+                  navigationItems={navigationItems}
+                  onSubmit={handleFormSubmit}
+                  onCancel={() => {
+                    setShowForm(false);
+                    setEditingItem(null);
+                  }}
+                />
+              </div>
             </div>
           </div>
         )}
@@ -305,96 +340,99 @@ const NavigationForm = ({ item, navigationItems, onSubmit, onCancel }) => {
         {item ? 'Edit Navigation Item' : 'Add Navigation Item'}
       </h2>
       
-      <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Name */}
-        <div>
-          <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name *</label>
-          <input
-            type="text"
-            id="name"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-            placeholder="Enter navigation item name"
-            required
-          />
+      <form onSubmit={handleSubmit} className="space-y-5">
+        {/* Name + Parent in one row on md+ */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name *</label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              className="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-white px-3 py-2.5"
+              placeholder="Enter navigation item name"
+              required
+            />
+          </div>
+
+          {/* Parent Item */}
+          <div>
+            <label htmlFor="parent_id" className="block text-sm font-medium text-gray-700">Parent Item</label>
+            <select
+              id="parent_id"
+              name="parent_id"
+              value={formData.parent_id || ''}
+              onChange={handleChange}
+              className="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-white px-3 py-2.5"
+            >
+              <option value="">Top Level (No Parent)</option>
+              {topLevelItems.map(parent => (
+                <option key={parent.id} value={parent.id}>{parent.name}</option>
+              ))}
+            </select>
+          </div>
         </div>
 
-        {/* Parent Item */}
-        <div>
-          <label htmlFor="parent_id" className="block text-sm font-medium text-gray-700">Parent Item</label>
-          <select
-            id="parent_id"
-            name="parent_id"
-            value={formData.parent_id || ''}
-            onChange={handleChange}
-            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-          >
-            <option value="">Top Level (No Parent)</option>
-            {topLevelItems.map(parent => (
-              <option key={parent.id} value={parent.id}>{parent.name}</option>
-            ))}
-          </select>
+        {/* Link + Meta (two columns on md+) */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label htmlFor="link" className="block text-sm font-medium text-gray-700">Link URL</label>
+            <input
+              type="text"
+              id="link"
+              name="link"
+              value={formData.link}
+              onChange={handleChange}
+              className="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-white px-3 py-2.5 placeholder-gray-400"
+              placeholder="/about or https://example.com"
+            />
+            <p className="text-xs text-gray-500 mt-1">If a parent is selected, we’ll prefix its link automatically. External URLs are kept as is.</p>
+          </div>
+          <div>
+            <div>
+              <label htmlFor="display_order" className="block text-sm font-medium text-gray-700">Display Order</label>
+              <input
+                type="number"
+                id="display_order"
+                name="display_order"
+                value={formData.display_order}
+                onChange={handleChange}
+                className="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-white px-3 py-2.5"
+                min="0"
+              />
+            </div>
+            <div className="flex items-center mt-4">
+              <input
+                id="is_active"
+                name="is_active"
+                type="checkbox"
+                checked={formData.is_active}
+                onChange={handleChange}
+                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+              />
+              <label htmlFor="is_active" className="ml-2 block text-sm text-gray-900">Active</label>
+            </div>
+          </div>
         </div>
 
-        {/* Link URL (auto-prefixed by parent) */}
-        <div>
-          <label htmlFor="link" className="block text-sm font-medium text-gray-700">Link URL</label>
-          <input
-            type="text"
-            id="link"
-            name="link"
-            value={formData.link}
-            onChange={handleChange}
-            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-            placeholder="/about or https://example.com"
-          />
-          <p className="text-xs text-gray-500 mt-1">If a parent is selected, we’ll prefix its link automatically. External URLs are kept as is.</p>
-        </div>
-
-        {/* Display Order */}
-        <div>
-          <label htmlFor="display_order" className="block text-sm font-medium text-gray-700">Display Order</label>
-          <input
-            type="number"
-            id="display_order"
-            name="display_order"
-            value={formData.display_order}
-            onChange={handleChange}
-            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-            min="0"
-          />
-        </div>
-
-        <div className="flex items-center">
-          <input
-            id="is_active"
-            name="is_active"
-            type="checkbox"
-            checked={formData.is_active}
-            onChange={handleChange}
-            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-          />
-          <label htmlFor="is_active" className="ml-2 block text-sm text-gray-900">
-            Active
-          </label>
-        </div>
-
-        <div className="flex justify-end space-x-3 pt-4">
-          <button
-            type="button"
-            onClick={onCancel}
-            className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700"
-          >
-            {item ? 'Update Item' : 'Create Item'}
-          </button>
+        <div className="sticky bottom-0 pt-4 bg-white">
+          <div className="flex justify-end space-x-3 border-t pt-4">
+            <button
+              type="button"
+              onClick={onCancel}
+              className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            >
+              {item ? 'Update Item' : 'Create Item'}
+            </button>
+          </div>
         </div>
       </form>
     </div>
