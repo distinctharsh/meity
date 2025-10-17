@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import AdminLayout from '../../components/admin/AdminLayout';
 
 export default function NavigationManagement() {
@@ -263,6 +263,7 @@ export default function NavigationManagement() {
 }
 
 const NavigationForm = ({ item, navigationItems, onSubmit, onCancel }) => {
+  const linkInputRef = useRef(null);
   const [formData, setFormData] = useState({
     name: '',
     link: '',
@@ -288,6 +289,35 @@ const NavigationForm = ({ item, navigationItems, onSubmit, onCancel }) => {
     await onSubmit(formData);
   };
 
+  const handleLinkPaste = (e) => {
+    const base = getEffectiveParentBase(formData.parent_id);
+    if (!base) return; // allow default when no parent
+    const text = (e.clipboardData || window.clipboardData).getData('text');
+    if (typeof text !== 'string') return;
+    e.preventDefault();
+    const parentNoSlash = base.replace(/\/$/, '');
+    const stripped = text
+      .replace(new RegExp('^' + parentNoSlash.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\/'), '')
+      .replace(/^\//, '');
+    const combined = joinParentChild(base, stripped);
+    // Update state and input value, move caret to end
+    setFormData((prev) => ({ ...prev, link: combined }));
+    setTimeout(() => {
+      if (linkInputRef.current) {
+        const caret = combined.length;
+        linkInputRef.current.setSelectionRange(caret, caret);
+      }
+    }, 0);
+  };
+
+  const getEffectiveParentBase = (parentId) => {
+    const parent = getParentById(parentId);
+    if (!parent) return '';
+    const link = parent.link || '';
+    const base = link && !isExternal(link) ? link : (parent.name ? `/${slugify(parent.name)}` : '');
+    return ensureLeadingSlash(base.replace(/\/$/, ''));
+  };
+
   const ensureLeadingSlash = (s) => {
     if (!s) return s;
     return s.startsWith('/') ? s : '/' + s;
@@ -297,39 +327,90 @@ const NavigationForm = ({ item, navigationItems, onSubmit, onCancel }) => {
 
   const getParentById = (id) => navigationItems.find((it) => String(it.id) === String(id));
 
+  const slugify = (s = '') => {
+    return String(s)
+      .toLowerCase()
+      .trim()
+      .replace(/\s+/g, '-')
+      .replace(/[^a-z0-9\-/]/g, '');
+  };
+
   const joinParentChild = (parentLink, childPart) => {
-    const base = (parentLink || '').replace(/\/$/, '');
+    const base = ensureLeadingSlash((parentLink || '').replace(/\/$/, ''));
     const child = (childPart || '').replace(/^\//, '');
     return child ? `${base}/${child}` : `${base}/`;
   };
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
+    // Pre-compute parent link if parent_id is changing to drive focus/selection after state update
+    const parentForFocus = name === 'parent_id' ? getParentById(value) : null;
+    const parentLinkForFocus = parentForFocus?.link || '';
     setFormData(prev => {
       let next = { ...prev, [name]: type === 'checkbox' ? checked : value };
       if (name === 'parent_id') {
-        const parent = getParentById(value);
-        const parentLink = parent?.link || '';
-        if (parentLink && !isExternal(next.link)) {
-          // Auto-prefix when a parent is chosen
-          const currentChild = next.link && next.link.startsWith(parentLink)
-            ? next.link.slice(parentLink.length)
-            : next.link;
-          next.link = joinParentChild(parentLink, currentChild);
-        }
+        const effectiveParent = getEffectiveParentBase(value) || '/';
+        // Always set to effective parent's URL with trailing slash so admin sees it immediately
+        next.link = joinParentChild(effectiveParent, '');
       }
       if (name === 'link') {
         // When typing link, if a parent is selected and it's not an external URL, keep parent prefix
-        const parent = getParentById(prev.parent_id);
-        const parentLink = parent?.link || '';
-        if (parentLink && !isExternal(value)) {
-          next.link = joinParentChild(parentLink, value);
+        const effectiveParent = getEffectiveParentBase(prev.parent_id);
+        if (effectiveParent && !isExternal(value)) {
+          const parentNoSlash = effectiveParent.replace(/\/$/, '');
+          const stripped = String(value || '')
+            .replace(new RegExp('^' + parentNoSlash.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\/'), '')
+            .replace(/^\//, '');
+          next.link = joinParentChild(effectiveParent, stripped);
         } else if (!isExternal(value)) {
           next.link = ensureLeadingSlash(value);
         }
       }
       return next;
     });
+    if (name === 'parent_id' && parentLinkForFocus) {
+      // Focus the Link input and move cursor to end so admin can continue typing child path
+      const preset = joinParentChild(getEffectiveParentBase(value) || parentLinkForFocus, '');
+      setTimeout(() => {
+        if (linkInputRef.current) {
+          linkInputRef.current.focus();
+          try {
+            const caret = preset.length;
+            linkInputRef.current.setSelectionRange(caret, caret);
+          } catch (_) {}
+        }
+      }, 0);
+    }
+  };
+
+  const guardCaretAtPrefix = () => {
+    const base = getEffectiveParentBase(formData.parent_id);
+    if (!base || !linkInputRef.current) return;
+    const prefix = joinParentChild(base, '');
+    try {
+      const start = linkInputRef.current.selectionStart ?? 0;
+      const end = linkInputRef.current.selectionEnd ?? 0;
+      const guard = prefix.length;
+      if (start < guard || end < guard) {
+        linkInputRef.current.setSelectionRange(guard, guard);
+      }
+    } catch (_) {}
+  };
+
+  const handleLinkKeyDown = (e) => {
+    const base = getEffectiveParentBase(formData.parent_id);
+    if (!base) return;
+    const prefix = joinParentChild(base, '');
+    const guard = prefix.length;
+    const input = linkInputRef.current;
+    if (!input) return;
+    const start = input.selectionStart ?? 0;
+    const end = input.selectionEnd ?? 0;
+    // Prevent deleting any part of the prefix
+    if ((e.key === 'Backspace' && start <= guard) || (e.key === 'Delete' && end < guard)) {
+      e.preventDefault();
+      input.setSelectionRange(guard, guard);
+    }
   };
 
   const topLevelItems = navigationItems.filter(item => !item.parent_id);
@@ -385,8 +466,13 @@ const NavigationForm = ({ item, navigationItems, onSubmit, onCancel }) => {
               name="link"
               value={formData.link}
               onChange={handleChange}
+              ref={linkInputRef}
+              onKeyDown={handleLinkKeyDown}
+              onFocus={guardCaretAtPrefix}
+              onClick={guardCaretAtPrefix}
+              onMouseUp={guardCaretAtPrefix}
               className="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-white px-3 py-2.5 placeholder-gray-400"
-              placeholder="/about or https://example.com"
+              placeholder="Type child part, e.g. team (parent prefix auto-added)"
             />
             <p className="text-xs text-gray-500 mt-1">If a parent is selected, we’ll prefix its link automatically. External URLs are kept as is.</p>
           </div>
