@@ -94,7 +94,7 @@ const RecentDocs = () => {
         <div className="flex flex-col items-center justify-center w-full md:flex-[1] md:mt-0">
           <div className="flex items-center mb-4">
             <img src="/images/icons/user-personas.svg" alt="User Personas" />
-            <h3 className="text-[#202A3A] text-[1.4rem] font-bold leading-none tracking-tight m-0">Explore User Personas</h3>
+            <h3 className="text-[#162f6a] text-[1.4rem] font-bold leading-none tracking-tight m-0">Explore User Personas</h3>
           </div>
 
           <div className="bg-[#b4c5f9] rounded-full w-[180px] h-[180px] flex items-center justify-center mb-3">
@@ -113,25 +113,39 @@ const RecentDocs = () => {
             {personas[currentPersonaIndex].label}
           </div>
 
-          <div className="flex items-center gap-3 select-none mt-1">
-            <button aria-label="Prev" className="text-[#0a2e60] font-extrabold text-[1rem] px-2 cursor-pointer" onClick={prevPersona}>&lt;</button>
+          <div className="flex items-center justify-center gap-4 select-none mt-1">
+            <button
+              aria-label="Prev"
+              className="text-[#162f6a] text-[18px] px-2 cursor-pointer"
+              onClick={prevPersona}
+            >&lt;</button>
             {personas.map((_, idx) => (
               <button
                 key={idx}
                 aria-label={`Go to ${idx+1}`}
-                className={`w-[8px] h-[8px] rounded-full border ${idx === currentPersonaIndex ? 'bg-[#0a2e60] border-[#0a2e60]' : 'bg-white border-gray-400'}`}
+                className={idx === currentPersonaIndex
+                  ? 'w-[14px] h-[14px] rounded-[2px] bg-[#162f6a]'
+                  : 'w-[12px] h-[12px] rounded-full bg-[#214ca8]'}
                 onClick={() => setCurrentPersonaIndex(idx)}
               />
             ))}
-            <button aria-label="Next" className="text-[#0a2e60] font-extrabold text-[1rem] px-2 cursor-pointer" onClick={nextPersona}>&gt;</button>
+            <button
+              aria-label="Next"
+              className="text-[#162f6a] text-[18px] px-2 cursor-pointer"
+              onClick={nextPersona}
+            >&gt;</button>
           </div>
         </div>
 
         {/* Important Links */}
         <div className="flex flex-col items-start w-full md:flex-[1] md:ml-[20px]">
           <div className="flex items-center mb-4">
-            <img src="/images/icons/important-link.svg" alt="Important Link" />
-            <h3 className="text-[#202A3A] text-[1.4rem] font-bold leading-none tracking-tight m-0">Important Links</h3>
+            <img
+              src="/images/icons/important-link.svg"
+              alt="Important Link"
+              style={{ filter: 'invert(9%) sepia(33%) saturate(1659%) hue-rotate(191deg) brightness(92%) contrast(97%)' }}
+            />
+            <h3 className="text-[#162f6a] text-[1.4rem] font-bold leading-none tracking-tight m-0">Important Links</h3>
           </div>
           <div className="relative w-full">
             <ul className="m-0 p-0 w-full mt-2 bg-white">
