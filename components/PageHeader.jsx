@@ -130,8 +130,10 @@ export default function PageHeader({ pagePath, fallbackHeading, fallbackSubheadi
             {final.parent_label ? (
               <>
                 {' '}/{' '}
-                {parentTargetHref ? (
-                  <a href={parentTargetHref} className="hover:underline" style={{ color: textColor }}>{final.parent_label}</a>
+                {parentTargetHref && parentTargetHref !== router.asPath ? (
+                  <a href={parentTargetHref} className="hover:underline" style={{ color: textColor }}>
+                    {final.parent_label}
+                  </a>
                 ) : (
                   <span style={{ color: textColor }}>{final.parent_label}</span>
                 )}

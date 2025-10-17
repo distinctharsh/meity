@@ -44,9 +44,24 @@ export default function SubNavTabs({ pagePath }) {
       <div className="gi-container">
         <div className="bg-[#162f6a] rounded-xl px-6 py-4 flex items-center space-x-6 overflow-x-auto" style={{ marginTop: '-40px', position: 'relative', zIndex: 10 }}>
           {items.map((it) => (
-            <Link key={it.href || it.id} href={it.href} className={`${isActive(it.href) ? 'text-white font-bold underline relative pl-3 dot-before' : 'text-white/80 hover:text-white whitespace-nowrap'}`} style={{ color: '#fff', fontSize: '1.3rem', fontWeight: isActive(it.href) ? 800 : 400 }}>
-              {it.label}
-            </Link>
+            isActive(it.href) ? (
+              <span
+                key={it.href || it.id}
+                className={"text-white font-bold underline relative pl-3 dot-before"}
+                style={{ color: '#fff', fontSize: '1.3rem', fontWeight: 800 }}
+              >
+                {it.label}
+              </span>
+            ) : (
+              <Link
+                key={it.href || it.id}
+                href={it.href}
+                className={"text-white/80 hover:text-white whitespace-nowrap"}
+                style={{ color: '#fff', fontSize: '1.3rem', fontWeight: 400 }}
+              >
+                {it.label}
+              </Link>
+            )
           ))}
         </div>
       </div>

@@ -119,8 +119,6 @@ export default function OurTeam() {
     );
   }
 
-
-
   return (
     <>
       {/* Inline CSS for the ::before dot */}
@@ -141,10 +139,10 @@ export default function OurTeam() {
 
       <main id="main">
         {/* Dynamic Page Header (default) */}
-        <PageHeader pagePath="/ministry/ourteam" />
+        <PageHeader pagePath="/ministry/our-team" />
 
         {/* Tabs (default DB-driven) */}
-        <SubNavTabs />
+        <SubNavTabs pagePath="/ministry/our-team" />
 
         {/* Main Content */}
         <section className=" mt-10 py-12" style={{ backgroundColor: '#d2dfff', borderRadius: '20px' }}>
