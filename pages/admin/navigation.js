@@ -417,9 +417,9 @@ const NavigationForm = ({ item, navigationItems, onSubmit, onCancel }) => {
 
   return (
     <div>
-      <h2 className="text-xl font-semibold text-gray-900 mb-4">
+      {/* <h2 className="text-xl font-semibold text-gray-900 mb-4">
         {item ? 'Edit Navigation Item' : 'Add Navigation Item'}
-      </h2>
+      </h2> */}
       
       <form onSubmit={handleSubmit} className="space-y-5">
         {/* Name + Parent in one row on md+ */}
