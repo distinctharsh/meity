@@ -10,50 +10,22 @@ export default function DirectoryPage() {
   const [page, setPage] = useState(1);
   const ALPHAS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 
-  // Temporary placeholder data (we will wire API later)
-  const data = [
-    {
-      role: "MINISTER (E&IT)",
-      name: "Shri Ashwini Vaishnaw",
-      tags: [
-        "Hon'ble Minister of Railways",
-        "Information and Broadcasting",
-        "Electronics and Information Technology",
-      ],
-      phones: ["+91-11-24366191(Office)", "+91-11-243666700(Fax)"],
-      emails: ["moeit[at]gov[dot]in"],
-      address:
-        "Electronics Niketan, 6, CGO Complex, Lodhi Road, New Delhi: 110003",
-    },
-    {
-      role: "MINISTER OF STATE (E&IT)",
-      name: "Shri Jitin Prasada",
-      tags: [
-        "Hon'ble Minister of State in the Ministry of Commerce and Industry",
-        "Electronics and Information Technology",
-      ],
-      phones: ["+91-11-24368757(Office)", "+91-11-24368758(Office)", "+91-11-24366958(Fax)"],
-      emails: ["mos-eit[at]gov[dot]in"],
-      address:
-        "Electronics Niketan, 6, CGO Complex, Lodhi Road, New Delhi: 110003",
-    },
-    {
-      role: "DEPUTY DIRECTOR, UNDER SECRETARY",
-      name: "Smt. Jacqueline Lall",
-      tags: ["Cyber Laws and Data Governance Group", "Cyber Security Division"],
-      phones: ["011-24301319"],
-      emails: ["jacqueline[dot]lall[at]meity[dot]gov[dot]in"],
-      address: "Room No. 3018, Electronics Niketan, 6, CGO Complex, Lodhi Road, New Delhi: 110003",
-    },
-    {
-      role: "STENOGRAPHER",
-      name: "Shri Jai Singh",
-      tags: ["Cyber Security Division"],
-      phones: ["+91-11-24301877"],
-      emails: ["jai[dot]singh95[at]gov[dot]in"],
-      address: "Outside Room No. 3291, Electronics Niketan, 6, CGO Complex, Lodhi Road, New Delhi: 110003",
-    },
-  ];
+  const [data, setData] = useState([]);
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        const r = await fetch('/api/admin/directory');
+        const rows = r.ok ? await r.json() : [];
+        if (!mounted) return;
+        const clean = Array.isArray(rows) ? rows.filter(x => x && x.is_active) : [];
+        setData(clean);
+      } catch (e) {
+        setData([]);
+      }
+    })();
+    return () => { mounted = false; };
+  }, []);
 
   const results = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -62,7 +34,7 @@ export default function DirectoryPage() {
       [
         r.role,
         r.name,
-        Array.isArray(r.tags) ? r.tags.join(" ") : r.description,
+        Array.isArray(r.tags) ? r.tags.join(" ") : "",
         Array.isArray(r.phones) ? r.phones.join(" ") : r.phone,
         Array.isArray(r.emails) ? r.emails.join(" ") : r.email,
         r.address,

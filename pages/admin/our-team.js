@@ -384,8 +384,22 @@ function SectionsManager({ sections, reload }) {
                 <td className="px-4 py-2 text-sm">{s.is_active ? 'Yes' : 'No'}</td>
                 <td className="px-4 py-2 text-sm">{s.display_order}</td>
                 <td className="px-4 py-2 text-sm text-right space-x-2">
-                  <button onClick={() => open(s)} className="inline-flex items-center justify-center w-9 h-9 rounded-full border hover:bg-gray-50">Edit</button>
-                  <button onClick={() => remove(s.id)} className="inline-flex items-center justify-center w-9 h-9 rounded-full border text-red-600 hover:bg-red-50">Del</button>
+                  <button
+                    onClick={() => open(s)}
+                    className="inline-flex items-center justify-center w-9 h-9 rounded-full border hover:bg-gray-50"
+                    aria-label="Edit"
+                    title="Edit"
+                  >
+                    <span aria-hidden="true" className="material-symbols-outlined">edit</span>
+                  </button>
+                  <button
+                    onClick={() => remove(s.id)}
+                    className="inline-flex items-center justify-center w-9 h-9 rounded-full border text-red-600 hover:bg-red-50"
+                    aria-label="Delete"
+                    title="Delete"
+                  >
+                    <span aria-hidden="true" className="material-symbols-outlined">delete</span>
+                  </button>
                 </td>
               </tr>
             ))}
@@ -506,8 +520,22 @@ function PeopleManager({ sections, people, contacts, reload }) {
                 <td className="px-4 py-2 text-sm">{p.is_active ? 'Yes' : 'No'}</td>
                 <td className="px-4 py-2 text-sm">{p.display_order}</td>
                 <td className="px-4 py-2 text-sm text-right space-x-2">
-                  <button onClick={() => open(p)} className="inline-flex items-center justify-center w-9 h-9 rounded-full border hover:bg-gray-50">Edit</button>
-                  <button onClick={() => remove(p.id)} className="inline-flex items-center justify-center w-9 h-9 rounded-full border text-red-600 hover:bg-red-50">Del</button>
+                  <button
+                    onClick={() => open(p)}
+                    className="inline-flex items-center justify-center w-9 h-9 rounded-full border hover:bg-gray-50"
+                    aria-label="Edit"
+                    title="Edit"
+                  >
+                    <span aria-hidden="true" className="material-symbols-outlined">edit</span>
+                  </button>
+                  <button
+                    onClick={() => remove(p.id)}
+                    className="inline-flex items-center justify-center w-9 h-9 rounded-full border text-red-600 hover:bg-red-50"
+                    aria-label="Delete"
+                    title="Delete"
+                  >
+                    <span aria-hidden="true" className="material-symbols-outlined">delete</span>
+                  </button>
                 </td>
               </tr>
             ))}
