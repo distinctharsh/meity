@@ -120,19 +120,9 @@ export default function AdminOurTeamPage() {
       {error && <p className="text-red-600">{error}</p>}
 
       {showForm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="fixed inset-0 bg-black/50" onClick={() => { setShowForm(false); setEditing(null); }} />
-          <div className="relative bg-white w-full max-w-2xl rounded-xl shadow-xl ring-1 ring-black/5" role="dialog" aria-modal="true" aria-labelledby="our-team-dialog-title">
-            <div className="flex items-center justify-between px-5 py-3 border-b">
-              <h2 id="our-team-dialog-title" className="text-lg font-semibold">{editing ? 'Edit Member' : 'Add Member'}</h2>
-              <button onClick={() => { setShowForm(false); setEditing(null); }} className="inline-flex items-center justify-center w-9 h-9 rounded-full hover:bg-gray-100" aria-label="Close" title="Close">
-                <span aria-hidden="true" className="material-symbols-outlined">close</span>
-              </button>
-            </div>
-            <div className="max-h-[80vh] overflow-y-auto p-5">
-              <OurTeamForm initial={editing} onCancel={() => { setShowForm(false); setEditing(null); }} onSaved={onSaved} />
-            </div>
-          </div>
+        <div className="bg-white rounded-lg shadow p-4 border border-gray-300">
+          <h2 className="text-lg font-semibold mb-4">{editing ? 'Edit Member' : 'Add Member'}</h2>
+          <OurTeamForm initial={editing} onCancel={() => { setShowForm(false); setEditing(null); }} onSaved={onSaved} />
         </div>
       )}
 
@@ -250,78 +240,79 @@ function OurTeamForm({ initial, onCancel, onSaved }) {
     <form onSubmit={submit} className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700">Name *</label>
-          <input type="text" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+          <label className="block text-sm font-medium text-gray-700 mb-1.5">Name *</label>
+          <input type="text" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required className="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm placeholder-gray-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1.5">Designation</label>
+          <input type="text" value={form.designation} onChange={(e) => setForm({ ...form, designation: e.target.value })} className="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm placeholder-gray-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
         </div>
         <div className="md:col-span-2">
-          <label className="block text-sm font-medium text-gray-700">Designation</label>
-          <input type="text" value={form.designation} onChange={(e) => setForm({ ...form, designation: e.target.value })} className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
-        </div>
-        <div className="md:col-span-2">
-          <label className="block text-sm font-medium text-gray-700">About Text (one or two lines)</label>
-          <textarea rows={2} value={form.about_text} onChange={(e) => setForm({ ...form, about_text: e.target.value })} className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
-        </div>
-        <div className="md:col-span-2">
-          <label className="block text-sm font-medium text-gray-700">Photo URL</label>
-          <input type="text" value={form.photo_url} onChange={(e) => setForm({ ...form, photo_url: e.target.value })} placeholder="/images/our-team/a.jpg" className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+          <label className="block text-sm font-medium text-gray-700 mb-1.5">About Text (one or two lines)</label>
+          <textarea rows={2} value={form.about_text} onChange={(e) => setForm({ ...form, about_text: e.target.value })} className="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm placeholder-gray-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700">Email</label>
-          <input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+          <label className="block text-sm font-medium text-gray-700 mb-1.5">Photo URL</label>
+          <input type="text" value={form.photo_url} onChange={(e) => setForm({ ...form, photo_url: e.target.value })} placeholder="/images/our-team/a.jpg" className="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm placeholder-gray-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700">Phone (Primary)</label>
-          <input type="text" value={form.phone_primary} onChange={(e) => setForm({ ...form, phone_primary: e.target.value })} className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+          <label className="block text-sm font-medium text-gray-700 mb-1.5">Email</label>
+          <input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm placeholder-gray-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700">Phone (Secondary)</label>
-          <input type="text" value={form.phone_secondary} onChange={(e) => setForm({ ...form, phone_secondary: e.target.value })} className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+          <label className="block text-sm font-medium text-gray-700 mb-1.5">Phone (Primary)</label>
+          <input type="text" value={form.phone_primary} onChange={(e) => setForm({ ...form, phone_primary: e.target.value })} className="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm placeholder-gray-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700">Profile URL</label>
-          <input type="text" value={form.profile_url} onChange={(e) => setForm({ ...form, profile_url: e.target.value })} placeholder="https://example.com/profile" className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+          <label className="block text-sm font-medium text-gray-700 mb-1.5">Phone (Secondary)</label>
+          <input type="text" value={form.phone_secondary} onChange={(e) => setForm({ ...form, phone_secondary: e.target.value })} className="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm placeholder-gray-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1.5">Profile URL</label>
+          <input type="text" value={form.profile_url} onChange={(e) => setForm({ ...form, profile_url: e.target.value })} placeholder="https://example.com/profile" className="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm placeholder-gray-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1.5">Display Order</label>
+          <input type="number" value={form.display_order} onChange={(e) => setForm({ ...form, display_order: e.target.value })} className="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm placeholder-gray-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
         </div>
         <div className="md:col-span-2 pt-2">
           <h3 className="text-sm font-semibold text-gray-800 mb-2">Office Block (appears below profile)</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700">Office Title</label>
-              <input type="text" value={form.office_title} onChange={(e) => setForm({ ...form, office_title: e.target.value })} placeholder="OFFICE OF HON'BLE MINISTER" className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">Office Title</label>
+              <input type="text" value={form.office_title} onChange={(e) => setForm({ ...form, office_title: e.target.value })} placeholder="OFFICE OF HON'BLE MINISTER" className="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm placeholder-gray-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">Office Fax</label>
-              <input type="text" value={form.office_fax} onChange={(e) => setForm({ ...form, office_fax: e.target.value })} className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">Office Fax</label>
+              <input type="text" value={form.office_fax} onChange={(e) => setForm({ ...form, office_fax: e.target.value })} className="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm placeholder-gray-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">Office Contact Name</label>
-              <input type="text" value={form.office_name} onChange={(e) => setForm({ ...form, office_name: e.target.value })} className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">Office Contact Name</label>
+              <input type="text" value={form.office_name} onChange={(e) => setForm({ ...form, office_name: e.target.value })} className="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm placeholder-gray-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">Office Contact Designation</label>
-              <input type="text" value={form.office_designation} onChange={(e) => setForm({ ...form, office_designation: e.target.value })} className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">Office Contact Designation</label>
+              <input type="text" value={form.office_designation} onChange={(e) => setForm({ ...form, office_designation: e.target.value })} className="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm placeholder-gray-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">Office Phone 1</label>
-              <input type="text" value={form.office_phone1} onChange={(e) => setForm({ ...form, office_phone1: e.target.value })} className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">Office Phone 1</label>
+              <input type="text" value={form.office_phone1} onChange={(e) => setForm({ ...form, office_phone1: e.target.value })} className="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm placeholder-gray-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">Office Phone 2</label>
-              <input type="text" value={form.office_phone2} onChange={(e) => setForm({ ...form, office_phone2: e.target.value })} className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">Office Phone 2</label>
+              <input type="text" value={form.office_phone2} onChange={(e) => setForm({ ...form, office_phone2: e.target.value })} className="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm placeholder-gray-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">Office Email 1</label>
-              <input type="text" value={form.office_email1} onChange={(e) => setForm({ ...form, office_email1: e.target.value })} className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">Office Email 1</label>
+              <input type="text" value={form.office_email1} onChange={(e) => setForm({ ...form, office_email1: e.target.value })} className="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm placeholder-gray-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">Office Email 2</label>
-              <input type="text" value={form.office_email2} onChange={(e) => setForm({ ...form, office_email2: e.target.value })} className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">Office Email 2</label>
+              <input type="text" value={form.office_email2} onChange={(e) => setForm({ ...form, office_email2: e.target.value })} className="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm placeholder-gray-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
             </div>
           </div>
         </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Display Order</label>
-          <input type="number" value={form.display_order} onChange={(e) => setForm({ ...form, display_order: e.target.value })} className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
-        </div>
+        
         <div className="flex items-center">
           <input id="is_active" type="checkbox" checked={form.is_active} onChange={(e) => setForm({ ...form, is_active: e.target.checked })} className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" />
           <label htmlFor="is_active" className="ml-2 block text-sm text-gray-900">Active</label>
@@ -365,7 +356,14 @@ function SectionsManager({ sections, reload }) {
     <div className="mt-10">
       <div className="flex items-center justify-between mb-3">
         <h2 className="text-lg font-semibold">Sections</h2>
-        <button onClick={() => open(null)} className="px-3 py-1.5 rounded bg-blue-600 text-white text-sm">Add Section</button>
+        <button
+          onClick={() => open(null)}
+          className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-blue-600 text-white hover:bg-blue-700 cursor-pointer"
+          aria-label="Add section"
+          title="Add section"
+        >
+          <span aria-hidden="true" className="material-symbols-outlined">add</span>
+        </button>
       </div>
       <div className="overflow-x-auto bg-white rounded-lg shadow">
         <table className="min-w-full divide-y divide-gray-200">
@@ -414,13 +412,13 @@ function SectionsManager({ sections, reload }) {
             <h3 className="text-base font-semibold mb-3">{form.id ? 'Edit Section' : 'Add Section'}</h3>
             <form onSubmit={save} className="space-y-3">
               <div>
-                <label className="block text-sm font-medium text-gray-700">Title *</label>
-                <input className="mt-1 block w-full border-gray-300 rounded-md" value={form.title} onChange={e=>setForm({...form, title:e.target.value})} required />
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">Title *</label>
+                <input className="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm placeholder-gray-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" value={form.title} onChange={e=>setForm({...form, title:e.target.value})} required />
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Display Order</label>
-                  <input type="number" className="mt-1 block w-full border-gray-300 rounded-md" value={form.display_order} onChange={e=>setForm({...form, display_order:e.target.value})} />
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Display Order</label>
+                  <input type="number" className="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm placeholder-gray-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" value={form.display_order} onChange={e=>setForm({...form, display_order:e.target.value})} />
                 </div>
                 <div className="flex items-center mt-6">
                   <input id="s_active" type="checkbox" className="h-4 w-4 text-blue-600" checked={form.is_active} onChange={e=>setForm({...form, is_active:e.target.checked})} />
@@ -497,7 +495,14 @@ function PeopleManager({ sections, people, contacts, reload }) {
     <div className="mt-10">
       <div className="flex items-center justify-between mb-3">
         <h2 className="text-lg font-semibold">People</h2>
-        <button onClick={() => open(null)} className="px-3 py-1.5 rounded bg-blue-600 text-white text-sm">Add Person</button>
+        <button
+          onClick={() => open(null)}
+          className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-blue-600 text-white hover:bg-blue-700 cursor-pointer"
+          aria-label="Add person"
+          title="Add person"
+        >
+          <span aria-hidden="true" className="material-symbols-outlined">add</span>
+        </button>
       </div>
       <div className="overflow-x-auto bg-white rounded-lg shadow">
         <table className="min-w-full divide-y divide-gray-200">
@@ -549,33 +554,33 @@ function PeopleManager({ sections, people, contacts, reload }) {
           <div className="relative bg-white w-full max-w-2xl rounded-xl shadow-xl ring-1 ring-black/5 p-5">
             <h3 className="text-base font-semibold mb-3">{editing ? 'Edit Person' : 'Add Person'}</h3>
             <form onSubmit={save} className="space-y-3">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Section *</label>
-                  <select className="mt-1 block w-full border-gray-300 rounded-md" value={form.section_id} onChange={e=>setForm({...form, section_id: e.target.value})} required>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Section *</label>
+                  <select className="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" value={form.section_id} onChange={e=>setForm({...form, section_id: e.target.value})} required>
                     <option value="">Select section</option>
                     {sections.map(s => (<option key={s.id} value={s.id}>{s.title}</option>))}
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Display Order</label>
-                  <input type="number" className="mt-1 block w-full border-gray-300 rounded-md" value={form.display_order} onChange={e=>setForm({...form, display_order: e.target.value})} />
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Display Order</label>
+                  <input type="number" className="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm placeholder-gray-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" value={form.display_order} onChange={e=>setForm({...form, display_order: e.target.value})} />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Name *</label>
-                  <input className="mt-1 block w-full border-gray-300 rounded-md" value={form.name} onChange={e=>setForm({...form, name: e.target.value})} required />
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Name *</label>
+                  <input className="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm placeholder-gray-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" value={form.name} onChange={e=>setForm({...form, name: e.target.value})} required />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700">Active</label>
                   <div className="mt-2 flex items-center"><input type="checkbox" checked={form.is_active} onChange={e=>setForm({...form, is_active: e.target.checked})} className="h-4 w-4 text-blue-600" /><span className="ml-2 text-sm">Active</span></div>
                 </div>
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700">Designation</label>
-                  <input className="mt-1 block w-full border-gray-300 rounded-md" value={form.designation} onChange={e=>setForm({...form, designation: e.target.value})} />
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Designation</label>
+                  <input className="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm placeholder-gray-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" value={form.designation} onChange={e=>setForm({...form, designation: e.target.value})} />
                 </div>
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700">Address</label>
-                  <textarea className="mt-1 block w-full border-gray-300 rounded-md" rows={2} value={form.address} onChange={e=>setForm({...form, address: e.target.value})} />
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Address</label>
+                  <textarea className="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm placeholder-gray-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" rows={2} value={form.address} onChange={e=>setForm({...form, address: e.target.value})} />
                 </div>
               </div>
               <div className="pt-2">
@@ -586,12 +591,12 @@ function PeopleManager({ sections, people, contacts, reload }) {
                 <div className="space-y-2">
                   {form.contacts.map((ct, idx) => (
                     <div key={idx} className="grid grid-cols-5 gap-2 items-center">
-                      <select className="col-span-1 border-gray-300 rounded-md" value={ct.type} onChange={e=>{const arr=[...form.contacts]; arr[idx]={...ct, type:e.target.value}; setForm({...form, contacts:arr});}}>
+                      <select className="col-span-1 rounded-md border border-gray-300 bg-white px-2 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" value={ct.type} onChange={e=>{const arr=[...form.contacts]; arr[idx]={...ct, type:e.target.value}; setForm({...form, contacts:arr});}}>
                         <option value="phone">Phone</option>
                         <option value="fax">Fax</option>
                         <option value="email">Email</option>
                       </select>
-                      <input className="col-span-3 border-gray-300 rounded-md" value={ct.value} onChange={e=>{const arr=[...form.contacts]; arr[idx]={...ct, value:e.target.value}; setForm({...form, contacts:arr});}} placeholder="Value" />
+                      <input className="col-span-3 rounded-md border border-gray-300 bg-white px-3 py-2 text-sm placeholder-gray-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" value={ct.value} onChange={e=>{const arr=[...form.contacts]; arr[idx]={...ct, value:e.target.value}; setForm({...form, contacts:arr});}} placeholder="Value" />
                       <button type="button" onClick={()=>{const arr=[...form.contacts]; arr.splice(idx,1); setForm({...form, contacts:arr});}} className="col-span-1 px-2 py-1 rounded border">Remove</button>
                     </div>
                   ))}

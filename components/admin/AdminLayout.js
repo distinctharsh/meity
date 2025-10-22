@@ -96,6 +96,7 @@ const AdminLayout = ({ children }) => {
       <Head>
         <title>Admin Panel - Cabinet Secretariat CMS</title>
         <meta name="description" content="Cabinet Secretariat CMS Admin Panel" />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
         <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/jquery.dataTables.min.css" />
       </Head>
       <Script src="https://code.jquery.com/jquery-3.7.1.min.js" strategy="beforeInteractive" />
