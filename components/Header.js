@@ -77,16 +77,10 @@ export default function Header() {
               >
                 <img src="/images/icons/skip.svg" alt="Skip to main content" />
               </a>
-              <button className="bg-transparent border-0 cursor-pointer p-[6px] border-x border-[#162f6a]" title="Language" onClick={async () => {
-                try {
-                  const current = document.documentElement.lang || 'en';
-                  const next = current === 'en' ? 'hi' : 'en';
-                  await fetch('/api/lang', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ lang: next }) });
-                  location.reload();
-                } catch (e) { console.error(e); }
-              }}>
-                <img src="/images/icons/bhashini.svg" alt="Bhashini" />
-              </button>
+              <div className="border-x border-[#162f6a] p-[2px] flex items-center">
+                {/* Bhashini plugin will hydrate this empty container into the dropdown */}
+                <div className="bhashini-plugin-container" />
+              </div>
               <AccessibilityBar />
             </div>
           </div>

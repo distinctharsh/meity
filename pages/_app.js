@@ -7,6 +7,7 @@ const CookieBanner = dynamic(() => import('@/components/CookieBanner'), { ssr: f
 import LangAlternates from '@/components/LangAlternates';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
+import Script from 'next/script';
 
 export default function App({ Component, pageProps }) {
   const router = useRouter();
@@ -16,6 +17,13 @@ export default function App({ Component, pageProps }) {
 
   return (
     <>
+      <Script
+        src="/bhashini/website_translation_utility.js?v=2"
+        strategy="afterInteractive"
+        language_order="en,hi"
+        language-icon-color="#162F6A"
+        asset-path-prefix="/bhashini"
+      />
       <LangAlternates />
       {/* Global guard to prevent malformed addEventListener calls from third-party/CMS scripts */}
       <SafeEventListenerGuard />
