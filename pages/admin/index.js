@@ -39,12 +39,24 @@ export default function AdminDashboard() {
 
         // Fetch dashboard stats
         try {
-          const statsResponse = await fetch('/api/admin/stats');
+          const token = localStorage.getItem('admin_token');
+          const statsResponse = await fetch('/api/admin/stats', {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
+          
           if (statsResponse.ok) {
             const statsData = await statsResponse.json();
             setStats(statsData);
           } else {
-            const errorData = await statsResponse.json();
+            if (statsResponse.status === 401) {
+              // Token might be invalid, clear it and redirect to login
+              localStorage.removeItem('admin_token');
+              router.push('/admin/login');
+              return;
+            }
+            const errorData = await statsResponse.json().catch(() => ({}));
             console.error('Stats fetch error:', errorData.message || 'Failed to fetch statistics');
             // Set default stats if API fails
             setStats({

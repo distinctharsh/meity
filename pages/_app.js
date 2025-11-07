@@ -15,15 +15,35 @@ export default function App({ Component, pageProps }) {
   // Don't show Header and Navbar on admin pages
   const isAdminPage = router.pathname.startsWith('/admin');
 
+  // Load translation utility only on client-side and when not in admin
+  useEffect(() => {
+    if (typeof window !== 'undefined' && !router.pathname.startsWith('/admin')) {
+      const loadTranslationScript = () => {
+        const script = document.createElement('script');
+        script.src = '/bhashini/website_translation_utility.js?v=2';
+        script.setAttribute('language_order', 'en,hi');
+        script.setAttribute('language-icon-color', '#162F6A');
+        script.setAttribute('asset-path-prefix', '/bhashini');
+        script.defer = true;
+        
+        // Only append if the script doesn't already exist
+        if (!document.querySelector('script[src*="website_translation_utility"]')) {
+          document.body.appendChild(script);
+        }
+      };
+
+      // Load script when DOM is ready
+      if (document.readyState === 'complete' || document.readyState === 'interactive') {
+        loadTranslationScript();
+      } else {
+        window.addEventListener('DOMContentLoaded', loadTranslationScript);
+      }
+    }
+  }, [router.pathname]);
+
   return (
     <>
-      <Script
-        src="/bhashini/website_translation_utility.js?v=2"
-        strategy="afterInteractive"
-        language_order="en,hi"
-        language-icon-color="#162F6A"
-        asset-path-prefix="/bhashini"
-      />
+      {/* Script tag removed from here */}
       <LangAlternates />
       {/* Global guard to prevent malformed addEventListener calls from third-party/CMS scripts */}
       <SafeEventListenerGuard />

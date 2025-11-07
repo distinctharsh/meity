@@ -2,7 +2,34 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
-import Script from 'next/script';
+
+// Client-side only component for scripts
+const ClientScripts = () => {
+  useEffect(() => {
+    // Load jQuery if not already loaded
+    if (!window.jQuery) {
+      const jquery = document.createElement('script');
+      jquery.src = 'https://code.jquery.com/jquery-3.7.1.min.js';
+      jquery.async = true;
+      jquery.onload = () => {
+        // Load DataTables after jQuery is loaded
+        if (!window.jQuery.fn.DataTable) {
+          const datatables = document.createElement('script');
+          datatables.src = 'https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js';
+          document.body.appendChild(datatables);
+        }
+      };
+      document.body.appendChild(jquery);
+    } else if (!window.jQuery.fn.DataTable) {
+      // If jQuery is loaded but DataTables is not
+      const datatables = document.createElement('script');
+      datatables.src = 'https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js';
+      document.body.appendChild(datatables);
+    }
+  }, []);
+
+  return null;
+};
 
 const AdminLayout = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -80,27 +107,38 @@ const AdminLayout = ({ children }) => {
     }
   };
 
+
+  // Check for user on client side
+  useEffect(() => {
+    const token = localStorage.getItem('admin_token');
+    if (token) {
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        setUser(payload);
+      } catch (error) {
+        console.error('Token error:', error);
+        localStorage.removeItem('admin_token');
+        router.push('/admin/login');
+      }
+    } else {
+      router.push('/admin/login');
+    }
+  }, [router]);
+
   if (!user) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading...</p>
-        </div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
       </div>
     );
   }
-
   return (
-    <>
+    <div className="min-h-screen bg-gray-50">
+      <ClientScripts />
       <Head>
         <title>Admin Panel - Cabinet Secretariat CMS</title>
         <meta name="description" content="Cabinet Secretariat CMS Admin Panel" />
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
-        <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/jquery.dataTables.min.css" />
       </Head>
-      <Script src="https://code.jquery.com/jquery-3.7.1.min.js" strategy="beforeInteractive" />
-      <Script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js" strategy="afterInteractive" />
       <div className="min-h-screen bg-gray-50 flex">
         {/* Mobile sidebar */}
         <div className={`fixed inset-0 z-40 lg:hidden ${sidebarOpen ? 'block' : 'hidden'}`}>
@@ -265,7 +303,7 @@ const AdminLayout = ({ children }) => {
           </main>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
