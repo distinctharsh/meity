@@ -118,11 +118,19 @@ export default function AdminSocialPage() {
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }
             }}
-            className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-blue-600 text-white hover:bg-blue-700"
+            className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300 shadow cursor-pointer"
             aria-label={creating ? 'Cancel' : 'Add Post'}
             title={creating ? 'Cancel' : 'Add Post'}
           >
-            <span className="material-symbols-outlined">{creating ? 'close' : 'add'}</span>
+            {creating ? (
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            ) : (
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 5v14M5 12h14" />
+              </svg>
+            )}
           </button>
         </div>
 
@@ -209,19 +217,24 @@ export default function AdminSocialPage() {
                             setCreating(false);
                             window.scrollTo({ top: 0, behavior: 'smooth' });
                           }}
-                          className="inline-flex items-center justify-center w-8 h-8 rounded-full border hover:bg-blue-50"
+                          className="p-2 rounded-md text-blue-600 hover:text-blue-800 hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-200 cursor-pointer"
                           aria-label="Edit"
                           title="Edit"
                         >
-                          <span className="material-symbols-outlined text-blue-600 text-sm">edit</span>
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-5 h-5">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687 1.687m-2.496-.79l-8.74 8.74a2.25 2.25 0 00-.57.99l-.53 2.122a.75.75 0 00.91.91l2.122-.53a2.25 2.25 0 00.99-.57l8.74-8.74m-2.496-.79l2.496.79M16.862 4.487a1.875 1.875 0 112.652 2.652" />
+                          </svg>
                         </button>
                         <button
                           onClick={() => onDelete(post.id)}
-                          className="inline-flex items-center justify-center w-8 h-8 rounded-full border text-red-600 hover:bg-red-50"
+                          className="p-2 rounded-md text-red-600 hover:text-red-800 hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-200 cursor-pointer"
                           aria-label="Delete"
                           title="Delete"
                         >
-                          <span className="material-symbols-outlined text-sm">delete</span>
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+                            <path d="M9 3a1 1 0 0 0-1 1v1H4.5a.75.75 0 0 0 0 1.5h15a.75.75 0 0 0 0-1.5H16V4a1 1 0 0 0-1-1H9z" />
+                            <path d="M6.5 7h11l-.84 11.2A2 2 0 0 1 14.67 20H9.33a2 2 0 0 1-1.99-1.8L6.5 7z" />
+                          </svg>
                         </button>
                       </div>
                     </td>

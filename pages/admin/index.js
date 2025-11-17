@@ -3,7 +3,6 @@ import { useRouter } from 'next/router';
 import Link from 'next/link';
 import AdminLayout from '../../components/admin/AdminLayout';
 import DashboardStats from '../../components/admin/DashboardStats';
-import RecentActivity from '../../components/admin/RecentActivity';
 import QuickActions from '../../components/admin/QuickActions';
 
 export default function AdminDashboard() {
@@ -129,7 +128,10 @@ export default function AdminDashboard() {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
+          <Link
+            href="/admin/announcements"
+            className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow cursor-pointer"
+          >
             <div className="flex items-center">
               <div className="p-3 bg-blue-100 rounded-lg">
                 <svg className="w-6 h-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -141,9 +143,12 @@ export default function AdminDashboard() {
                 <p className="text-2xl font-bold text-gray-900">{stats.announcements}</p>
               </div>
             </div>
-          </div>
+          </Link>
 
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
+          <Link
+            href="/admin/slider"
+            className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow cursor-pointer"
+          >
             <div className="flex items-center">
               <div className="p-3 bg-green-100 rounded-lg">
                 <svg className="w-6 h-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -155,9 +160,12 @@ export default function AdminDashboard() {
                 <p className="text-2xl font-bold text-gray-900">{stats.sliders}</p>
               </div>
             </div>
-          </div>
+          </Link>
 
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
+          <Link
+            href="/admin/offerings"
+            className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow cursor-pointer"
+          >
             <div className="flex items-center">
               <div className="p-3 bg-purple-100 rounded-lg">
                 <svg className="w-6 h-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -169,9 +177,12 @@ export default function AdminDashboard() {
                 <p className="text-2xl font-bold text-gray-900">{stats.offerings}</p>
               </div>
             </div>
-          </div>
+          </Link>
 
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
+          <Link
+            href="/admin/media"
+            className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow cursor-pointer"
+          >
             <div className="flex items-center">
               <div className="p-3 bg-orange-100 rounded-lg">
                 <svg className="w-6 h-6 text-orange-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -183,13 +194,13 @@ export default function AdminDashboard() {
                 <p className="text-2xl font-bold text-gray-900">{stats.media}</p>
               </div>
             </div>
-          </div>
+          </Link>
         </div>
 
-        {/* Quick Actions and Recent Activity */}
+        {/* Quick Actions and Content Overview */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2">
-            <RecentActivity />
+            <DashboardStats />
           </div>
           <div className="space-y-6">
             <QuickActions />

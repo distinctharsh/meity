@@ -90,9 +90,13 @@ export default function PagesManagement() {
           <h1 className="text-3xl font-bold text-gray-900">Pages</h1>
           <button
             onClick={handleAdd}
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+            className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300 shadow cursor-pointer"
+            aria-label="Create new page"
+            title="Create new page"
           >
-            Create Page
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 5v14M5 12h14" />
+            </svg>
           </button>
         </div>
 
@@ -123,11 +127,46 @@ export default function PagesManagement() {
                     </span>
                   </div>
                   <div className="col-span-2 flex items-center justify-end space-x-2">
-                    <button onClick={() => toggleActive(pg)} className={`px-2 py-1 text-xs rounded ${pg.is_active ? 'bg-gray-100 text-gray-700 hover:bg-gray-200' : 'bg-green-100 text-green-700 hover:bg-green-200'}`}>
-                      {pg.is_active ? 'Deactivate' : 'Activate'}
+                    <button
+                      onClick={() => toggleActive(pg)}
+                      className={`p-2 rounded-md focus:outline-none focus:ring-2 cursor-pointer ${pg.is_active
+                        ? 'text-gray-600 hover:text-gray-900 hover:bg-gray-50 focus:ring-gray-200'
+                        : 'text-green-600 hover:text-green-800 hover:bg-green-50 focus:ring-green-200'
+                      }`}
+                      title={pg.is_active ? 'Deactivate page' : 'Activate page'}
+                      aria-label={pg.is_active ? 'Deactivate page' : 'Activate page'}
+                    >
+                      {pg.is_active ? (
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-5 h-5">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 7.5v9a2.25 2.25 0 002.25 2.25h6a2.25 2.25 0 002.25-2.25v-9M9 7.5V6.75A2.25 2.25 0 0111.25 4.5h1.5A2.25 2.25 0 0115 6.75V7.5" />
+                        </svg>
+                      ) : (
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-5 h-5">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                        </svg>
+                      )}
                     </button>
-                    <button onClick={() => handleEdit(pg)} className="px-2 py-1 text-xs bg-blue-100 text-blue-700 rounded hover:bg-blue-200">Edit</button>
-                    <button onClick={() => handleDelete(pg.id)} className="px-2 py-1 text-xs bg-red-100 text-red-700 rounded hover:bg-red-200">Delete</button>
+                    <button
+                      onClick={() => handleEdit(pg)}
+                      className="p-2 rounded-md text-blue-600 hover:text-blue-800 hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-200 cursor-pointer"
+                      title="Edit page"
+                      aria-label="Edit page"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-5 h-5">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687 1.687m-2.496-.79l-8.74 8.74a2.25 2.25 0 00-.57.99l-.53 2.122a.75.75 0 00.91.91l2.122-.53a2.25 2.25 0 00.99-.57l8.74-8.74m-2.496-.79l2.496.79M16.862 4.487a1.875 1.875 0 112.652 2.652" />
+                      </svg>
+                    </button>
+                    <button
+                      onClick={() => handleDelete(pg.id)}
+                      className="p-2 rounded-md text-red-600 hover:text-red-800 hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-200 cursor-pointer"
+                      title="Delete page"
+                      aria-label="Delete page"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+                        <path d="M9 3a1 1 0 0 0-1 1v1H4.5a.75.75 0 0 0 0 1.5h15a.75.75 0 0 0 0-1.5H16V4a1 1 0 0 0-1-1H9z" />
+                        <path d="M6.5 7h11l-.84 11.2A2 2 0 0 1 14.67 20H9.33a2 2 0 0 1-1.99-1.8L6.5 7z" />
+                      </svg>
+                    </button>
                   </div>
                 </div>
               ))
@@ -217,27 +256,32 @@ function PageForm({ onClose, onSaved, editing }) {
 
         // Bulk check for conflicts on each option and disable those with conflicts
         try {
+          // Load all existing CMS pages once and build a set of their slugs
+          const pagesRes = await fetch('/api/admin/pages');
+          const pagesData = pagesRes.ok ? await pagesRes.json() : [];
+          const cmsSlugs = new Set(
+            (Array.isArray(pagesData) ? pagesData : [])
+              .map(p => ensureLeadingSlash(p.slug || ''))
+              .filter(Boolean)
+          );
+
           const checks = await Promise.all(options.map(async (opt) => {
             const slug = opt.value.startsWith('/') ? opt.value : '/' + opt.value;
+            const normalizedSlug = ensureLeadingSlash(slug);
 
             // 1) static route check
             let staticExists = false;
             try {
-              const r = await fetch(slug, { headers: { 'x-skip-cms': '1' }, cache: 'no-store' });
+              const r = await fetch(normalizedSlug, { headers: { 'x-skip-cms': '1' }, cache: 'no-store' });
               const isCms = r.headers?.get?.('x-cms-page') === '1';
               staticExists = r.ok && !isCms;
             } catch {}
 
-            // 2) cms page check
-            let cmsExists = false;
-            try {
-              const pathNoSlash = slug.replace(/^\//, '');
-              const r2 = await fetch(`/api/pages/${pathNoSlash}`, { headers: { 'x-cms-check': '1' }, cache: 'no-store' });
-              cmsExists = r2.ok;
-            } catch {}
+            // 2) cms page check via admin pages list
+            let cmsExists = cmsSlugs.has(normalizedSlug);
 
             // If editing and option equals the page's current slug, don't treat as conflict
-            if (editing && ('/' + pathNoSlash) === ensureLeadingSlash(editing.slug)) {
+            if (editing && normalizedSlug === ensureLeadingSlash(editing.slug)) {
               cmsExists = false;
             }
 
@@ -471,22 +515,6 @@ function PageForm({ onClose, onSaved, editing }) {
             <div className="flex items-center space-x-2 mt-6">
               <input id="is_active" type="checkbox" checked={form.is_active} onChange={(e) => updateField('is_active', e.target.checked)} />
               <label htmlFor="is_active" className="text-sm text-gray-700">Active</label>
-            </div>
-          </div>
-
-          {/* Optional Hero fields */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Hero Title</label>
-              <input value={form.hero_title} onChange={(e) => updateField('hero_title', e.target.value)} className="mt-1 w-full border rounded px-3 py-2" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Hero Subtitle</label>
-              <input value={form.hero_subtitle} onChange={(e) => updateField('hero_subtitle', e.target.value)} className="mt-1 w-full border rounded px-3 py-2" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Hero Image URL</label>
-              <input value={form.hero_image_url} onChange={(e) => updateField('hero_image_url', e.target.value)} className="mt-1 w-full border rounded px-3 py-2" />
             </div>
           </div>
 

@@ -239,12 +239,13 @@ export default function AnnouncementsManagement() {
             </div>
             <button
               onClick={handleAdd}
-              className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
+              className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300 shadow cursor-pointer"
+              aria-label="Add new announcement"
+              title="Add new announcement"
             >
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 5v14M5 12h14" />
               </svg>
-              <span>Add New Announcement</span>
             </button>
           </div>
         </div>
@@ -456,25 +457,44 @@ export default function AnnouncementsManagement() {
                     <div className="flex items-center space-x-2 ml-4">
                       <button
                         onClick={() => toggleActive(announcement.id, parseBoolean(announcement.is_active))}
-                        className={`px-3 py-1 text-xs font-medium rounded-lg transition-colors ${
+                        className={`p-2 rounded-md focus:outline-none focus:ring-2 cursor-pointer ${
                           parseBoolean(announcement.is_active)
-                            ? 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                            : 'bg-green-100 text-green-700 hover:bg-green-200'
+                            ? 'text-gray-600 hover:text-gray-900 hover:bg-gray-50 focus:ring-gray-200'
+                            : 'text-green-600 hover:text-green-800 hover:bg-green-50 focus:ring-green-200'
                         }`}
+                        title={parseBoolean(announcement.is_active) ? 'Deactivate announcement' : 'Activate announcement'}
+                        aria-label={parseBoolean(announcement.is_active) ? 'Deactivate announcement' : 'Activate announcement'}
                       >
-                        {parseBoolean(announcement.is_active) ? 'Deactivate' : 'Activate'}
+                        {parseBoolean(announcement.is_active) ? (
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-5 h-5">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 7.5v9a2.25 2.25 0 002.25 2.25h6a2.25 2.25 0 002.25-2.25v-9M9 7.5V6.75A2.25 2.25 0 0111.25 4.5h1.5A2.25 2.25 0 0115 6.75V7.5" />
+                          </svg>
+                        ) : (
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-5 h-5">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                          </svg>
+                        )}
                       </button>
                       <button
                         onClick={() => handleEdit(announcement)}
-                        className="px-3 py-1 text-xs font-medium text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-colors"
+                        className="p-2 rounded-md text-blue-600 hover:text-blue-800 hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-200 cursor-pointer"
+                        title="Edit announcement"
+                        aria-label="Edit announcement"
                       >
-                        Edit
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-5 h-5">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687 1.687m-2.496-.79l-8.74 8.74a2.25 2.25 0 00-.57.99l-.53 2.122a.75.75 0 00.91.91l2.122-.53a2.25 2.25 0 00.99-.57l8.74-8.74m-2.496-.79l2.496.79M16.862 4.487a1.875 1.875 0 112.652 2.652" />
+                        </svg>
                       </button>
                       <button
                         onClick={() => handleDelete(announcement.id)}
-                        className="px-3 py-1 text-xs font-medium text-red-600 hover:text-red-800 hover:bg-red-50 rounded-lg transition-colors"
+                        className="p-2 rounded-md text-red-600 hover:text-red-800 hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-200 cursor-pointer"
+                        title="Delete announcement"
+                        aria-label="Delete announcement"
                       >
-                        Delete
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+                          <path d="M9 3a1 1 0 0 0-1 1v1H4.5a.75.75 0 0 0 0 1.5h15a.75.75 0 0 0 0-1.5H16V4a1 1 0 0 0-1-1H9z" />
+                          <path d="M6.5 7h11l-.84 11.2A2 2 0 0 1 14.67 20H9.33a2 2 0 0 1-1.99-1.8L6.5 7z" />
+                        </svg>
                       </button>
                     </div>
                   </div>
