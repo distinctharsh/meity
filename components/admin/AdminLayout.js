@@ -50,6 +50,7 @@ const AdminLayout = ({ children }) => {
     { name: 'Reports', href: '/admin/reports', icon: '📑', description: 'Manage Documents > Reports' },
     { name: 'Our Team', href: '/admin/our-team', icon: '👥', description: 'Manage ministry team' },
     { name: 'Directory', href: '/admin/directory', icon: '📇', description: 'Manage directory' },
+    { name: 'Footer', href: '/admin/footer', icon: '🔻', description: 'Manage site footer' },
   ];
 
   useEffect(() => {
