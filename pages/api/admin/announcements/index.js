@@ -23,7 +23,6 @@ export default async function handler(req, res) {
         title, 
         link_url, 
         link_text, 
-        is_urgent, 
         is_active, 
         start_date, 
         end_date, 
@@ -35,12 +34,11 @@ export default async function handler(req, res) {
       }
 
       const [result] = await pool.query(
-        'INSERT INTO announcements (title, link_url, link_text, is_urgent, is_active, start_date, end_date, display_order) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+        'INSERT INTO announcements (title, link_url, link_text, is_active, start_date, end_date, display_order) VALUES (?, ?, ?, ?, ?, ?, ?)',
         [
           title, 
           link_url, 
           link_text, 
-          is_urgent || false, 
           is_active !== false, 
           start_date && start_date.toString().trim() !== '' ? start_date : null, 
           end_date && end_date.toString().trim() !== '' ? end_date : null, 

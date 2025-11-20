@@ -8,7 +8,6 @@ CREATE TABLE IF NOT EXISTS `announcements` (
   `title` varchar(255) NOT NULL,
   `link_url` varchar(500) DEFAULT NULL,
   `link_text` varchar(100) DEFAULT NULL,
-  `is_urgent` tinyint(1) DEFAULT 0,
   `is_active` tinyint(1) DEFAULT 1,
   `start_date` date DEFAULT NULL,
   `end_date` date DEFAULT NULL,
@@ -200,9 +199,9 @@ CREATE TABLE IF NOT EXISTS `social_media_posts` (
 ) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Dumping data for table cabsec_cms.announcements: ~0 rows (approximately)
-INSERT INTO `announcements` (`id`, `title`, `link_url`, `link_text`, `is_urgent`, `is_active`, `start_date`, `end_date`, `display_order`, `created_at`, `updated_at`) VALUES
-	(1, 'Tets', NULL, NULL, 0, 1, '2025-09-13', '2025-09-28', 1, '2025-09-15 09:05:50', '2025-10-13 08:50:11'),
-	(2, 'Test2', '', '', 0, 1, '2025-09-13', '2025-09-26', 2, '2025-09-23 11:05:01', '2025-09-23 11:05:01');
+INSERT INTO `announcements` (`id`, `title`, `link_url`, `link_text`, `is_active`, `start_date`, `end_date`, `display_order`, `created_at`, `updated_at`) VALUES
+	(1, 'Tets', NULL, NULL, 1, '2025-09-13', '2025-09-28', 1, '2025-09-15 09:05:50', '2025-10-13 08:50:11'),
+	(2, 'Test2', '', '', 1, '2025-09-13', '2025-09-26', 2, '2025-09-23 11:05:01', '2025-09-23 11:05:01');
 
 -- Dumping data for table cabsec_cms.cms_users: ~0 rows (approximately)
 INSERT INTO `cms_users` (`id`, `username`, `email`, `password_hash`, `role`, `is_active`, `created_at`, `updated_at`) VALUES

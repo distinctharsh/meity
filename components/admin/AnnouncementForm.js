@@ -7,7 +7,6 @@ const AnnouncementForm = ({ announcement, onSubmit, onCancel }) => {
     title: '',
     link_url: '',
     link_text: '',
-    is_urgent: false,
     is_active: true,
     start_date: '',
     end_date: '',
@@ -22,7 +21,6 @@ const AnnouncementForm = ({ announcement, onSubmit, onCancel }) => {
         title: announcement.title || '',
         link_url: announcement.link_url || '',
         link_text: announcement.link_text || '',
-        is_urgent: parseBoolean(announcement.is_urgent),
         is_active: parseBoolean(announcement.is_active),
         start_date: announcement.start_date ? announcement.start_date.split('T')[0] : '',
         end_date: announcement.end_date ? announcement.end_date.split('T')[0] : '',
@@ -230,21 +228,6 @@ const AnnouncementForm = ({ announcement, onSubmit, onCancel }) => {
         <div className="bg-gray-50 p-4 rounded-lg">
           <h3 className="text-sm font-medium text-gray-700 mb-3">Settings</h3>
           <div className="space-y-4">
-            <div className="flex items-center">
-              <input
-                id="is_urgent"
-                name="is_urgent"
-                type="checkbox"
-                checked={formData.is_urgent}
-                onChange={handleChange}
-                className="h-4 w-4 text-red-600 focus:ring-red-500 border-gray-300 rounded"
-              />
-              <label htmlFor="is_urgent" className="ml-3 block text-sm text-gray-900">
-                <span className="font-medium">Mark as Urgent</span>
-                <span className="text-gray-500 ml-1">(Shows with 🚨 icon)</span>
-              </label>
-            </div>
-
             <div className="flex items-center">
               <input
                 id="is_active"

@@ -85,7 +85,6 @@ export default function AnnouncementBar() {
           >
             {announcements.map((announcement, index) => (
               <span key={announcement.id} className="mr-[50px] text-[#1a1a1a]">
-                {parseBoolean(announcement.is_urgent) && <span className="text-red-600 font-bold">🚨 </span>}
                 {announcement.title}
                 {announcement.link_url && (
                   <a
