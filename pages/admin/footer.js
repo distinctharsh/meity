@@ -163,13 +163,14 @@ export default function FooterAdminPage() {
 
   return (
     <AdminLayout>
-      <div className="p-6 space-y-6">
-        <div className="bg-white rounded-lg shadow p-6">
+      <div className="space-y-6">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <h1 className="text-3xl font-bold text-gray-900">Footer Management</h1>
+          <p className="text-gray-600 mt-1">Manage footer links, social media URLs and copyright text</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="bg-white rounded-lg shadow p-6 space-y-6">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-6">
             {/* Section 1 */}
             <div>
               <h2 className="text-lg font-semibold text-gray-900 mb-3">

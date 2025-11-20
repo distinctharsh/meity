@@ -104,72 +104,105 @@ export default function AdminOurTeamPage() {
 
   return (
     <AdminLayout>
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Our Team</h1>
-        <button
-          onClick={() => { setShowForm(true); setEditing(null); }}
-          className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-blue-600 text-white hover:bg-blue-700 cursor-pointer"
-          aria-label="Add member"
-          title="Add member"
-        >
-          <span aria-hidden="true" className="material-symbols-outlined">add</span>
-        </button>
+      <div className="space-y-6">
+        {/* Header */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900">Our Team</h1>
+            <p className="text-gray-600 mt-1">Manage ministry team members, sections and contacts</p>
+          </div>
+          <button
+            onClick={() => { setShowForm(true); setEditing(null); }}
+            className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300 shadow cursor-pointer"
+            aria-label="Add member"
+            title="Add member"
+          >
+            <span aria-hidden="true" className="material-symbols-outlined">add</span>
+          </button>
+        </div>
+
+        {/* Loading / Error */}
+        {(loading || error) && (
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            {loading && <p className="text-gray-600">Loading...</p>}
+            {error && <p className="text-red-600 mt-1">{error}</p>}
+          </div>
+        )}
+
+        {/* Member Form */}
+        {showForm && (
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <h2 className="text-xl font-semibold mb-4">{editing ? 'Edit Member' : 'Add Member'}</h2>
+            <OurTeamForm
+              initial={editing}
+              onCancel={() => { setShowForm(false); setEditing(null); }}
+              onSaved={onSaved}
+            />
+          </div>
+        )}
+
+        {/* Members table */}
+        {!loading && !showForm && (
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+            <div className="px-6 py-4 border-b border-gray-200 bg-gray-50 flex items-center justify-between">
+              <h2 className="text-lg font-semibold text-gray-900">Members</h2>
+              <span className="text-sm text-gray-500">Total: {items.length}</span>
+            </div>
+            <div className="overflow-x-auto">
+              <table id="our-team-table" className="min-w-full divide-y divide-gray-200 table-fixed">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Designation</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-24">Active</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-24">Order</th>
+                    <th className="px-4 py-2 w-28"></th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {items.map((r) => (
+                    <tr key={r.id}>
+                      <td className="px-4 py-2 text-sm text-gray-700 overflow-hidden text-ellipsis whitespace-nowrap" title={r.name}>{r.name}</td>
+                      <td className="px-4 py-2 text-sm text-gray-700 overflow-hidden text-ellipsis whitespace-nowrap" title={r.designation}>{r.designation || '-'}</td>
+                      <td className="px-4 py-2 text-sm text-gray-700 whitespace-nowrap">{r.is_active ? 'Yes' : 'No'}</td>
+                      <td className="px-4 py-2 text-sm text-gray-700 whitespace-nowrap">{r.display_order}</td>
+                      <td className="px-4 py-2 text-sm text-right space-x-2 w-28 whitespace-nowrap">
+                        <button
+                          onClick={() => { setEditing(r); setShowForm(true); }}
+                          className="inline-flex items-center justify-center w-9 h-9 rounded-full border hover:bg-gray-50 cursor-pointer"
+                          aria-label="Edit"
+                          title="Edit"
+                        >
+                          <span aria-hidden="true" className="material-symbols-outlined">edit</span>
+                        </button>
+                        <button
+                          onClick={() => onDelete(r.id)}
+                          className="inline-flex items-center justify-center w-9 h-9 rounded-full border text-red-600 hover:bg-red-50 cursor-pointer"
+                          aria-label="Delete"
+                          title="Delete"
+                        >
+                          <span aria-hidden="true" className="material-symbols-outlined">delete</span>
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {/* Sections Manager */}
+        <SectionsManager sections={sections} reload={loadStruct} />
+
+        {/* People Manager */}
+        <PeopleManager
+          sections={sections}
+          people={people}
+          contacts={contacts}
+          reload={loadStruct}
+        />
       </div>
-
-      {loading && <p>Loading...</p>}
-      {error && <p className="text-red-600">{error}</p>}
-
-      {showForm && (
-        <div className="bg-white rounded-lg shadow p-4 border border-gray-300">
-          <h2 className="text-lg font-semibold mb-4">{editing ? 'Edit Member' : 'Add Member'}</h2>
-          <OurTeamForm initial={editing} onCancel={() => { setShowForm(false); setEditing(null); }} onSaved={onSaved} />
-        </div>
-      )}
-
-      {!loading && !showForm && (
-        <div className="overflow-x-auto bg-white rounded-lg shadow">
-          <table id="our-team-table" className="min-w-full divide-y divide-gray-200 table-fixed">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Designation</th>
-                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-24">Active</th>
-                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-24">Order</th>
-                <th className="px-4 py-2 w-28"></th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {items.map((r) => (
-                <tr key={r.id}>
-                  <td className="px-4 py-2 text-sm text-gray-700 overflow-hidden text-ellipsis whitespace-nowrap" title={r.name}>{r.name}</td>
-                  <td className="px-4 py-2 text-sm text-gray-700 overflow-hidden text-ellipsis whitespace-nowrap" title={r.designation}>{r.designation || '-'}</td>
-                  <td className="px-4 py-2 text-sm text-gray-700 whitespace-nowrap">{r.is_active ? 'Yes' : 'No'}</td>
-                  <td className="px-4 py-2 text-sm text-gray-700 whitespace-nowrap">{r.display_order}</td>
-                  <td className="px-4 py-2 text-sm text-right space-x-2 w-28 whitespace-nowrap">
-                    <button onClick={() => { setEditing(r); setShowForm(true); }} className="inline-flex items-center justify-center w-9 h-9 rounded-full border hover:bg-gray-50 cursor-pointer" aria-label="Edit" title="Edit">
-                      <span aria-hidden="true" className="material-symbols-outlined">edit</span>
-                    </button>
-                    <button onClick={() => onDelete(r.id)} className="inline-flex items-center justify-center w-9 h-9 rounded-full border text-red-600 hover:bg-red-50 cursor-pointer" aria-label="Delete" title="Delete">
-                      <span aria-hidden="true" className="material-symbols-outlined">delete</span>
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
-
-      {/* Sections Manager */}
-      <SectionsManager sections={sections} reload={loadStruct} />
-
-      {/* People Manager */}
-      <PeopleManager
-        sections={sections}
-        people={people}
-        contacts={contacts}
-        reload={loadStruct}
-      />
     </AdminLayout>
   );
 }

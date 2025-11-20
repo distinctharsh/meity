@@ -560,7 +560,7 @@ function getTextNodesToTranslate(rootNode) {
 
     // Check for valid DOM node
     if (!node || !node.nodeType) {
-      console.log(`Invalid node received: ${node}`);
+      // Silenced debug log: invalid node received
       return;
     }
 
@@ -603,8 +603,7 @@ function getTextNodesToTranslate(rootNode) {
       }
     }
   }
-
-  console.log("Starting traversal of root node:", rootNode);
+  // Silenced debug log: starting traversal of root node
   traverseNode(rootNode);
   return translatableContent;
 }
@@ -770,13 +769,11 @@ var handleFeedbackSubmission = async (rating, feedback, suggestedResponse) => {
       body: JSON.stringify(payload),
     });
     var data = await res.json();
-    console.log(data);
     showToast("Feedback Submitted Successfully");
     submitButton.textContent = "Submit";
     submitButton.disabled = false;
     handleCloseFeedbackModal();
   } catch (err) {
-    console.log(err);
     showToast("Error submitting feedback. Please try again later");
   }
 };
@@ -907,7 +904,6 @@ modal.innerHTML = `
 `;
 
 document.body.appendChild(modal);
-console.log(document.querySelector(".close-modal"), "close");
 
 // Close modal on click of close button
 document.querySelector(".close-modal").addEventListener("click", () => {
