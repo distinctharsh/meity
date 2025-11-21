@@ -51,6 +51,32 @@ export default async function handler(req, res) {
         return res.status(404).json({ message: 'Navigation item not found' });
       }
 
+      // Auto-sync: if an internal navigation link changed, update matching CMS page slug
+      const oldLink = current.link || '';
+      const newLink = next.link || '';
+      const isInternal = (url) => url && !/^https?:\/\//i.test(url);
+
+      try {
+        if (oldLink && newLink && oldLink !== newLink && isInternal(oldLink) && isInternal(newLink)) {
+          // Find page with old slug
+          const [pagesWithOld] = await pool.query('SELECT id FROM pages WHERE slug = ?', [oldLink]);
+          if (pagesWithOld && pagesWithOld.length > 0) {
+            const pageId = pagesWithOld[0].id;
+            // Ensure there is no different page already using the new slug
+            const [conflict] = await pool.query('SELECT id FROM pages WHERE slug = ? AND id <> ?', [newLink, pageId]);
+            if (!conflict || conflict.length === 0) {
+              await pool.query(
+                'UPDATE pages SET slug = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
+                [newLink, pageId]
+              );
+            }
+          }
+        }
+      } catch (syncErr) {
+        // Do not fail the main request if sync fails; just log for debugging
+        console.error('Nav->Page slug sync failed:', syncErr);
+      }
+
       res.status(200).json({ message: 'Navigation item updated successfully' });
     } catch (error) {
       console.error('Error updating navigation item:', error);
