@@ -9,13 +9,13 @@ const ClientScripts = () => {
     // Load jQuery if not already loaded
     if (!window.jQuery) {
       const jquery = document.createElement('script');
-      jquery.src = 'https://code.jquery.com/jquery-3.7.1.min.js';
+      jquery.src = '/vendor/js/jquery-3.7.1.min.js';
       jquery.async = true;
       jquery.onload = () => {
         // Load DataTables after jQuery is loaded
         if (!window.jQuery.fn.DataTable) {
           const datatables = document.createElement('script');
-          datatables.src = 'https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js';
+          datatables.src = '/vendor/js/jquery.dataTables.min.js';
           document.body.appendChild(datatables);
         }
       };
@@ -23,7 +23,7 @@ const ClientScripts = () => {
     } else if (!window.jQuery.fn.DataTable) {
       // If jQuery is loaded but DataTables is not
       const datatables = document.createElement('script');
-      datatables.src = 'https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js';
+      datatables.src = '/vendor/js/jquery.dataTables.min.js';
       document.body.appendChild(datatables);
     }
   }, []);

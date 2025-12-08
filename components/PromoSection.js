@@ -16,13 +16,13 @@ const PromoSection = () => {
             id: 1,
             imgSrc: "/images/promo/cyber-security-challenge.jpg",
             alt: "Cyber Security Challenge",
-            link: "https://innovateindia.mygov.in/cyber-security-grand-challenge/"
+            link: "#"
         },
         {
             id: 2,
             imgSrc: "/images/promo/digital-india-internship.jpg",
             alt: "Digital India Internship",
-            link: "https://intern.meity.gov.in/login"
+            link: "#"
         }
     ];
 
@@ -72,8 +72,8 @@ const PromoSection = () => {
                 {/* Video Section with gaps */}
                 <div className="relative w-full bg-blue-100 rounded-lg overflow-hidden md:h-full md:flex-1 md:mx-2 aspect-[16/9] md:aspect-auto">
                     <video
-                        src="https://playhls.media.nic.in/igot_vod/MyGov/NOV24/video/studentmustknow.mp4"
-                        poster="https://ccps.digifootprint.gov.in/static//uploads/2025/04/1788fb793d870f1ee49f02201be384e1.jpg"
+                        src="/media/promo-video.mp4"
+                        poster="/media/promo-poster.jpg"
                         className="w-full h-full object-cover"
                         controls
                         preload="auto"

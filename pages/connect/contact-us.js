@@ -55,7 +55,7 @@ export default function Contact() {
                       <p className="mb-0">+91-11-24361756</p>
                       <div className="flex justify-start items-start gap-2">
                         <p className="contact-email">
-                          <a className="no-underline" title="mailto:tulikapandey@meity.gov.in" href="mailto:tulikapandey@meity.gov.in">tulikapandey[at]Cabinet Secretariat[dot]gov[dot]in</a>
+                          <a className="no-underline" title="mailto:officer@nic.in" href="mailto:officer@nic.in">officer[at]Cabinet Secretariat[dot]gov[dot]in</a>
                         </p>
                       </div>
                     </div>
@@ -68,7 +68,7 @@ export default function Contact() {
                       <p className="mb-0">+91-11-24361756</p>
                       <div className="flex justify-start items-start gap-2">
                         <p className="contact-email">
-                          <a className="no-underline" title="mailto:tulikapandey@meity.gov.in" href="mailto:tulikapandey@meity.gov.in">tulikapandey[at]Cabinet Secretariat[dot]gov[dot]in</a>
+                          <a className="no-underline" title="mailto:officer@nic.in" href="mailto:officer@nic.in">officer[at]Cabinet Secretariat[dot]gov[dot]in</a>
                         </p>
                       </div>
                     </div>
@@ -94,7 +94,7 @@ export default function Contact() {
                       <p className="mb-0">+91-11-24361756</p>
                       <div className="flex justify-start items-start gap-2">
                         <p className="contact-email">
-                          <a className="no-underline" title="mailto:webmaster@meity.gov.in" href="mailto:webmaster@meity.gov.in">webmaster[at]Cabinet Secretariat[dot]gov[dot]in</a>
+                          <a className="no-underline" title="mailto:webmaster@officer@nic.in" href="mailto:webmaster@officer@nic.in">webmaster[at]Cabinet Secretariat[dot]gov[dot]in</a>
                         </p>
                       </div>
                     </div>
