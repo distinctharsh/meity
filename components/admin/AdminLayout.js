@@ -10,13 +10,11 @@ const ClientScripts = () => {
     if (!window.jQuery) {
       const jquery = document.createElement('script');
       jquery.src = '/vendor/js/jquery-3.7.1.min.js';
-      jquery.src = '/vendor/js/jquery-3.7.1.min.js';
       jquery.async = true;
       jquery.onload = () => {
         // Load DataTables after jQuery is loaded
         if (!window.jQuery.fn.DataTable) {
           const datatables = document.createElement('script');
-          datatables.src = '/vendor/js/jquery.dataTables.min.js';
           datatables.src = '/vendor/js/jquery.dataTables.min.js';
           document.body.appendChild(datatables);
         }
@@ -25,7 +23,6 @@ const ClientScripts = () => {
     } else if (!window.jQuery.fn.DataTable) {
       // If jQuery is loaded but DataTables is not
       const datatables = document.createElement('script');
-      datatables.src = '/vendor/js/jquery.dataTables.min.js';
       datatables.src = '/vendor/js/jquery.dataTables.min.js';
       document.body.appendChild(datatables);
     }
@@ -38,19 +35,6 @@ const AdminLayout = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [user, setUser] = useState(null);
   const router = useRouter();
-
-  const [expandedSections, setExpandedSections] = useState({
-    homepage: true,
-    content: true,
-    structure: true
-  });
-
-  const toggleSection = (section) => {
-    setExpandedSections(prev => ({
-      ...prev,
-      [section]: !prev[section]
-    }));
-  };
 
   const [expandedSections, setExpandedSections] = useState({
     homepage: true,
@@ -252,33 +236,6 @@ const AdminLayout = ({ children }) => {
                       ))}
                     </div>
                   </div>
-                {navigation.map((section, sectionIndex) => (
-                  <div key={section.name} className="mb-4">
-                    {section.name !== 'Dashboard' && (
-                      <h3 className="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
-                        {section.name}
-                      </h3>
-                    )}
-                    <div className="space-y-1">
-                      {section.items.map((item) => (
-                        <Link
-                          key={item.name}
-                          href={item.href}
-                          className={`${router.pathname === item.href
-                            ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-600'
-                            : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
-                            } group flex items-center px-3 py-3 text-sm font-medium rounded-lg transition-colors duration-200`}
-                          onClick={() => setSidebarOpen(false)}
-                        >
-                          <span className="mr-3 text-lg">{item.icon}</span>
-                          <div className="flex-1">
-                            <div className="font-medium">{item.name}</div>
-                            <div className="text-xs text-gray-500">{item.description}</div>
-                          </div>
-                        </Link>
-                      ))}
-                    </div>
-                  </div>
                 ))}
               </nav>
             </div>
@@ -321,33 +278,6 @@ const AdminLayout = ({ children }) => {
                     </div>
                   </div>
                 </div>
-                <nav className="mt-8 flex-1 px-4 space-y-4">
-                  {navigation.map((section) => (
-                    <div key={section.name} className="space-y-1">
-                      {section.name !== 'Dashboard' && (
-                        <h3 className="px-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                          {section.name}
-                        </h3>
-                      )}
-                      <div className="space-y-1">
-                        {section.items.map((item) => (
-                          <Link
-                            key={item.name}
-                            href={item.href}
-                            className={`${router.pathname === item.href
-                              ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-600'
-                              : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
-                              } group flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors duration-200`}
-                          >
-                            <span className="mr-4 text-lg">{item.icon}</span>
-                            <div className="flex-1">
-                              <div className="font-medium">{item.name}</div>
-                              <div className="text-xs text-gray-500">{item.description}</div>
-                            </div>
-                          </Link>
-                        ))}
-                      </div>
-                    </div>
                 <nav className="mt-8 flex-1 px-4 space-y-4">
                   {navigation.map((section) => (
                     <div key={section.name} className="space-y-1">
