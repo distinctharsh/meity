@@ -321,10 +321,10 @@ function PageForm({ onClose, onSaved, editing }) {
       document.head.appendChild(s);
     });
     try {
-      await loadScript('https://unpkg.com/prettier@2.8.8/standalone.js');
-      await loadScript('https://unpkg.com/prettier@2.8.8/parser-html.js');
-      await loadScript('https://unpkg.com/prettier@2.8.8/parser-postcss.js');
-      await loadScript('https://unpkg.com/prettier@2.8.8/parser-babel.js');
+      await loadScript('/vendor/prettier/standalone.js');
+      await loadScript('/vendor/prettier/parser-html.js');
+      await loadScript('/vendor/prettier/parser-postcss.js');
+      await loadScript('/vendor/prettier/parser-babel.js');
       return window.prettier;
     } catch (e) {
       console.warn('Prettier load failed', e);

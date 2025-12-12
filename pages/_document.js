@@ -24,8 +24,8 @@ class MyDocument extends Document {
     return (
       <Html lang={lang}>
         <Head>
-          <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
-          <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/jquery.dataTables.min.css" />
+          <link rel="stylesheet" href="/vendor/css/material-symbols.css" />
+          <link rel="stylesheet" href="/vendor/css/jquery.dataTables.min.css" />
         </Head>
         <body className="antialiased">
           <Main />

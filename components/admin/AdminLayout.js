@@ -9,13 +9,13 @@ const ClientScripts = () => {
     // Load jQuery if not already loaded
     if (!window.jQuery) {
       const jquery = document.createElement('script');
-      jquery.src = 'https://code.jquery.com/jquery-3.7.1.min.js';
+      jquery.src = '/vendor/js/jquery-3.7.1.min.js';
       jquery.async = true;
       jquery.onload = () => {
         // Load DataTables after jQuery is loaded
         if (!window.jQuery.fn.DataTable) {
           const datatables = document.createElement('script');
-          datatables.src = 'https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js';
+          datatables.src = '/vendor/js/jquery.dataTables.min.js';
           document.body.appendChild(datatables);
         }
       };
@@ -23,7 +23,7 @@ const ClientScripts = () => {
     } else if (!window.jQuery.fn.DataTable) {
       // If jQuery is loaded but DataTables is not
       const datatables = document.createElement('script');
-      datatables.src = 'https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js';
+      datatables.src = '/vendor/js/jquery.dataTables.min.js';
       document.body.appendChild(datatables);
     }
   }, []);
@@ -36,21 +36,60 @@ const AdminLayout = ({ children }) => {
   const [user, setUser] = useState(null);
   const router = useRouter();
 
+  const [expandedSections, setExpandedSections] = useState({
+    homepage: true,
+    content: true,
+    structure: true
+  });
+
+  const toggleSection = (section) => {
+    setExpandedSections(prev => ({
+      ...prev,
+      [section]: !prev[section]
+    }));
+  };
+
   const navigation = [
-    { name: 'Dashboard', href: '/admin', icon: '📊', description: 'Overview & Statistics' },
-    { name: 'Navigation', href: '/admin/navigation', icon: '🧭', description: 'Menu management' },
-    { name: 'Page Headers', href: '/admin/page-headers', icon: '🏷️', description: 'Hero & breadcrumb per-page' },
-    { name: 'Announcements', href: '/admin/announcements', icon: '📢', description: 'Site announcements' },
-    { name: 'Pages', href: '/admin/pages', icon: '📄', description: 'Create & manage pages' },
-    { name: 'Hero Slider', href: '/admin/slider', icon: '🖼️', description: 'Manage homepage slider' },
-    { name: 'Social Feed', href: '/admin/social', icon: '🔗', description: 'Manage social posts' },
-    { name: 'PM Quote', href: '/admin/pm-quotes', icon: '🗣️', description: 'Manage Prime Minister quote' },
-    { name: 'Offerings', href: '/admin/offerings', icon: '🎯', description: 'Manage Schemes, Vacancies, What\'s New' },
-    { name: 'Recent Documents', href: '/admin/recent-docs', icon: '📄', description: 'Manage recent documents' },
-    { name: 'Reports', href: '/admin/reports', icon: '📑', description: 'Manage Documents > Reports' },
-    { name: 'Our Team', href: '/admin/our-team', icon: '👥', description: 'Manage ministry team' },
-    { name: 'Directory', href: '/admin/directory', icon: '📇', description: 'Manage directory' },
-    { name: 'Footer', href: '/admin/footer', icon: '🔻', description: 'Manage site footer' },
+    { 
+      type: 'section', 
+      name: 'Dashboard', 
+      items: [
+        { name: 'Dashboard', href: '/admin', icon: '📊', description: 'Overview & Statistics' }
+      ] 
+    },
+    { 
+      type: 'section', 
+      name: 'Homepage', 
+      items: [
+        { name: 'Hero Slider', href: '/admin/slider', icon: '🖼️', description: 'Manage homepage slider' },
+        { name: 'PM Quote', href: '/admin/pm-quotes', icon: '🗣️', description: 'Manage Prime Minister quote' },
+        { name: 'Social Feed', href: '/admin/social', icon: '🔗', description: 'Manage social posts' },
+        { name: 'Announcements', href: '/admin/announcements', icon: '📢', description: 'Site announcements' },
+        { name: 'Offerings', href: '/admin/offerings', icon: '🎯', description: 'Manage Schemes, Vacancies, What\'s New' },
+        { name: 'Recent Documents', href: '/admin/recent-docs', icon: '📄', description: 'Manage recent documents' },
+        // { name: 'About Section', href: '/admin/about-section', icon: 'ℹ️', description: 'Manage About Us section' },
+        // { name: 'Promo Banners', href: '/admin/promo-section', icon: '🖼️', description: 'Manage promotional banners' }
+      ] 
+    },
+    { 
+      type: 'section', 
+      name: 'Content', 
+      items: [
+        { name: 'Pages', href: '/admin/pages', icon: '📄', description: 'Create & manage pages' },
+        { name: 'Our Team', href: '/admin/our-team', icon: '👥', description: 'Manage ministry team' },
+        { name: 'Directory', href: '/admin/directory', icon: '📇', description: 'Manage directory' },
+        { name: 'Reports', href: '/admin/reports', icon: '📑', description: 'Manage Documents > Reports' }
+      ] 
+    },
+    { 
+      type: 'section', 
+      name: 'Site Structure', 
+      items: [
+        { name: 'Navigation', href: '/admin/navigation', icon: '🧭', description: 'Menu management' },
+        { name: 'Page Headers', href: '/admin/page-headers', icon: '🏷️', description: 'Hero & breadcrumb per-page' },
+        { name: 'Footer', href: '/admin/footer', icon: '🔻', description: 'Manage site footer' }
+      ] 
+    }
   ];
 
   useEffect(() => {
@@ -170,22 +209,33 @@ const AdminLayout = ({ children }) => {
                 </div>
               </div>
               <nav className="mt-6 px-2 space-y-1">
-                {navigation.map((item) => (
-                  <Link
-                    key={item.name}
-                    href={item.href}
-                    className={`${router.pathname === item.href
-                      ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-600'
-                      : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
-                      } group flex items-center px-3 py-3 text-sm font-medium rounded-lg transition-colors duration-200`}
-                    onClick={() => setSidebarOpen(false)}
-                  >
-                    <span className="mr-3 text-lg">{item.icon}</span>
-                    <div className="flex-1">
-                      <div className="font-medium">{item.name}</div>
-                      <div className="text-xs text-gray-500">{item.description}</div>
+                {navigation.map((section, sectionIndex) => (
+                  <div key={section.name} className="mb-4">
+                    {section.name !== 'Dashboard' && (
+                      <h3 className="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
+                        {section.name}
+                      </h3>
+                    )}
+                    <div className="space-y-1">
+                      {section.items.map((item) => (
+                        <Link
+                          key={item.name}
+                          href={item.href}
+                          className={`${router.pathname === item.href
+                            ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-600'
+                            : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                            } group flex items-center px-3 py-3 text-sm font-medium rounded-lg transition-colors duration-200`}
+                          onClick={() => setSidebarOpen(false)}
+                        >
+                          <span className="mr-3 text-lg">{item.icon}</span>
+                          <div className="flex-1">
+                            <div className="font-medium">{item.name}</div>
+                            <div className="text-xs text-gray-500">{item.description}</div>
+                          </div>
+                        </Link>
+                      ))}
                     </div>
-                  </Link>
+                  </div>
                 ))}
               </nav>
             </div>
@@ -228,22 +278,33 @@ const AdminLayout = ({ children }) => {
                     </div>
                   </div>
                 </div>
-                <nav className="mt-8 flex-1 px-4 space-y-2">
-                  {navigation.map((item) => (
-                    <Link
-                      key={item.name}
-                      href={item.href}
-                      className={`${router.pathname === item.href
-                        ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-600'
-                        : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
-                        } group flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors duration-200`}
-                    >
-                      <span className="mr-4 text-lg">{item.icon}</span>
-                      <div className="flex-1">
-                        <div className="font-medium">{item.name}</div>
-                        <div className="text-xs text-gray-500">{item.description}</div>
+                <nav className="mt-8 flex-1 px-4 space-y-4">
+                  {navigation.map((section) => (
+                    <div key={section.name} className="space-y-1">
+                      {section.name !== 'Dashboard' && (
+                        <h3 className="px-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                          {section.name}
+                        </h3>
+                      )}
+                      <div className="space-y-1">
+                        {section.items.map((item) => (
+                          <Link
+                            key={item.name}
+                            href={item.href}
+                            className={`${router.pathname === item.href
+                              ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-600'
+                              : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                              } group flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors duration-200`}
+                          >
+                            <span className="mr-4 text-lg">{item.icon}</span>
+                            <div className="flex-1">
+                              <div className="font-medium">{item.name}</div>
+                              <div className="text-xs text-gray-500">{item.description}</div>
+                            </div>
+                          </Link>
+                        ))}
                       </div>
-                    </Link>
+                    </div>
                   ))}
                 </nav>
               </div>

@@ -22,7 +22,7 @@ export default function Home() {
         <AboutSection />
         <Offerings />
         <RecentDocs />
-        <SocialMediaFeed />
+        {/* <SocialMediaFeed /> */}
         <PromoSection />
         <PartnerLogoCarousel />
       </main>

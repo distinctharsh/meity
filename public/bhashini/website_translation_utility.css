@@ -1,5 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap');
-
+@import url('/vendor/css/notosans.css');
 
 /* .translate-plugin-popup-button {
     position: fixed;
@@ -157,6 +156,23 @@
 .bhashini-dropdown {
     position: fixed;
     z-index: 1000;
+}
+
+.bhashini-dropdown.is-offline .bhashini-dropdown-btn {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.bhashini-offline-badge {
+    margin-top: 0.35rem;
+    padding: 0.35rem 0.5rem;
+    border-radius: 0.35rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: #b45309;
+    background: rgba(251, 191, 36, 0.2);
+    border: 1px solid rgba(251, 191, 36, 0.6);
+    text-align: center;
 }
 
 .bhashini-dropdown-btn {
