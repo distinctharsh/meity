@@ -28,17 +28,27 @@ const personas = [
 const RecentDocs = () => {
   const [currentPersonaIndex, setCurrentPersonaIndex] = useState(0);
   const [docs, setDocs] = useState(fallbackRecent);
+  const [navLinks, setNavLinks] = useState(null);
 
   useEffect(() => {
     let mounted = true;
     (async () => {
       try {
-        const res = await fetch('/api/recent-docs');
+        const res = await fetch('/api/recent-doc-links');
         if (res.ok) {
           const data = await res.json();
-          if (mounted && Array.isArray(data) && data.length) setDocs(data);
+          if (mounted && Array.isArray(data)) setNavLinks(data);
         }
-      } catch {}
+      } catch (err) {
+        // fallback to recent-docs items if links endpoint fails
+        try {
+          const r2 = await fetch('/api/recent-docs');
+          if (r2.ok) {
+            const d2 = await r2.json();
+            if (mounted && Array.isArray(d2) && d2.length) setDocs(d2);
+          }
+        } catch { }
+      }
     })();
     return () => { mounted = false; };
   }, []);
@@ -63,23 +73,36 @@ const RecentDocs = () => {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-4 mt-2 w-full">
-            {docs.map((doc, i) => (
-              <div
-                key={i}
-                className="bg-white border border-[#0a2e60] rounded-[6px] px-5 py-4 shadow-[0_1px_3px_rgba(0,0,0,0.08)]"
-              >
-                <h4 className="text-[#0a2e60] text-base font-bold mb-2">
-                  {doc.link_url ? (
-                    <a href={doc.link_url} target="_blank" rel="noopener noreferrer" className="text-[#0a2e60] hover:underline">
-                      {doc.title}
+            {Array.isArray(navLinks) && navLinks.length > 0 ? (
+              navLinks.map((item, i) => (
+                <div key={i} className="bg-white border border-[#0a2e60] rounded-[6px] px-5 py-4 shadow-[0_1px_3px_rgba(0,0,0,0.08)]">
+                  <h4 className="text-[#0a2e60] text-base font-bold mb-2">
+                    <a href={item.link} className="text-[#0a2e60] hover:underline">
+                      {item.label}
                     </a>
-                  ) : (
-                    doc.title
-                  )}
-                </h4>
-                <p className="text-[0.95rem] text-black leading-snug font-normal">{doc.description}</p>
-              </div>
-            ))}
+                  </h4>
+                  <p className="text-[0.95rem] text-black leading-snug font-normal">Click to view recent documents for this section.</p>
+                </div>
+              ))
+            ) : (
+              docs.map((doc, i) => (
+                <div
+                  key={i}
+                  className="bg-white border border-[#0a2e60] rounded-[6px] px-5 py-4 shadow-[0_1px_3px_rgba(0,0,0,0.08)]"
+                >
+                  <h4 className="text-[#0a2e60] text-base font-bold mb-2">
+                    {doc.link_url ? (
+                      <a href={doc.link_url} target="_blank" rel="noopener noreferrer" className="text-[#0a2e60] hover:underline">
+                        {doc.title}
+                      </a>
+                    ) : (
+                      doc.title
+                    )}
+                  </h4>
+                  <p className="text-[0.95rem] text-black leading-snug font-normal">{doc.description}</p>
+                </div>
+              ))
+            )}
           </div>
 
           <div className="mt-4 flex justify-end w-full">
@@ -122,7 +145,7 @@ const RecentDocs = () => {
             {personas.map((_, idx) => (
               <button
                 key={idx}
-                aria-label={`Go to ${idx+1}`}
+                aria-label={`Go to ${idx + 1}`}
                 className={idx === currentPersonaIndex
                   ? 'w-[14px] h-[14px] rounded-[2px] bg-[#162f6a]'
                   : 'w-[12px] h-[12px] rounded-full bg-[#214ca8]'}
