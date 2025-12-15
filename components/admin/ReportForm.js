@@ -32,7 +32,7 @@ export default function ReportForm({ initial, onCancel, onSaved }) {
             const res = await fetch(`/api/admin/reports/${initial.id}/files`);
             const data = res.ok ? await res.json() : [];
             setAttachedFiles(data || []);
-          } catch {}
+          } catch { }
         })();
       }
     } else {
@@ -94,12 +94,14 @@ export default function ReportForm({ initial, onCancel, onSaved }) {
         await fetch(`/api/admin/reports/${reportId}/files`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ files: pendingAttach.map(f => ({
-            original_name: f.original_name || f.filename || 'file',
-            file_url: f.file_path,
-            file_type: f.file_type,
-            file_size: f.file_size,
-          })) })
+          body: JSON.stringify({
+            files: pendingAttach.map(f => ({
+              original_name: f.original_name || f.filename || 'file',
+              file_url: f.file_path,
+              file_type: f.file_type,
+              file_size: f.file_size,
+            }))
+          })
         });
       }
       await onSaved();
@@ -163,6 +165,46 @@ export default function ReportForm({ initial, onCancel, onSaved }) {
     }
   };
 
+  const removeAttachedFile = async (file, index) => {
+    setAttachedFiles(prev => prev.filter((_, i) => i !== index));
+    setPendingAttach(prev =>
+      prev.filter(p => p.file_path !== file.file_url)
+    );
+    if (file.id && file.id !== 0 && initial?.id) {
+      try {
+        await fetch(
+          `/api/admin/reports/${initial.id}/files/${file.id}`,
+          { method: 'DELETE' }
+        );
+      } catch (e) {
+        console.error('Failed to delete file', e);
+      }
+    }
+  };
+
+  const removeSingleFile = async () => {
+    const current = form.file_url;
+    // Clear UI immediately
+    setForm(p => ({ ...p, file_url: '' }));
+    setSelectedFiles([]);
+    // Remove from pending attachments buffer if present
+    setPendingAttach(prev => prev.filter(p => ((p.file_path || p.file_url) !== current)));
+
+    // If editing an existing report, update the report record to clear file_url
+    if (initial?.id) {
+      try {
+        await fetch(`/api/admin/reports/${initial.id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ file_url: null })
+        });
+      } catch (e) {
+        console.error('Failed to clear report file_url on server', e);
+      }
+    }
+  };
+
+
   return (
     <form onSubmit={submit} className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -186,6 +228,12 @@ export default function ReportForm({ initial, onCancel, onSaved }) {
           <div className="md:col-span-2">
             <label className="block text-sm font-medium text-gray-700">File/Link URL</label>
             <input value={form.file_url} onChange={(e) => update('file_url', e.target.value)} className="mt-1 w-full border rounded px-3 py-2" placeholder="/uploads/report.pdf or https://..." />
+            {form.file_url ? (
+              <div className="mt-2 flex items-center justify-between">
+                <a href={form.file_url} target="_blank" rel="noreferrer" className="text-xs text-blue-600 underline truncate">{form.file_url}</a>
+                <button type="button" onClick={removeSingleFile} className="text-red-600 hover:text-red-800 text-sm font-bold">✕</button>
+              </div>
+            ) : null}
           </div>
         )}
 
@@ -207,10 +255,35 @@ export default function ReportForm({ initial, onCancel, onSaved }) {
             ) : (
               <ul className="text-sm text-gray-700 space-y-1">
                 {attachedFiles.map((f, idx) => (
-                  <li key={idx} className="flex items-center justify-between border rounded px-2 py-1">
-                    <span className="truncate mr-2">{f.original_name || f.file_url}</span>
-                    <a href={f.file_url} target="_blank" rel="noreferrer" className="text-blue-600 underline text-xs">View</a>
+                  <li
+                    key={idx}
+                    className="flex items-center justify-between border rounded px-2 py-1"
+                  >
+                    <span className="truncate mr-2">
+                      {f.original_name || f.file_url}
+                    </span>
+
+                    <div className="flex items-center gap-2">
+                      <a
+                        href={f.file_url}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-blue-600 underline text-xs"
+                      >
+                        View
+                      </a>
+
+                      <button
+                        type="button"
+                        onClick={() => removeAttachedFile(f, idx)}
+                        className="text-red-600 hover:text-red-800 text-sm font-bold"
+                        title="Remove"
+                      >
+                        ✕
+                      </button>
+                    </div>
                   </li>
+
                 ))}
               </ul>
             )}
