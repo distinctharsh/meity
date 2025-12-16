@@ -66,7 +66,7 @@ const AdminLayout = ({ children }) => {
         { name: 'Social Feed', href: '/admin/social', icon: '🔗', description: 'Manage social posts' },
         { name: 'Announcements', href: '/admin/announcements', icon: '📢', description: 'Site announcements' },
         { name: 'Offerings', href: '/admin/offerings', icon: '🎯', description: 'Manage Schemes, Vacancies, What\'s New' },
-        { name: 'Recent Documents', href: '/admin/recent-docs', icon: '📄', description: 'Manage recent documents' },
+        // { name: 'Recent Documents', href: '/admin/recent-docs', icon: '📄', description: 'Manage recent documents' },
         // { name: 'About Section', href: '/admin/about-section', icon: 'ℹ️', description: 'Manage About Us section' },
         // { name: 'Promo Banners', href: '/admin/promo-section', icon: '🖼️', description: 'Manage promotional banners' }
       ] 

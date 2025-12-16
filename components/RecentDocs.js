@@ -4,10 +4,7 @@ import Image from 'next/image';
 import Document from './icons/Document';
 
 const fallbackRecent = [
-  { title: "Orders And Notices", description: "Observance of Vigilance Awareness Week-2025- Digital Initiatives-reg" },
-  { title: "Act And Policies", description: "Promotion and Regulation of Online Gaming Act, 2025 and its Corrigenda" },
-  { title: "Gazettes Notifications", description: "Notification (Extraordinary) regarding declaration of certain computer resources relating to identified Critical Information Infrastructures (CIIs) of the Delhi International Airport Ltd (DIAL) and the computer resources of their associated dependencies as protected systems" },
-  { title: "Gazettes Notifications", description: "Notification (Extraordinary) regarding declaration of certain computer resources relating to identified Critical Information Infrastructures (CIIs) of the GMR Hyderabad International Airport Ltd (GHIAL) and the computer resources of their associated dependencies as protected systems" },
+  { title: "No recent documents available", description: "Check back later for updates" }
 ];
 
 const importantLinks = [
@@ -29,6 +26,7 @@ const RecentDocs = () => {
   const [currentPersonaIndex, setCurrentPersonaIndex] = useState(0);
   const [docs, setDocs] = useState(fallbackRecent);
   const [navLinks, setNavLinks] = useState(null);
+   const [recentDocs, setRecentDocs] = useState([]);
 
   useEffect(() => {
     let mounted = true;
@@ -53,6 +51,31 @@ const RecentDocs = () => {
     return () => { mounted = false; };
   }, []);
 
+
+
+  useEffect(() => {
+    const fetchRecentDocs = async () => {
+      try {
+        const response = await fetch('/api/recent-reports');
+        if (response.ok) {
+          const data = await response.json();
+          if (Array.isArray(data) && data.length > 0) {
+            setRecentDocs(data);
+          } else {
+            setRecentDocs(fallbackRecent);
+          }
+        } else {
+          setRecentDocs(fallbackRecent);
+        }
+      } catch (error) {
+        console.error('Error fetching recent documents:', error);
+        setRecentDocs(fallbackRecent);
+      }
+    };
+    fetchRecentDocs();
+  }, []);
+
+
   const prevPersona = () => {
     setCurrentPersonaIndex((prev) => (prev === 0 ? personas.length - 1 : prev - 1));
   };
@@ -73,36 +96,30 @@ const RecentDocs = () => {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-4 mt-2 w-full">
-            {Array.isArray(navLinks) && navLinks.length > 0 ? (
-              navLinks.map((item, i) => (
-                <div key={i} className="bg-white border border-[#0a2e60] rounded-[6px] px-5 py-4 shadow-[0_1px_3px_rgba(0,0,0,0.08)]">
-                  <h4 className="text-[#0a2e60] text-base font-bold mb-2">
-                    <a href={item.link} className="text-[#0a2e60] hover:underline">
-                      {item.label}
+             {recentDocs.map((doc, index) => (
+              <div
+                key={index}
+                className="bg-white border border-[#0a2e60] rounded-[6px] px-5 py-4 shadow-[0_1px_3px_rgba(0,0,0,0.08)]"
+              >
+                <h4 className="text-[#0a2e60] text-base font-bold mb-2">
+                  {doc.nav_link ? (
+                    <a 
+                      href={doc.nav_link} 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="text-[#0a2e60] hover:underline"
+                    >
+                      {doc.nav_name}
                     </a>
-                  </h4>
-                  <p className="text-[0.95rem] text-black leading-snug font-normal">Click to view recent documents for this section.</p>
-                </div>
-              ))
-            ) : (
-              docs.map((doc, i) => (
-                <div
-                  key={i}
-                  className="bg-white border border-[#0a2e60] rounded-[6px] px-5 py-4 shadow-[0_1px_3px_rgba(0,0,0,0.08)]"
-                >
-                  <h4 className="text-[#0a2e60] text-base font-bold mb-2">
-                    {doc.link_url ? (
-                      <a href={doc.link_url} target="_blank" rel="noopener noreferrer" className="text-[#0a2e60] hover:underline">
-                        {doc.title}
-                      </a>
-                    ) : (
-                      doc.title
-                    )}
-                  </h4>
-                  <p className="text-[0.95rem] text-black leading-snug font-normal">{doc.description}</p>
-                </div>
-              ))
-            )}
+                  ) : (
+                    doc.nav_name
+                  )}
+                </h4>
+                <p className="text-[0.95rem] text-black leading-snug font-normal">
+                  { doc.title || 'General Document'}
+                </p>
+              </div>
+            ))}
           </div>
 
           <div className="mt-4 flex justify-end w-full">
@@ -114,7 +131,7 @@ const RecentDocs = () => {
         </div>
 
         {/* User Personas */}
-        <div className="flex flex-col items-center justify-center w-full md:flex-[1] md:mt-0">
+        {/* <div className="flex flex-col items-center justify-center w-full md:flex-[1] md:mt-0">
           <div className="flex items-center mb-4">
             <img src="/images/icons/user-personas.svg" alt="User Personas" />
             <h3 className="text-[#162f6a] text-[1.4rem] font-bold leading-none tracking-tight m-0">Explore User Personas</h3>
@@ -158,7 +175,7 @@ const RecentDocs = () => {
               onClick={nextPersona}
             >&gt;</button>
           </div>
-        </div>
+        </div> */}
 
         {/* Important Links */}
         <div className="flex flex-col items-start w-full md:flex-[1] md:ml-[20px]">
