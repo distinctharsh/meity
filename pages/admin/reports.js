@@ -105,6 +105,8 @@ export default function AdminReportsPage() {
                 <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-20">Type</th>
                 <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-20">Year</th>
                 <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-24">Size</th>
+                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-48">Nav Name</th>
+                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-20">Nav ID</th>
                 <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-20">Order</th>
                 <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-20">Active</th>
                 <th className="px-4 py-2 w-28"></th>
@@ -118,6 +120,8 @@ export default function AdminReportsPage() {
                   <td className="px-4 py-2 text-sm text-gray-700 capitalize whitespace-nowrap">{r.type}</td>
                   <td className="px-4 py-2 text-sm text-gray-700 whitespace-nowrap">{r.year || '-'}</td>
                   <td className="px-4 py-2 text-sm text-gray-700 whitespace-nowrap">{r.size || '-'}</td>
+                  <td className="px-4 py-2 text-sm text-gray-700 whitespace-nowrap">{r.nav_name || r.nav_link || '-'}</td>
+                  <td className="px-4 py-2 text-sm text-gray-700 whitespace-nowrap">{(typeof r.nav_item_id !== 'undefined' && r.nav_item_id !== null) ? r.nav_item_id : '-'}</td>
                   <td className="px-4 py-2 text-sm text-gray-700 whitespace-nowrap">{r.display_order}</td>
                   <td className="px-4 py-2 text-sm text-gray-700 whitespace-nowrap">{r.is_active ? 'Yes' : 'No'}</td>
                   <td className="px-4 py-2 text-sm text-right space-x-2 w-28 whitespace-nowrap">

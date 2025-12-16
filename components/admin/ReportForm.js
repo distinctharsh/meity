@@ -6,9 +6,12 @@ export default function ReportForm({ initial, onCancel, onSaved }) {
     type: 'pdf',
     year: '',
     file_url: '',
+    nav_item_id: null,
+    nav_link: '',
     display_order: '',
     is_active: true,
   });
+  const [navOptions, setNavOptions] = useState([]);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState([]);
@@ -22,6 +25,8 @@ export default function ReportForm({ initial, onCancel, onSaved }) {
         type: initial.type || 'pdf',
         year: initial.year || '',
         file_url: initial.file_url || '',
+        nav_item_id: initial.nav_item_id ?? null,
+        nav_link: initial.nav_link || '',
         display_order: initial.display_order ?? '',
         is_active: !!initial.is_active,
       });
@@ -40,6 +45,59 @@ export default function ReportForm({ initial, onCancel, onSaved }) {
       setForm((p) => ({ ...p, year: String(y) }));
     }
   }, [initial]);
+
+  // Load navigation options for nav_link selector
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        const res = await fetch('/api/admin/navigation');
+        if (!res.ok) return;
+        const items = await res.json();
+
+        // Build byId map to walk parent chain
+        const byId = new Map(items.map(i => [i.id, i]));
+        const labelFor = (it) => {
+          let label = it.name || '';
+          let p = it.parent_id ? byId.get(it.parent_id) : null;
+          const parts = [label];
+          while (p) {
+            parts.unshift(p.name || '');
+            p = p.parent_id ? byId.get(p.parent_id) : null;
+          }
+          return parts.filter(Boolean).join(' / ');
+        };
+
+        // Find Documents parent by link '/documents' or name 'Documents'
+        const documentsParent = items.find(it => (it.link === '/documents' || String(it.name).toLowerCase() === 'documents'));
+        let filtered = [];
+        if (documentsParent) {
+          // Only immediate children of Documents
+          filtered = items.filter(it => it.parent_id === documentsParent.id && it.is_active !== false && it.link && it.link.trim() !== '');
+        } else {
+          // Fallback: any active nav items whose link begins with /documents
+          filtered = items.filter(it => it.is_active !== false && it.link && String(it.link).startsWith('/documents'));
+        }
+
+        const options = filtered.map(it => ({
+          id: it.id,
+          value: it.id,
+          link: it.link,
+          label: `${labelFor(it)} — ${it.link.startsWith('/') ? it.link : '/' + it.link}`
+        }));
+        if (mounted) setNavOptions(options);
+
+        // If editing an existing item that only has nav_link, try to resolve to nav_item_id
+        if (initial && initial.nav_item_id == null && initial.nav_link) {
+          const match = options.find(o => (o.link === initial.nav_link) || ('/' + String(o.link).replace(/^\//, '') === initial.nav_link) || (o.link === '/' + String(initial.nav_link).replace(/^\//, '')));
+          if (match) setForm(p => ({ ...p, nav_item_id: match.id }));
+        }
+      } catch (e) {
+        console.error('Load navigation for report form failed', e);
+      }
+    })();
+    return () => { mounted = false; };
+  }, []);
 
   const update = (k, v) => {
     setForm((p) => {
@@ -64,6 +122,10 @@ export default function ReportForm({ initial, onCancel, onSaved }) {
       // Basic guard: need title, and for non-group a file_url or a non-empty external link
       if (!form.title) {
         alert('Title is required');
+        return;
+      }
+      if (!form.nav_item_id) {
+        alert('Please select a navigation link');
         return;
       }
       if (form.type !== 'group' && !form.file_url) {
@@ -223,6 +285,22 @@ export default function ReportForm({ initial, onCancel, onSaved }) {
         <div>
           <label className="block text-sm font-medium text-gray-700">Year</label>
           <input type="number" value={form.year} onChange={(e) => update('year', e.target.value)} className="mt-1 w-full border rounded px-3 py-2" />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Nav Link <span className="text-red-500">*</span>
+          </label>
+          <select 
+            value={form.nav_item_id || ''} 
+            onChange={(e) => update('nav_item_id', e.target.value ? Number(e.target.value) : null)} 
+            className="mt-1 w-full border rounded px-3 py-2"
+            required
+          >
+            <option value="">Select navigation link</option>
+            {navOptions.map(opt => (
+              <option key={opt.id} value={opt.value}>{opt.label}</option>
+            ))}
+          </select>
         </div>
         {form.type !== 'group' && (
           <div className="md:col-span-2">

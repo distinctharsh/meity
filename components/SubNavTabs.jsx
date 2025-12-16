@@ -32,9 +32,23 @@ export default function SubNavTabs({ pagePath }) {
     return () => { mounted = false; };
   }, [effectivePath]);
 
-  const isActive = (href) => {
-    if (!href) return false;
-    return router.asPath === href || router.asPath.startsWith(href + '/');
+  const isActiveItem = (it) => {
+    if (!it) return false;
+    const href = it.href || '';
+    // For documents, match by query param nav_item or nav
+    if (href.startsWith('/documents')) {
+      if (router.pathname === '/documents') {
+        const qNavItem = router.query?.nav_item;
+        const qNav = router.query?.nav;
+        if (qNavItem && String(qNavItem) === String(it.id)) return true;
+        if (qNav && decodeURIComponent(String(qNav)) === href) return true;
+        // Also consider default path matching when no query present
+        return router.asPath.split('?')[0] === '/documents' && !qNav && !qNavItem && href === '/documents';
+      }
+    }
+    const h = String(href);
+    const cur = String(router.asPath || '');
+    return cur === h || cur.startsWith(h + '/');
   };
 
   if (loading) return null;
@@ -58,29 +72,38 @@ export default function SubNavTabs({ pagePath }) {
       <section className="bg-white" style={{ marginTop: '-10px', position: 'absolute', width: '100%' }}>
         <div className="gi-container">
           <div className="bg-[#162f6a] rounded-xl px-6 py-4 flex items-center space-x-6 overflow-x-auto" style={{ marginTop: '-40px', position: 'relative', zIndex: 10 }}>
-          {items.map((it) => (
-            isActive(it.href) ? (
-              <span
-                key={it.href || it.id}
-                className={"text-white font-bold underline relative pl-3 dot-before"}
-                style={{ color: '#fff', fontSize: '1.3rem', fontWeight: 800 }}
-              >
-                {it.label}
-              </span>
-            ) : (
-              <Link
-                key={it.href || it.id}
-                href={it.href}
-                className={"text-white/80 hover:text-white whitespace-nowrap"}
-                style={{ color: '#fff', fontSize: '1.3rem', fontWeight: 400 }}
-              >
-                {it.label}
-              </Link>
-            )
-          ))}
+            {items.map((it) => {
+              // Build a single documents page link when item belongs to /documents
+              let displayHref = it.href;
+              if (it.href && String(it.href).startsWith('/documents')) {
+                if (it.id) {
+                  displayHref = `/documents?nav_item=${encodeURIComponent(String(it.id))}`;
+                } else {
+                  displayHref = `/documents?nav=${encodeURIComponent(String(it.href))}`;
+                }
+              }
+              return isActiveItem(it) ? (
+                <span
+                  key={displayHref || it.id}
+                  className={"text-white font-bold underline relative pl-3 dot-before"}
+                  style={{ color: '#fff', fontSize: '1.3rem', fontWeight: 800 }}
+                >
+                  {it.label}
+                </span>
+              ) : (
+                <Link
+                  key={displayHref || it.id}
+                  href={displayHref}
+                  className={"text-white/80 hover:text-white whitespace-nowrap"}
+                  style={{ color: '#fff', fontSize: '1.3rem', fontWeight: 400 }}
+                >
+                  {it.label}
+                </Link>
+              );
+            })}
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
     </>
   );
 }
@@ -112,7 +135,7 @@ function deriveFromNavigation(nav, path) {
     const currentNode = findByLink(nav, path);
     if (currentNode) {
       // find parent
-      const parentOf = (nodes, target, parent=null) => {
+      const parentOf = (nodes, target, parent = null) => {
         for (const n of nodes) {
           if (n === target) return parent;
           if (n.children && n.children.length) {
@@ -133,7 +156,7 @@ function deriveFromNavigation(nav, path) {
       const href = c.link || c.href || '#';
       const raw = c.name || c.label || c.title || '';
       const label = raw && String(raw).trim().length ? raw : formatLabelFromHref(href);
-      return { label, href };
+      return { label, href, id: c.id };
     });
   return tabs;
 }

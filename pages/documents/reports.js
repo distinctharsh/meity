@@ -1,9 +1,11 @@
 import Footer from "@/components/Footer";
 import { useEffect, useMemo, useState } from "react";
+import { useRouter } from 'next/router';
 import Image from "next/image";
 import SubNavTabs from "@/components/SubNavTabs";
 import PageHeader from "@/components/PageHeader";
 export default function Reports() {
+  const router = useRouter();
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("");
   const [sort, setSort] = useState("Newest");
@@ -19,7 +21,8 @@ export default function Reports() {
     async function load() {
       try {
         setLoading(true);
-        const res = await fetch('/api/documents/reports');
+        const nav = (router && router.asPath) || (typeof window !== 'undefined' ? window.location.pathname : '/documents/reports');
+        const res = await fetch('/api/documents/reports?nav=' + encodeURIComponent(nav));
         if (!res.ok) throw new Error('Failed to load reports');
         const data = await res.json();
         // Normalize to existing UI shape
@@ -42,7 +45,7 @@ export default function Reports() {
     }
     load();
     return () => { mounted = false; }
-  }, []);
+  }, [router?.asPath]);
 
   const filtered = useMemo(() => {
     let list = items;

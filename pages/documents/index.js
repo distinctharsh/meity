@@ -5,7 +5,7 @@ import Image from "next/image";
 import SubNavTabs from "@/components/SubNavTabs";
 import PageHeader from "@/components/PageHeader";
 
-export default function Documents({ initial, onCancel, onSaved }) {
+export default function Reports() {
   const router = useRouter();
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("");
@@ -96,7 +96,7 @@ export default function Documents({ initial, onCancel, onSaved }) {
     <>
       <main id="main">
         {/* Dynamic Page Header */}
-        <PageHeader pagePath="/documents/" />
+        <PageHeader pagePath="/documents/reports" />
 
         {/* Tabs (DB-driven for current route) */}
         <SubNavTabs />

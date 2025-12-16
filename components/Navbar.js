@@ -63,12 +63,23 @@ export default function NewNavbar() {
 
         // Transform API tree into component's expected shape
         const transform = (items) =>
-          items.map((it) => ({
-            text: it.text,
-            href: it.href || '#',
-            dropdown: (it.children && it.children.length > 0) || false,
-            items: it.children ? transform(it.children) : [],
-          }));
+          items.map((it) => {
+            // Preserve id so we can build query-based links for /documents
+            const rawHref = it.href || '#';
+            let href = rawHref;
+            if (typeof rawHref === 'string' && rawHref.startsWith('/documents')) {
+              // Prefer nav_item query param to route everything to the unified documents page
+              href = `/documents?nav_item=${encodeURIComponent(String(it.id))}`;
+            }
+            return {
+              id: it.id,
+              text: it.text,
+              href,
+              rawHref: rawHref,
+              dropdown: (it.children && it.children.length > 0) || false,
+              items: it.children ? transform(it.children) : [],
+            };
+          });
 
         const prepared = transform(data);
         if (isMounted) setNavItems(prepared);
@@ -95,6 +106,24 @@ export default function NewNavbar() {
   // Determine if a nav item should be marked active for current route
   const isActive = (href) => {
     if (!href || href === '#') return false;
+    // If this is a documents-style link with query, compare pathname and query
+    try {
+      const u = new URL(href, 'http://example.local');
+      if (u.pathname === '/documents') {
+        if (router.pathname !== '/documents') return false;
+        const qNavItem = router.query?.nav_item;
+        if (u.searchParams.has('nav_item')) {
+          return String(u.searchParams.get('nav_item')) === String(qNavItem || '');
+        }
+        if (u.searchParams.has('nav')) {
+          return String(decodeURIComponent(String(router.query?.nav || ''))) === String(u.searchParams.get('nav'));
+        }
+        // if no nav params, active when on /documents
+        return router.pathname === '/documents';
+      }
+    } catch (e) {
+      // fall through to string comparison
+    }
     if (href === '/') return router.pathname === '/';
     return router.pathname === href || router.pathname.startsWith(href + '/');
   };
