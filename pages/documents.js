@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import Image from "next/image";
 import SubNavTabs from "@/components/SubNavTabs";
 import PageHeader from "@/components/PageHeader";
+import Link from 'next/link';
 
 export default function Documents({ initial, onCancel, onSaved }) {
   const router = useRouter();
@@ -189,10 +190,27 @@ export default function Documents({ initial, onCancel, onSaved }) {
                         <span className="text-[10px] px-1.5 py-0.5 rounded bg-gray-100">PDF</span>
                         <small className="text-gray-700">{item.size}</small>
                       </div>
-                    ) : <span />}
+                    ) : <span />}   
                     <a href={(item.type === 'group' ? item.first_file_url : item.file_url) || '#'} target={(item.type === 'group' ? item.first_file_url : item.file_url) ? '_blank' : undefined} rel={(item.type === 'group' ? item.first_file_url : item.file_url) ? 'noreferrer' : undefined} className="inline-flex items-center gap-2 uppercase text-sm px-3 py-1.5 rounded bg-blue-100 text-blue-800 hover:bg-blue-200">
-                      <span aria-hidden="true" className="material-symbols-outlined">visibility</span>
-                      {item.type === 'group' ? 'View All' : 'View'}
+                      {item.type === 'group' ? (
+                        <Link 
+                          href={`/documents/${encodeURIComponent(item.title.toLowerCase().replace(/\s+/g, '-'))}/${item.id}`}
+                          className="inline-flex items-center gap-2 uppercase text-sm px-3 py-1.5 rounded bg-blue-100 text-blue-800 hover:bg-blue-200"
+                        >
+                          <span aria-hidden="true" className="material-symbols-outlined">visibility</span>
+                          View All
+                        </Link>
+                      ) : (
+                        <a 
+                          href={item.file_url || '#'} 
+                          target={item.file_url ? '_blank' : undefined} 
+                          rel={item.file_url ? 'noreferrer' : undefined} 
+                          className="inline-flex items-center gap-2 uppercase text-sm px-3 py-1.5 rounded bg-blue-100 text-blue-800 hover:bg-blue-200"
+                        >
+                          <span aria-hidden="true" className="material-symbols-outlined">visibility</span>
+                          View
+                        </a>
+                      )}
                     </a>
                   </div>
                 </div>
