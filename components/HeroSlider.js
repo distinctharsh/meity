@@ -138,7 +138,7 @@ const HeroSlider = () => {
               <img
                 src={s.image_url}
                 alt={`Slide ${index + 1}`}
-                className="w-full h-full object-contain"
+                className="w-full h-full object-cover"
               />
               {/* No overlay CTA since link_text is removed. Slide remains clickable if link_url exists. */}
             </>

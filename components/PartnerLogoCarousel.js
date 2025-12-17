@@ -85,12 +85,12 @@ const PartnerLogoCarousel = () => {
 
   return (
     <div className="w-full bg-gray-100 py-6 sm:py-8">
-      <div className="gi-container">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6">
         <div className="relative group">
           {/* Scroll Container */}
           <div
             ref={containerRef}
-            className="flex overflow-x-auto px-3 sm:px-4 gap-0 sm:gap-4 md:gap-6 snap-x snap-mandatory scrollbar-hide"
+            className="flex overflow-x-auto px-2 gap-2 sm:gap-4 md:gap-6 snap-x snap-mandatory scrollbar-hide justify-center"
             role="region"
             aria-label="Partner logos"
             onMouseEnter={() => setIsInteracting(true)}
@@ -105,7 +105,7 @@ const PartnerLogoCarousel = () => {
             {logos.map((logo, index) => (
               <div
                 key={index}
-                className="flex-shrink-0 bg-white rounded-xl shadow-lg border border-gray-200 flex items-center justify-center relative snap-start w-1/2 h-20 sm:w-36 sm:h-20 md:w-40 md:h-24 p-2 sm:p-3"
+                className="flex-shrink-0 bg-white rounded-xl shadow-lg border border-gray-200 flex items-center justify-center relative snap-start w-1/2 h-20 sm:w-1/4 md:w-1/5 lg:w-[18%] p-2 sm:p-3"
               >
                 <Image
                   src={logo}
