@@ -23,17 +23,48 @@ const PartnerLogoCarousel = () => {
 
   const scroll = (direction) => {
     if (!containerRef.current) return;
-    // Dynamic scroll amount for better mobile behavior
-    const base = containerRef.current.clientWidth || 320;
-    const scrollAmount = Math.max(120, Math.floor(base * 0.6));
-    containerRef.current.scrollBy({
-      left: direction === "left" ? -scrollAmount : scrollAmount,
-      behavior: "smooth",
+    
+    const container = containerRef.current;
+    const itemWidth = container.firstChild?.offsetWidth || 150; // Width of each logo item
+    const scrollAmount = itemWidth + 16; // 16px for gap between items
+    const maxScroll = container.scrollWidth - container.clientWidth;
+    const isScrollingRight = direction === 'right';
+    
+    // Calculate new scroll position
+    let newScrollPos;
+    if (isScrollingRight) {
+      // If near the end, wrap around to the start
+      if (container.scrollLeft + container.clientWidth >= container.scrollWidth - 5) {
+        newScrollPos = 0;
+      } else {
+        newScrollPos = Math.min(container.scrollLeft + scrollAmount, maxScroll);
+      }
+    } else {
+      // If near the start, wrap around to the end
+      if (container.scrollLeft <= 5) {
+        newScrollPos = maxScroll;
+      } else {
+        newScrollPos = Math.max(0, container.scrollLeft - scrollAmount);
+      }
+    }
+    
+    // Apply the scroll with smooth behavior
+    container.scrollTo({
+      left: newScrollPos,
+      behavior: 'smooth'
     });
+    
+    // If we wrapped around, we need to handle the visual transition
+    if ((isScrollingRight && newScrollPos === 0) || (!isScrollingRight && newScrollPos === maxScroll)) {
+      // Force a reflow to ensure the scroll position is updated
+      void container.offsetHeight;
+    }
   };
 
-  // Auto-rotate functionality - continuous motion, pauses on interaction
+  // Auto-rotate functionality - continuous circular motion, pauses on interaction
   useEffect(() => {
+    if (!containerRef.current) return;
+    
     // Start interval
     autoRotateRef.current = setInterval(() => {
       if (!isInteracting) {
@@ -59,13 +90,17 @@ const PartnerLogoCarousel = () => {
           {/* Scroll Container */}
           <div
             ref={containerRef}
-            className="flex overflow-x-auto scrollbar-hide px-3 sm:px-4 gap-0 sm:gap-4 md:gap-6 snap-x snap-mandatory"
+            className="flex overflow-x-auto px-3 sm:px-4 gap-0 sm:gap-4 md:gap-6 snap-x snap-mandatory scrollbar-hide"
             role="region"
             aria-label="Partner logos"
             onMouseEnter={() => setIsInteracting(true)}
             onMouseLeave={() => setIsInteracting(false)}
             onTouchStart={() => setIsInteracting(true)}
             onTouchEnd={() => setIsInteracting(false)}
+            style={{
+              msOverflowStyle: 'none',  // IE and Edge
+              scrollbarWidth: 'none',  // Firefox
+            }}
           >
             {logos.map((logo, index) => (
               <div
