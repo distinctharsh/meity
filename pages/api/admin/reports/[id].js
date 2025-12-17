@@ -14,6 +14,10 @@ export default async function handler(req, res) {
       const selectCols = ['id', 'title', 'type', 'year', 'size', 'file_url'];
       if (hasNavLink) selectCols.push('nav_link');
       if (hasNavItem) selectCols.push('nav_item_id');
+      // include is_archived when present
+      const [colsArchived] = await pool.query('SHOW COLUMNS FROM reports LIKE ?', ['is_archived']);
+      const hasArchived = Array.isArray(colsArchived) && colsArchived.length > 0;
+      if (hasArchived) selectCols.push('is_archived');
       selectCols.push('item_count', 'display_order', 'is_active', 'created_at', 'updated_at');
       const select = `SELECT ${selectCols.join(', ')} FROM reports WHERE id = ?`;
       const [rows] = await pool.query(select, [id]);
@@ -25,7 +29,7 @@ export default async function handler(req, res) {
     }
   } else if (req.method === 'PUT') {
     try {
-      const { title, type, year, size, file_url, nav_item_id, nav_link, item_count, display_order, is_active } = req.body || {};
+      const { title, type, year, size, file_url, nav_item_id, nav_link, item_count, display_order, is_active, is_archived } = req.body || {};
       const fields = [];
       const values = [];
       if (typeof title !== 'undefined') { fields.push('title = ?'); values.push(title); }
@@ -36,13 +40,16 @@ export default async function handler(req, res) {
       // Only include nav_item_id/nav_link assignment if the columns exist
       const [cols2] = await pool.query('SHOW COLUMNS FROM reports LIKE ?', ['nav_item_id']);
       const [cols3] = await pool.query('SHOW COLUMNS FROM reports LIKE ?', ['nav_link']);
+      const [colsArchived2] = await pool.query('SHOW COLUMNS FROM reports LIKE ?', ['is_archived']);
       const hasNavItem2 = Array.isArray(cols2) && cols2.length > 0;
       const hasNavLink2 = Array.isArray(cols3) && cols3.length > 0;
+      const hasArchived = Array.isArray(colsArchived2) && colsArchived2.length > 0;
       if (typeof nav_item_id !== 'undefined' && hasNavItem2) { fields.push('nav_item_id = ?'); values.push(nav_item_id || null); }
       if (typeof nav_link !== 'undefined' && hasNavLink2) { fields.push('nav_link = ?'); values.push(nav_link || null); }
       if (typeof item_count !== 'undefined') { fields.push('item_count = ?'); values.push(item_count); }
       if (typeof display_order !== 'undefined') { fields.push('display_order = ?'); values.push(display_order); }
       if (typeof is_active !== 'undefined') { fields.push('is_active = ?'); values.push(!!is_active); }
+      if (typeof is_archived !== 'undefined' && hasArchived) { fields.push('is_archived = ?'); values.push(!!is_archived); }
       if (!fields.length) return res.status(400).json({ message: 'No valid fields to update' });
       const sql = `UPDATE reports SET ${fields.join(', ')}, updated_at = CURRENT_TIMESTAMP WHERE id = ?`;
       values.push(id);

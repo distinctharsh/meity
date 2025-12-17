@@ -9,13 +9,37 @@ export default async function handler(req, res) {
     const nav = req.query.nav ? String(req.query.nav).trim() : null;
     const navItemParam = req.query.nav_item ? String(req.query.nav_item).trim() : null;
 
+    // Optional flags controlling archived behavior:
+    // - `archived_only=1` => return only archived reports (requires `is_archived` column)
+    // - `include_archived=1` => include archived reports (do not filter them out)
+    const archivedOnly = req.query.archived_only === '1' || String(req.query.archived_only) === 'true';
+    const includeArchived = req.query.include_archived === '1' || String(req.query.include_archived) === 'true';
+
     // If nav param provided, try to resolve it to navigation_items.id.
     // If `nav_item_id` column exists on reports, filter by it; otherwise fall back to comparing nav_link.
     const [cols] = await pool.query('SHOW COLUMNS FROM reports LIKE ?', ['nav_item_id']);
     const hasNavItem = Array.isArray(cols) && cols.length > 0;
 
+    // Detect whether `is_archived` column exists so we can hide archived items from public API
+    const [colsArchived] = await pool.query('SHOW COLUMNS FROM reports LIKE ?', ['is_archived']);
+    const hasArchived = Array.isArray(colsArchived) && colsArchived.length > 0;
+
     let params = [];
-    let whereClause = 'WHERE r.is_active = TRUE';
+    let whereClause = '';
+    if (archivedOnly) {
+      if (hasArchived) {
+        whereClause = 'WHERE r.is_archived = TRUE';
+      } else {
+        // No archived column; nothing to return for archived-only requests
+        whereClause = 'WHERE 0';
+      }
+    } else {
+      // Default public behaviour: only show active items; unless includeArchived is requested
+      whereClause = 'WHERE r.is_active = TRUE';
+      if (hasArchived && !includeArchived) {
+        whereClause += ' AND r.is_archived = FALSE';
+      }
+    }
     if (navItemParam) {
       const parsed = parseInt(navItemParam, 10);
       if (Number.isFinite(parsed) && parsed > 0) {

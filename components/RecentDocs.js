@@ -26,7 +26,7 @@ const RecentDocs = () => {
   const [currentPersonaIndex, setCurrentPersonaIndex] = useState(0);
   const [docs, setDocs] = useState(fallbackRecent);
   const [navLinks, setNavLinks] = useState(null);
-   const [recentDocs, setRecentDocs] = useState([]);
+  const [recentDocs, setRecentDocs] = useState([]);
 
   useEffect(() => {
     let mounted = true;
@@ -96,17 +96,17 @@ const RecentDocs = () => {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-4 mt-2 w-full">
-             {recentDocs.map((doc, index) => (
+            {recentDocs.map((doc, index) => (
               <div
                 key={index}
                 className="bg-white border border-[#0a2e60] rounded-[6px] px-5 py-4 shadow-[0_1px_3px_rgba(0,0,0,0.08)]"
               >
                 <h4 className="text-[#0a2e60] text-base font-bold mb-2">
                   {doc.nav_link ? (
-                    <a 
-                      href={doc.nav_link} 
-                      target="_blank" 
-                      rel="noopener noreferrer" 
+                    <a
+                      href={doc.nav_link}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="text-[#0a2e60] hover:underline"
                     >
                       {doc.nav_name}
@@ -116,14 +116,58 @@ const RecentDocs = () => {
                   )}
                 </h4>
                 <p className="text-[0.95rem] text-black leading-snug font-normal">
-                  { doc.title || 'General Document'}
+                  {doc.title || 'General Document'}
                 </p>
               </div>
             ))}
           </div>
 
           <div className="mt-4 flex justify-end w-full">
-            <button className="inline-flex items-center gap-2 border border-[#0b3a82] text-[#0b3a82] bg-white py-[8px] px-[16px] rounded-[6px] cursor-pointer font-semibold">
+            <button
+              className="inline-flex items-center gap-2 border border-[#0b3a82] text-[#0b3a82] bg-white py-[8px] px-[16px] rounded-[6px] cursor-pointer font-semibold"
+              onClick={async () => {
+                try {
+                  // Try to load main navigation and find first active child under /documents
+                  const navRes = await fetch('/api/navigation');
+                  if (!navRes.ok) throw new Error('nav fetch failed');
+                  const nav = await navRes.json();
+                  // find section node for /documents
+                  const findByLink = (nodes, link) => {
+                    for (const n of nodes || []) {
+                      if ((n.link || n.href) === link) return n;
+                      if (n.children) {
+                        const f = findByLink(n.children, link);
+                        if (f) return f;
+                      }
+                    }
+                    return null;
+                  };
+                  const section = findByLink(nav, '/documents');
+                  const children = section?.children || [];
+                  const first = children.find((c) => c.is_active !== false) || children[0];
+                  let target = '/documents';
+                  if (first) {
+                    target = first.link || first.href || target;
+                  }
+                  // If target is a documents path, map to pretty route
+                  if (typeof target === 'string' && target.startsWith('/documents')) {
+                    if (target === '/documents') {
+                      window.location.href = '/documents';
+                    } else {
+                      const rest = target.replace(/^\/documents\//, '');
+                      window.location.href = `/documents/${encodeURIComponent(rest)}`;
+                    }
+                  } else if (typeof target === 'string') {
+                    window.location.href = target;
+                  } else {
+                    window.location.href = '/documents';
+                  }
+                } catch (e) {
+                  // fallback: open documents root
+                  window.location.href = '/documents';
+                }
+              }}
+            >
               VIEW MORE
               <FiChevronRight />
             </button>

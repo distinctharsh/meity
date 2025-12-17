@@ -10,6 +10,7 @@ export default function ReportForm({ initial, onCancel, onSaved }) {
     nav_link: '',
     display_order: '',
     is_active: true,
+    is_archived: false,
   });
   const [navOptions, setNavOptions] = useState([]);
   const [saving, setSaving] = useState(false);
@@ -29,6 +30,7 @@ export default function ReportForm({ initial, onCancel, onSaved }) {
         nav_link: initial.nav_link || '',
         display_order: initial.display_order ?? '',
         is_active: !!initial.is_active,
+        is_archived: !!initial.is_archived,
       });
       // Load existing files for group if editing
       if (initial.type === 'group') {
@@ -290,9 +292,9 @@ export default function ReportForm({ initial, onCancel, onSaved }) {
           <label className="block text-sm font-medium text-gray-700">
             Nav Link <span className="text-red-500">*</span>
           </label>
-          <select 
-            value={form.nav_item_id || ''} 
-            onChange={(e) => update('nav_item_id', e.target.value ? Number(e.target.value) : null)} 
+          <select
+            value={form.nav_item_id || ''}
+            onChange={(e) => update('nav_item_id', e.target.value ? Number(e.target.value) : null)}
             className="mt-1 w-full border rounded px-3 py-2"
             required
           >
@@ -375,6 +377,10 @@ export default function ReportForm({ initial, onCancel, onSaved }) {
         <div className="flex items-center gap-2">
           <input id="is_active" type="checkbox" checked={form.is_active} onChange={(e) => update('is_active', e.target.checked)} />
           <label htmlFor="is_active" className="text-sm text-gray-700">Active</label>
+        </div>
+        <div className="flex items-center gap-2">
+          <input id="is_archived" type="checkbox" checked={form.is_archived} onChange={(e) => update('is_archived', e.target.checked)} />
+          <label htmlFor="is_archived" className="text-sm text-gray-700">Archived</label>
         </div>
       </div>
       <div className="flex justify-end gap-2">

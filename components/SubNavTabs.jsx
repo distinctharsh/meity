@@ -76,15 +76,19 @@ export default function SubNavTabs({ pagePath }) {
               // Build a single documents page link when item belongs to /documents
               let displayHref = it.href;
               if (it.href && String(it.href).startsWith('/documents')) {
-                if (it.id) {
-                  displayHref = `/documents?nav_item=${encodeURIComponent(String(it.id))}`;
+                // Use clean path style: '/documents/reports' -> '/documents/reports'
+                const rawHref = String(it.href);
+                if (rawHref === '/documents') {
+                  displayHref = '/documents';
                 } else {
-                  displayHref = `/documents?nav=${encodeURIComponent(String(it.href))}`;
+                  const rest = rawHref.replace(/^\/documents\//, '');
+                  displayHref = `/documents/${encodeURIComponent(rest)}`;
                 }
               }
-              return isActiveItem(it) ? (
+              const keyValue = displayHref || it.id;
+              return isActiveItem(it, displayHref) ? (
                 <span
-                  key={displayHref || it.id}
+                  key={keyValue}
                   className={"text-white font-bold underline relative pl-3 dot-before"}
                   style={{ color: '#fff', fontSize: '1.3rem', fontWeight: 800 }}
                 >
@@ -92,7 +96,7 @@ export default function SubNavTabs({ pagePath }) {
                 </span>
               ) : (
                 <Link
-                  key={displayHref || it.id}
+                  key={keyValue}
                   href={displayHref}
                   className={"text-white/80 hover:text-white whitespace-nowrap"}
                   style={{ color: '#fff', fontSize: '1.3rem', fontWeight: 400 }}
@@ -178,4 +182,33 @@ function formatLabelFromHref(href) {
   } catch {
     return 'Item';
   }
+}
+
+// isActiveItem: determines if a given nav item should be active.
+// Accepts optional displayHref (generated link) to allow matching when we use
+// pretty `/documents/<slug>` paths.
+function isActiveItem(item, displayHref) {
+  if (!item) return false;
+  const href = displayHref || item.href || '';
+  // For documents, match by pretty slug path or by nav query when present
+  if (href.startsWith('/documents')) {
+    // current path without query
+    let cur = '';
+    try { cur = (typeof window !== 'undefined' ? window.location.pathname : '') || ''; } catch { }
+    if (cur === href) return true;
+    // fallback: compare nav query when on /documents
+    let search = '';
+    try { search = (typeof window !== 'undefined' ? window.location.search : '') || ''; } catch { }
+    const params = new URLSearchParams(search);
+    const qNavItem = params.get('nav_item');
+    const qNav = params.get('nav');
+    if (qNavItem && String(qNavItem) === String(item.id)) return true;
+    if (qNav && decodeURIComponent(String(qNav)) === item.href) return true;
+    // also active when on base /documents and this tab maps to that
+    if (cur === '/documents' && !qNav && !qNavItem && href === '/documents') return true;
+    return false;
+  }
+  let curPath = '';
+  try { curPath = (typeof window !== 'undefined' ? window.location.pathname : '') || ''; } catch { }
+  return curPath === href || curPath.startsWith(href + '/');
 }

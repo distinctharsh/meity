@@ -22,6 +22,10 @@ export default async function handler(req, res) {
         selectCols.push('r.nav_link');
         selectCols.push('(SELECT name FROM navigation_items WHERE link = r.nav_link LIMIT 1) AS nav_name');
       }
+      // include archived flag if present
+      const [colsArchived] = await pool.query('SHOW COLUMNS FROM reports LIKE ?', ['is_archived']);
+      const hasArchived = Array.isArray(colsArchived) && colsArchived.length > 0;
+      if (hasArchived) selectCols.push('r.is_archived');
       selectCols.push('r.item_count', 'r.display_order', 'r.is_active', 'r.created_at', 'r.updated_at');
       const select = `SELECT ${selectCols.join(', ')} ${fromClause} ORDER BY r.display_order ASC, r.created_at DESC`;
       const [rows] = await pool.query(select);
@@ -32,7 +36,7 @@ export default async function handler(req, res) {
     }
   } else if (req.method === 'POST') {
     try {
-      const { title, type, year, size = null, file_url = null, nav_item_id = null, nav_link = null, item_count = null, is_active = true } = req.body || {};
+      const { title, type, year, size = null, file_url = null, nav_item_id = null, nav_link = null, item_count = null, is_active = true, is_archived = false } = req.body || {};
       if (!title) return res.status(400).json({ message: 'title is required' });
       // Defaults: type -> 'pdf'; year -> current year if not provided
       const nowYear = new Date().getFullYear();
@@ -70,8 +74,10 @@ export default async function handler(req, res) {
       // Detect available columns for insert
       const [cols2] = await pool.query('SHOW COLUMNS FROM reports LIKE ?', ['nav_item_id']);
       const [cols3] = await pool.query('SHOW COLUMNS FROM reports LIKE ?', ['nav_link']);
+      const [colsArchived2] = await pool.query('SHOW COLUMNS FROM reports LIKE ?', ['is_archived']);
       const hasNavItem2 = Array.isArray(cols2) && cols2.length > 0;
       const hasNavLink2 = Array.isArray(cols3) && cols3.length > 0;
+      const hasArchived2 = Array.isArray(colsArchived2) && colsArchived2.length > 0;
 
       const insertCols = ['title', 'type', 'year', 'size', 'file_url'];
       const insertVals = [title, finalType, finalYear, finalSize, file_url];
@@ -82,6 +88,10 @@ export default async function handler(req, res) {
       if (hasNavLink2) {
         insertCols.push('nav_link');
         insertVals.push(nav_link || null);
+      }
+      if (hasArchived2) {
+        insertCols.push('is_archived');
+        insertVals.push(!!is_archived);
       }
       insertCols.push('item_count', 'display_order', 'is_active');
       insertVals.push(item_count, nextOrder, !!is_active);

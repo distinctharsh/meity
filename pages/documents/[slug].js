@@ -1,11 +1,12 @@
 import Footer from "@/components/Footer";
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from 'next/router';
-import Image from "next/image";
 import SubNavTabs from "@/components/SubNavTabs";
 import PageHeader from "@/components/PageHeader";
-export default function Reports() {
+
+export default function DocumentsSlug() {
   const router = useRouter();
+  const { slug } = router.query;
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("");
   const [sort, setSort] = useState("Newest");
@@ -21,11 +22,28 @@ export default function Reports() {
     async function load() {
       try {
         setLoading(true);
-        const nav = (router && router.asPath) || (typeof window !== 'undefined' ? window.location.pathname : '/documents/reports');
-        const res = await fetch('/api/documents/reports?nav=' + encodeURIComponent(nav));
+        // Build API url: prefer explicit nav query if present, else map slug back to nav path
+        let apiUrl = '/api/documents/reports';
+        const navQuery = router.query?.nav;
+        const navItem = router.query?.nav_item;
+        if (navQuery) {
+          apiUrl += '?nav=' + encodeURIComponent(String(navQuery));
+        } else if (navItem) {
+          apiUrl += '?nav_item=' + encodeURIComponent(String(navItem));
+        } else if (slug) {
+          // slug like 'reports' -> map back to '/documents/reports'
+          const raw = Array.isArray(slug) ? slug.join('/') : String(slug);
+          const decoded = decodeURIComponent(raw);
+          const navPath = '/documents/' + decoded.replace(/^\//, '');
+          apiUrl += '?nav=' + encodeURIComponent(navPath);
+        } else {
+          const nav = (router && router.asPath) || (typeof window !== 'undefined' ? window.location.pathname : '/documents/reports');
+          apiUrl += '?nav=' + encodeURIComponent(nav.split('?')[0]);
+        }
+
+        const res = await fetch(apiUrl);
         if (!res.ok) throw new Error('Failed to load reports');
         const data = await res.json();
-        // Normalize to existing UI shape
         const mapped = (data || []).map(r => ({
           id: r.id,
           title: r.title,
@@ -45,7 +63,7 @@ export default function Reports() {
     }
     load();
     return () => { mounted = false; }
-  }, [router?.asPath]);
+  }, [router?.asPath, router?.query?.nav_item, router?.query?.nav, slug]);
 
   const filtered = useMemo(() => {
     let list = items;
@@ -82,33 +100,25 @@ export default function Reports() {
   return (
     <>
       <main id="main">
-        {/* Dynamic Page Header */}
         <PageHeader pagePath="/documents/reports" />
-
-        {/* Tabs (DB-driven for current route) */}
         <SubNavTabs />
 
-        {/* Main Content */}
         <section className="mt-10 py-10" style={{ borderRadius: '20px' }}>
           <div className="gi-container">
-            {/* Toolbar row */}
+            {/* Toolbar & filters (same UI as reports) */}
             <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-3 mb-4">
-              {/* Search */}
               <div className="w-full">
                 <div className="flex items-stretch rounded-md overflow-hidden border border-gray-300 bg-white">
                   <span className="flex items-center px-2 border-r border-gray-300 text-gray-600">
                     <span aria-hidden="true" className="material-symbols-outlined">search</span>
                   </span>
                   <input type="search" placeholder="Search..." className="flex-1 px-3 py-2 outline-none" value={query} onChange={(e) => setQuery(e.target.value)} />
-                  {/* mobile filter icon */}
                   <span className="flex items-center px-2 border-l border-gray-300 text-gray-600 lg:hidden">
                     <span aria-hidden="true" className="material-symbols-outlined">filter_alt</span>
                   </span>
                 </div>
               </div>
-              {/* Filters (hidden on small) */}
               <div className="hidden lg:flex items-center justify-end flex-wrap gap-2">
-                {/* Sort */}
                 <div className="flex items-stretch rounded-md overflow-hidden border border-gray-300 bg-white">
                   <span className="flex items-center px-2 border-r border-gray-300 text-gray-600">
                     <span aria-hidden="true" className="material-symbols-outlined">sort</span>
@@ -119,7 +129,6 @@ export default function Reports() {
                     <option value="Oldest">Oldest</option>
                   </select>
                 </div>
-                {/* Category */}
                 <div className="flex items-stretch rounded-md overflow-hidden border border-gray-300 bg-white" role="combobox">
                   <label htmlFor="categorySelect" className="sr-only">Filter by Category</label>
                   <span className="flex items-center px-2 border-r border-gray-300 text-gray-600">
@@ -132,7 +141,6 @@ export default function Reports() {
                     <option value="Single">Single</option>
                   </select>
                 </div>
-                {/* Per page */}
                 <div className="flex items-stretch rounded-md overflow-hidden border border-gray-300 bg-white" role="combobox">
                   <label htmlFor="pageLimitSelect" className="sr-only">Items per page</label>
                   <span className="flex items-center px-2 border-r border-gray-300 text-gray-600">
@@ -147,14 +155,12 @@ export default function Reports() {
               </div>
             </div>
 
-            {/* Table header */}
             <div className="grid grid-cols-[7fr_2fr_3fr] bg-blue-200 text-blue-900 font-semibold rounded-t-md px-4 py-2 text-xs">
               <div>Title</div>
               <div className="text-center">Published Year</div>
               <div className="text-center">Type/Size</div>
             </div>
 
-            {/* List */}
             <div className="divide-y border border-t-0 rounded-b-md">
               {loading ? (
                 <div className="px-4 py-6 text-center text-gray-500">Loading reports...</div>
@@ -193,26 +199,7 @@ export default function Reports() {
               ))}
             </div>
 
-            {/* Pagination & Archive */}
             <div className="row items-center mt-8 grid grid-cols-1 md:grid-cols-2">
-              {/* <div className="flex md:justify-start justify-center mb-3 md:mb-0">
-                <div className="flex items-stretch rounded-md overflow-hidden border border-gray-300 bg-white">
-                  <span className="flex items-center px-2 border-r border-gray-300 text-gray-600">
-                    <span className="material-symbols-outlined">calendar_month</span>
-                  </span>
-                  <select
-                    className="px-3 py-2 bg-white outline-none"
-                    aria-label="Archive by year"
-                    value={yearFilter}
-                    onChange={(e) => { setYearFilter(e.target.value); setCurrentPage(1); }}
-                  >
-                    <option value="">All Years</option>
-                    {years.map((y) => (
-                      <option key={y} value={y}>{y}</option>
-                    ))}
-                  </select>
-                </div>
-              </div> */}
               <div className="flex justify-end">
                 <nav aria-label="Page navigation">
                   <ul className="flex items-center gap-3">
