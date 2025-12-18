@@ -331,8 +331,12 @@ const NavigationForm = ({ item, navigationItems, onSubmit, onCancel }) => {
     return String(s)
       .toLowerCase()
       .trim()
-      .replace(/\s+/g, '-')
-      .replace(/[^a-z0-9\-/]/g, '');
+      // Replace any sequence of non-alphanumeric characters with a single hyphen
+      .replace(/[^a-z0-9]+/g, '-')
+      // Collapse multiple hyphens
+      .replace(/-+/g, '-')
+      // Trim leading/trailing hyphens
+      .replace(/^-|-$/g, '');
   };
 
   const joinParentChild = (parentLink, childPart) => {
