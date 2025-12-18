@@ -18,7 +18,14 @@ export default async function handler(req, res) {
         const [result] = await pool.query(query);
         return result?.[0]?.count || defaultValue;
       } catch (error) {
-        console.error(`Error in query ${query.split(' ')[3]}:`, error);
+        // extract table name for clearer messages
+        const m = query.match(/FROM\s+([\w\.]+)/i);
+        const tableName = (m && m[1]) ? m[1] : (query.split(' ')[3] || query);
+        if (error && error.code === 'ER_NO_SUCH_TABLE') {
+          console.warn(`Stats: table not found (${tableName}) — returning default ${defaultValue}`);
+        } else {
+          console.error(`Error in stats query for ${tableName}:`, error?.message || error);
+        }
         return defaultValue;
       }
     };
@@ -50,7 +57,7 @@ export default async function handler(req, res) {
 
   } catch (error) {
     console.error('Stats error:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       message: 'Internal server error',
       error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });

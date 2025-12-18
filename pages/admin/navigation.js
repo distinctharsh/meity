@@ -122,20 +122,18 @@ export default function NavigationManagement() {
             {item.link && (
               <span className="ml-2 text-sm text-gray-500">({item.link})</span>
             )}
-            <span className={`ml-2 px-2 py-1 text-xs rounded-full ${
-              item.is_active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
-            }`}>
+            <span className={`ml-2 px-2 py-1 text-xs rounded-full ${item.is_active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+              }`}>
               {item.is_active ? 'ACTIVE' : 'INACTIVE'}
             </span>
           </div>
           <div className="flex items-center space-x-2">
             <button
               onClick={() => toggleActive(item.id, item.is_active)}
-              className={`px-2 py-1 text-xs rounded ${
-                item.is_active
-                  ? 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  : 'bg-green-100 text-green-700 hover:bg-green-200'
-              }`}
+              className={`px-2 py-1 text-xs rounded ${item.is_active
+                ? 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                : 'bg-green-100 text-green-700 hover:bg-green-200'
+                }`}
             >
               {item.is_active ? 'Deactivate' : 'Activate'}
             </button>
@@ -264,6 +262,7 @@ export default function NavigationManagement() {
 
 const NavigationForm = ({ item, navigationItems, onSubmit, onCancel }) => {
   const linkInputRef = useRef(null);
+  const prevNameRef = useRef('');
   const [formData, setFormData] = useState({
     name: '',
     link: '',
@@ -281,6 +280,7 @@ const NavigationForm = ({ item, navigationItems, onSubmit, onCancel }) => {
         display_order: item.display_order || 0,
         is_active: item.is_active !== undefined ? item.is_active : true
       });
+      prevNameRef.current = item.name || '';
     }
   }, [item]);
 
@@ -350,8 +350,9 @@ const NavigationForm = ({ item, navigationItems, onSubmit, onCancel }) => {
       let next = { ...prev, [name]: type === 'checkbox' ? checked : value };
       if (name === 'parent_id') {
         const effectiveParent = getEffectiveParentBase(value) || '/';
-        // Always set to effective parent's URL with trailing slash so admin sees it immediately
-        next.link = joinParentChild(effectiveParent, '');
+        // If a name is already present, append its slug to the parent prefix.
+        const childSlug = slugify(prev.name || '');
+        next.link = joinParentChild(effectiveParent, childSlug);
       }
       if (name === 'link') {
         // When typing link, if a parent is selected and it's not an external URL, keep parent prefix
@@ -359,13 +360,38 @@ const NavigationForm = ({ item, navigationItems, onSubmit, onCancel }) => {
         if (effectiveParent && !isExternal(value)) {
           const parentNoSlash = effectiveParent.replace(/\/$/, '');
           const stripped = String(value || '')
-            .replace(new RegExp('^' + parentNoSlash.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\/'), '')
+            .replace(new RegExp('^' + parentNoSlash.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\/'), '')
             .replace(/^\//, '');
           next.link = joinParentChild(effectiveParent, stripped);
         } else if (!isExternal(value)) {
           next.link = ensureLeadingSlash(value);
         }
       }
+
+      // If admin is editing the `name` field, auto-generate the child slug when appropriate.
+      if (name === 'name') {
+        const newName = String(value || '');
+        const newSlug = slugify(newName);
+        const prevSlug = slugify(prevNameRef.current || '');
+        const effectiveParent = getEffectiveParentBase(prev.parent_id) || '';
+        const parentNoSlash = (effectiveParent || '').replace(/\/$/, '');
+        const currentLink = String(prev.link || next.link || '');
+        let currentChildPart = currentLink;
+        if (parentNoSlash && currentLink.startsWith(parentNoSlash)) {
+          currentChildPart = currentLink.replace(new RegExp('^' + parentNoSlash.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\/'), '');
+        } else {
+          currentChildPart = currentLink.replace(/^\//, '');
+        }
+
+        // Update link if it's empty, or equals previous auto-generated slug, or only parent prefix
+        const shouldUpdate = !currentLink || currentChildPart === '' || currentChildPart === prevSlug;
+        if (shouldUpdate) {
+          next.link = joinParentChild(effectiveParent || '/', newSlug);
+        }
+        // schedule prevName update
+        setTimeout(() => { prevNameRef.current = newName; }, 0);
+      }
+
       return next;
     });
     if (name === 'parent_id' && parentLinkForFocus) {
@@ -377,7 +403,7 @@ const NavigationForm = ({ item, navigationItems, onSubmit, onCancel }) => {
           try {
             const caret = preset.length;
             linkInputRef.current.setSelectionRange(caret, caret);
-          } catch (_) {}
+          } catch (_) { }
         }
       }, 0);
     }
@@ -394,7 +420,7 @@ const NavigationForm = ({ item, navigationItems, onSubmit, onCancel }) => {
       if (start < guard || end < guard) {
         linkInputRef.current.setSelectionRange(guard, guard);
       }
-    } catch (_) {}
+    } catch (_) { }
   };
 
   const handleLinkKeyDown = (e) => {
@@ -420,7 +446,7 @@ const NavigationForm = ({ item, navigationItems, onSubmit, onCancel }) => {
       {/* <h2 className="text-xl font-semibold text-gray-900 mb-4">
         {item ? 'Edit Navigation Item' : 'Add Navigation Item'}
       </h2> */}
-      
+
       <form onSubmit={handleSubmit} className="space-y-5">
         {/* Name + Parent in one row on md+ */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
