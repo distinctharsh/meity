@@ -7,6 +7,7 @@ import PageHeader from "@/components/PageHeader";
 
 export default function Reports() {
   const router = useRouter();
+  const effectivePath = (router && router.asPath && String(router.asPath).split('?')[0]) || '/documents';
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("");
   const [sort, setSort] = useState("Newest");
@@ -96,10 +97,10 @@ export default function Reports() {
     <>
       <main id="main">
         {/* Dynamic Page Header */}
-        <PageHeader pagePath="/documents/reports" />
+        <PageHeader pagePath={effectivePath} />
 
         {/* Tabs (DB-driven for current route) */}
-        <SubNavTabs />
+        <SubNavTabs pagePath={effectivePath} />
 
         {/* Main Content */}
         <section className="mt-10 py-10" style={{ borderRadius: '20px' }}>

@@ -7,6 +7,11 @@ import PageHeader from "@/components/PageHeader";
 export default function DocumentsSlug() {
   const router = useRouter();
   const { slug } = router.query;
+  // derive an effective path from the slug so PageHeader/SubNavTabs can
+  // pick the correct navigation section (e.g. '/documents/rules-of-business')
+  const effectivePath = slug
+    ? '/documents/' + (Array.isArray(slug) ? slug.join('/') : String(slug))
+    : '/documents';
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("");
   const [sort, setSort] = useState("Newest");
@@ -100,8 +105,8 @@ export default function DocumentsSlug() {
   return (
     <>
       <main id="main">
-        <PageHeader pagePath="/documents/reports" />
-        <SubNavTabs />
+        <PageHeader pagePath={effectivePath} />
+        <SubNavTabs pagePath={effectivePath} />
 
         <section className="mt-10 py-10" style={{ borderRadius: '20px' }}>
           <div className="gi-container">
