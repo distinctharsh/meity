@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
 
 export default function AdminDirectoryPage() {
@@ -6,6 +6,11 @@ export default function AdminDirectoryPage() {
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState(null);
+  const [query, setQuery] = useState('');
+  const [perPage, setPerPage] = useState(10);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const dtRef = useRef(null);
 
   const load = async () => {
     setLoading(true);
@@ -18,6 +23,90 @@ export default function AdminDirectoryPage() {
     }
   };
   useEffect(() => { load(); }, []);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    if (loading) return;
+    if (showForm) return;
+    if (!items || items.length === 0) return;
+
+    let cancelled = false;
+    let attemptTimer;
+
+    const tryInit = () => {
+      if (cancelled) return;
+      const $ = window.jQuery;
+      if (!$ || !$.fn || !$.fn.DataTable) {
+        attemptTimer = setTimeout(tryInit, 50);
+        return;
+      }
+
+      const selector = '#admin-directory-table';
+      try {
+        if ($.fn.dataTable.isDataTable(selector)) {
+          try {
+            $(selector).DataTable().destroy(false);
+          } catch {
+          }
+        }
+
+        const dt = $(selector).DataTable({
+          paging: true,
+          searching: true,
+          info: false,
+          lengthChange: false,
+          pageLength: perPage,
+          order: [[3, 'asc']],
+          autoWidth: false,
+          responsive: true,
+          dom: 't',
+          columnDefs: [
+            { orderable: false, targets: -1 },
+          ],
+          drawCallback: function () {
+            const info = this.api().page.info();
+            setTotalPages(Math.max(1, info.pages || 1));
+            setCurrentPage((info.page || 0) + 1);
+          },
+        });
+
+        dtRef.current = dt;
+        dt.search(query || '');
+        dt.draw();
+      } catch {
+      }
+    };
+
+    tryInit();
+
+    return () => {
+      cancelled = true;
+      if (attemptTimer) clearTimeout(attemptTimer);
+      try {
+        const $ = window.jQuery;
+        const selector = '#admin-directory-table';
+        if ($ && $.fn && $.fn.dataTable && $.fn.dataTable.isDataTable(selector)) {
+          $(selector).DataTable().destroy(false);
+        }
+      } catch {
+      } finally {
+        dtRef.current = null;
+      }
+    };
+  }, [items, loading, showForm]);
+
+  useEffect(() => {
+    const dt = dtRef.current;
+    if (!dt) return;
+    dt.search(query || '').draw();
+  }, [query]);
+
+  useEffect(() => {
+    const dt = dtRef.current;
+    if (!dt) return;
+    dt.page.len(perPage);
+    dt.draw(false);
+  }, [perPage]);
 
   const onDelete = async (id) => {
     if (!confirm("Delete this entry?")) return;
@@ -36,8 +125,48 @@ export default function AdminDirectoryPage() {
       </div>
 
       {loading ? <p>Loading...</p> : (!showForm && (
-        <div className="overflow-x-auto bg-white rounded-lg shadow">
-          <table className="min-w-full divide-y divide-gray-200 table-fixed">
+        <div className="space-y-4">
+          <div className="bg-white rounded-lg shadow p-4 border border-gray-200">
+            <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-3 items-center">
+              <div className="w-full">
+                <div className="flex items-stretch rounded-md overflow-hidden border border-gray-300 bg-white">
+                  <span className="flex items-center px-2 border-r border-gray-300 text-gray-600">
+                    <span aria-hidden="true" className="material-symbols-outlined">search</span>
+                  </span>
+                  <input
+                    type="search"
+                    placeholder="Search directory..."
+                    className="flex-1 px-3 py-2 outline-none"
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                  />
+                </div>
+              </div>
+              <div className="flex items-center justify-end gap-2">
+                <div className="flex items-stretch rounded-md overflow-hidden border border-gray-300 bg-white" role="combobox">
+                  <label htmlFor="pageLimitSelect" className="sr-only">Items per page</label>
+                  <span className="flex items-center px-2 border-r border-gray-300 text-gray-600">
+                    <span className="material-symbols-outlined">list_alt</span>
+                  </span>
+                  <select
+                    id="pageLimitSelect"
+                    className="px-3 py-2 bg-white outline-none"
+                    aria-label="pages"
+                    value={perPage}
+                    onChange={(e) => setPerPage(parseInt(e.target.value, 10))}
+                  >
+                    <option value={10}>10 per page</option>
+                    <option value={15}>15 per page</option>
+                    <option value={20}>20 per page</option>
+                    <option value={50}>50 per page</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="overflow-x-auto bg-white rounded-lg shadow border border-gray-200">
+            <table id="admin-directory-table" className="min-w-full divide-y divide-gray-200 table-fixed">
             <thead className="bg-gray-50">
               <tr>
                 <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
@@ -76,6 +205,79 @@ export default function AdminDirectoryPage() {
               ))}
             </tbody>
           </table>
+        </div>
+
+          <div className="bg-white rounded-lg shadow p-4 border border-gray-200 flex items-center justify-end">
+            <nav aria-label="Page navigation">
+              <ul className="flex items-center gap-3">
+                <li>
+                  <button
+                    className="w-8 h-8 inline-flex items-center justify-center rounded-full border text-gray-700 disabled:opacity-40"
+                    onClick={() => {
+                      const dt = dtRef.current;
+                      if (dt) dt.page('previous').draw('page');
+                    }}
+                    disabled={currentPage === 1}
+                    aria-label="Previous page"
+                  >
+                    <span className="material-symbols-outlined text-[18px]">chevron_left</span>
+                  </button>
+                </li>
+                {(() => {
+                  const pages = [];
+                  const max = totalPages;
+                  const push = (x) => pages.push(x);
+                  const range = (s, e) => { for (let i = s; i <= e; i++) push(i); };
+                  if (max <= 7) {
+                    range(1, max);
+                  } else {
+                    const start = Math.max(1, currentPage - 1);
+                    const end = Math.min(max, currentPage + 1);
+                    push(1);
+                    if (start > 2) push('...');
+                    range(Math.max(2, start), Math.min(max - 1, end));
+                    if (end < max - 1) push('...');
+                    push(max);
+                  }
+                  return pages.map((p, idx) => (
+                    <li key={`${p}-${idx}`}>
+                      {p === '...' ? (
+                        <span className="w-8 h-8 inline-flex items-center justify-center text-gray-500">…</span>
+                      ) : (
+                        <button
+                          onClick={() => {
+                            const dt = dtRef.current;
+                            if (dt) dt.page(Number(p) - 1).draw('page');
+                          }}
+                          className={
+                            Number(p) === currentPage
+                              ? "w-8 h-8 rounded-full bg-blue-100 text-blue-800 font-semibold"
+                              : "w-8 h-8 rounded-full text-gray-700 hover:bg-gray-100"
+                          }
+                          aria-current={Number(p) === currentPage ? "page" : undefined}
+                        >
+                          {p}
+                        </button>
+                      )}
+                    </li>
+                  ));
+                })()}
+                <li>
+                  <button
+                    className="w-8 h-8 inline-flex items-center justify-center rounded-full border text-gray-700 disabled:opacity-40"
+                    onClick={() => {
+                      const dt = dtRef.current;
+                      if (dt) dt.page('next').draw('page');
+                    }}
+                    disabled={currentPage === totalPages}
+                    aria-label="Next page"
+                  >
+                    <span className="material-symbols-outlined text-[18px]">chevron_right</span>
+                  </button>
+                </li>
+              </ul>
+            </nav>
+          </div>
         </div>
       ))}
 

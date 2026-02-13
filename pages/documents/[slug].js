@@ -1,5 +1,5 @@
 import Footer from "@/components/Footer";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from 'next/router';
 import SubNavTabs from "@/components/SubNavTabs";
 import PageHeader from "@/components/PageHeader";
@@ -21,6 +21,16 @@ export default function DocumentsSlug() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const tableHostRef = useRef(null);
+  const tableElRef = useRef(null);
+  const dataTableRef = useRef(null);
+  const filterFnRef = useRef(null);
+  const categoryRef = useRef("");
+  const [totalPages, setTotalPages] = useState(1);
+
+  useEffect(() => {
+    categoryRef.current = category;
+  }, [category]);
 
   useEffect(() => {
     let mounted = true;
@@ -70,31 +80,220 @@ export default function DocumentsSlug() {
     return () => { mounted = false; }
   }, [router?.asPath, router?.query?.nav_item, router?.query?.nav, slug]);
 
-  const filtered = useMemo(() => {
-    let list = items;
-    if (query) {
-      const q = query.toLowerCase();
-      list = list.filter((i) => i.title.toLowerCase().includes(q));
-    }
-    if (category) {
-      list = list.filter((i) => (category === "Group" ? i.type === "group" : i.type !== "group"));
-    }
-    if (yearFilter) {
-      list = list.filter((i) => String(i.year || "") === String(yearFilter));
-    }
-    if (sort === "Oldest") {
-      list = [...list].sort((a, b) => (a.year || 0) - (b.year || 0));
-    } else {
-      list = [...list].sort((a, b) => (b.year || 0) - (a.year || 0));
-    }
-    return list;
-  }, [items, query, category, sort, yearFilter]);
+  useEffect(() => {
+    if (loading || error) return;
+    if (!tableHostRef.current) return;
+    if (typeof window === 'undefined') return;
+    let cancelled = false;
+    let attemptTimer;
 
-  const totalPages = Math.max(1, Math.ceil(filtered.length / perPage));
+    const tryInit = () => {
+      if (cancelled) return;
+      const $ = window.jQuery;
+      if (!$ || !$.fn || !$.fn.DataTable) {
+        attemptTimer = setTimeout(tryInit, 50);
+        return;
+      }
+
+      if (dataTableRef.current) {
+        try {
+          dataTableRef.current.clear();
+          dataTableRef.current.rows.add(items);
+          dataTableRef.current.draw(false);
+        } catch {
+        }
+        return;
+      }
+
+      if (!tableElRef.current) {
+        try {
+          const tbl = document.createElement('table');
+          tbl.className = 'w-full';
+          tbl.innerHTML = `
+            <thead class="hidden">
+              <tr>
+                <th>Title</th>
+                <th>Published Year</th>
+                <th>Type/Size</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          `;
+          tableHostRef.current.innerHTML = '';
+          tableHostRef.current.appendChild(tbl);
+          tableElRef.current = tbl;
+        } catch {
+          return;
+        }
+      }
+
+      const dt = $(tableElRef.current).DataTable({
+        data: items,
+        columns: [
+        {
+          data: null,
+          orderable: false,
+          render: (data, type, row) => {
+            const icon = row.type === 'group' ? 'file_copy' : 'draft';
+            const count = row.count ? `<span class="ml-1 inline-flex justify-center items-center w-6 h-6 text-[11px] rounded bg-blue-100 text-blue-700">${row.count}</span>` : '';
+            return `
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-gray-700">${icon}</span>
+                <p class="mb-0 text-sm text-gray-800">${row.title ?? ''}</p>
+                ${count}
+              </div>
+            `;
+          }
+        },
+        {
+          data: 'year',
+          render: (data) => `<div class="text-center text-sm text-gray-700">${data || '-'}</div>`
+        },
+        {
+          data: null,
+          orderable: false,
+          render: (data, type, row) => {
+            const isGroup = row.type === 'group';
+            const fileUrl = row.file_url || '#';
+            const target = row.file_url ? ' target="_blank" rel="noreferrer"' : '';
+            const typeSize = !isGroup
+              ? `
+                <div class="flex items-center gap-2 mx-auto">
+                  <span class="text-[10px] px-1.5 py-0.5 rounded bg-gray-100">PDF</span>
+                  <small class="text-gray-700">${row.size || ''}</small>
+                </div>
+              `
+              : '<span></span>';
+            const viewHref = isGroup ? `/documents/report/${row.id}` : fileUrl;
+            const viewAttrs = isGroup ? '' : target;
+            const viewText = isGroup ? 'View All' : 'View';
+            return `
+              <div class="flex items-center gap-2 justify-between w-full">
+                ${typeSize}
+                <a href="${viewHref}"${viewAttrs} class="inline-flex items-center gap-2 uppercase text-sm px-3 py-1.5 rounded bg-blue-100 text-blue-800 hover:bg-blue-200">
+                  <span aria-hidden="true" class="material-symbols-outlined">visibility</span>
+                  ${viewText}
+                </a>
+              </div>
+            `;
+          }
+        }
+      ],
+      searching: true,
+      paging: true,
+      info: false,
+      lengthChange: false,
+      pageLength: perPage,
+      ordering: true,
+      order: sort === 'Oldest' ? [[1, 'asc']] : [[1, 'desc']],
+      dom: 't',
+      autoWidth: false,
+      drawCallback: function () {
+        const info = this.api().page.info();
+        setTotalPages(Math.max(1, info.pages || 1));
+        setCurrentPage((info.page || 0) + 1);
+      },
+      createdRow: function (row) {
+        row.className = 'items-center px-4 py-3 bg-white';
+        try {
+          row.style.display = 'grid';
+          row.style.gridTemplateColumns = '7fr 2fr 3fr';
+          row.style.alignItems = 'center';
+        } catch {
+        }
+        try {
+          const $cells = $('td', row);
+          $cells.eq(0).addClass('');
+          $cells.eq(1).addClass('text-center');
+          $cells.eq(2).addClass('');
+        } catch {
+        }
+      },
+      language: {
+        emptyTable: 'No reports found.'
+      }
+    });
+
+    try {
+      $(tableElRef.current).find('tbody').addClass('divide-y');
+    } catch {
+    }
+
+      dataTableRef.current = dt;
+
+      filterFnRef.current = function (settings, data, dataIndex) {
+        const api = new $.fn.dataTable.Api(settings);
+        const rowData = api.row(dataIndex).data();
+        if (!rowData) return true;
+        const cat = categoryRef.current;
+        if (cat) {
+          if (cat === 'Group') return rowData.type === 'group';
+          return rowData.type !== 'group';
+        }
+        return true;
+      };
+      $.fn.dataTable.ext.search.push(filterFnRef.current);
+
+      return () => {
+        try {
+          if (filterFnRef.current) {
+            $.fn.dataTable.ext.search = $.fn.dataTable.ext.search.filter((fn) => fn !== filterFnRef.current);
+          }
+          dt.destroy(false);
+          try {
+            $(tableElRef.current).find('tbody').empty();
+          } catch {
+          }
+          try {
+            if (tableElRef.current && tableElRef.current.parentNode) {
+              tableElRef.current.parentNode.removeChild(tableElRef.current);
+            }
+          } catch {
+          } finally {
+            tableElRef.current = null;
+          }
+        } catch {
+        } finally {
+          dataTableRef.current = null;
+          filterFnRef.current = null;
+        }
+      };
+    };
+
+    const cleanup = tryInit();
+    return () => {
+      cancelled = true;
+      if (attemptTimer) clearTimeout(attemptTimer);
+      if (typeof cleanup === 'function') cleanup();
+    };
+  }, [loading, error, items]);
+
+  useEffect(() => {
+    const dt = dataTableRef.current;
+    if (!dt) return;
+    dt.search(query || '').draw();
+  }, [query]);
+
+  useEffect(() => {
+    const dt = dataTableRef.current;
+    if (!dt) return;
+    dt.page.len(perPage);
+    dt.draw(false);
+  }, [perPage]);
+
+  useEffect(() => {
+    const dt = dataTableRef.current;
+    if (!dt) return;
+    dt.order(sort === 'Oldest' ? [1, 'asc'] : [1, 'desc']).draw();
+  }, [sort]);
+
+  useEffect(() => {
+    const dt = dataTableRef.current;
+    if (!dt) return;
+    dt.draw();
+  }, [category]);
+
   const currentSafePage = Math.min(currentPage, totalPages);
-  const startIdx = (currentSafePage - 1) * perPage;
-  const endIdx = startIdx + perPage;
-  const pagedItems = filtered.slice(startIdx, endIdx);
 
   const years = useMemo(() => {
     const set = new Set();
@@ -166,42 +365,14 @@ export default function DocumentsSlug() {
               <div className="text-center">Type/Size</div>
             </div>
 
-            <div className="divide-y border border-t-0 rounded-b-md">
+            <div className="divide-y border border-t-0 rounded-b-md bg-white">
               {loading ? (
                 <div className="px-4 py-6 text-center text-gray-500">Loading reports...</div>
               ) : error ? (
                 <div className="px-4 py-6 text-center text-red-600">{error}</div>
-              ) : pagedItems.length === 0 ? (
-                <div className="px-4 py-6 text-center text-gray-500">No reports found.</div>
-              ) : pagedItems.map((item) => (
-                <div key={item.id} className="grid grid-cols-[7fr_2fr_3fr] items-center px-4 py-3 bg-white">
-                  <div className="flex items-center gap-2">
-                    <span className="material-symbols-outlined text-gray-700">{item.type === 'group' ? 'file_copy' : 'draft'}</span>
-                    <p className="mb-0 text-sm text-gray-800">{item.title}</p>
-                    {item.count ? <span className="ml-1 inline-flex justify-center items-center w-6 h-6 text-[11px] rounded bg-blue-100 text-blue-700">{item.count}</span> : null}
-                  </div>
-                  <div className="text-center text-sm text-gray-700">{item.year || '-'}</div>
-                  <div className="flex items-center gap-2 justify-between w-full">
-                    {item.type !== 'group' ? (
-                      <div className="flex items-center gap-2 mx-auto">
-                        <span className="text-[10px] px-1.5 py-0.5 rounded bg-gray-100">PDF</span>
-                        <small className="text-gray-700">{item.size}</small>
-                      </div>
-                    ) : <span />}
-                    {item.type === 'group' ? (
-                      <a href={`/documents/report/${item.id}`} className="inline-flex items-center gap-2 uppercase text-sm px-3 py-1.5 rounded bg-blue-100 text-blue-800 hover:bg-blue-200">
-                        <span aria-hidden="true" className="material-symbols-outlined">visibility</span>
-                        View All
-                      </a>
-                    ) : (
-                      <a href={item.file_url || '#'} target={item.file_url ? '_blank' : undefined} rel={item.file_url ? 'noreferrer' : undefined} className="inline-flex items-center gap-2 uppercase text-sm px-3 py-1.5 rounded bg-blue-100 text-blue-800 hover:bg-blue-200">
-                        <span aria-hidden="true" className="material-symbols-outlined">visibility</span>
-                        View
-                      </a>
-                    )}
-                  </div>
-                </div>
-              ))}
+              ) : (
+                <div ref={tableHostRef} />
+              )}
             </div>
 
             <div className="row items-center mt-8 grid grid-cols-1 md:grid-cols-2">
@@ -211,7 +382,11 @@ export default function DocumentsSlug() {
                     <li>
                       <button
                         className="w-8 h-8 inline-flex items-center justify-center rounded-full border text-[#123a6b] disabled:opacity-40"
-                        onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                        onClick={() => {
+                          const dt = dataTableRef.current;
+                          if (dt) dt.page('previous').draw('page');
+                          else setCurrentPage((p) => Math.max(1, p - 1));
+                        }}
                         disabled={currentSafePage === 1}
                         aria-label="Previous page"
                       >
@@ -221,7 +396,11 @@ export default function DocumentsSlug() {
                     {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
                       <li key={p}>
                         <button
-                          onClick={() => setCurrentPage(p)}
+                          onClick={() => {
+                            const dt = dataTableRef.current;
+                            if (dt) dt.page(p - 1).draw('page');
+                            else setCurrentPage(p);
+                          }}
                           className={
                             p === currentSafePage
                               ? "w-8 h-8 rounded-full bg-[#c7d7ff] text-[#123a6b] font-semibold"
@@ -236,7 +415,11 @@ export default function DocumentsSlug() {
                     <li>
                       <button
                         className="w-8 h-8 inline-flex items-center justify-center rounded-full border text-[#123a6b] disabled:opacity-40"
-                        onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                        onClick={() => {
+                          const dt = dataTableRef.current;
+                          if (dt) dt.page('next').draw('page');
+                          else setCurrentPage((p) => Math.min(totalPages, p + 1));
+                        }}
                         disabled={currentSafePage === totalPages}
                         aria-label="Next page"
                       >

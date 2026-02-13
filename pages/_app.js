@@ -43,6 +43,12 @@ export default function App({ Component, pageProps }) {
 
   return (
     <>
+      {!isAdminPage && router.pathname.startsWith('/documents') ? (
+        <>
+          <Script src="/vendor/js/jquery-3.7.1.min.js" strategy="beforeInteractive" />
+          <Script src="/vendor/js/jquery.dataTables.min.js" strategy="beforeInteractive" />
+        </>
+      ) : null}
       {/* Script tag removed from here */}
       <LangAlternates />
       {/* Global guard to prevent malformed addEventListener calls from third-party/CMS scripts */}

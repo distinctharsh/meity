@@ -52,36 +52,64 @@ export default function AdminOurTeamPage() {
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    const $ = window.$ || window.jQuery;
-    if (!$) return;
     if (!items || items.length === 0) return;
     if (showForm) return;
-    const selector = '#our-team-table';
-    try {
-      if ($.fn.dataTable.isDataTable(selector)) {
-        $(selector).DataTable().destroy();
+
+    let cancelled = false;
+    let attemptTimer;
+
+    const tryInit = () => {
+      if (cancelled) return;
+      const $ = window.jQuery;
+      if (!$ || !$.fn || !$.fn.DataTable) {
+        attemptTimer = setTimeout(tryInit, 50);
+        return;
       }
-      $(selector).DataTable({
-        paging: true,
-        searching: true,
-        info: true,
-        order: [[3, 'asc']], // by display_order (after removing Role column)
-        autoWidth: false,
-        responsive: true,
-        columnDefs: [
-          { orderable: false, targets: -1 },
-          { width: '34%', targets: 0 }, // Name
-          { width: '34%', targets: 1 }, // Designation
-          { width: '14%', targets: 2 }, // Active
-          { width: '14%', targets: 3 }, // Order
-        ],
-      });
-    } catch (e) {
-      console.error('DataTable init failed (our-team)', e);
-    }
+
+      const selector = '#our-team-table';
+      try {
+        if ($.fn.dataTable.isDataTable(selector)) {
+          try {
+            $(selector).DataTable().destroy(false);
+          } catch {
+          }
+        }
+
+        $(selector).DataTable({
+          paging: true,
+          searching: true,
+          info: false,
+          lengthChange: false,
+          pageLength: 10,
+          order: [[3, 'asc']],
+          autoWidth: false,
+          responsive: true,
+          dom: 't',
+          columnDefs: [
+            { orderable: false, targets: -1 },
+            { width: '34%', targets: 0 },
+            { width: '34%', targets: 1 },
+            { width: '14%', targets: 2 },
+            { width: '14%', targets: 3 },
+          ],
+        });
+      } catch (e) {
+        console.error('DataTable init failed (our-team)', e);
+      }
+    };
+
+    tryInit();
+
     return () => {
-      if ($ && $.fn.dataTable.isDataTable(selector)) {
-        $(selector).DataTable().destroy();
+      cancelled = true;
+      if (attemptTimer) clearTimeout(attemptTimer);
+      try {
+        const $ = window.jQuery;
+        const selector = '#our-team-table';
+        if ($ && $.fn && $.fn.dataTable && $.fn.dataTable.isDataTable(selector)) {
+          $(selector).DataTable().destroy(false);
+        }
+      } catch {
       }
     };
   }, [items, showForm]);

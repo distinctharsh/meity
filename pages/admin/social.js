@@ -68,39 +68,63 @@ export default function AdminSocialPage() {
   // Initialize DataTable when posts are loaded and not in form mode
   useEffect(() => {
     if (typeof window === 'undefined' || loading || creating || editing) return;
-    
-    const $ = window.jQuery;
-    if (!$) return;
-    
-    const selector = '#social-posts-table';
-    
-    if ($.fn.DataTable.isDataTable(selector)) {
-      $(selector).DataTable().destroy();
-    }
-    
-    $(selector).DataTable({
-      paging: true,
-      pageLength: 10,
-      lengthChange: false,
-      searching: true,
-      ordering: true,
-      info: true,
-      autoWidth: false,
-      responsive: true,
-      order: [[0, 'asc'], [1, 'asc']], // Sort by platform then display_order
-      columnDefs: [
-        { orderable: false, targets: [3, 4] }, // Disable sorting on actions column
-        { width: '20%', targets: [0] }, // Platform column
-        { width: '50%', targets: [1] }, // URL column
-        { width: '10%', targets: [2] }, // Order column
-        { width: '10%', targets: [3] }, // Status column
-        { width: '10%', targets: [4] }  // Actions column
-      ]
-    });
-    
+
+    let cancelled = false;
+    let attemptTimer;
+
+    const tryInit = () => {
+      if (cancelled) return;
+      const $ = window.jQuery;
+      if (!$ || !$.fn || !$.fn.DataTable) {
+        attemptTimer = setTimeout(tryInit, 50);
+        return;
+      }
+
+      const selector = '#social-posts-table';
+      try {
+        if ($.fn.DataTable.isDataTable(selector)) {
+          try {
+            $(selector).DataTable().destroy(false);
+          } catch {
+          }
+        }
+
+        $(selector).DataTable({
+          paging: true,
+          pageLength: 10,
+          lengthChange: false,
+          searching: true,
+          ordering: true,
+          info: false,
+          autoWidth: false,
+          responsive: true,
+          dom: 't',
+          order: [[0, 'asc'], [1, 'asc']],
+          columnDefs: [
+            { orderable: false, targets: [3, 4] },
+            { width: '20%', targets: [0] },
+            { width: '50%', targets: [1] },
+            { width: '10%', targets: [2] },
+            { width: '10%', targets: [3] },
+            { width: '10%', targets: [4] }
+          ]
+        });
+      } catch {
+      }
+    };
+
+    tryInit();
+
     return () => {
-      if ($.fn.DataTable.isDataTable(selector)) {
-        $(selector).DataTable().destroy();
+      cancelled = true;
+      if (attemptTimer) clearTimeout(attemptTimer);
+      try {
+        const $ = window.jQuery;
+        const selector = '#social-posts-table';
+        if ($ && $.fn && $.fn.dataTable && $.fn.dataTable.isDataTable(selector)) {
+          $(selector).DataTable().destroy(false);
+        }
+      } catch {
       }
     };
   }, [posts, loading, creating, editing]);
