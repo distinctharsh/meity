@@ -29,7 +29,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ message: 'Method not allowed' });
   }
 
-  const uploadBase = path.join(process.cwd(), 'public', 'uploads', 'slider');
+  const uploadBase = path.join(process.cwd(), 'public', 'uploads', 'media');
   ensureUploadsDirSync(uploadBase);
   const tempBase = path.join(process.cwd(), 'tmp', 'formidable');
   ensureUploadsDirSync(tempBase);
@@ -84,7 +84,7 @@ export default async function handler(req, res) {
         }
       }
 
-      const publicUrl = `/uploads/slider/${baseName}`;
+      const publicUrl = `/uploads/media/${baseName}`;
       return res.status(200).json({ url: publicUrl, path: `public${publicUrl}` });
     } catch (e) {
       console.error('Upload save error:', e);

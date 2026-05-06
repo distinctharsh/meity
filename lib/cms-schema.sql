@@ -287,6 +287,32 @@ INSERT INTO `recent_docs` (`id`, `title`, `description`, `link_url`, `display_or
 INSERT INTO `reports` (`id`, `title`, `type`, `year`, `size`, `file_url`, `item_count`, `display_order`, `is_active`, `created_at`, `updated_at`) VALUES
 	(4, 'Test', 'pdf', 2025, '4.80 KB', '/uploads/files-1760518265959-877519462.pdf', 2, 0, 1, '2025-10-15 09:02:33', '2025-10-15 09:02:33');
 
+-- Dumping structure for table cabsec_cms.photo_galleries
+CREATE TABLE IF NOT EXISTS `photo_galleries` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) NOT NULL,
+  `date` date NOT NULL,
+  `images` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`images`)),
+  `alt_text` text DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Dumping structure for table cabsec_cms.videos
+CREATE TABLE IF NOT EXISTS `videos` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) NOT NULL,
+  `date` date NOT NULL,
+  `video_url` text NOT NULL,
+  `duration` varchar(50) DEFAULT NULL,
+  `alt_text` text DEFAULT NULL,
+  `thumbnail_url` text DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 -- Dumping data for table cabsec_cms.social_media_posts: ~10 rows (approximately)
 INSERT INTO `social_media_posts` (`id`, `platform`, `post_url`, `display_order`, `is_active`, `created_at`, `updated_at`) VALUES
 	(1, 'facebook', 'https://www.facebook.com/meityindia/posts/944312881217817?ref=embed_post', 0, 1, '2025-10-07 06:05:05', '2025-10-08 05:56:24'),

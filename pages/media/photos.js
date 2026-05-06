@@ -1,62 +1,50 @@
 import Footer from "@/components/Footer";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import Image from "next/image";
 import SubNavTabs from "@/components/SubNavTabs";
 import PageHeader from "@/components/PageHeader";
+import { useRouter } from "next/router";
+
 export default function Photos() {
+  const router = useRouter();
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState("Newest");
+  const [galleries, setGalleries] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const items = [
-    {
-      id: 1,
-      title: "Special Campaign",
-      dateLabel: "16.03.2024",
-      date: new Date(2024, 2, 16).getTime(),
-      count: 6,
-      img: "https://www.meity.gov.in/static/uploads/2024/02/WhatsApp-Image-2022-10-28-at-3.10.46-PM-768x512.jpeg",
-      alt: "Special Campaign Image having Minsiter of Cabinet Secretariat"
-    },
-    {
-      id: 2,
-      title: "FIT India Freedom Run 2.0",
-      dateLabel: "03.11.2022",
-      date: new Date(2022, 10, 3).getTime(),
-      count: 6,
-      img: "https://www.meity.gov.in/static/uploads/2024/02/WhatsApp-Image-2022-10-4-768x512.jpeg",
-      alt: "FIT India Freedom Run 2.0"
-    },
-    {
-      id: 3,
-      title: "Fire Hydrant Check",
-      dateLabel: "01.11.2022",
-      date: new Date(2022, 10, 1).getTime(),
-      count: 10,
-      img: "https://www.meity.gov.in/static/uploads/2024/02/WhatsApp-Image-2022-10-29--768x432.jpeg",
-      alt: "Fire Hydrant Check"
-    },
-    {
-      id: 4,
-      title: "Dengue Smoke Fogging",
-      dateLabel: "01.11.2022",
-      date: new Date(2022, 10, 1).getTime(),
-      count: 4,
-      img: "https://www.meity.gov.in/static/uploads/2024/02/ba2f00d153a139202836b88804bc7ab9-768x432.jpeg",
-      alt: "Dengue Smoke Fogging"
-    },
-    {
-      id: 5,
-      title: "Blood Donation Camp",
-      dateLabel: "01.11.2022",
-      date: new Date(2022, 10, 1).getTime(),
-      count: 5,
-      img: "https://www.meity.gov.in/static/uploads/2024/02/WhatsApp-Image-2022-10-28-at-5.3-768x512.jpeg",
-      alt: "Blood Donation Camp"
+  useEffect(() => {
+    fetchGalleries();
+  }, []);
+
+  const fetchGalleries = async () => {
+    try {
+      const response = await fetch('/api/admin/photos');
+      if (response.ok) {
+        const data = await response.json();
+        setGalleries(data);
+      }
+    } catch (error) {
+      console.error('Failed to fetch galleries:', error);
+    } finally {
+      setLoading(false);
     }
-  ];
+  };
+
+  const handleGalleryClick = (galleryId) => {
+    router.push(`/media/photos/${galleryId}`);
+  };
 
   const filtered = useMemo(() => {
-    let list = items;
+    let list = galleries.map(gallery => ({
+      id: gallery.id,
+      title: gallery.title,
+      dateLabel: gallery.date ? new Date(gallery.date).toLocaleDateString('en-GB') : '',
+      date: gallery.date ? new Date(gallery.date).getTime() : 0,
+      count: gallery.images ? gallery.images.length : 0,
+      img: gallery.images && gallery.images.length > 0 ? gallery.images[0].url : '',
+      alt: gallery.title
+    }));
+    
     if (query) {
       const q = query.toLowerCase();
       list = list.filter((i) => i.title.toLowerCase().includes(q));
@@ -67,7 +55,31 @@ export default function Photos() {
       list = [...list].sort((a, b) => b.date - a.date);
     }
     return list;
-  }, [items, query, sort]);
+  }, [galleries, query, sort]);
+
+  if (loading) {
+    return (
+      <>
+        <main id="main">
+          <PageHeader pagePath="/media/photos" />
+          <SubNavTabs />
+          <section className="mt-10 py-10" style={{ borderRadius: '20px' }}>
+            <div className="gi-container">
+              <div className="animate-pulse">
+                <div className="h-8 bg-gray-200 rounded w-1/4 mb-4"></div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {[...Array(6)].map((_, i) => (
+                    <div key={i} className="h-64 bg-gray-200 rounded"></div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </section>
+          <Footer />
+        </main>
+      </>
+    );
+  }
 
   return (
     <>
@@ -119,12 +131,13 @@ export default function Photos() {
                       <img
                         src={item.img}
                         alt={item.alt}
-                        className="w-full h-48 object-cover photos-img"
+                        className="w-full object-cover object-top photos-img"
+                        style={{ height: '220px' }}
                         width={100}
                         height={100}
-                      />
+                    />
                       <button className="absolute right-3 bottom-3 bg-dark/90 text-[#123a6b] rounded-md w-9 h-9 flex items-center justify-center photos-btn" aria-label="view more items" style={{ background: 'rgba(0, 0, 0, .6196078431)' }}>
-                        <span className="material-symbols-outlined" style={{ color: '#fff' }}>arrow_right_alt</span>
+                        <span className="material-symbols-outlined" style={{ color: '#fff', cursor: 'pointer' }} onClick={() => handleGalleryClick(item.id)}>arrow_right_alt</span>
                       </button>
                     </div>
                     <div className="p-1 photos-card-body">
@@ -132,7 +145,11 @@ export default function Photos() {
                     </div>
                     <div className="px-1 py-1  flex items-center justify-between uppercase photos-card-footer">
                       <small className="ptype" aria-label={item.dateLabel}>{item.dateLabel}</small>
-                      <small className="ptype">{item.count} Items</small>
+                      <small 
+                        className="ptype cursor-pointer hover:text-blue-600" 
+                      >
+                        {item.count} Items
+                      </small>
                     </div>
                   </div>
                 </div>

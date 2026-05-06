@@ -139,13 +139,26 @@ export default function AdminReportsPage() {
           <p className="text-sm text-slate-600 mt-1">Total: <span className="font-semibold text-slate-800">{items.length}</span></p>
         </div>
         <button
-          onClick={() => { setCreating(true); setEditing(null); }}
-          className="inline-flex items-center justify-center gap-2 h-10 px-4 rounded-md bg-slate-900 text-white hover:bg-slate-800 cursor-pointer"
-          aria-label="Add report"
-          title="Add report"
+          onClick={() => {
+            if (creating || editing) {
+              setCreating(false);
+              setEditing(null);
+            } else {
+              setCreating(true);
+              setEditing(null);
+            }
+          }}
+          className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300 shadow cursor-pointer"
         >
-          <span aria-hidden="true" className="material-symbols-outlined">add</span>
-          <span className="text-sm font-semibold hidden sm:inline">Add Report</span>
+            {creating ? (
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            ) : (
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 5v14M5 12h14" />
+              </svg>
+            )}
         </button>
       </div>
 
@@ -232,14 +245,14 @@ export default function AdminReportsPage() {
                     </span>
                   </td>
                   <td className="px-4 py-3 text-sm text-slate-800 whitespace-nowrap">
-                    <span className={r.is_active ? "inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-slate-900 text-white" : "inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-slate-200 text-slate-700"}>
+                    <span className={r.is_active ? "inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-600 text-white" : "inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-slate-200 text-slate-700"}>
                       {r.is_active ? 'Active' : 'Inactive'}
                     </span>
                   </td>
                   <td className="px-4 py-2 text-right space-x-2 w-28 whitespace-nowrap">
                     <button
                       onClick={() => { setEditing(r); setCreating(false); }}
-                      className="inline-flex items-center justify-center w-9 h-9 rounded-md border border-slate-300 hover:bg-slate-50 cursor-pointer"
+                      className="inline-flex items-center justify-center w-9 h-9 rounded-md border border-blue-200 text-blue-600  cursor-pointer"
                       aria-label="Edit report"
                       title="Edit report"
                     >
@@ -307,7 +320,7 @@ export default function AdminReportsPage() {
                           }}
                           className={
                             Number(p) === currentPage
-                              ? "h-9 min-w-9 px-3 rounded-md bg-slate-900 text-white font-semibold"
+                              ? "h-9 min-w-9 px-3 rounded-md bg-blue-600 text-white font-semibold"
                               : "h-9 min-w-9 px-3 rounded-md text-slate-700 hover:bg-slate-100"
                           }
                           aria-current={Number(p) === currentPage ? "page" : undefined}

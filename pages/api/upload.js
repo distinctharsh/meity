@@ -19,9 +19,6 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const uploadDir = path.join(process.cwd(), 'public', 'uploads');
-  ensureDirSync(uploadDir);
-
   const form = new IncomingForm({
     multiples: false,
     keepExtensions: true,
@@ -42,6 +39,11 @@ export default async function handler(req, res) {
     }
 
     const f = Array.isArray(file) ? file[0] : file;
+    const type = fields.type ? fields.type[0] : 'general';
+
+    // Create type-specific directory
+    const uploadDir = path.join(process.cwd(), 'public', 'uploads', type);
+    ensureDirSync(uploadDir);
 
     // In formidable v3, file.filepath and file.originalFilename
     const tempPath = f.filepath || f.path;
@@ -52,10 +54,18 @@ export default async function handler(req, res) {
 
     await fs.promises.copyFile(tempPath, destPath);
 
-    const publicUrl = `/uploads/${fileName}`;
+    const publicUrl = `/uploads/${type}/${fileName}`;
+    const fileSize = f.size || 0;
+    const fileSizeKB = (fileSize / 1024).toFixed(1);
+    const fileSizeDisplay = fileSizeKB < 1024 ? `${fileSizeKB} KB` : `${(fileSizeKB / 1024).toFixed(1)} MB`;
 
-    // TinyMCE expects { location: 'url' }
-    return res.status(200).json({ location: publicUrl, url: publicUrl });
+    // Return proper format for our form
+    return res.status(200).json({ 
+      filePath: publicUrl, 
+      fileSize: fileSizeDisplay,
+      location: publicUrl, // For TinyMCE compatibility
+      url: publicUrl 
+    });
   } catch (err) {
     console.error('Upload error:', err);
     return res.status(500).json({ error: 'Upload failed' });

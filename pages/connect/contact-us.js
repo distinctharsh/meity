@@ -39,8 +39,8 @@ export default function Contact() {
                     <span className="material-symbols-outlined">location_on</span>
                     <div aria-label="location: Cabinet Secretariat, Government of India, Electronics Niketan, 6, CGO Complex, Lodhi Road, New Delhi – 110003">
                       <p>
-                        Cabinet Secretariat, Government of India,<br />
-                        J672+C28, Rashtrapati Bhawan, President's Estate, New Delhi, Delhi 110004
+                        <b>Address</b><br />
+                        Seva Teerth <br/>New Delhi – 110011
                       </p>
                     </div>
                   </div>
@@ -48,56 +48,32 @@ export default function Contact() {
                   {/* Contacts */}
                   <div className="ms-5 mt-4 space-y-5">
                     <div>
-                      <p className="policyManager mb-0">Content Related and Web Information Manager (WIM)</p>
-                      <p className="mb-0">Ms Tulika Pandey</p>
-                      <p className="mb-0">Scientist-G, Cabinet Secretariat</p>
-                      <p className="mb-0">Electronics Niketan, 6, CGO Complex, Lodhi Road, New Delhi - 110003</p>
-                      <p className="mb-0">+91-11-24361756</p>
+                      <p className="policyManager mb-0"><b>Content Related and Web Information Manager (WIM)</b></p>
+                      <p className="mb-0">Shri Ashish Malhotra</p>
+                      <p className="mb-0">Director</p>
+                      <p className="mb-0">Seva Teerth,New Delhi - 110011</p>
+                      <p className="mb-0">+91-11-23018467</p>
                       <div className="flex justify-start items-start gap-2">
                         <p className="contact-email">
-                          <a className="no-underline" title="mailto:officer@nic.in" href="mailto:officer@nic.in">officer[at]Cabinet Secretariat[dot]gov[dot]in</a>
+                          <a className="no-underline" title="mailto:officer@nic.in" href="mailto:officer@nic.in" style={{color: 'rgba(13, 110, 253), var(--bs-link-opacity, 1))'}}>cabinet[at]nic[dot]in</a>
                         </p>
                       </div>
                     </div>
 
                     <div>
-                      <p className="policyManager mb-0">Chief Information Officer (CIO)</p>
-                      <p className="mb-0">Ms Tulika Pandey</p>
-                      <p className="mb-0">Scientist-G, Cabinet Secretariat</p>
-                      <p className="mb-0">Electronics Niketan, 6, CGO Complex, Lodhi Road, New Delhi - 110003</p>
-                      <p className="mb-0">+91-11-24361756</p>
+                      <p className="policyManager mb-0"><b>Chief Information Officer (CIO)</b></p>
+                      <p className="mb-0">Shri Satendra Singh</p>
+                      <p className="mb-0">Additional Secretary</p>
+                      <p className="mb-0">Seva Teerth,New Delhi - 110011</p>
+                      <p className="mb-0">+91-11-23012697</p>
                       <div className="flex justify-start items-start gap-2">
                         <p className="contact-email">
-                          <a className="no-underline" title="mailto:officer@nic.in" href="mailto:officer@nic.in">officer[at]Cabinet Secretariat[dot]gov[dot]in</a>
+                          <a className="no-underline" title="mailto:officer@nic.in" href="mailto:officer@nic.in">satendra[dot]singhias[at]gov[dot]in</a>
                         </p>
                       </div>
                     </div>
 
-                    <div>
-                      <p className="policyManager mb-0">RTI and Grievance Related</p>
-                      <p className="mb-0">Shri Amod Kumar</p>
-                      <p className="mb-0">Joint Secretary, Cabinet Secretariat</p>
-                      <p className="mb-0">Electronics Niketan, 6, CGO Complex, Lodhi Road, New Delhi - 110003</p>
-                      <p className="mb-0">+91-11-24363114</p>
-                      <div className="flex justify-start items-start gap-2">
-                        <p className="contact-email">
-                          <a className="no-underline" title="mailto:js.digigov@gov.in" href="mailto:js.digigov@gov.in">js[dot]digigov[at]gov[dot]in</a>
-                        </p>
-                      </div>
-                    </div>
-
-                    <div>
-                      <p className="policyManager mb-0">Website Related</p>
-                      <p className="mb-0">Webmaster</p>
-                      <p className="mb-0">Cabinet Secretariat</p>
-                      <p className="mb-0">Electronics Niketan, 6, CGO Complex, Lodhi Road, New Delhi - 110003</p>
-                      <p className="mb-0">+91-11-24361756</p>
-                      <div className="flex justify-start items-start gap-2">
-                        <p className="contact-email">
-                          <a className="no-underline" title="mailto:webmaster@officer@nic.in" href="mailto:webmaster@officer@nic.in">webmaster[at]Cabinet Secretariat[dot]gov[dot]in</a>
-                        </p>
-                      </div>
-                    </div>
+              
                   </div>
 
                   {/* QR */}

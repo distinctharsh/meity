@@ -2,8 +2,45 @@ import Footer from "@/components/Footer";
 import Pdf from "@/components/icons/Pdf";
 import SubNavTabs from "@/components/SubNavTabs";
 import PageHeader from "@/components/PageHeader";
+import Skeleton, { SkeletonText, SkeletonSection, SkeletonDownloadCard } from "@/components/Skeleton";
+import { useEffect, useState } from "react";
 
 export default function AboutUs() {
+  const [aboutContent, setAboutContent] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        const res = await fetch('/api/admin/about');
+        if (!res.ok) return;
+        const data = await res.json();
+        if (mounted) setAboutContent(Array.isArray(data) ? data : []);
+      } catch (e) {
+        console.error('Failed to load about content:', e);
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    })();
+    return () => { mounted = false; };
+  }, []);
+
+  const getContentByKey = (key) => {
+    const item = aboutContent.find(c => c.section_key === key);
+    return item ? item.content : '';
+  };
+
+  const getSectionByKey = (key) => {
+    return aboutContent.find(c => c.section_key === key);
+  };
+
+  const renderContent = (content) => {
+    if (!content) return '';
+    return content.split('\n').map((line, index) => (
+      <p key={index} className="mb-4">{line}</p>
+    ));
+  };
   return (
     <>
 
@@ -40,41 +77,84 @@ export default function AboutUs() {
           <div className="gi-container grid md:grid-cols-[1fr_2fr] gap-10">
             {/* Left Box - Vision (shrink to content height) */}
             <div className="bg-gray-100 p-6 rounded-lg inline-block align-top" style={{ height: 'fit-content', position: 'sticky', top: '250px' }}>
-              <p className="text-xl text-[#123a6b] font-semibold mb-4">
-                e-Development of India as the engine for transition into a developed nation and an empowered society.
-              </p>
-              <p className="uppercase text-sm text-[#3b3b3b] tracking-wide">Vision Statement</p>
+              {loading ? (
+                <div className="space-y-3">
+                  <Skeleton variant="title" />
+                  <SkeletonText lines={4} />
+                </div>
+              ) : (
+                <div className="text-xl text-[#123a6b] font-semibold mb-4">
+                  {renderContent(getContentByKey('vision'))}
+                </div>
+              )}
+              {/* <p className="uppercase text-sm text-[#3b3b3b] tracking-wide">Vision Statement</p> */}
             </div>
 
             {/* Right Content - About, Mission, Objectives */}
             <div className="text-[#333] space-y-6">
-              <p>
+              {/* <p>
                 The Cabinet Secretariat, under Government of India,
                 is a stand-alone ministerial agency, responsible for formulating and implementing national
                 policies and programs aimed at enabling the continuous development of the electronics and IT industry.
                 Cabinet Secretariat’s focus areas include the development, promotion, and regulation of the electronics and IT industry in India,
                 fostering digital governance, enabling innovation in emerging technologies and promoting cybersecurity
                 initiatives within the country.
-              </p>
+              </p> */}
 
               <div>
-                <h2 className="text-xl font-semibold text-[#123a6b] mb-2">Mission</h2>
-                <p>
-                  To promote Digital Governance for empowering citizens, promoting the inclusive and sustainable growth
-                  of the Electronics, IT & ITeS industries, enhancing India’s role in Internet Governance, adopting
-                  a multipronged approach that includes development of human resources, promoting R&D and innovation,
-                  enhancing efficiency through digital services and ensuring a secure cyber space.
-                </p>
+                <h2 className="text-xl font-semibold text-[#123a6b] mb-2">Functions</h2>
+                {loading ? (
+                  <SkeletonText lines={3} />
+                ) : (
+                  <div>
+                    {renderContent(getContentByKey('functions'))}
+                  </div>
+                )}
+
+
+                <div className="mt-10">
+                  <h2 className="text-xl font-semibold text-[#123a6b] mb-2">Allocation and disposal of Government Business</h2>
+                  {loading ? (
+                    <SkeletonText lines={3} />
+                  ) : (
+                    <div>
+                      {renderContent(getContentByKey('allocation_disposal'))}
+                    </div>
+                  )}
+                </div>
+                <div className="mt-10">
+                  <h2 className="text-xl font-semibold text-[#123a6b] mb-2">Support to Cabinet Committees</h2>
+                  {loading ? (
+                    <SkeletonText lines={3} />
+                  ) : (
+                    <div>
+                      {renderContent(getContentByKey('support_cabinet_committees'))}
+                    </div>
+                  )}
+                </div>
+                <div className="mt-10">
+                  <h2 className="text-xl font-semibold text-[#123a6b] mb-2">Promotion of Inter-Ministerial Coordination</h2>
+                  {loading ? (
+                    <SkeletonText lines={3} />
+                  ) : (
+                    <div>
+                      {renderContent(getContentByKey('inter_ministerial_coordination'))}
+                    </div>
+                  )}
+                </div>
               </div>
 
               <div>
                 <h2 className="text-xl font-semibold text-[#123a6b] mb-2">Objectives</h2>
-                <p>
-                  The Ministry is dedicated to a multifaceted set of objectives, aligning with the dynamic landscape
-                  of technology and its impact on society:
-                </p>
+                {loading ? (
+                  <SkeletonText lines={4} />
+                ) : (
+                  <div>
+                    {renderContent(getContentByKey('objectives'))}
+                  </div>
+                )}
 
-                <div className="grid md:grid-cols-3 sm:grid-cols-2 gap-4">
+                {/* <div className="grid md:grid-cols-3 sm:grid-cols-2 gap-4">
                   {[
                     {
                       num: 1,
@@ -128,204 +208,161 @@ export default function AboutUs() {
                       <p className="text-sm text-gray-700">{item.desc}</p>
                     </div>
                   ))}
-                </div>
+                </div> */}
               </div>
+
 
               <div>
-                <h2 className="text-xl font-semibold text-[#123a6b] mb-2">Functions</h2>
-                <p>
-                  Cabinet Secretariat<br />
-                  (Electroniki aur Soochana Praudyogiki Mantralaya)<sup>1</sup>
-                </p>
-                <ol className="list-decimal list-inside space-y-2 mt-4 text-sm text-gray-800">
-                  <li>Policy matters relating to information technology; Electronics; and Internet (all matters other than licensing of Internet Service Provider).</li>
-                  <li>
-                    Promotion of internet, IT and IT enabled services.
-                    <ul className="list-[upper-alpha] list-inside ml-5">
-                      <li>Promotion of Digital Transactions excluding Digital Payments.<sup>2</sup></li>
-                    </ul>
-                  </li>
-                  <li>Assistance to other departments in the promotion of E-Governance, E-Commerce, E-Medicine, E-Infrastructure, etc.</li>
-                  <li>Promotion of Information Technology education and Information Technology-based education.</li>
-                  <li>
-                    Matters relating to Cyber Laws, administration of the Information Technology Act. 2000 (21 of 2000) and other IT related laws.
-                    <ul className="list-[upper-alpha] list-inside ml-5">
-                      <li>Matters relating to online gaming.<sup>3</sup></li>
-                      <li>Matters relating to Cyber Security as assigned in the Information Technology Act, 2000 (21 of 2000) (as amended from time to time) and support to other Ministries / Departments on Cyber Security.<sup>4</sup></li>
-                    </ul>
-                  </li>
-                  <li>Matters relating to promotion and manufacturing of Semiconductor Devices in the country.<sup>5</sup></li>
-                  <li>Interaction in IT related matters with international agencies and bodies e.g. Internet for Business Limited (IFB), Institute for Education in Information Society (IBI) and International Code Council — online (ICC).</li>
-                  <li>Initiative on bridging the Digital Divide: Matters relating to Digital India Corporation.<sup>6</sup></li>
-                  <li>Promotion of Standardization, Testing and Quality in IT and standardization of procedure for IT application and Tasks.</li>
-                  <li>Electronics Export and Computer Software Promotion Council (ESC).</li>
-                  <li>National Informatics Centre (NIC).</li>
-                  <li>Initiatives for development of Hardware/Software industry including knowledge-based enterprises, measures for promoting IT exports and competitiveness of the industry.</li>
-                  <li>All matters relating to personnel under the control of the Ministry.<sup>7</sup></li>
-                  <li>Unique Identification Authority of India (UIDAI).<sup>8</sup></li>
-                  <li>Semi-Conductor Laboratory, Mohali.<sup>9</sup></li>
-                </ol>
-              </div>
-
-
-              <div className="mt-10">
-                <h2 className="text-xl font-semibold text-[#123a6b] mb-2">Amendments to Functions</h2>
-                <ol className="list-decimal list-inside space-y-2 text-sm text-gray-800">
-                  <li>
-                    Modified vide Amendment series no. 243 dated 15.10.1999, 257 dated 21.12.2001, 300 dated 26.02.2012 and 327 dated 16.07.2016.
-                  </li>
-                  <li>
-                    Modified vide Amendment series no. 371 dated 17.07.2023.
-                  </li>
-                  <li>
-                    Inserted vide Amendment series no. 370 dated 23.12.2022.
-                  </li>
-                  <li>
-                    Inserted vide Amendment series no. 377 dated 27.09.2024.
-                  </li>
-                  <li>
-                    Modified vide Amendment series no. 368 dated 07.02.2022 (earlier inserted vide no. 279 dated 01.03.2005 and modified vide no. 322 dated 17.03.2016).
-                  </li>
-                  <li>
-                    Modified vide Amendment series no. 345 dated 17.10.2018.
-                  </li>
-                  <li>
-                    Modified vide Amendment series no. 281 dated 01.09.2005, Further modified vide amendment series no. 327 dated 16.07.2016.
-                  </li>
-                  <li>
-                    Inserted vide Amendment series no. 318 dated 12.09.2015 (Earlier inserted under Planning Commission vide Amendment Series no.296 dated 22.02.2010, and in NITI Aayog vide series no.312).
-                  </li>
-                  <li>
-                    Inserted vide Amendment series no. 368 dated 07.02.2022.
-                  </li>
-                </ol>
-              </div>
-
-
-
-
-              <div className="max-w-4xl mx-auto px-4 space-y-10">
-
-                {/* Citizens' Charter */}
-                <div>
-                  <h2 className="text-xl font-semibold text-[#123a6b] mb-2">Citizens' Charter</h2>
-                  <p className="text-gray-700 text-sm mb-4">
-                    A Citizens' Charter represents the commitment of the Organisation towards standard, quality and time frame of
-                    service delivery, grievance redress mechanism, transparency and accountability. Nodal Officers have been appointed
-                    with a view to ensure effective implementation of Citizens’ Charter.
-                  </p>
-
-                  {/* Document Card */}
-                  <div className="flex justify-between items-center bg-gray-100 p-4 rounded-md">
-                    <div className="flex items-center gap-2">
-                      <p className="mb-2 md:mb-0 flex items-center gap-2 text-gray-900 font-medium">
-                        <span className="material-symbols-outlined text-[#0f3c82]">draft</span>
-                        Citizens' Charter
-                      </p>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <Pdf />
-                      <span className="text-xs text-gray-600">439.35 KB</span>
-                      <button className="bg-blue-100 text-blue-600 px-3 pt-1 rounded hover:bg-blue-200"><span aria-hidden="true" className="material-symbols-outlined bhashini-skip-translation " style={{ fontSize: '17px', cursor: 'pointer', cursor: 'pointer' }}>visibility</span></button>
-                    </div>
+                <h2 className="text-xl font-semibold text-[#123a6b] mb-2">Development</h2>
+                {loading ? (
+                  <SkeletonText lines={3} />
+                ) : (
+                  <div>
+                    {renderContent(getContentByKey('development'))}
                   </div>
+                )}
+              </div>
+
+
+
+                <div className="mt-10">
+                  <h2 className="text-xl font-semibold text-[#123a6b] mb-2">In June, 1970 three departments namely:</h2>
+                  {loading ? (
+                    <SkeletonText lines={3} />
+                  ) : (
+                    <div>
+                      {renderContent(getContentByKey('development_history'))}
+                    </div>
+                  )}
                 </div>
 
-                {/* Other Documents */}
-                <div>
-                  <h2 className="text-xl font-semibold text-[#123a6b] mb-4">Other Documents</h2>
+                 <div className="mt-10">
+                  <h2 className="text-xl font-semibold text-[#123a6b] mb-2">Directorate Of Public Grievances (DPG)</h2>
+                  {loading ? (
+                    <SkeletonText lines={3} />
+                  ) : (
+                    <div>
+                      {renderContent(getContentByKey('dpg'))}
+                    </div>
+                  )}
+                </div>
+                 <div className="mt-10">
+                  <h2 className="text-xl font-semibold text-[#123a6b] mb-2">National Authority Chemical Weapons Convention (NACWC)</h2>
+                  {loading ? (
+                    <SkeletonText lines={3} />
+                  ) : (
+                    <div>
+                      {renderContent(getContentByKey('nacwc'))}
+                    </div>
+                  )}
+                </div>
+                 <div className="mt-10">
+                  <h2 className="text-xl font-semibold text-[#123a6b] mb-2">Direct Benefit Transfer(DBT) Mission</h2>
+                  {loading ? (
+                    <SkeletonText lines={3} />
+                  ) : (
+                    <div>
+                      {renderContent(getContentByKey('dbt_mission'))}
+                    </div>
+                  )}
+                </div>
+                <div className="mt-10">
+                  <h2 className="text-xl font-semibold text-[#123a6b] mb-2">Office of the Principal Scientific Adviser (O/o PSA)</h2>
+                  {loading ? (
+                    <SkeletonText lines={3} />
+                  ) : (
+                    <div>
+                      {renderContent(getContentByKey('psa_office'))}
+                    </div>
+                  )}
+                </div>
 
-                  {/* Document Cards */}
-                  <div className="space-y-3">
-                    {/* Document 1 */}
+
+             
+
+
+                   {/* Download Sections */}
+                {getSectionByKey('cabinet_secretaries') && (
+                  <div>
+                    <h2 className="text-xl font-semibold text-[#123a6b] mb-2">{getSectionByKey('cabinet_secretaries').title}</h2>
                     <div className="flex justify-between items-center bg-gray-100 p-4 rounded-md">
                       <p className="mb-2 md:mb-0 flex items-center gap-2 text-gray-900 font-medium">
                         <span className="material-symbols-outlined text-[#0f3c82]">draft</span>
-                        Organisational Chart of Cabinet Secretariat
+                        {getSectionByKey('cabinet_secretaries').title}
                       </p>
-                      <div className="flex items-center gap-3">
-                        <Pdf />
-                        <span className="text-xs text-gray-600">28.74 KB</span>
-                        <button className="bg-blue-100 text-blue-600 px-3 pt-1 rounded hover:bg-blue-200"><span aria-hidden="true" className="material-symbols-outlined bhashini-skip-translation " style={{ fontSize: '17px', cursor: 'pointer' }}>visibility</span></button>
-                      </div>
-                    </div>
-
-                    {/* Document 2 */}
-                    <div className="flex justify-between items-center bg-gray-100 p-4 rounded-md">
-                      <p className="mb-2 md:mb-0 flex items-center gap-2 text-gray-900 font-medium">
-                        <span className="material-symbols-outlined text-[#0f3c82]">draft</span>
-                        Groups and their respective Heads/Group Coordinators
-                      </p>
-                      <div className="flex items-center gap-3">
-                        <Pdf />
-                        <span className="text-xs text-gray-600">107.25 KB</span>
-                        <button className="bg-blue-100 text-blue-600 px-3 pt-1 rounded hover:bg-blue-200"><span aria-hidden="true" className="material-symbols-outlined bhashini-skip-translation " style={{ fontSize: '17px', cursor: 'pointer' }}>visibility</span></button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Abbreviations Section */}
-                <div>
-                  <h2 className="text-xl font-semibold text-[#123a6b] mb-2">Other Documents</h2>
-                  <div className="flex justify-between items-center bg-gray-100 p-4 rounded-md">
-
-                    <p className="mb-2 md:mb-0 flex items-center gap-2 text-gray-900 font-medium">
-                      <span className="material-symbols-outlined text-[#0f3c82]">draft</span>
-                      Abbreviations
-                    </p>
-                    <button style={{ background: '#a3bbf3', color: '#162f6a', padding: '4px 8px', cursor: 'pointer' }}>
-
-                      <span aria-hidden="true" className="material-symbols-outlined bhashini-skip-translation" style={{ fontSize: '15px' }}>arrow_right_alt</span>
-                    </button>
-                  </div>
-                </div>
-
-              </div>
-
-
-
-
-              <div className="max-w-3xl mx-auto px-4">
-                <h2 className="text-lg font-semibold text-[#0f3c82] mb-4">Official Language Activities</h2>
-                <p className="text-gray-700 mb-6">
-                  Hindi unit of the Cabinet Secretariat is responsible for implementation of Official
-                  Language Policy of the Union and the progressive use of Official Language, Hindi in the Ministry and the Offices/Autonomous
-                  Societies under its control.
-                </p>
-
-                <div className="space-y-4">
-                  {[
-                    { text: "Background", href: "/ministry/about-us/details/Title=Background-AzN4AjMtQWa" },
-                    { text: "Official Language Policy of the Union", href: "/ministry/about-us/details/Title=Official-Language-Policy-of-the-Union-AzN4AjMtQWa" },
-                    { text: "Constitutional Provisions", href: "/ministry/about-us/details/Title=Constitutional-Provisions-AzN4AjMtQWa" },
-                    { text: "Official Language Act", href: "/ministry/about-us/details/Title=Official-Language-Act-AzN4AjMtQWa" },
-                    { text: "The Official Languages (Use for Official Purpose of the Union)", href: "/ministry/about-us/details/Title=The-Official-Languages-(Use-for-Official-Purpose-of-the-Union)-AzN4AjMtQWa" },
-                    { text: "Official Language activities of the Ministry", href: "/ministry/about-us/details/Title=Official-Language-activities-of-the-Ministry-AzN4AjMtQWa" },
-                  ].map(({ text, href }) => (
-                    <div
-                      key={text}
-                      className="flex flex-col md:flex-row items-center justify-between border border-gray-300 rounded-md p-3"
-                    >
-                      <p className="mb-2 md:mb-0 flex items-center gap-2 text-gray-900 font-medium">
-                        <span className="material-symbols-outlined text-[#0f3c82]">draft</span>
-                        {text}
-                      </p>
-                      <a
-                        href={href}
-                        target="_blank"
+                      <a 
+                        href={getSectionByKey('cabinet_secretaries').file_url || '#'} 
+                        target="_blank" 
                         rel="noopener noreferrer"
-                        className="flex items-center gap-1 text-[#0f3c82] font-semibold hover:text-blue-700"
-                        style={{ background: '#a3bbf3', color: '#162f6a', padding: '8px' }}
-                        aria-label={`Know More about ${text}`}
-                        title={`Know More about ${text}`}
+                        style={{ background: '#a3bbf3', color: '#162f6a', padding: '4px 8px', cursor: 'pointer', textDecoration: 'none' }}
                       >
                         <span aria-hidden="true" className="material-symbols-outlined bhashini-skip-translation" style={{ fontSize: '15px' }}>arrow_right_alt</span>
                       </a>
                     </div>
-                  ))}
+                  </div>
+                )}
+
+
+              {getSectionByKey('work_distribution') && (
+                <div className="   ">
+                  <div>
+                    <h2 className="text-xl font-semibold text-[#123a6b] mb-2">{getSectionByKey('work_distribution').title}</h2>
+                    <div className="flex justify-between items-center bg-gray-100 p-4 rounded-md">
+                      <div className="flex items-center gap-2">
+                        <p className="mb-2 md:mb-0 flex items-center gap-2 text-gray-900 font-medium">
+                          <span className="material-symbols-outlined text-[#0f3c82]">draft</span>
+                          {getSectionByKey('work_distribution').title}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <Pdf />
+                        <span className="text-xs text-gray-600">{getSectionByKey('work_distribution').file_size || '0 KB'}</span>
+                        <a 
+                          href={getSectionByKey('work_distribution').file_url || '#'} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="bg-blue-100 text-blue-600 px-3 pt-1 rounded hover:bg-blue-200 inline-flex items-center"
+                          style={{ textDecoration: 'none' }}
+                        >
+                          <span aria-hidden="true" className="material-symbols-outlined bhashini-skip-translation" style={{ fontSize: '17px', cursor: 'pointer' }}>visibility</span>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              </div>
+              )}
+              {getSectionByKey('organization_chart') && (
+                <div className="   ">
+                  <div>
+                    <h2 className="text-xl font-semibold text-[#123a6b] mb-2">{getSectionByKey('organization_chart').title}</h2>
+                    <div className="flex justify-between items-center bg-gray-100 p-4 rounded-md">
+                      <div className="flex items-center gap-2">
+                        <p className="mb-2 md:mb-0 flex items-center gap-2 text-gray-900 font-medium">
+                          <span className="material-symbols-outlined text-[#0f3c82]">draft</span>
+                          {getSectionByKey('organization_chart').title}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <Pdf />
+                        <span className="text-xs text-gray-600">{getSectionByKey('organization_chart').file_size || '0 KB'}</span>
+                        <a 
+                          href={getSectionByKey('organization_chart').file_url || '#'} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="bg-blue-100 text-blue-600 px-3 pt-1 rounded hover:bg-blue-200 inline-flex items-center"
+                          style={{ textDecoration: 'none' }}
+                        >
+                          <span aria-hidden="true" className="material-symbols-outlined bhashini-skip-translation" style={{ fontSize: '17px', cursor: 'pointer' }}>visibility</span>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+
+
+
 
 
 

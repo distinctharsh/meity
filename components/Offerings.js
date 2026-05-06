@@ -4,19 +4,9 @@ import { FiChevronRight } from 'react-icons/fi';
 import WhatsNew from "../components/icons/whats-new";
 
 export default function Offerings() {
-  const [activeTab, setActiveTab] = useState("schemes");
-  const [schemesList, setSchemesList] = useState([
-    "Guidelines for implementation of Scheme for reimbursement of Testing and Certification Charges",
-    "TECHNICAL INTERNSHIP PROGRAMME 2025",
-    "Electronics Component Manufacturing Scheme",
-    "Digital India Internship Scheme-2025"
-  ]);
-  const [vacanciesList, setVacanciesList] = useState([
-    "Vacancy 1: Technical Assistant",
-    "Vacancy 2: Junior Engineer",
-    "Vacancy 3: Project Manager",
-    "Vacancy 4: Data Analyst"
-  ]);
+  const [activeTab, setActiveTab] = useState("vacancies");
+  const [vacanciesList, setVacanciesList] = useState([]);
+  const [tendersList, setTendersList] = useState([]);
   const [whatsNewList, setWhatsNewList] = useState([
     "Cabinet Secretariat Performance Smartboard",
     "Latest update from Ministry",
@@ -27,13 +17,21 @@ export default function Offerings() {
     let mounted = true;
     (async () => {
       try {
-        const res = await fetch('/api/offerings');
-        if (res.ok) {
-          const data = await res.json();
-          if (mounted && data) {
-            if (Array.isArray(data.schemes)) setSchemesList(data.schemes);
-            if (Array.isArray(data.vacancies)) setVacanciesList(data.vacancies);
-            if (Array.isArray(data.whats_new)) setWhatsNewList(data.whats_new);
+        // Fetch vacancies
+        const vacanciesRes = await fetch('/api/offerings/vacancies');
+        if (vacanciesRes.ok) {
+          const vacanciesData = await vacanciesRes.json();
+          if (mounted && Array.isArray(vacanciesData)) {
+            setVacanciesList(vacanciesData.slice(0, 5)); // Show only 5 latest vacancies
+          }
+        }
+
+        // Fetch tenders
+        const tendersRes = await fetch('/api/offerings/tenders');
+        if (tendersRes.ok) {
+          const tendersData = await tendersRes.json();
+          if (mounted && Array.isArray(tendersData)) {
+            setTendersList(tendersData.slice(0, 5)); // Show only 5 latest tenders
           }
         }
       } catch {}
@@ -59,27 +57,30 @@ export default function Offerings() {
 
             <div className="flex mb-2.5 border border-[#162f6a] rounded overflow-hidden w-full max-w-full">
               <button
-                className={`${activeTab === "schemes" ? 'text-white bg-[#222e4c] font-semibold' : 'text-[#222e4c] bg-white font-normal'} flex-1 text-center py-3 border-0 cursor-pointer select-none text-[1.2rem]`}
-                onClick={() => handleTabClick("schemes")}
-                aria-selected={activeTab === "schemes"}
-              >
-                Schemes
-              </button>
-              <button
                 className={`${activeTab === "vacancies" ? 'text-white bg-[#222e4c] font-semibold' : 'text-[#222e4c] bg-white font-normal'} flex-1 text-center py-3 border-0 cursor-pointer select-none text-[1.2rem]`}
                 onClick={() => handleTabClick("vacancies")}
                 aria-selected={activeTab === "vacancies"}
               >
                 Vacancies
               </button>
+              <button
+                className={`${activeTab === "tenders" ? 'text-white bg-[#222e4c] font-semibold' : 'text-[#222e4c] bg-white font-normal'} flex-1 text-center py-3 border-0 cursor-pointer select-none text-[1.2rem]`}
+                onClick={() => handleTabClick("tenders")}
+                aria-selected={activeTab === "tenders"}
+              >
+                Tenders
+              </button>
             </div>
 
             <div className="bg-white rounded-b-[6px] p-0 shadow-[0_1px_0_rgba(0,0,0,0.04)] border-t-0 max-h-[230px] overflow-y-auto [scrollbar-width:thin] [scrollbar-color:#123a6b_#f1f1f1]">
               <ul className="list-none m-0 py-2">
-                {(activeTab === "schemes" ? schemesList : vacanciesList).map((item, index) => {
+                {(activeTab === "vacancies" ? vacanciesList : tendersList).map((item, index) => {
                   const isObj = item && typeof item === 'object';
                   const title = isObj ? item.title : item;
-                  const url = isObj ? item.link_url : null;
+                  // Construct file URL dynamically based on type
+                  const url = isObj && item.file_name 
+                    ? `/uploads/${activeTab}/${item.file_name}` 
+                    : null;
                   return (
                     <li key={index} className="py-[14px] px-5 border-b border-[#e8eefc] flex justify-between items-center text-[#150202] font-normal text-[1.1rem] leading-[1.5] whitespace-normal overflow-hidden text-ellipsis [display:-webkit-box] [line-clamp:3] [-webkit-line-clamp:3] [-webkit-box-orient:vertical] max-w-full last:border-b-0">
                       {url ? (
@@ -99,10 +100,13 @@ export default function Offerings() {
             </div>
 
             <div className="p-3 px-5 flex justify-end rounded-b-[6px] max-w-full mt-0">
-              <button className="inline-flex items-center gap-2 border border-[#0b3a82] bg-white text-[#0b3a82] py-[10px] px-[18px] rounded-[6px] cursor-pointer font-semibold">
+              <a 
+                href={activeTab === "vacancies" ? "/offerings/vacancies" : "/offerings/tenders"}
+                className="inline-flex items-center gap-2 border border-[#0b3a82] bg-white text-[#0b3a82] py-[10px] px-[18px] rounded-[6px] cursor-pointer font-semibold no-underline hover:bg-[#f0f4ff]"
+              >
                 VIEW MORE
                 <FiChevronRight />
-              </button>
+              </a>
             </div>
           </div>
 

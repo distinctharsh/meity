@@ -1,8 +1,111 @@
 "use client";
 import { FaUsers, FaThLarge, FaChartBar } from "react-icons/fa";
 import Image from "next/image";
+import { useEffect, useState } from "react";
 
 export default function AboutSection() {
+  const [aboutContent, setAboutContent] = useState([]);
+  const [navigation, setNavigation] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        // Fetch both about content and navigation
+        const [aboutRes, navRes] = await Promise.all([
+          fetch('/api/admin/about'),
+          fetch('/api/navigation')
+        ]);
+        
+        if (aboutRes.ok) {
+          const aboutData = await aboutRes.json();
+          if (mounted) setAboutContent(Array.isArray(aboutData) ? aboutData : []);
+        }
+        
+        if (navRes.ok) {
+          const navData = await navRes.json();
+          if (mounted) setNavigation(Array.isArray(navData) ? navData : []);
+        }
+      } catch (e) {
+        console.error('Failed to load data:', e);
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    })();
+    return () => { mounted = false; };
+  }, []);
+
+  const getContentByKey = (key) => {
+    const item = aboutContent.find(c => c.section_key === key);
+    return item ? item.content : '';
+  };
+
+  // Default content fallback
+  const defaultAboutText = "The Cabinet Secretariat functions directly under the Prime Minister. The administrative head of the Secretariat is the Cabinet Secretary who is also the ex-officio Chairman of the Civil Services Board. The business allocated to Cabinet Secretariat under the Government of India (Allocation of Business) Rules, 1961 includes (i) Secretarial assistance to the Cabinet and Cabinet Committees; and (ii) Rules of Business.";
+
+  const aboutText = getContentByKey('vision') || defaultAboutText;
+
+  // Get navigation items after About Us
+  const getTopNavItemsAfterAbout = () => {
+    // Find Cabinet Secretariat nav item
+    const cabinetSecretariat = navigation.find(nav => 
+      nav.text?.toLowerCase().includes('cabinet') || 
+      nav.text?.toLowerCase().includes('secretariat')
+    );
+    
+    if (!cabinetSecretariat || !cabinetSecretariat.children) {
+      return [];
+    }
+    
+    // Find About Us in Cabinet Secretariat children
+    const aboutUsIndex = cabinetSecretariat.children.findIndex(child =>
+      child.text?.toLowerCase().includes('about')
+    );
+    
+    // Get items after About Us (skip About Us itself)
+    const itemsAfterAbout = cabinetSecretariat.children.slice(aboutUsIndex + 1);
+    
+    // Return top 3 items
+    return itemsAfterAbout.slice(0, 3).map((item, index) => ({
+      title: item.text,
+      href: item.href,
+      icon: index === 0 ? <FaUsers /> : index === 1 ? <FaThLarge /> : <FaChartBar />,
+      section_key: `nav_card_${index}`
+    }));
+  };
+
+  const navCards = getTopNavItemsAfterAbout();
+
+  // Fallback cards if no navigation found
+  const defaultCards = [
+    {
+      title: "Our Team",
+      icon: <FaUsers />,
+      section_key: "our_team"
+    },
+    {
+      title: "Our Organisations", 
+      icon: <FaThLarge />,
+      section_key: "our_organisations"
+    },
+    {
+      title: "Our Performance",
+      icon: <FaChartBar />,
+      section_key: "our_performance"
+    }
+  ];
+
+  const cardsToUse = navCards.length > 0 ? navCards : defaultCards;
+
+  const getCardData = (section_key) => {
+    const item = aboutContent.find(c => c.section_key === section_key);
+    return item ? {
+      title: item.title || cardsToUse.find(card => card.section_key === section_key)?.title || section_key,
+      content: item.content || ''
+    } : null;
+  };
+
   return (
     <section className="py-15 bg-white">
       <div className="gi-container flex flex-col gap-10 md:flex-row md:items-start md:justify-between">
@@ -12,67 +115,66 @@ export default function AboutSection() {
             <img src="/images/icons/ministry.svg" alt="Ministry" className="mr-[15px]" />
             <h2 className="text-[24px] font-bold text-[#162f6a] m-0 pb-[5px] relative after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-[50px] after:h-[3px] after:bg-[#ff6b35]">About Us</h2>
           </div>
-          <p className="text-[15px] text-[#333] leading-[1.8] mb-[30px]">
-            The Cabinet Secretariat, under Government of India, is a
-            stand-alone ministerial agency, responsible for formulating and implementing national policies
-            and programs aimed at enabling the continuous development of the electronics and IT industry.
-            Cabinet Secretariat focus areas include the development, promotion, and regulation of the electronics and IT
-            industry in India, fostering digital governance, enabling innovation in emerging technologies and
-            promoting cybersecurity initiatives within country.
-          </p>
+          {loading ? (
+            <div className="space-y-2">
+              <div className="h-4 bg-gray-200 rounded animate-pulse"></div>
+              <div className="h-4 bg-gray-200 rounded animate-pulse"></div>
+              <div className="h-4 bg-gray-200 rounded animate-pulse w-3/4"></div>
+            </div>
+          ) : (
+            <p className="text-[15px] text-[#333] leading-[1.8] mb-[30px]">
+              {aboutText}
+            </p>
+          )}
 
-          <div className="flex gap-5 flex-col sm:flex-row">
-            <div className="flex-1 border border-[#162f6a] rounded p-[15px] px-[10px] text-center cursor-pointer transition-colors hover:bg-[#f0f4ff]">
-              <FaUsers className="text-[20px] text-[#162f6a] mb-[10px] mx-auto" />
-              <span className="text-[14px] font-semibold text-[#333]">Our Team</span>
-            </div>
-            <div className="flex-1 border border-[#162f6a] rounded p-[15px] px-[10px] text-center cursor-pointer transition-colors hover:bg-[#f0f4ff]">
-              <FaThLarge className="text-[20px] text-[#162f6a] mb-[10px] mx-auto" />
-              <span className="text-[14px] font-semibold text-[#333]">Our Organisations</span>
-            </div>
-            <div className="flex-1 border border-[#162f6a] rounded p-[15px] px-[10px] text-center cursor-pointer transition-colors hover:bg-[#f0f4ff]">
-              <FaChartBar className="text-[20px] text-[#162f6a] mb-[10px] mx-auto" />
-              <span className="text-[14px] font-semibold text-[#333]">Our Performance</span>
-            </div>
-          </div>
+<div className="flex flex-col sm:flex-row gap-5">
+  {cardsToUse.map((card) => {
+    const cardData = getCardData(card.section_key);
+    const title = cardData?.title || card.title;
+
+    return (
+      <a
+        key={card.section_key}
+        href={card.href || '#'}
+        className="group flex-1 border border-[#1e3a8a] rounded-md py-6 px-4 text-center cursor-pointer 
+        transition-all duration-300 hover:bg-[#1e3a8a] hover:shadow-lg no-underline"
+      >
+        {/* Icon */}
+        <div className="flex justify-center mb-3 text-[#1e3a8a] text-2xl transition-all duration-300 group-hover:text-white">
+          {card.icon}
+        </div>
+
+        {/* Title */}
+        <span className="text-[15px] font-semibold text-gray-800 transition-all duration-300 group-hover:text-white">
+          {title}
+        </span>
+      </a>
+    );
+  })}
+</div>
         </div>
 
         {/* Right Column - Ministers */}
         <div className="md:flex-[1]">
-          <div className="flex flex-col sm:flex-row gap-5">
+          <div className="flex flex-col sm:flex-row gap-5 justify-center items-center">
+            
             {/* Minister 1 */}
             <div className="flex flex-col items-center">
-              <div className="w-[215px] h-[200px] border-2 border-[#ebeaea] border-b-[6px] border-b-[#162f6a] flex items-center justify-center overflow-hidden bg-white">
+              <div className="flex justify-center">
                 <Image
-                  src="/images/about/ashwini.jpg"
-                  alt="Shri Ashwini Vaishnaw"
+                  src="/images/about/cs.jpg"
+                  alt="Dr. T. V. Somanathan"
                   width={215}
                   height={200}
-                  className="w-full h-full object-contain"
+                  className="w-full max-w-[215px] h-auto max-h-[200px] border-2 border-[#ebeaea] border-b-[6px] border-b-[#162f6a] object-contain"
                 />
               </div>
               <div className="mt-[10px] text-center">
-                <h3 className="text-[14px] font-bold text-[#162f6a] mb-[3px]">Shri Ashwini Vaishnaw</h3>
-                <div className="text-[11px] text-[#666] uppercase tracking-[0.5px]">HON’BLE MINISTER</div>
+                <h3 className="text-[14px] font-bold text-[#162f6a] mb-[3px]">Dr. T. V. Somanathan</h3>
+                <div className="text-[11px] text-[#666] uppercase tracking-[0.5px]">CABINET SECRETARY</div>
               </div>
             </div>
 
-            {/* Minister 2 */}
-            <div className="flex flex-col items-center">
-              <div className="w-[215px] h-[200px] border-2 border-[#ebeaea] border-b-[6px] border-b-[#162f6a] flex items-center justify-center overflow-hidden bg-white">
-                <Image
-                  src="/images/about/jitin.jpg"
-                  alt="Shri Jitin Prasada"
-                  width={215}
-                  height={200}
-                  className="w-full h-full object-contain"
-                />
-              </div>
-              <div className="mt-[10px] text-center">
-                <h3 className="text-[14px] font-bold text-[#162f6a] mb-[3px]">Shri Jitin Prasada</h3>
-                <div className="text-[11px] text-[#666] uppercase tracking-[0.5px]">HON’BLE MINISTER OF STATE</div>
-              </div>
-            </div>
           </div>
         </div>
       </div>

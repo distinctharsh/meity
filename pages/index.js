@@ -23,7 +23,7 @@ export default function Home() {
         <Offerings />
         <RecentDocs />
         {/* <SocialMediaFeed /> */}
-        <PromoSection />
+        {/* <PromoSection /> */}
         <PartnerLogoCarousel />
       </main>
       <Footer />

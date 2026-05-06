@@ -1,0 +1,282 @@
+/* ================================
+   CENTRALIZED ADMIN PANEL STYLES
+   ================================ */
+
+/* Admin Layout & Container */
+.admin-container {
+  @apply bg-gray-50 min-h-screen;
+}
+
+.admin-card {
+  @apply bg-white rounded-xl shadow-sm border border-gray-200 p-6 transition-all duration-300;
+}
+
+.admin-header {
+  @apply flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6;
+}
+
+.admin-title {
+  @apply text-3xl font-bold text-gray-900;
+}
+
+.admin-subtitle {
+  @apply text-gray-600 mt-1;
+}
+
+/* Button Styles */
+.btn {
+  @apply inline-flex items-center justify-center px-4 py-2 border border rounded-md shadow-sm text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-2;
+}
+
+.btn-primary {
+  @apply border-blue-300 bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-300;
+}
+
+.btn-secondary {
+  @apply border-gray-300 bg-white text-gray-700 hover:bg-gray-50 focus:ring-gray-300;
+}
+
+.btn-danger {
+  @apply border-red-300 bg-red-600 text-white hover:bg-red-700 focus:ring-red-300;
+}
+
+.btn-success {
+  @apply border-green-300 bg-green-600 text-white hover:bg-green-700 focus:ring-green-300;
+}
+
+.btn-sm {
+  @apply px-3 py-1.5 text-xs;
+}
+
+.btn-lg {
+  @apply px-6 py-3 text-base;
+}
+
+.btn-icon {
+  @apply w-10 h-10 rounded-full;
+}
+
+.btn-icon-sm {
+  @apply w-9 h-9;
+}
+
+/* Hover Effects */
+.btn:hover {
+  @apply transform scale-105;
+}
+
+.btn-icon:hover {
+  @apply transform scale-110;
+}
+
+/* Table Styles */
+.admin-table {
+  min-width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+  border: 1px solid #d2d6dc;
+  background-color: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.admin-table th {
+  padding: 16px;
+  text-align: left;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1a1d23;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  border-bottom: 1px solid #d2d6dc;
+  background-color: #f9fafb;
+}
+
+.admin-table td {
+  padding: 16px;
+  font-size: 14px;
+  color: #1a1d23;
+  white-space: nowrap;
+}
+
+.admin-table tbody tr {
+  transition: background-color 0.15s ease-in-out;
+}
+
+.admin-table tbody tr:hover {
+  background-color: #f9fafb;
+}
+
+.admin-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+/* Status Badges */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 8px;
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: 12px;
+}
+
+.badge-blue {
+  background-color: #87ceeb;
+  color: #1a1d23;
+}
+
+.badge-green {
+  background-color: #c6efce;
+  color: #1a1d23;
+}
+
+.badge-red {
+  background-color: #ffc5c5;
+  color: #1a1d23;
+}
+
+.badge-gray {
+  background-color: #f9fafb;
+  color: #1a1d23;
+}
+
+/* Form Styles */
+.form-input {
+  margin-top: 16px;
+  display: block;
+  width: 100%;
+  padding: 8px 12px;
+  font-size: 14px;
+  border: 1px solid #d2d6dc;
+  border-radius: 8px;
+  background-color: #ffffff;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+.form-select {
+  margin-top: 16px;
+  display: block;
+  width: 100%;
+  padding: 8px 12px;
+  font-size: 14px;
+  border: 1px solid #d2d6dc;
+  border-radius: 8px;
+  background-color: #ffffff;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+.form-textarea {
+  margin-top: 16px;
+  display: block;
+  width: 100%;
+  padding: 8px 12px;
+  font-size: 14px;
+  border: 1px solid #d2d6dc;
+  border-radius: 8px;
+  background-color: #ffffff;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+/* Utility Classes */
+.text-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.text-ellipsis-sm {
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.text-ellipsis-md {
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.text-ellipsis-lg {
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* DataTable Custom Styles */
+.dataTables_wrapper {
+  background-color: #ffffff;
+  border-radius: 12px;
+}
+
+.dataTables_filter input {
+  border: 1px solid #d2d6dc;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 14px;
+  background-color: #ffffff;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+  margin-left: 8px;
+}
+
+.dataTables_filter input::placeholder {
+  color: #6b7280;
+}
+
+.paginate_button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  border: 1px solid #3498db;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  background-color: #3498db;
+  color: #ffffff;
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+  margin: 4px;
+}
+
+.paginate_button.current {
+  background-color: #1a1d23;
+  color: #ffffff;
+}
+
+.dataTables_info {
+  color: #6b7280;
+  font-size: 14px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .admin-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  
+  .admin-table {
+    @apply text-xs;
+  }
+  
+  .btn {
+    @apply w-full justify-center;
+  }
+  
+  .btn-icon {
+    @apply w-12 h-12;
+  }
+}

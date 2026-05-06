@@ -25,7 +25,7 @@ export default async function handler(req, res) {
     }
   } else if (req.method === 'PUT') {
     try {
-      const { name, link, parent_id, display_order, is_active } = req.body;
+      const { name, link, parent_id, display_order, is_active, is_show } = req.body;
 
       // Fetch current row to support partial updates
       const [rows] = await pool.query('SELECT * FROM navigation_items WHERE id = ?', [id]);
@@ -40,11 +40,12 @@ export default async function handler(req, res) {
         parent_id: parent_id !== undefined ? parent_id : current.parent_id,
         display_order: display_order !== undefined ? display_order : current.display_order,
         is_active: is_active !== undefined ? is_active : current.is_active,
+        is_show: is_show !== undefined ? is_show : current.is_show,
       };
 
       const [result] = await pool.query(
-        'UPDATE navigation_items SET name = ?, link = ?, parent_id = ?, display_order = ?, is_active = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
-        [next.name, next.link, next.parent_id, next.display_order, next.is_active, id]
+        'UPDATE navigation_items SET name = ?, link = ?, parent_id = ?, display_order = ?, is_active = ?, is_show = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
+        [next.name, next.link, next.parent_id, next.display_order, next.is_active, next.is_show, id]
       );
 
       if (result.affectedRows === 0) {

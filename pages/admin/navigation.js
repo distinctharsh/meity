@@ -268,7 +268,8 @@ const NavigationForm = ({ item, navigationItems, onSubmit, onCancel }) => {
     link: '',
     parent_id: null,
     display_order: 0,
-    is_active: true
+    is_active: true,
+    is_show: true
   });
 
   useEffect(() => {
@@ -278,7 +279,8 @@ const NavigationForm = ({ item, navigationItems, onSubmit, onCancel }) => {
         link: item.link || '',
         parent_id: item.parent_id || null,
         display_order: item.display_order || 0,
-        is_active: item.is_active !== undefined ? item.is_active : true
+        is_active: item.is_active !== undefined ? item.is_active : true,
+        is_show: item.is_show !== undefined ? item.is_show : true
       });
       prevNameRef.current = item.name || '';
     }
@@ -529,6 +531,17 @@ const NavigationForm = ({ item, navigationItems, onSubmit, onCancel }) => {
                 className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
               />
               <label htmlFor="is_active" className="ml-2 block text-sm text-gray-900">Active</label>
+            </div>
+            <div className="flex items-center mt-2">
+              <input
+                id="is_show"
+                name="is_show"
+                type="checkbox"
+                checked={formData.is_show}
+                onChange={handleChange}
+                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+              />
+              <label htmlFor="is_show" className="ml-2 block text-sm text-gray-900">Show to Users</label>
             </div>
           </div>
         </div>

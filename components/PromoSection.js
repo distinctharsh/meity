@@ -14,14 +14,8 @@ const PromoSection = () => {
     const banners = [
         {
             id: 1,
-            imgSrc: "/images/promo/cyber-security-challenge.jpg",
+            imgSrc: "/images/promo/dbt.jpg",
             alt: "Cyber Security Challenge",
-            link: "#"
-        },
-        {
-            id: 2,
-            imgSrc: "/images/promo/digital-india-internship.jpg",
-            alt: "Digital India Internship",
             link: "#"
         }
     ];

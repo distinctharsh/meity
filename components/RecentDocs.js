@@ -8,11 +8,11 @@ const fallbackRecent = [
 ];
 
 const importantLinks = [
-  "Cabinet Secretariat Dashboard",
-  "Interested in Applying for Tender?",
-  "Public Grievances",
-  "Section 69A of IT Act",
-  "Explore What's new",
+  "Secretary to GOI List",
+  "Former Cabinet Secretary List",
+  "IGoT",
+  "EHRMS",
+  "SPARROW",
 ];
 
 const personas = [

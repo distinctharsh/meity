@@ -1,26 +1,43 @@
 import Footer from "@/components/Footer";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import SubNavTabs from "@/components/SubNavTabs";
 import PageHeader from "@/components/PageHeader";
 
 export default function Videos() {
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState("Newest");
+  const [videos, setVideos] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const items = [
-    {
-      id: 1,
-      title: "Kaushal Deekshant Samaroh",
-      dateLabel: "16.03.2024",
-      date: new Date(2024, 2, 16).getTime(),
-      count: '1H 30Mins',
-      videoUrl: "https://www.youtube.com/embed/kAKsKu_cy2k",
-      alt: "Special Campaign Video"
+  useEffect(() => {
+    fetchVideos();
+  }, []);
+
+  const fetchVideos = async () => {
+    try {
+      const response = await fetch('/api/admin/videos');
+      if (response.ok) {
+        const data = await response.json();
+        setVideos(data);
+      }
+    } catch (error) {
+      console.error('Failed to fetch videos:', error);
+    } finally {
+      setLoading(false);
     }
-  ];
+  };
 
   const filtered = useMemo(() => {
-    let list = items;
+    let list = videos.map(video => ({
+      id: video.id,
+      title: video.title,
+      dateLabel: video.date ? new Date(video.date).toLocaleDateString('en-GB') : '',
+      date: video.date ? new Date(video.date).getTime() : 0,
+      count: video.duration || '',
+      videoUrl: video.video_url,
+      alt: video.alt_text || video.title
+    }));
+    
     if (query) {
       const q = query.toLowerCase();
       list = list.filter((i) => i.title.toLowerCase().includes(q));
@@ -31,7 +48,31 @@ export default function Videos() {
       list = [...list].sort((a, b) => b.date - a.date);
     }
     return list;
-  }, [items, query, sort]);
+  }, [videos, query, sort]);
+
+  if (loading) {
+    return (
+      <>
+        <main id="main">
+          <PageHeader pagePath="/media/videos" />
+          <SubNavTabs />
+          <section className="mt-8 py-1" style={{ borderRadius: '20px' }}>
+            <div className="gi-container">
+              <div className="animate-pulse">
+                <div className="h-8 bg-gray-200 rounded w-1/4 mb-4"></div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {[...Array(6)].map((_, i) => (
+                    <div key={i} className="h-64 bg-gray-200 rounded"></div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </section>
+          <Footer />
+        </main>
+      </>
+    );
+  }
 
   return (
     <>

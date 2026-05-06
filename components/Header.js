@@ -6,23 +6,23 @@ export default function Header() {
   return (
     <>
     <header id="site-header" className="bg-white py-[12px] px-4 md:px-[120px] border-b border-[#e6e6e6] md:sticky md:top-0 md:z-[998]">
-      <div className="w-full mx-auto py-4">
+      <div className="w-full mx-auto py-8">
         <div className="grid grid-cols-1 gap-2 md:gap-4 md:grid-cols-[3fr_auto_1fr] md:items-end">
           {/* Left Column */}
           <div className="flex flex-col md:flex-row md:items-end gap-3 order-2 md:order-none w-full">
             {/* Top row: Emblem + Text */}
-            <div className="flex items-start gap-3">
+            <div className="flex items-end gap-3">
               {/* Emblem */}
               <div className="flex items-center flex-none">
                 <Emblem />
               </div>
 
               {/* Text */}
-              <div className="flex flex-col justify-center leading-[1.2] min-w-0 mt-[8px] md:mt-[25px] md:flex-1">
-                <div className="text-[1.5rem] text-black mb-[6px] font-normal leading-[18px] tracking-[-0.08px]">
+              <div className="flex flex-col leading-[1.2] min-w-0 md:flex-1">
+                <div style={{ color: '#000', fontStyle: 'normal', fontWeight: 400, letterSpacing: '-0.08px', marginBottom: 0 }}>
                   Government of India
                 </div>
-                <h2 className="text-[1.8rem] font-bold text-black mb-[4px] leading-[1.3]">
+                <h2 style={{ color: '#000', fontStyle: 'normal', fontWeight: 700, letterSpacing: '0', marginBottom: 6 }} className="text-[1.5rem] leading-[1.3]">
                   Cabinet Secretariat
                 </h2>
               </div>
@@ -34,7 +34,7 @@ export default function Header() {
             </div>
 
             {/* Search (desktop only) */}
-            <div className="hidden md:flex items-center md:ml-5 md:mb-0 md:mr-5 order-4 md:order-none w-full md:w-auto justify-center md:justify-start ">
+            {/* <div className="hidden md:flex items-center md:ml-5 md:mb-0 md:mr-5 order-4 md:order-none w-full md:w-auto justify-center md:justify-start ">
               <div className="flex items-center border-[2px] border-[#ebeaea] border-b-[3px] border-b-[#123a6b] rounded-t-[12px] overflow-hidden w-full max-w-[320px] md:max-w-[400px] md:w-[300px] bg-white mb-0 md:mb-[10px]">
                 <input
                   type="text"
@@ -45,18 +45,18 @@ export default function Header() {
                   <span className="material-symbols-outlined">search</span>
                 </button>
               </div>
-            </div>
+            </div> */}
 
             {/* Middle Column (desktop/tablet only) */}
-            <div className="hidden md:flex justify-center mb-[10px] order-3 md:order-none">
-              <img src="/images/digitalindia.svg" alt="Digital India" width={100} height={100} style={{ width: 130, height: 'auto' }} />
-            </div>
 
           </div>
 
           {/* Middle Column (desktop/tablet only) */}
-          <div className="hidden md:flex justify-center mb-[10px] order-3 md:order-none">
+          <div className="hidden md:flex justify-center  order-3 md:order-none">
             
+            <div >
+              <img src="/images/digitalindia.svg" alt="Digital India" width={100} height={100} style={{ width: 200, height: 'auto' }} />
+            </div>
           </div>
 
           {/* Right Column */}

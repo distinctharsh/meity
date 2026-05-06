@@ -7,20 +7,23 @@ export default function OfferingsManagement() {
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editingOffering, setEditingOffering] = useState(null);
+  const [activeTab, setActiveTab] = useState('vacancies'); // vacancies, tenders
 
   useEffect(() => {
     fetchOfferings();
-  }, []);
+  }, [activeTab]);
 
   const fetchOfferings = async () => {
     try {
-      const response = await fetch('/api/admin/offerings');
+      let apiUrl = activeTab === 'vacancies' ? '/api/admin/vacancies' : '/api/admin/tenders';
+      
+      const response = await fetch(apiUrl);
       if (response.ok) {
         const data = await response.json();
         setOfferings(data);
       }
     } catch (error) {
-      console.error('Failed to fetch offerings:', error);
+      console.error('Failed to fetch items:', error);
     } finally {
       setLoading(false);
     }
@@ -37,30 +40,36 @@ export default function OfferingsManagement() {
   };
 
   const handleDelete = async (id) => {
-    if (!confirm('Are you sure you want to delete this offering?')) return;
+    const itemType = activeTab === 'vacancies' ? 'vacancy' : 'tender';
+    if (!confirm(`Are you sure you want to delete this ${itemType}?`)) return;
 
     try {
-      const response = await fetch(`/api/admin/offerings/${id}`, {
+      let apiUrl = activeTab === 'vacancies' ? `/api/admin/vacancies/${id}` : `/api/admin/tenders/${id}`;
+      
+      const response = await fetch(apiUrl, {
         method: 'DELETE'
       });
 
       if (response.ok) {
-        setOfferings(offerings.filter(offering => offering.id !== id));
+        setOfferings(offerings.filter(item => item.id !== id));
       } else {
-        alert('Failed to delete offering');
+        alert(`Failed to delete ${itemType}`);
       }
     } catch (error) {
       console.error('Delete error:', error);
-      alert('Failed to delete offering');
+      alert(`Failed to delete ${itemType}`);
     }
   };
 
   const handleFormSubmit = async (formData) => {
     try {
-      const url = editingOffering ? `/api/admin/offerings/${editingOffering.id}` : '/api/admin/offerings';
+      let apiUrl = activeTab === 'vacancies' 
+        ? (editingOffering ? `/api/admin/vacancies/${editingOffering.id}` : '/api/admin/vacancies')
+        : (editingOffering ? `/api/admin/tenders/${editingOffering.id}` : '/api/admin/tenders');
+      
       const method = editingOffering ? 'PUT' : 'POST';
 
-      const response = await fetch(url, {
+      const response = await fetch(apiUrl, {
         method,
         headers: {
           'Content-Type': 'application/json',
@@ -74,17 +83,19 @@ export default function OfferingsManagement() {
         fetchOfferings();
       } else {
         const error = await response.json();
-        alert(error.message || 'Failed to save offering');
+        alert(error.message || 'Failed to save item');
       }
     } catch (error) {
       console.error('Save error:', error);
-      alert('Failed to save offering');
+      alert('Failed to save item');
     }
   };
 
   const toggleActive = async (id, isActive) => {
     try {
-      const response = await fetch(`/api/admin/offerings/${id}`, {
+      let apiUrl = activeTab === 'vacancies' ? `/api/admin/vacancies/${id}` : `/api/admin/tenders/${id}`;
+      
+      const response = await fetch(apiUrl, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -95,11 +106,34 @@ export default function OfferingsManagement() {
       if (response.ok) {
         fetchOfferings();
       } else {
-        alert('Failed to update offering status');
+        alert('Failed to update item status');
       }
     } catch (error) {
       console.error('Toggle error:', error);
-      alert('Failed to update offering status');
+      alert('Failed to update item status');
+    }
+  };
+
+  const toggleArchive = async (id, isArchived) => {
+    try {
+      let apiUrl = activeTab === 'vacancies' ? `/api/admin/vacancies/${id}` : `/api/admin/tenders/${id}`;
+      
+      const response = await fetch(apiUrl, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ is_archived: !isArchived }),
+      });
+
+      if (response.ok) {
+        fetchOfferings();
+      } else {
+        alert('Failed to update archive status');
+      }
+    } catch (error) {
+      console.error('Archive toggle error:', error);
+      alert('Failed to update archive status');
     }
   };
 
@@ -124,21 +158,52 @@ export default function OfferingsManagement() {
     <AdminLayout>
       <div className="p-6">
         <div className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">Offerings Management</h1>
+          <h1 className="text-2xl font-bold text-gray-900">
+            {activeTab === 'vacancies' ? 'Vacancies Management' : 'Tenders Management'}
+          </h1>
           <button
             onClick={() => { setEditingOffering(null); setShowForm(!showForm); }}
             className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-blue-600 text-white hover:bg-blue-700"
-            aria-label={showForm ? 'Cancel' : 'Add Offering'}
-            title={showForm ? 'Cancel' : 'Add Offering'}
+            aria-label={showForm ? 'Cancel' : 'Add Item'}
+            title={showForm ? 'Cancel' : 'Add Item'}
           >
             <span className="material-symbols-outlined">{showForm ? 'close' : 'add'}</span>
           </button>
         </div>
 
+        {/* Tabs */}
+        <div className="border-b border-gray-200 mb-6">
+          <nav className="-mb-px flex space-x-8">
+            <button
+              onClick={() => setActiveTab('vacancies')}
+              className={`py-2 px-1 border-b-2 font-medium text-sm ${
+                activeTab === 'vacancies'
+                  ? 'border-green-500 text-green-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              }`}
+            >
+              Vacancies
+            </button>
+            <button
+              onClick={() => setActiveTab('tenders')}
+              className={`py-2 px-1 border-b-2 font-medium text-sm ${
+                activeTab === 'tenders'
+                  ? 'border-orange-500 text-orange-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              }`}
+            >
+              Tenders
+            </button>
+          </nav>
+        </div>
+
         {showForm && (
           <div className="bg-white rounded-lg shadow p-4 border border-gray-300 mb-6">
             <h2 className="text-lg font-semibold mb-4">
-              {editingOffering ? 'Edit Offering' : 'Add New Offering'}
+              {editingOffering ? 
+                (activeTab === 'vacancies' ? 'Edit Vacancy' : 'Edit Tender') : 
+                (activeTab === 'vacancies' ? 'Add New Vacancy' : 'Add New Tender')
+              }
             </h2>
             <OfferingForm
               offering={editingOffering}
@@ -147,6 +212,7 @@ export default function OfferingsManagement() {
                 setShowForm(false);
                 setEditingOffering(null);
               }}
+              tabType={activeTab}
             />
           </div>
         )}
@@ -156,7 +222,11 @@ export default function OfferingsManagement() {
             <thead className="bg-gray-50">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+                {(activeTab === 'vacancies' || activeTab === 'tenders') && (
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    {activeTab === 'vacancies' ? 'Closing Date' : 'Closing Date'}
+                  </th>
+                )}
                 <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-24">Status</th>
                 <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider w-40">Actions</th>
               </tr>
@@ -164,57 +234,72 @@ export default function OfferingsManagement() {
             <tbody className="bg-white divide-y divide-gray-200">
               {offerings.length === 0 ? (
                 <tr>
-                  <td colSpan="4" className="px-6 py-4 text-center text-sm text-gray-500">
-                    No offerings found. Click the "+" button to add a new offering.
+                  <td colSpan={3} className="px-6 py-4 text-center text-sm text-gray-500">
+                    {activeTab === 'vacancies' ? 'No vacancies found. Click the "+" button to add a new vacancy.' :
+                     'No tenders found. Click the "+" button to add a new tender.'}
                   </td>
                 </tr>
               ) : (
-                offerings.map((offering) => (
-                  <tr key={offering.id}>
+                offerings.map((item) => (
+                  <tr key={item.id}>
                     <td className="px-6 py-4">
                       <div className="flex items-center">
-                        {offering.icon && (
-                          <span className="text-xl mr-2">{offering.icon}</span>
+                        {item.icon && (
+                          <span className="text-xl mr-2">{item.icon}</span>
                         )}
                         <div>
-                          <div className="text-sm font-medium text-gray-900">{offering.title}</div>
-                          {offering.description && (
+                          <div className="text-sm font-medium text-gray-900">{item.title}</div>
+                          {item.description && (
                             <div className="text-xs text-gray-500 mt-1 line-clamp-1">
-                              {offering.description}
+                              {item.description}
                             </div>
                           )}
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4">
-                      <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
-                        {offering.category || 'Uncategorized'}
-                      </span>
-                    </td>
+                    {(activeTab === 'vacancies' || activeTab === 'tenders') && (
+                      <td className="px-6 py-4">
+                        {item.closing_date ? (
+                          <span className="text-xs text-gray-600">{item.closing_date}</span>
+                        ) : (
+                          <span className="text-xs text-gray-400">No closing date</span>
+                        )}
+                      </td>
+                    )}
                     <td className="px-6 py-4 text-center">
                       <span
                         className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                          offering.is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                          item.is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
                         }`}
                       >
-                        {offering.is_active ? 'Active' : 'Inactive'}
+                        {item.is_active ? 'Active' : 'Inactive'}
                       </span>
                     </td>
                     <td className="px-6 py-4 text-right">
                       <div className="flex justify-end space-x-2">
                         <button
-                          onClick={() => toggleActive(offering.id, offering.is_active)}
+                          onClick={() => toggleActive(item.id, item.is_active)}
                           className="inline-flex items-center justify-center w-8 h-8 rounded-full border hover:bg-gray-50"
-                          aria-label={offering.is_active ? 'Deactivate' : 'Activate'}
-                          title={offering.is_active ? 'Deactivate' : 'Activate'}
+                          aria-label={item.is_active ? 'Deactivate' : 'Activate'}
+                          title={item.is_active ? 'Deactivate' : 'Activate'}
                         >
                           <span className="material-symbols-outlined text-sm">
-                            {offering.is_active ? 'toggle_off' : 'toggle_on'}
+                            {item.is_active ? 'toggle_off' : 'toggle_on'}
+                          </span>
+                        </button>
+                        <button
+                          onClick={() => toggleArchive(item.id, item.is_archived)}
+                          className="inline-flex items-center justify-center w-8 h-8 rounded-full border hover:bg-yellow-50"
+                          aria-label={item.is_archived ? 'Unarchive' : 'Archive'}
+                          title={item.is_archived ? 'Move to Active' : 'Move to Archive'}
+                        >
+                          <span className={`material-symbols-outlined text-sm ${item.is_archived ? 'text-yellow-600' : 'text-gray-400'}`}>
+                            {item.is_archived ? 'unarchive' : 'archive'}
                           </span>
                         </button>
                         <button
                           onClick={() => {
-                            setEditingOffering(offering);
+                            setEditingOffering(item);
                             setShowForm(true);
                             window.scrollTo({ top: 0, behavior: 'smooth' });
                           }}
@@ -225,7 +310,7 @@ export default function OfferingsManagement() {
                           <span className="material-symbols-outlined text-blue-600 text-sm">edit</span>
                         </button>
                         <button
-                          onClick={() => handleDelete(offering.id)}
+                          onClick={() => handleDelete(item.id)}
                           className="inline-flex items-center justify-center w-8 h-8 rounded-full border text-red-600 hover:bg-red-50"
                           aria-label="Delete"
                           title="Delete"

@@ -20,8 +20,8 @@ export default function SubNavTabs({ pagePath }) {
     async function load() {
       try {
         if (!effectivePath) return;
-        // Always derive from main navigation (DB-driven)
-        const navRes = await fetchWithCacheBusting('/api/navigation');
+        // Always derive from main navigation (DB-driven) - use subnav API to include hidden parents
+        const navRes = await fetchWithCacheBusting('/api/navigation-subnav');
         if (navRes.ok) {
           const nav = await navRes.json();
           const derived = deriveFromNavigation(nav, effectivePath);
@@ -179,7 +179,7 @@ export default function SubNavTabs({ pagePath }) {
                 return isActiveItem(it, displayHref) ? (
                   <span
                     key={keyValue}
-                    className={"text-white font-bold underline relative pl-3 dot-before whitespace-nowrap"}
+                    className={"text-white font-bold relative pl-3 dot-before whitespace-nowrap"}
                     style={{ color: '#fff', fontSize: '1.3rem', fontWeight: 800, lineHeight: '1.1' }}
                   >
                     {it.label}
@@ -272,7 +272,7 @@ function deriveFromNavigation(nav, path) {
   }
 
   const tabs = (children || [])
-    .filter((c) => (c.is_active !== false))
+    .filter((c) => (c.is_active !== false && (c.is_show !== false))) // Only show children that are active AND visible
     .map((c) => {
       const href = c.link || c.href || '#';
       const raw = c.name || c.label || c.title || '';

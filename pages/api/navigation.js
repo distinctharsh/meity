@@ -2,7 +2,7 @@ import pool from '@/lib/db';
 
 function buildTree(items, parentId = null) {
   return items
-    .filter((item) => item.parent_id === parentId && item.is_active)
+    .filter((item) => item.parent_id === parentId && item.is_active && item.is_show)
     .sort((a, b) => (a.display_order ?? 0) - (b.display_order ?? 0))
     .map((item) => ({
       id: item.id,
@@ -31,7 +31,7 @@ export default async function handler(req, res) {
   try {
     const [rows] = await pool.query(
       `SELECT ni.*, (
-         SELECT COUNT(*) FROM navigation_items c WHERE c.parent_id = ni.id AND c.is_active = TRUE
+         SELECT COUNT(*) FROM navigation_items c WHERE c.parent_id = ni.id AND c.is_active = TRUE AND c.is_show = TRUE
        ) as children_count
        FROM navigation_items ni
        WHERE ni.is_active = TRUE

@@ -4,16 +4,12 @@ import { useRef, useState, useEffect } from "react";
 import Image from "next/image";
 
 const logos = [
-  "/images/partner/digital-india.jpg",
-  "/images/partner/bhashni.jpg",
-  "/images/partner/cpgrams.jpg",
-  "/images/partner/data-gov.svg",
-  "/images/partner/digilocker.jpg",
-  "/images/partner/india-semiconductor.jpg",
-  "/images/partner/international-year.jpg",
-  "/images/partner/meity-startup.jpg",
-  "/images/partner/she-box.jpg",
-  "/images/partner/stqc.jpg"
+  "/images/partner/president.jpg",
+  "/images/partner/pm.jpg",
+  "/images/partner/data-gov.png",
+  "/images/partner/egazette.jpg",
+  "/images/partner/india-code.png",
+  "/images/partner/esamiksha.jpg",
 ];
 
 const PartnerLogoCarousel = () => {

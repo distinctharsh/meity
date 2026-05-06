@@ -33,6 +33,7 @@ const ClientScripts = () => {
 
 const AdminLayout = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [user, setUser] = useState(null);
   const router = useRouter();
 
@@ -65,7 +66,7 @@ const AdminLayout = ({ children }) => {
         { name: 'PM Quote', href: '/admin/pm-quotes', icon: '🗣️', description: 'Manage Prime Minister quote' },
         { name: 'Social Feed', href: '/admin/social', icon: '🔗', description: 'Manage social posts' },
         { name: 'Announcements', href: '/admin/announcements', icon: '📢', description: 'Site announcements' },
-        { name: 'Offerings', href: '/admin/offerings', icon: '🎯', description: 'Manage Schemes, Vacancies, What\'s New' },
+        { name: 'Offerings', href: '/admin/offerings', icon: '🎯', description: 'Manage Vacancies & Tenders' },
         // { name: 'Recent Documents', href: '/admin/recent-docs', icon: '📄', description: 'Manage recent documents' },
         // { name: 'About Section', href: '/admin/about-section', icon: 'ℹ️', description: 'Manage About Us section' },
         // { name: 'Promo Banners', href: '/admin/promo-section', icon: '🖼️', description: 'Manage promotional banners' }
@@ -76,10 +77,13 @@ const AdminLayout = ({ children }) => {
       name: 'Content', 
       items: [
         { name: 'Pages', href: '/admin/pages', icon: '📄', description: 'Create & manage pages' },
+        { name: 'About Page', href: '/admin/about', icon: 'ℹ️', description: 'Manage About page content' },
         { name: 'Our Team', href: '/admin/our-team', icon: '👥', description: 'Manage ministry team' },
         { name: 'Directory', href: '/admin/directory', icon: '📇', description: 'Manage directory' },
-        { name: 'Reports', href: '/admin/reports', icon: '📑', description: 'Manage Documents > Reports' }
-      ] 
+        { name: 'Photo Galleries', href: '/admin/photos', icon: '📷', description: 'Manage photo galleries' },
+        { name: 'Reports', href: '/admin/reports', icon: '📑', description: 'Manage Documents > Reports' },
+        { name: 'RTI Page', href: '/admin/rti', icon: '📋', description: 'Manage RTI content & sections' }
+      ]
     },
     { 
       type: 'section', 
@@ -264,12 +268,12 @@ const AdminLayout = ({ children }) => {
 
         {/* Desktop sidebar */}
         <div className="hidden lg:flex lg:flex-shrink-0">
-          <div className="flex flex-col w-72">
-            <div className="flex flex-col h-0 flex-1 border-r border-gray-200 bg-white shadow-sm">
+          <div className={`flex flex-col transition-all duration-300 ease-in-out ${sidebarCollapsed ? 'w-20' : 'w-72'}`}>
+            <div className="flex flex-col h-0 flex-1 border-r border-gray-200 bg-gradient-to-b from-white to-gray-50 shadow-lg">
               <div className="flex-1 flex flex-col pt-6 pb-4 overflow-y-auto">
-                <div className="flex items-center flex-shrink-0 px-6">
-                  <div className="flex items-center">
-                    <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center mr-3">
+                <div className="flex items-center flex-shrink-0 px-6 justify-between">
+                  <div className={`flex items-center transition-all duration-300 ${sidebarCollapsed ? 'opacity-0 w-0' : 'opacity-100'}`}>
+                    <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl flex items-center justify-center mr-3 shadow-lg">
                       <span className="text-white font-bold text-lg">CS</span>
                     </div>
                     <div>
@@ -277,12 +281,23 @@ const AdminLayout = ({ children }) => {
                       <p className="text-xs text-gray-500">Admin Panel</p>
                     </div>
                   </div>
+                  <button
+                    onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+                    className="p-2 rounded-lg text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition-all duration-200"
+                    title={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+                  >
+                    <svg className={`w-5 h-5 transition-transform duration-300 ${sidebarCollapsed ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
+                    </svg>
+                  </button>
                 </div>
-                <nav className="mt-8 flex-1 px-4 space-y-4">
+                <nav className={`mt-8 flex-1 px-4 space-y-4 transition-all duration-300 ${sidebarCollapsed ? 'px-2' : 'px-4'}`}>
                   {navigation.map((section) => (
                     <div key={section.name} className="space-y-1">
                       {section.name !== 'Dashboard' && (
-                        <h3 className="px-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                        <h3 className={`px-2 text-xs font-semibold text-gray-500 uppercase tracking-wider transition-all duration-300 ${
+                          sidebarCollapsed ? 'opacity-0 h-0 overflow-hidden' : 'opacity-100'
+                        }`}>
                           {section.name}
                         </h3>
                       )}
@@ -292,12 +307,15 @@ const AdminLayout = ({ children }) => {
                             key={item.name}
                             href={item.href}
                             className={`${router.pathname === item.href
-                              ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-600'
-                              : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
-                              } group flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors duration-200`}
+                              ? 'bg-gradient-to-r from-blue-50 to-blue-100 text-blue-700 border-r-3 border-blue-600 shadow-sm'
+                              : 'text-gray-600 hover:bg-gradient-to-r hover:from-gray-50 hover:to-gray-100 hover:text-gray-900'
+                              } group flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 transform hover:scale-105 ${sidebarCollapsed ? 'justify-center px-2' : ''}`}
+                            title={sidebarCollapsed ? item.name : ''}
                           >
-                            <span className="mr-4 text-lg">{item.icon}</span>
-                            <div className="flex-1">
+                            <span className={`text-lg transition-all duration-300 ${sidebarCollapsed ? 'text-xl' : 'mr-4'}`}>{item.icon}</span>
+                            <div className={`flex-1 transition-all duration-300 ${
+                              sidebarCollapsed ? 'opacity-0 w-0 overflow-hidden' : 'opacity-100'
+                            }`}>
                               <div className="font-medium">{item.name}</div>
                               <div className="text-xs text-gray-500">{item.description}</div>
                             </div>
@@ -308,18 +326,20 @@ const AdminLayout = ({ children }) => {
                   ))}
                 </nav>
               </div>
-              <div className="flex-shrink-0 border-t border-gray-200 p-4">
+              <div className={`flex-shrink-0 border-t border-gray-200 p-4 transition-all duration-300 ${sidebarCollapsed ? 'px-2' : 'p-4'}`}>
                 <div className="flex items-center">
-                  <div className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center mr-3">
+                  <div className={`w-10 h-10 bg-gradient-to-br from-gray-300 to-gray-400 rounded-full flex items-center justify-center transition-all duration-300 ${sidebarCollapsed ? 'mr-0' : 'mr-3'}`}>
                     <span className="text-gray-600 font-medium">{user.username?.charAt(0).toUpperCase()}</span>
                   </div>
-                  <div className="flex-1">
+                  <div className={`flex-1 transition-all duration-300 ${
+                    sidebarCollapsed ? 'opacity-0 w-0 overflow-hidden' : 'opacity-100'
+                  }`}>
                     <p className="text-sm font-medium text-gray-700">{user.username}</p>
                     <p className="text-xs text-gray-500">Administrator</p>
                   </div>
                   <button
                     onClick={handleLogout}
-                    className="ml-2 p-2 text-gray-400 hover:text-gray-600 transition-colors rounded-lg hover:bg-gray-100"
+                    className={`ml-2 p-2 text-gray-400 hover:text-gray-600 transition-all duration-200 rounded-xl hover:bg-red-50 hover:text-red-600 ${sidebarCollapsed ? 'ml-0' : 'ml-2'}`}
                     title="Sign out"
                   >
                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">

@@ -1,10 +1,11 @@
 import Footer from "@/components/Footer";
 import Pdf from "@/components/icons/Pdf";
-import Image from "next/image";
-import { useEffect, useMemo, useState } from "react";
-import { createPortal } from "react-dom";
-import PageHeader from "@/components/PageHeader";
 import SubNavTabs from "@/components/SubNavTabs";
+import PageHeader from "@/components/PageHeader";
+import Skeleton, { SkeletonTable } from "@/components/Skeleton";
+import Image from "next/image";
+import { useEffect, useState, useMemo } from "react";
+import { createPortal } from "react-dom";
 
 export default function OurTeam() {
   // Load admin-managed team for dynamic top cards (Minister / MoS)
@@ -17,7 +18,7 @@ export default function OurTeam() {
         if (!res.ok) return;
         const rows = await res.json();
         if (mounted) setTeam(Array.isArray(rows) ? rows.filter(r => r && r.is_active) : []);
-      } catch {}
+      } catch { }
     })();
     return () => { mounted = false; };
   }, []);
@@ -91,7 +92,7 @@ export default function OurTeam() {
       });
     }
     const out = [];
-    for (const s of sections.sort((a,b) => (a.display_order??0)-(b.display_order??0))) {
+    for (const s of sections.sort((a, b) => (a.display_order ?? 0) - (b.display_order ?? 0))) {
       out.push({ section: s.title, people: peopleBySection.get(s.id) || [] });
     }
     return out;
@@ -221,16 +222,16 @@ export default function OurTeam() {
         {selectedMember && typeof window !== 'undefined' && createPortal(
           <div className="fixed inset-0 flex items-center justify-center p-4" style={{ zIndex: 100000 }}>
             <div className="fixed inset-0 bg-black/60" onClick={closeModal} style={{ zIndex: 99999 }} />
-            <div className="relative bg-white w-full max-w-lg rounded-2xl shadow-2xl ring-1 ring-black/10 p-6 sm:p-8" style={{ zIndex: 100001 }}>
+            <div className="relative bg-white w-[340px] sm:w-[360px] mx-auto rounded-xl shadow-2xl ring-1 ring-black/10 px-6 py-5" style={{ zIndex: 100001 }}>
               <button onClick={closeModal} className="absolute top-3 right-3 inline-flex items-center justify-center w-9 h-9 rounded-full hover:bg-gray-100" aria-label="Close">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 text-gray-600"><path fillRule="evenodd" d="M5.47 5.47a.75.75 0 011.06 0L12 10.94l5.47-5.47a.75.75 0 111.06 1.06L13.06 12l5.47 5.47a.75.75 0 11-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 01-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 010-1.06z" clipRule="evenodd"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 text-gray-600"><path fillRule="evenodd" d="M5.47 5.47a.75.75 0 011.06 0L12 10.94l5.47-5.47a.75.75 0 111.06 1.06L13.06 12l5.47 5.47a.75.75 0 11-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 01-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 010-1.06z" clipRule="evenodd" /></svg>
               </button>
               <div className="flex flex-col items-center text-center">
-                <div className="w-28 h-28 rounded-full overflow-hidden mb-4 ring-2 ring-blue-300">
+                <div className="w-24 h-24 rounded-full overflow-hidden mb-3 ring-[2px] ring-blue-500">
                   <Image src={selectedMember.photo_url || "/images/our-team/a.jpg"} alt={selectedMember.name || 'Profile photo'} width={112} height={112} className="w-full h-full object-cover" />
                 </div>
                 <p className="text-[11px] tracking-wide text-[#3a5a97] font-semibold uppercase mb-1">{selectedMember.designation || ''}</p>
-                <p className="text-[22px] font-semibold text-gray-900">{selectedMember.name}</p>
+                <p className="text-[18px] font-semibold text-gray-900 mt-1">{selectedMember.name}</p>
                 {selectedMember.about_text && (
                   <p className="mt-2 text-[13px] text-gray-700 max-w-[36rem]">{selectedMember.about_text}</p>
                 )}
@@ -238,20 +239,45 @@ export default function OurTeam() {
                   <div className="flex items-center justify-center gap-6">
                     {selectedMember.phone_primary && (
                       <p className="flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-700" viewBox="0 0 24 24" fill="currentColor"><path d="M2.003 5.884c-.09-1.04.71-1.93 1.75-2.02l2.51-.22c.87-.08 1.66.46 1.9 1.3l.57 2.07c.2.74-.04 1.53-.62 2.05l-1.12.98a14.99 14.99 0 007.58 7.58l.98-1.12c.52-.58 1.31-.82 2.05-.62l2.07.57c.84.24 1.38 1.03 1.3 1.9l-.22 2.51c-.09 1.04-.98 1.84-2.02 1.75-9.9-.85-17.8-8.74-18.66-18.64z"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-700" viewBox="0 0 24 24" fill="currentColor"><path d="M2.003 5.884c-.09-1.04.71-1.93 1.75-2.02l2.51-.22c.87-.08 1.66.46 1.9 1.3l.57 2.07c.2.74-.04 1.53-.62 2.05l-1.12.98a14.99 14.99 0 007.58 7.58l.98-1.12c.52-.58 1.31-.82 2.05-.62l2.07.57c.84.24 1.38 1.03 1.3 1.9l-.22 2.51c-.09 1.04-.98 1.84-2.02 1.75-9.9-.85-17.8-8.74-18.66-18.64z" /></svg>
                         <a className="hover:underline" href={`tel:${selectedMember.phone_primary.replace(/[^+\d]/g, '')}`}>{selectedMember.phone_primary}</a>
                       </p>
                     )}
                     {selectedMember.email && (
                       <p className="flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-700" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4a2 2 0 00-2 2v12a2 2 0 002 2h16a2 2 0 002-2V6a2 2 0 00-2-2zm-1.4 4.25l-6.13 4.09a1 1 0 01-1.06 0L5.28 8.25a1 1 0 111.1-1.66L12 10.3l5.62-3.7a1 1 0 111.1 1.66z"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-700" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4a2 2 0 00-2 2v12a2 2 0 002 2h16a2 2 0 002-2V6a2 2 0 00-2-2zm-1.4 4.25l-6.13 4.09a1 1 0 01-1.06 0L5.28 8.25a1 1 0 111.1-1.66L12 10.3l5.62-3.7a1 1 0 111.1 1.66z" /></svg>
                         <a className="hover:underline" href={`mailto:${selectedMember.email}`}>{selectedMember.email}</a>
                       </p>
                     )}
                   </div>
+
+                  <div className="w-full flex justify-center mt-4">
+                    <a
+                      href={selectedMember.profile_url || "cabinet-secretary"}
+                      target={selectedMember.profile_url ? "_blank" : undefined}
+                      rel={selectedMember.profile_url ? "noopener noreferrer" : undefined}
+                      className="inline-flex items-center justify-center"
+                      style={{
+                        padding: "8px 12px",
+                        gap: "8px",
+                        background: "#d2dfff",
+                        borderRadius: "4px",
+                        color: "#162f6a",
+                        fontSize: "12px",
+                        fontStyle: "normal",
+                        fontWeight: 600,
+                        lineHeight: "18px",
+                        letterSpacing: ".12px",
+                        textDecoration: "none",
+                        width: "fit-content",
+                      }}
+                    >
+                      VIEW PROFILE
+                    </a>
+                  </div>
                   {selectedMember.phone_secondary && (
                     <div className="flex items-center justify-center gap-2">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-700" viewBox="0 0 24 24" fill="currentColor"><path d="M2.003 5.884c-.09-1.04.71-1.93 1.75-2.02l2.51-.22c.87-.08 1.66.46 1.9 1.3l.57 2.07c.2.74-.04 1.53-.62 2.05l-1.12.98a14.99 14.99 0 007.58 7.58l.98-1.12c.52-.58 1.31-.82 2.05-.62l2.07.57c.84.24 1.38 1.03 1.3 1.9l-.22 2.51c-.09 1.04-.98 1.84-2.02 1.75-9.9-.85-17.8-8.74-18.66-18.64z"/></svg>
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-700" viewBox="0 0 24 24" fill="currentColor"><path d="M2.003 5.884c-.09-1.04.71-1.93 1.75-2.02l2.51-.22c.87-.08 1.66.46 1.9 1.3l.57 2.07c.2.74-.04 1.53-.62 2.05l-1.12.98a14.99 14.99 0 007.58 7.58l.98-1.12c.52-.58 1.31-.82 2.05-.62l2.07.57c.84.24 1.38 1.03 1.3 1.9l-.22 2.51c-.09 1.04-.98 1.84-2.02 1.75-9.9-.85-17.8-8.74-18.66-18.64z" /></svg>
                       <a className="hover:underline" href={`tel:${selectedMember.phone_secondary.replace(/[^+\d]/g, '')}`}>{selectedMember.phone_secondary}</a>
                     </div>
                   )}
@@ -275,31 +301,31 @@ export default function OurTeam() {
                     <div className="space-y-1 text-[13px] text-gray-800">
                       {selectedMember.office_phone1 && (
                         <p className="flex items-center gap-2">
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-700" viewBox="0 0 24 24" fill="currentColor"><path d="M2.003 5.884c-.09-1.04.71-1.93 1.75-2.02l2.51-.22c.87-.08 1.66.46 1.9 1.3l.57 2.07c.2.74-.04 1.53-.62 2.05l-1.12.98a14.99 14.99 0 007.58 7.58l.98-1.12c.52-.58 1.31-.82 2.05-.62l2.07.57c.84.24 1.38 1.03 1.3 1.9l-.22 2.51c-.09 1.04-.98 1.84-2.02 1.75-9.9-.85-17.8-8.74-18.66-18.64z"/></svg>
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-700" viewBox="0 0 24 24" fill="currentColor"><path d="M2.003 5.884c-.09-1.04.71-1.93 1.75-2.02l2.51-.22c.87-.08 1.66.46 1.9 1.3l.57 2.07c.2.74-.04 1.53-.62 2.05l-1.12.98a14.99 14.99 0 007.58 7.58l.98-1.12c.52-.58 1.31-.82 2.05-.62l2.07.57c.84.24 1.38 1.03 1.3 1.9l-.22 2.51c-.09 1.04-.98 1.84-2.02 1.75-9.9-.85-17.8-8.74-18.66-18.64z" /></svg>
                           <a className="hover:underline" href={`tel:${selectedMember.office_phone1.replace(/[^+\\d]/g, '')}`}>{selectedMember.office_phone1}</a>
                         </p>
                       )}
                       {selectedMember.office_phone2 && (
                         <p className="flex items-center gap-2">
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-700" viewBox="0 0 24 24" fill="currentColor"><path d="M2.003 5.884c-.09-1.04.71-1.93 1.75-2.02l2.51-.22c.87-.08 1.66.46 1.9 1.3l.57 2.07c.2.74-.04 1.53-.62 2.05l-1.12.98a14.99 14.99 0 007.58 7.58l.98-1.12c.52-.58 1.31-.82 2.05-.62l2.07.57c.84.24 1.38 1.03 1.3 1.9l-.22 2.51c-.09 1.04-.98 1.84-2.02 1.75-9.9-.85-17.8-8.74-18.66-18.64z"/></svg>
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-700" viewBox="0 0 24 24" fill="currentColor"><path d="M2.003 5.884c-.09-1.04.71-1.93 1.75-2.02l2.51-.22c.87-.08 1.66.46 1.9 1.3l.57 2.07c.2.74-.04 1.53-.62 2.05l-1.12.98a14.99 14.99 0 007.58 7.58l.98-1.12c.52-.58 1.31-.82 2.05-.62l2.07.57c.84.24 1.38 1.03 1.3 1.9l-.22 2.51c-.09 1.04-.98 1.84-2.02 1.75-9.9-.85-17.8-8.74-18.66-18.64z" /></svg>
                           <a className="hover:underline" href={`tel:${selectedMember.office_phone2.replace(/[^+\\d]/g, '')}`}>{selectedMember.office_phone2}</a>
                         </p>
                       )}
                       {selectedMember.office_email1 && (
                         <p className="flex items-center gap-2">
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-700" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4a2 2 0 00-2 2v12a2 2 0 002 2h16a2 2 0 002-2V6a2 2 0 00-2-2zm-1.4 4.25l-6.13 4.09a1 1 0 01-1.06 0L5.28 8.25a1 1 0 111.1-1.66L12 10.3l5.62-3.7a1 1 0 111.1 1.66z"/></svg>
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-700" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4a2 2 0 00-2 2v12a2 2 0 002 2h16a2 2 0 002-2V6a2 2 0 00-2-2zm-1.4 4.25l-6.13 4.09a1 1 0 01-1.06 0L5.28 8.25a1 1 0 111.1-1.66L12 10.3l5.62-3.7a1 1 0 111.1 1.66z" /></svg>
                           <a className="hover:underline" href={`mailto:${selectedMember.office_email1}`}>{selectedMember.office_email1}</a>
                         </p>
                       )}
                       {selectedMember.office_email2 && (
                         <p className="flex items-center gap-2">
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-700" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4a2 2 0 00-2 2v12a2 2 0 002 2h16a2 2 0 002-2V6a2 2 0 00-2-2zm-1.4 4.25l-6.13 4.09a1 1 0 01-1.06 0L5.28 8.25a1 1 0 111.1-1.66L12 10.3l5.62-3.7a1 1 0 111.1 1.66z"/></svg>
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-700" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4a2 2 0 00-2 2v12a2 2 0 002 2h16a2 2 0 002-2V6a2 2 0 00-2-2zm-1.4 4.25l-6.13 4.09a1 1 0 01-1.06 0L5.28 8.25a1 1 0 111.1-1.66L12 10.3l5.62-3.7a1 1 0 111.1 1.66z" /></svg>
                           <a className="hover:underline" href={`mailto:${selectedMember.office_email2}`}>{selectedMember.office_email2}</a>
                         </p>
                       )}
                       {selectedMember.office_fax && (
                         <p className="flex items-center gap-2">
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-700" viewBox="0 0 24 24" fill="currentColor"><path d="M6 3h12v5H6V3zm-2 6h16a2 2 0 012 2v6a2 2 0 01-2 2H6a2 2 0 01-2-2V11a2 2 0 012-2zm4 2v6h8v-6H8z"/></svg>
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-700" viewBox="0 0 24 24" fill="currentColor"><path d="M6 3h12v5H6V3zm-2 6h16a2 2 0 012 2v6a2 2 0 01-2 2H6a2 2 0 01-2-2V11a2 2 0 012-2zm4 2v6h8v-6H8z" /></svg>
                           <span>{selectedMember.office_fax}</span>
                         </p>
                       )}
@@ -312,80 +338,87 @@ export default function OurTeam() {
           document.body
         )}
         <div className="gi-container py-10">
-          {composedData.map((section) => (
-            <div key={section.section} className="mb-10">
-              <div className="bg-blue-800 text-white font-semibold rounded-t-md px-4 py-2 flex items-center gap-3">
-                <span className="inline-flex items-center justify-center w-6 h-6 rounded bg-white/20">
-                  {/* section icon */}
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="w-4 h-4">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 7h10M7 12h10M7 17h6" />
-                  </svg>
-                </span>
-                <span>{section.section}</span>
-              </div>
-              <div className="bg-blue-300 text-blue-900 font-semibold grid grid-cols-[2fr_2fr_3fr] px-4 py-1 text-xs">
-                <div>NAME AND DESIGNATION</div>
-                <div>CONTACT</div>
-                <div>ADDRESS</div>
-              </div>
-
-              {section.people.map((person, idx) => (
-                <div
-                  key={idx}
-                  className="grid grid-cols-[2fr_2fr_3fr] border border-t-0 border-gray-300 px-4 py-4 text-sm"
-                >
-                  <div>
-                    <p className="font-bold">{person.name}</p>
-                    <p>{person.designation}</p>
-                  </div>
-                  <div className="space-y-1">
-                    {person.contact.map((contact, i) => (
-                      <p key={i} className="flex items-center gap-2">
-                        {contact.type === "phone" && (
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="h-4 w-4 text-gray-600"
-                            viewBox="0 0 24 24"
-                            fill="currentColor"
-                          >
-                            <path d="M2.003 5.884c-.09-1.04.71-1.93 1.75-2.02l2.51-.22c.87-.08 1.66.46 1.9 1.3l.57 2.07c.2.74-.04 1.53-.62 2.05l-1.12.98a14.99 14.99 0 007.58 7.58l.98-1.12c.52-.58 1.31-.82 2.05-.62l2.07.57c.84.24 1.38 1.03 1.3 1.9l-.22 2.51c-.09 1.04-.98 1.84-2.02 1.75-9.9-.85-17.8-8.74-18.66-18.64z" />
-                          </svg>
-                        )}
-                        {contact.type === "fax" && (
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="h-4 w-4 text-gray-600"
-                            viewBox="0 0 24 24"
-                            fill="currentColor"
-                          >
-                            <path d="M6 3h12v5H6V3zm-2 6h16a2 2 0 012 2v6a2 2 0 01-2 2H6a2 2 0 01-2-2V11a2 2 0 012-2zm4 2v6h8v-6H8z" />
-                          </svg>
-                        )}
-                        {contact.type === "email" && (
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="h-4 w-4 text-gray-600"
-                            viewBox="0 0 24 24"
-                            fill="currentColor"
-                          >
-                            <path d="M20 4H4a2 2 0 00-2 2v12a2 2 0 002 2h16a2 2 0 002-2V6a2 2 0 00-2-2zm-1.4 4.25l-6.13 4.09a1 1 0 01-1.06 0L5.28 8.25a1 1 0 111.1-1.66L12 10.3l5.62-3.7a1 1 0 111.1 1.66z" />
-                          </svg>
-                        )}
-                        {contact.type === "email" ? (
-                          <a className="hover:underline" href={`mailto:${contact.value.replace(/\[at\]/g, '@').replace(/\[dot\]/g, '.')}`}>{contact.value}</a>
-                        ) : contact.type === "phone" ? (
-                          <a className="hover:underline" href={`tel:${contact.value.replace(/[^+\d]/g, '')}`}>{contact.value}</a>
-                        ) : (
-                          <span>{contact.value}</span>
-                        )}
-                      </p>
-                    ))}
-                  </div>
-                  <div>{person.address}</div>
-                </div>
-              ))}
+          {loadingSections ? (
+            <div className="space-y-6">
+              <Skeleton variant="title" className="h-8 w-48" />
+              <SkeletonTable rows={4} cols={3} />
             </div>
-          ))}
+          ) : (
+            composedData.map((section) => (
+              <div key={section.section} className="mb-10">
+                <div className="bg-blue-800 text-white font-semibold rounded-t-md px-4 py-2 flex items-center gap-3">
+                  <span className="inline-flex items-center justify-center w-6 h-6 rounded bg-white/20">
+                    {/* section icon */}
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="w-4 h-4">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 7h10M7 12h10M7 17h6" />
+                    </svg>
+                  </span>
+                  <span>{section.section}</span>
+                </div>
+                <div className="bg-blue-300 text-blue-900 font-semibold grid grid-cols-[2fr_2fr_3fr] px-4 py-1 text-xs">
+                  <div>NAME AND DESIGNATION</div>
+                  <div>CONTACT</div>
+                  <div>ADDRESS</div>
+                </div>
+
+                {section.people.map((person, idx) => (
+                  <div
+                    key={idx}
+                    className="grid grid-cols-[2fr_2fr_3fr] border border-t-0 border-gray-300 px-4 py-4 text-sm"
+                  >
+                    <div>
+                      <p className="font-bold">{person.name}</p>
+                      <p>{person.designation}</p>
+                    </div>
+                    <div className="space-y-1">
+                      {person.contact.map((contact, i) => (
+                        <p key={i} className="flex items-center gap-2">
+                          {contact.type === "phone" && (
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              className="h-4 w-4 text-gray-600"
+                              viewBox="0 0 24 24"
+                              fill="currentColor"
+                            >
+                              <path d="M2.003 5.884c-.09-1.04.71-1.93 1.75-2.02l2.51-.22c.87-.08 1.66.46 1.9 1.3l.57 2.07c.2.74-.04 1.53-.62 2.05l-1.12.98a14.99 14.99 0 007.58 7.58l.98-1.12c.52-.58 1.31-.82 2.05-.62l2.07.57c.84.24 1.38 1.03 1.3 1.9l-.22 2.51c-.09 1.04-.98 1.84-2.02 1.75-9.9-.85-17.8-8.74-18.66-18.64z" />
+                            </svg>
+                          )}
+                          {contact.type === "fax" && (
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              className="h-4 w-4 text-gray-600"
+                              viewBox="0 0 24 24"
+                              fill="currentColor"
+                            >
+                              <path d="M6 3h12v5H6V3zm-2 6h16a2 2 0 012 2v6a2 2 0 01-2 2H6a2 2 0 01-2-2V11a2 2 0 012-2zm4 2v6h8v-6H8z" />
+                            </svg>
+                          )}
+                          {contact.type === "email" && (
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              className="h-4 w-4 text-gray-600"
+                              viewBox="0 0 24 24"
+                              fill="currentColor"
+                            >
+                              <path d="M20 4H4a2 2 0 00-2 2v12a2 2 0 002 2h16a2 2 0 002-2V6a2 2 0 00-2-2zm-1.4 4.25l-6.13 4.09a1 1 0 01-1.06 0L5.28 8.25a1 1 0 111.1-1.66L12 10.3l5.62-3.7a1 1 0 111.1 1.66z" />
+                            </svg>
+                          )}
+                          {contact.type === "email" ? (
+                            <a className="hover:underline" href={`mailto:${contact.value.replace(/\[at\]/g, '@').replace(/\[dot\]/g, '.')}`}>{contact.value}</a>
+                          ) : contact.type === "phone" ? (
+                            <a className="hover:underline" href={`tel:${contact.value.replace(/[^+\d]/g, '')}`}>{contact.value}</a>
+                          ) : (
+                            <span>{contact.value}</span>
+                          )}
+                        </p>
+                      ))}
+                    </div>
+                    <div>{person.address}</div>
+                  </div>
+                ))}
+              </div>
+            ))
+          )}
         </div>
 
         <Footer />

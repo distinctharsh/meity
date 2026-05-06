@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useRef, useState, useMemo } from 'react';
 import AdminLayout from '@/components/admin/AdminLayout';
 
 import dynamic from 'next/dynamic';
@@ -112,7 +112,7 @@ export default function PagesManagement() {
               <div className="col-span-3">Title</div>
               <div className="col-span-3">Slug</div>
               <div className="col-span-2">Status</div>
-              <div className="col-span-2 text-right">Actions</div>
+              <div className="col-span-2 text-center">Actions</div>
             </div>
             {pages.length === 0 ? (
               <div className="px-4 py-8 text-gray-500 text-center">No pages yet. Click Create Page.</div>
@@ -209,6 +209,9 @@ function PageForm({ onClose, onSaved, editing }) {
   const [activeTab, setActiveTab] = useState('html');
   const [leftPanePct, setLeftPanePct] = useState(60);
   const [dragging, setDragging] = useState(false);
+  const [editorMode, setEditorMode] = useState('visual'); // 'visual' | 'advanced'
+  const [ck, setCk] = useState(null); // { CKEditor, ClassicEditor }
+  const [ckEditorError, setCkEditorError] = useState('');
 
   useEffect(() => {
     if (editing) {
@@ -307,6 +310,32 @@ function PageForm({ onClose, onSaved, editing }) {
   }, []);
 
   const updateField = (key, value) => setForm(prev => ({ ...prev, [key]: value }));
+
+  useEffect(() => {
+    let cancelled = false;
+    async function load() {
+      if (typeof window === 'undefined') return;
+      if (editorMode !== 'visual') return;
+      if (ck) return;
+      try {
+        setCkEditorError('');
+        const [{ CKEditor }, classicMod] = await Promise.all([
+          import('@ckeditor/ckeditor5-react'),
+          import('@ckeditor/ckeditor5-build-classic')
+        ]);
+        const ClassicEditor = classicMod?.default || classicMod?.ClassicEditor || classicMod;
+        if (!CKEditor || !ClassicEditor) {
+          throw new Error('CKEditor modules loaded but exports were not found');
+        }
+        if (!cancelled) setCk({ CKEditor, ClassicEditor });
+      } catch (e) {
+        console.warn('CKEditor npm load/init failed', e);
+        if (!cancelled) setCkEditorError('CKEditor failed to load. Please reinstall packages or check build compatibility.');
+      }
+    }
+    load();
+    return () => { cancelled = true; };
+  }, [editorMode, ck]);
 
   // Lazy-load Prettier in the browser for formatting
   const ensurePrettierLoaded = async () => {
@@ -515,7 +544,8 @@ function PageForm({ onClose, onSaved, editing }) {
             <div className="flex items-center space-x-2 mt-6">
               <input id="is_active" type="checkbox" checked={form.is_active} onChange={(e) => updateField('is_active', e.target.checked)} />
               <label htmlFor="is_active" className="text-sm text-gray-700">Active</label>
-            </div>
+            </div> 
+
           </div>
 
           {/* Code Editors: Tabbed Monaco with Resizable Live Preview */}
@@ -525,7 +555,57 @@ function PageForm({ onClose, onSaved, editing }) {
               <p className="text-xs text-gray-500">Write raw HTML, CSS, and JavaScript. Live preview on the right. Drag the divider to resize.</p>
               <span className="text-[10px] text-gray-500">CSS is safely scoped to this page only.</span>
             </div>
-            <div id="cms-editor-split" className="mt-3 h-[68vh] border rounded overflow-hidden bg-white flex">
+
+            <div className="mt-3 flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setEditorMode('visual')}
+                className={editorMode === 'visual' ? 'px-3 py-1.5 text-xs rounded border bg-white shadow-sm' : 'px-3 py-1.5 text-xs rounded border hover:bg-gray-50'}
+              >
+                Visual Editor (CKEditor)
+              </button>
+              <button
+                type="button"
+                onClick={() => setEditorMode('advanced')}
+                className={editorMode === 'advanced' ? 'px-3 py-1.5 text-xs rounded border bg-white shadow-sm' : 'px-3 py-1.5 text-xs rounded border hover:bg-gray-50'}
+              >
+                Advanced (HTML/CSS/JS)
+              </button>
+              <span className="text-xs text-gray-500">Default is Visual for non-technical admins.</span>
+            </div>
+
+            {editorMode === 'visual' ? (
+              <div className="mt-3 border rounded bg-white overflow-hidden">
+                <div className="px-3 py-2 border-b bg-gray-50 flex items-center justify-between">
+                  <div className="text-xs font-medium text-gray-700">Content</div>
+                  <div className="text-[10px] text-gray-500">Uses CKEditor (npm packages)</div>
+                </div>
+                <div className="p-3">
+                  {ckEditorError ? (
+                    <div className="mb-3 p-3 border border-amber-200 bg-amber-50 text-amber-900 text-xs rounded">
+                      {ckEditorError}
+                    </div>
+                  ) : null}
+                  {!ck && !ckEditorError ? (
+                    <div className="text-xs text-gray-600">Loading editor…</div>
+                  ) : null}
+                  {ck ? (
+                    <ck.CKEditor
+                      editor={ck.ClassicEditor}
+                      data={form.content_html || ''}
+                      onChange={(event, editor) => {
+                        try {
+                          const data = editor.getData();
+                          setForm((prev) => ({ ...prev, content_html: data }));
+                        } catch {
+                        }
+                      }}
+                    />
+                  ) : null}
+                </div>
+              </div>
+            ) : (
+              <div id="cms-editor-split" className="mt-3 h-[68vh] border rounded overflow-hidden bg-white flex">
               {/* Left pane: tabs + editor */}
               <div className="h-full flex flex-col" style={{ width: `${leftPanePct}%` }}>
                 <div className="flex items-center justify-between border-b bg-gray-50 px-2 h-10">
@@ -590,6 +670,7 @@ function PageForm({ onClose, onSaved, editing }) {
                 </div>
               </div>
             </div>
+            )}
             <p className="text-xs text-gray-500 mt-2">Note: This code is inserted as-is (including scripts). Ensure only trusted admins can edit pages.</p>
           </div>
 

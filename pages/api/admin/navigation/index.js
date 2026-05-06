@@ -13,15 +13,15 @@ export default async function handler(req, res) {
     }
   } else if (req.method === 'POST') {
     try {
-      const { name, link, parent_id, display_order, is_active } = req.body;
+      const { name, link, parent_id, display_order, is_active, is_show } = req.body;
 
       if (!name) {
         return res.status(400).json({ message: 'Name is required' });
       }
 
       const [result] = await pool.query(
-        'INSERT INTO navigation_items (name, link, parent_id, display_order, is_active) VALUES (?, ?, ?, ?, ?)',
-        [name, link, parent_id, display_order || 0, is_active !== false]
+        'INSERT INTO navigation_items (name, link, parent_id, display_order, is_active, is_show) VALUES (?, ?, ?, ?, ?, ?)',
+        [name, link, parent_id, display_order || 0, is_active !== false, is_show !== false]
       );
 
       res.status(201).json({ 

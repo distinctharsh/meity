@@ -45,8 +45,20 @@ export default function App({ Component, pageProps }) {
     <>
       {!isAdminPage && router.pathname.startsWith('/documents') ? (
         <>
-          <Script src="/vendor/js/jquery-3.7.1.min.js" strategy="beforeInteractive" />
-          <Script src="/vendor/js/jquery.dataTables.min.js" strategy="beforeInteractive" />
+          <Script 
+            src="/vendor/js/jquery-3.7.1.min.js" 
+            strategy="afterInteractive"
+            onLoad={() => {
+              // Ensure jQuery is available globally
+              if (typeof window !== 'undefined' && window.jQuery) {
+                window.$ = window.jQuery;
+              }
+            }}
+          />
+          <Script 
+            src="/vendor/js/jquery.dataTables.min.js" 
+            strategy="afterInteractive"
+          />
         </>
       ) : null}
       {/* Script tag removed from here */}

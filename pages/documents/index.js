@@ -82,7 +82,7 @@ export default function Reports() {
       if (cancelled) return;
       const $ = window.jQuery;
       if (!$ || !$.fn || !$.fn.DataTable) {
-        attemptTimer = setTimeout(tryInit, 50);
+        attemptTimer = setTimeout(tryInit, 100);
         return;
       }
 
