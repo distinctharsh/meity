@@ -15,15 +15,30 @@ export default function SubNavTabs({ pagePath }) {
   const [hasOverflow, setHasOverflow] = useState(false);
   const [showLeft, setShowLeft] = useState(false);
   const [showRight, setShowRight] = useState(false);
+
+  // Check if current page is an archive page
+  const isArchivePage = () => {
+    if (typeof window === 'undefined') return false;
+    const pathname = window.location.pathname;
+    const search = window.location.search;
+    return pathname === '/archives' || pathname.startsWith('/archives/') || 
+           search.includes('archive') || search.includes('archived');
+  };
   useEffect(() => {
     let mounted = true;
     async function load() {
       try {
-        if (!effectivePath) return;
+        if (!effectivePath) {
+          return;
+        }
         // Always derive from main navigation (DB-driven) - use subnav API to include hidden parents
         const navRes = await fetchWithCacheBusting('/api/navigation-subnav');
         if (navRes.ok) {
           const nav = await navRes.json();
+          
+          // Check Documents section specifically
+          const documentsSection = nav.find(n => (n.name || n.label || n.text)?.toLowerCase()?.includes('document'));
+
           const derived = deriveFromNavigation(nav, effectivePath);
           if (mounted) setItems(derived);
         } else {
@@ -31,6 +46,7 @@ export default function SubNavTabs({ pagePath }) {
         }
       } catch (e) {
         console.error('SubNav load error', e);
+        if (mounted) setItems([]);
       } finally {
         if (mounted) setLoading(false);
       }
@@ -109,6 +125,9 @@ export default function SubNavTabs({ pagePath }) {
 
   if (loading) return null;
   if (!items.length) return null;
+  
+  // Debug logging
+  
   return (
     <>
       <style>{`
@@ -163,10 +182,15 @@ export default function SubNavTabs({ pagePath }) {
               style={{ alignItems: 'center' }}
             >
               {items.map((it) => {
-                // Build a single documents page link when item belongs to /documents
-                let displayHref = it.href;
-                if (it.href && String(it.href).startsWith('/documents')) {
-                  // Use clean path style: '/documents/reports' -> '/documents/reports'
+                // Build display href
+                let displayHref = it.href || it.archiveHref || '#';
+                
+                // For archive all mode, use archiveHref
+                if (effectivePath === '/archives/all' && it.archiveHref) {
+                  displayHref = it.archiveHref;
+                }
+                // For regular document links
+                else if (it.href && String(it.href).startsWith('/documents')) {
                   const rawHref = String(it.href);
                   if (rawHref === '/documents') {
                     displayHref = '/documents';
@@ -175,8 +199,13 @@ export default function SubNavTabs({ pagePath }) {
                     displayHref = `/documents/${encodeURIComponent(rest)}`;
                   }
                 }
+                
                 const keyValue = displayHref || it.id;
-                return isActiveItem(it, displayHref) ? (
+                const isActive = isActiveItem(it, displayHref) || 
+                  (effectivePath === '/archives/all' && router.query?.page && 
+                   displayHref.includes(router.query.page));
+                
+                return isActive ? (
                   <span
                     key={keyValue}
                     className={"text-white font-bold relative pl-3 dot-before whitespace-nowrap"}
@@ -247,11 +276,78 @@ function deriveFromNavigation(nav, path) {
     return null;
   };
 
-  // Prefer children of the section node
-  const sectionNode = findByLink(nav, sectionPath);
+  // Find by name/path matching for # href sections
+  const findByName = (nodes, targetPath) => {
+    for (const n of nodes) {
+      const name = (n.name || n.label || n.text || '').toLowerCase();
+      const targetSection = targetPath.replace('/', '').toLowerCase();
+      if (name.includes(targetSection)) return n;
+      if (n.children && n.children.length) {
+        const f = findByName(n.children, targetPath);
+        if (f) return f;
+      }
+    }
+    return null;
+  };
+
+  // Try to find section by link first
+  let sectionNode = findByLink(nav, sectionPath);
+
+  // Check if this is for comprehensive archive page
+  const isArchiveAllPath = path === '/archives/all' || path.startsWith('/archives/');
+  
+  if (isArchiveAllPath) {
+    // For comprehensive archive pages, combine all sections that have document-like content
+    const allSections = ['documents', 'offerings'];
+    let allChildren = [];
+    
+    allSections.forEach(sectionName => {
+      const section = nav.find(n => {
+        const name = (n.name || n.label || n.text || '').toLowerCase();
+        return name.includes(sectionName);
+      });
+      
+      if (section && section.children) {
+        // Add archive parameter to each child link
+        const childrenWithArchive = section.children.map(child => ({
+          ...child,
+          link: child.link || child.href,
+          href: child.link || child.href,
+          // Store original link for archive reference
+          originalLink: child.link || child.href
+        }));
+        allChildren = allChildren.concat(childrenWithArchive);
+      }
+    });
+    
+    const tabs = allChildren
+      .filter((c) => (c.is_active !== false && (c.is_show !== false)))
+      .map((c) => {
+        const originalHref = c.originalLink || c.link || c.href || '#';
+        // Convert document links to archive format
+        const slug = originalHref
+          .replace(/^\/+/, '')
+          .split('/')
+          .slice(1)
+          .join('-');
+
+        const href = '/archives?page=' + encodeURIComponent(slug);
+        const raw = c.name || c.label || c.title || '';
+        const label = raw && String(raw).trim().length ? raw : formatLabelFromHref(originalHref);
+        return { label, href: originalHref, archiveHref: href, id: c.id };
+      });
+    
+    return tabs;
+  }
+
+  // If not found, try by name matching (for # href sections)
+  if (!sectionNode && sectionPath === '/documents') {
+    sectionNode = findByName(nav, sectionPath);
+  }
+
   let children = sectionNode?.children || [];
 
-  // If no children on section, try siblings of current page item
+  // If still no children, try to find current page item
   if (!children.length) {
     const currentNode = findByLink(nav, path);
     if (currentNode) {

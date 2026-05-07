@@ -43,7 +43,7 @@ export default function App({ Component, pageProps }) {
 
   return (
     <>
-      {!isAdminPage && router.pathname.startsWith('/documents') ? (
+      {!isAdminPage && (router.pathname.startsWith('/documents') || router.pathname.startsWith('/archives')) ? (
         <>
           <Script 
             src="/vendor/js/jquery-3.7.1.min.js" 

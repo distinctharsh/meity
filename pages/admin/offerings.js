@@ -34,10 +34,35 @@ export default function OfferingsManagement() {
     setShowForm(true);
   };
 
-  const handleEdit = (offering) => {
-    setEditingOffering(offering);
-    setShowForm(true);
+
+  const formatDateForInput = (dateString) => {
+  if (!dateString) return '';
+  try {
+    const date = new Date(dateString);
+    // Local timezone mein convert karke YYYY-MM-DD format mein return karta hai
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  } catch (e) {
+    console.error("Invalid date:", dateString);
+    return '';
+  }
+};
+
+
+const handleEdit = (offering) => {
+  // Date format convert kar rahe hain taaki <input type="date"> support kare
+  const formattedOffering = {
+    ...offering,
+    published_date: offering.published_date ? formatDateForInput(offering.published_date) : '',
+    due_date: offering.due_date ? formatDateForInput(offering.due_date) : ''
   };
+
+  setEditingOffering(formattedOffering);
+  setShowForm(true);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+};
 
   const handleDelete = async (id) => {
     const itemType = activeTab === 'vacancies' ? 'vacancy' : 'tender';
@@ -224,7 +249,9 @@ export default function OfferingsManagement() {
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
                 {(activeTab === 'vacancies' || activeTab === 'tenders') && (
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    {activeTab === 'vacancies' ? 'Closing Date' : 'Closing Date'}
+                     {activeTab === 'vacancies'
+                  ? 'Published Date'
+                  : 'Published / Due Date'}
                   </th>
                 )}
                 <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-24">Status</th>
@@ -258,13 +285,30 @@ export default function OfferingsManagement() {
                       </div>
                     </td>
                     {(activeTab === 'vacancies' || activeTab === 'tenders') && (
-                      <td className="px-6 py-4">
-                        {item.closing_date ? (
-                          <span className="text-xs text-gray-600">{item.closing_date}</span>
-                        ) : (
-                          <span className="text-xs text-gray-400">No closing date</span>
-                        )}
-                      </td>
+                       <td className="p-2 text-sm">
+                          {activeTab === 'vacancies' && (
+                            item.published_date
+                              ? new Date(item.published_date).toLocaleDateString('en-IN')
+                              : 'No date'
+                          )}
+
+                          {activeTab === 'tenders' && (
+                            <>
+                              {item.published_date && (
+                                <div>
+                                  Published:{' '}
+                                  {new Date(item.published_date).toLocaleDateString('en-IN')}
+                                </div>
+                              )}
+                              {item.due_date && (
+                                <div>
+                                  Due:{' '}
+                                  {new Date(item.due_date).toLocaleDateString('en-IN')}
+                                </div>
+                              )}
+                            </>
+                          )}
+                        </td>
                     )}
                     <td className="px-6 py-4 text-center">
                       <span
@@ -298,11 +342,7 @@ export default function OfferingsManagement() {
                           </span>
                         </button>
                         <button
-                          onClick={() => {
-                            setEditingOffering(item);
-                            setShowForm(true);
-                            window.scrollTo({ top: 0, behavior: 'smooth' });
-                          }}
+                          onClick={() => handleEdit(item)}
                           className="inline-flex items-center justify-center w-8 h-8 rounded-full border hover:bg-blue-50"
                           aria-label="Edit"
                           title="Edit"

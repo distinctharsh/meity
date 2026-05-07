@@ -16,15 +16,12 @@ export default function Vacancies() {
   const [sort, setSort] = useState("Newest");
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(9);
-  const [showArchived, setShowArchived] = useState(false);
-
   // 🔥 FETCH DATA
   useEffect(() => {
     async function load() {
       try {
         setLoading(true);
-        let url = "/api/offerings/vacancies";
-        if (showArchived) url += "?archived=true";
+        const url = "/api/offerings/vacancies";
 
         const res = await fetch(url);
         const data = await res.json();
@@ -52,7 +49,7 @@ export default function Vacancies() {
     }
 
     load();
-  }, [showArchived]);
+  }, []);
 
   // 🔍 SEARCH
   const filtered = useMemo(() => {
@@ -107,56 +104,66 @@ export default function Vacancies() {
               onChange={(e) => setPerPage(Number(e.target.value))}
               className="border px-2 py-2 rounded"
             >
-              <option value={9}>9</option>
-              <option value={12}>12</option>
-              <option value={18}>18</option>
+              <option value={5}>5</option>
+              <option value={10}>10</option>
+              <option value={15}>15</option>
             </select>
           </div>
 
           {/* CARD GRID */}
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {loading ? (
-              <div className="col-span-3 text-center py-10">
-                Loading...
-              </div>
+              <div className="col-span-3 text-center py-10">Loading...</div>
             ) : paginated.length === 0 ? (
-              <div className="col-span-3 text-center py-10">
-                No data found
-              </div>
+              <div className="col-span-3 text-center py-10">No data found</div>
             ) : (
               paginated.map((item) => (
                 <div
                   key={item.id}
-                  className="bg-white rounded-xl border shadow-sm hover:shadow-md transition p-4 flex flex-col justify-between"
+                  className="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition overflow-hidden flex flex-col h-full"
                 >
-                  {/* HEADER */}
-                  <div className="bg-[#a3bbf3] text-[#162f6a] text-center font-semibold py-2 rounded-md">
+                  {/* TOP HEADER - Fixed Height */}
+                  <div className="bg-[#8ea2d8] text-center text-[#1a2e6c] font-semibold py-3 px-4 text-[15px] min-h-[50px] flex items-center justify-center">
                     {item.title}
                   </div>
 
-                  {/* DESCRIPTION */}
-                  <div className="mt-3 text-sm text-gray-600 line-clamp-3">
-                    {item.description}
-                  </div>
+                  {/* CONTENT AREA - flex-grow ensures this fills space */}
+                  <div className="p-5 flex flex-col flex-grow">
+                    
+                    {/* DESCRIPTION - Restricted height for symmetry */}
+                    <p className="text-[13px] text-gray-700 leading-relaxed line-clamp-3 mb-4">
+                      {item.description || "No description available."}
+                    </p>
 
-                  {/* DETAILS */}
-                  <div className="mt-4 text-xs text-gray-600 space-y-1">
-                    <div>📅 Published: {item.published_date || "-"}</div>
-                    <div>▶ Start: {item.start_date || "-"}</div>
-                    <div>⏳ Due: {item.due_date || "-"}</div>
-                    <div>📆 Year: {item.year || "-"}</div>
-                    <div>📦 Size: {item.file_size}</div>
-                  </div>
+                    {/* DETAILS - middle section */}
+                    <div className="space-y-2 text-[13px] text-gray-700 flex-grow">
+                      {/* Published Date */}
+                      <div className="flex items-center gap-2">
+                        
+                        <span className="font-medium">Published Date</span>
+                        <span className="ml-auto text-gray-600">{item.published_date || "-"}</span>
+                      </div>
 
-                  {/* BUTTON */}
-                  <div className="mt-4 text-center">
-                    <a
-                      href={item.file_url || "#"}
-                      target="_blank"
-                      className="inline-block px-4 py-2 text-sm rounded bg-[#a3bbf3] text-[#162f6a] hover:bg-[#8ea9e8]"
-                    >
-                      VIEW ALL DOCUMENT
-                    </a>
+                      {/* Due Date */}
+                      <div className="flex items-center gap-2">
+                        
+                        <span className="font-medium">Due Date</span>
+                        <span className="ml-auto text-gray-600 font-semibold text-red-600">{item.due_date || "-"}</span>
+                      </div>
+                      
+                      
+                    </div>
+
+                    {/* BUTTON - Hamesha bottom par rahega */}
+                    <div className="mt-6 pt-4 border-t border-gray-100 text-center">
+                      <a
+                        href={item.file_url || "#"}
+                        target="_blank"
+                        className="inline-block w-full py-2.5 text-[13px] rounded-md bg-[#dbe4ff] text-[#1a2e6c] font-bold hover:bg-[#b8c9ff] transition"
+                      >
+                        VIEW DOCUMENT
+                      </a>
+                    </div>
                   </div>
                 </div>
               ))
@@ -194,17 +201,15 @@ export default function Vacancies() {
             </div>
           </div>
 
-          {/* ARCHIVE TOGGLE */}
+          {/* ARCHIVE LINK */}
           <div className="flex justify-end mt-6">
-            <button
-              onClick={() => {
-                setShowArchived(!showArchived);
-                setCurrentPage(1);
-              }}
-              className="px-4 py-2 border rounded bg-white text-[#162f6a] hover:bg-[#a3bbf3] transition"
+            <a
+              href="/archives?page=vacancies"
+              className="inline-flex items-center gap-2 px-4 py-2 border rounded bg-white text-[#162f6a] hover:bg-[#a3bbf3] transition"
             >
-              {showArchived ? "View Active" : "View Archive"}
-            </button>
+              <span aria-hidden="true" className="material-symbols-outlined">archive</span>
+              View Archive
+            </a>
           </div>
 
         </div>

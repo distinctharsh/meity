@@ -18,6 +18,8 @@ export default async function handler(req, res) {
         id,
         title,
         type,
+        tender_id,
+        published_date,
         YEAR(published_date) as year,
         file_name,
         file_size as size,

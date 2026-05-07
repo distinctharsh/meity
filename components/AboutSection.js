@@ -17,12 +17,12 @@ export default function AboutSection() {
           fetch('/api/admin/about'),
           fetch('/api/navigation')
         ]);
-        
+
         if (aboutRes.ok) {
           const aboutData = await aboutRes.json();
           if (mounted) setAboutContent(Array.isArray(aboutData) ? aboutData : []);
         }
-        
+
         if (navRes.ok) {
           const navData = await navRes.json();
           if (mounted) setNavigation(Array.isArray(navData) ? navData : []);
@@ -49,23 +49,23 @@ export default function AboutSection() {
   // Get navigation items after About Us
   const getTopNavItemsAfterAbout = () => {
     // Find Cabinet Secretariat nav item
-    const cabinetSecretariat = navigation.find(nav => 
-      nav.text?.toLowerCase().includes('cabinet') || 
+    const cabinetSecretariat = navigation.find(nav =>
+      nav.text?.toLowerCase().includes('cabinet') ||
       nav.text?.toLowerCase().includes('secretariat')
     );
-    
+
     if (!cabinetSecretariat || !cabinetSecretariat.children) {
       return [];
     }
-    
+
     // Find About Us in Cabinet Secretariat children
     const aboutUsIndex = cabinetSecretariat.children.findIndex(child =>
       child.text?.toLowerCase().includes('about')
     );
-    
+
     // Get items after About Us (skip About Us itself)
     const itemsAfterAbout = cabinetSecretariat.children.slice(aboutUsIndex + 1);
-    
+
     // Return top 3 items
     return itemsAfterAbout.slice(0, 3).map((item, index) => ({
       title: item.text,
@@ -85,7 +85,7 @@ export default function AboutSection() {
       section_key: "our_team"
     },
     {
-      title: "Our Organisations", 
+      title: "Our Organisations",
       icon: <FaThLarge />,
       section_key: "our_organisations"
     },
@@ -127,47 +127,49 @@ export default function AboutSection() {
             </p>
           )}
 
-<div className="flex flex-col sm:flex-row gap-5">
-  {cardsToUse.map((card) => {
-    const cardData = getCardData(card.section_key);
-    const title = cardData?.title || card.title;
+          <div className="flex flex-col sm:flex-row gap-5">
+            {cardsToUse.map((card) => {
+              const cardData = getCardData(card.section_key);
+              const title = cardData?.title || card.title;
 
-    return (
-      <a
-        key={card.section_key}
-        href={card.href || '#'}
-        className="group flex-1 border border-[#1e3a8a] rounded-md py-6 px-4 text-center cursor-pointer 
-        transition-all duration-300 hover:bg-[#1e3a8a] hover:shadow-lg no-underline"
-      >
-        {/* Icon */}
-        <div className="flex justify-center mb-3 text-[#1e3a8a] text-2xl transition-all duration-300 group-hover:text-white">
-          {card.icon}
-        </div>
+              return (
+                <a
+                  key={card.section_key}
+                  href={card.href || '#'}
+                  className="group flex-1 border border-[#1e3a8a] rounded-md py-6 px-4 text-center cursor-pointer 
+                transition-all duration-300 hover:bg-[#1e3a8a] hover:shadow-lg no-underline"
+                >
+                  {/* Icon */}
+                  <div className="flex justify-center mb-3 text-[#1e3a8a] text-2xl transition-all duration-300 group-hover:text-white">
+                    {card.icon}
+                  </div>
 
-        {/* Title */}
-        <span className="text-[15px] font-semibold text-gray-800 transition-all duration-300 group-hover:text-white">
-          {title}
-        </span>
-      </a>
-    );
-  })}
-</div>
+                  {/* Title */}
+                  <span className="text-[15px] font-semibold text-gray-800 transition-all duration-300 group-hover:text-white">
+                    {title}
+                  </span>
+                </a>
+              );
+            })}
+          </div>
         </div>
 
         {/* Right Column - Ministers */}
         <div className="md:flex-[1]">
           <div className="flex flex-col sm:flex-row gap-5 justify-center items-center">
-            
+
             {/* Minister 1 */}
             <div className="flex flex-col items-center">
               <div className="flex justify-center">
-                <Image
-                  src="/images/about/cs.jpg"
-                  alt="Dr. T. V. Somanathan"
-                  width={215}
-                  height={200}
-                  className="w-full max-w-[215px] h-auto max-h-[200px] border-2 border-[#ebeaea] border-b-[6px] border-b-[#162f6a] object-contain"
-                />
+                <a href="/ministry/cabinet-secretary">
+                  <Image
+                    src="/images/about/cs.jpg"
+                    alt="Dr. T. V. Somanathan"
+                    width={215}
+                    height={200}
+                    className="w-full max-w-[215px] h-auto max-h-[200px] border-2 border-[#ebeaea] border-b-[6px] border-b-[#162f6a] object-contain"
+                  />
+                </a>
               </div>
               <div className="mt-[10px] text-center">
                 <h3 className="text-[14px] font-bold text-[#162f6a] mb-[3px]">Dr. T. V. Somanathan</h3>

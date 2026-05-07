@@ -26,43 +26,100 @@ export default function Archives() {
     categoryRef.current = category;
   }, [category]);
 
+  // Get page type from URL query
+  const pageType = router.query?.page || 'reports';
+
   useEffect(() => {
     let mounted = true;
     async function load() {
       try {
         setLoading(true);
-        // Build API URL to request archived reports
+        // Build API URL to request archived data based on page type
         const qs = [];
         qs.push('archived_only=1');
-        // If the archives page was requested with nav, forward that (prefer name/path over id)
-        const nav = router.query?.nav || null;
-        const navItem = router.query?.nav_item || router.query?.nav_item_id || null;
-        if (nav) qs.push('nav=' + encodeURIComponent(String(nav)));
-        else if (navItem) qs.push('nav_item=' + encodeURIComponent(String(navItem)));
+        
+        // Map page types to API endpoints
+        let apiEndpoint = '/api/documents/reports';
+        
+        // Handle different page types
+        if (pageType === 'vacancies') {
+          // For vacancies, use offerings API
+          apiEndpoint = '/api/offerings/vacancies';
+          qs.push('archived=true');
+        } else if (pageType === 'tenders') {
+          // For tenders, use offerings API
+          apiEndpoint = '/api/offerings/tenders';
+          qs.push('archived=true');
+        } else if (pageType === 'photos') {
+          // For photos, use correct nav path
+          const nav = '/documents/photos';
+          qs.push('nav=' + encodeURIComponent(nav));
+        } else if (pageType === 'reports') {
+          // Default reports handling
+          const nav = router.query?.nav || '/documents/reports';
+          qs.push('nav=' + encodeURIComponent(String(nav)));
+        } else {
+          // Default case - try to match by page name (handle council-of-ministers-portfolio-allocations etc)
+          const nav = '/documents/' + String(pageType);
+          qs.push('nav=' + encodeURIComponent(nav));
+        }
 
-        const res = await fetch('/api/documents/reports?' + qs.join('&'));
-        if (!res.ok) throw new Error('Failed to load archived reports');
+        const res = await fetch(apiEndpoint + '?' + qs.join('&'));
+        if (!res.ok) throw new Error('Failed to load archived ' + pageType);
         const data = await res.json();
-        const mapped = (data || []).map(r => ({
-          id: r.id,
-          title: r.title,
-          type: r.type || 'pdf',
-          year: r.year || null,
-          size: r.size || '',
-          count: (typeof r.files_count === 'number' ? r.files_count : (r.item_count || null)),
-          file_url: r.file_url || null,
-          first_file_url: r.first_file_url || null,
-        }));
+        
+        let mapped = [];
+        
+        // Handle different data structures based on page type
+        if (pageType === 'vacancies') {
+          mapped = (data || []).map(r => ({
+            id: r.id,
+            title: r.title || "",
+            type: 'vacancy',
+            year: r.year || "",
+            size: r.file_size || r.size || "-",
+            description: r.description || "",
+            published_date: r.published_date || "",
+            start_date: r.start_date || "",
+            due_date: r.due_date || "",
+            file_url: r.file_name ? `/uploads/vacancies/${r.file_name}` : null,
+          }));
+        } else if (pageType === 'tenders') {
+          mapped = (data || []).map(r => ({
+            id: r.id,
+            title: r.title || "",
+            type: 'tender',
+            year: new Date(r.published_date).getFullYear() || "",
+            size: r.file_size || r.size || "-",
+            description: r.description || "",
+            published_date: r.published_date || "",
+            due_date: r.due_date || r.closing_date || "",
+            tender_id: r.tender_id || "",
+            file_url: r.file_name ? `/uploads/tenders/${r.file_name}` : null,
+          }));
+        } else {
+          // Default documents structure
+          mapped = (data || []).map(r => ({
+            id: r.id,
+            title: r.title,
+            type: r.type || 'pdf',
+            year: r.year || null,
+            size: r.size || '',
+            count: (typeof r.files_count === 'number' ? r.files_count : (r.item_count || null)),
+            file_url: r.file_url || null,
+            first_file_url: r.first_file_url || null,
+          }));
+        }
         if (mounted) setItems(mapped);
       } catch (e) {
-        if (mounted) setError(e.message || 'Failed to load archived reports');
+        if (mounted) setError(e.message || 'Failed to load archived ' + pageType);
       } finally {
         if (mounted) setLoading(false);
       }
     }
     load();
     return () => { mounted = false; }
-  }, [router?.asPath, router?.query?.nav_item, router?.query?.nav]);
+  }, [router?.asPath, router?.query?.page, pageType]);
 
   useEffect(() => {
     if (loading || error) return;
@@ -72,19 +129,23 @@ export default function Archives() {
     let attemptTimer;
 
     const tryInit = () => {
-      if (cancelled) return;
+      if (cancelled) {
+        return;
+      }
       const $ = window.jQuery;
       if (!$ || !$.fn || !$.fn.DataTable) {
         attemptTimer = setTimeout(tryInit, 50);
         return;
       }
 
+
       if (dataTableRef.current) {
         try {
           dataTableRef.current.clear();
           dataTableRef.current.rows.add(items);
           dataTableRef.current.draw(false);
-        } catch {
+        } catch (err) {
+          console.error('DataTable update error:', err);
         }
         return;
       }
@@ -111,6 +172,7 @@ export default function Archives() {
         }
       }
 
+      
       const dt = $(tableElRef.current).DataTable({
         data: items,
         columns: [
@@ -192,7 +254,7 @@ export default function Archives() {
           }
         },
         language: {
-          emptyTable: 'No archived reports found.'
+          emptyTable: `No archived ${pageType} found.`
         }
       });
 
@@ -243,6 +305,7 @@ export default function Archives() {
     };
 
     const cleanup = tryInit();
+    
     return () => {
       cancelled = true;
       if (attemptTimer) clearTimeout(attemptTimer);
@@ -287,7 +350,7 @@ export default function Archives() {
     <>
       <main id="main">
         <PageHeader pagePath="/documents/reports" />
-        <SubNavTabs />
+        <SubNavTabs pagePath="/archives/all" />
         <section className="mt-10 py-10" style={{ borderRadius: '20px' }}>
           <div className="gi-container">
             <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-3 mb-4">

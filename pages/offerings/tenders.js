@@ -16,15 +16,12 @@ export default function Tenders() {
   const [sort, setSort] = useState("Newest");
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
-  const [showArchived, setShowArchived] = useState(false);
-
   // Fetch data
   useEffect(() => {
     async function load() {
       try {
         setLoading(true);
-        let url = "/api/offerings/tenders";
-        if (showArchived) url += "?archived=true";
+        const url = "/api/offerings/tenders";
 
         const res = await fetch(url);
         const data = await res.json();
@@ -51,7 +48,7 @@ export default function Tenders() {
     }
 
     load();
-  }, [showArchived]);
+  }, []);
 
   // Search filter
   const filtered = useMemo(() => {
@@ -252,10 +249,10 @@ export default function Tenders() {
               </div>
             </div>
 
-            {/* ARCHIVE TOGGLE */}
+            {/* ARCHIVE LINK */}
             <div className="flex justify-end mt-4">
-              <button
-                onClick={() => setShowArchived(!showArchived)}
+              <a
+                href="/archives?page=tenders"
                 className="inline-flex items-center gap-2 px-3 py-1.5 rounded border text-orange-800 border-orange-300 hover:bg-orange-50"
               >
                 <span
@@ -264,8 +261,8 @@ export default function Tenders() {
                 >
                   archive
                 </span>
-                {showArchived ? "View Active" : "View Archive"}
-              </button>
+                View Archive
+              </a>
             </div>
           </div>
         </section>

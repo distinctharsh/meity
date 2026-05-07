@@ -12,6 +12,14 @@ export default function DocumentsSlug() {
   const effectivePath = slug
     ? '/documents/' + (Array.isArray(slug) ? slug.join('/') : String(slug))
     : '/documents';
+  
+  // Generate archive page URL based on current slug
+  const getArchiveUrl = () => {
+    const pageName = slug 
+      ? (Array.isArray(slug) ? slug.join('-') : String(slug))
+      : 'reports';
+    return `/archives?page=${encodeURIComponent(pageName)}`;
+  };
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("");
   const [sort, setSort] = useState("Newest");
@@ -41,19 +49,30 @@ export default function DocumentsSlug() {
         let apiUrl = '/api/documents/reports';
         const navQuery = router.query?.nav;
         const navItem = router.query?.nav_item;
+        const archivedOnly = router.query?.archived_only;
+        const qs = [];
+        
+        if (archivedOnly) {
+          qs.push('archived_only=1');
+        }
+        
         if (navQuery) {
-          apiUrl += '?nav=' + encodeURIComponent(String(navQuery));
+          qs.push('nav=' + encodeURIComponent(String(navQuery)));
         } else if (navItem) {
-          apiUrl += '?nav_item=' + encodeURIComponent(String(navItem));
+          qs.push('nav_item=' + encodeURIComponent(String(navItem)));
         } else if (slug) {
           // slug like 'reports' -> map back to '/documents/reports'
           const raw = Array.isArray(slug) ? slug.join('/') : String(slug);
           const decoded = decodeURIComponent(raw);
           const navPath = '/documents/' + decoded.replace(/^\//, '');
-          apiUrl += '?nav=' + encodeURIComponent(navPath);
+          qs.push('nav=' + encodeURIComponent(navPath));
         } else {
           const nav = (router && router.asPath) || (typeof window !== 'undefined' ? window.location.pathname : '/documents/reports');
-          apiUrl += '?nav=' + encodeURIComponent(nav.split('?')[0]);
+          qs.push('nav=' + encodeURIComponent(nav.split('?')[0]));
+        }
+        
+        if (qs.length > 0) {
+          apiUrl += '?' + qs.join('&');
         }
 
         const res = await fetch(apiUrl);
@@ -78,7 +97,7 @@ export default function DocumentsSlug() {
     }
     load();
     return () => { mounted = false; }
-  }, [router?.asPath, router?.query?.nav_item, router?.query?.nav, slug]);
+  }, [router?.asPath, router?.query?.nav_item, router?.query?.nav, router?.query?.archived_only, slug]);
 
   useEffect(() => {
     if (loading || error) return;
@@ -430,7 +449,7 @@ export default function DocumentsSlug() {
                 </nav>
               </div>
               <div className="flex justify-end">
-                <a className="inline-flex items-center gap-2 px-3 py-1.5 rounded border text-blue-800 border-blue-300 hover:bg-blue-50" href="/archives?page=reports">
+                <a className="inline-flex items-center gap-2 px-3 py-1.5 rounded border text-blue-800 border-blue-300 hover:bg-blue-50" href={getArchiveUrl()}>
                   <span aria-hidden="true" className="material-symbols-outlined">archive</span>
                   View Archive
                 </a>

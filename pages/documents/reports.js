@@ -7,6 +7,13 @@ import PageHeader from "@/components/PageHeader";
 export default function Reports() {
   const router = useRouter();
   const effectivePath = (router && router.asPath && String(router.asPath).split('?')[0]) || '/documents/reports';
+  
+  // Generate archive page URL based on current page
+  const getArchiveUrl = () => {
+    const pathParts = effectivePath.split('/').filter(Boolean);
+    const pageName = pathParts[pathParts.length - 1] || 'reports';
+    return `/archives?page=${encodeURIComponent(pageName)}`;
+  };
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("");
   const [sort, setSort] = useState("Newest");
@@ -437,7 +444,7 @@ export default function Reports() {
                 </nav>
               </div>
               <div className="flex justify-end">
-                <a className="inline-flex items-center gap-2 px-3 py-1.5 rounded border text-blue-800 border-blue-300 hover:bg-blue-50" href="/archives?page=reports">
+                <a className="inline-flex items-center gap-2 px-3 py-1.5 rounded border text-blue-800 border-blue-300 hover:bg-blue-50" href={getArchiveUrl()}>
                   <span aria-hidden="true" className="material-symbols-outlined">archive</span>
                   View Archive
                 </a>

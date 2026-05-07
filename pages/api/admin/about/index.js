@@ -34,7 +34,6 @@ async function ensureTable() {
   try {
     const [cols] = await pool.query("SHOW COLUMNS FROM about_content LIKE 'content_type'");
     if (cols.length > 0 && cols[0].Type && cols[0].Type.includes('enum')) {
-      console.log('Dropping old about_content table with ENUM type');
       await pool.query('DROP TABLE about_content');
     }
   } catch (e) {

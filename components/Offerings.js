@@ -7,11 +7,8 @@ export default function Offerings() {
   const [activeTab, setActiveTab] = useState("vacancies");
   const [vacanciesList, setVacanciesList] = useState([]);
   const [tendersList, setTendersList] = useState([]);
-  const [whatsNewList, setWhatsNewList] = useState([
-    "Cabinet Secretariat Performance Smartboard",
-    "Latest update from Ministry",
-    "New policy announcement"
-  ]);
+  const [whatsNewList, setWhatsNewList] = useState([]);
+  const [whatsNewLoading, setWhatsNewLoading] = useState(true);
 
   useEffect(() => {
     let mounted = true;
@@ -34,7 +31,40 @@ export default function Offerings() {
             setTendersList(tendersData.slice(0, 5)); // Show only 5 latest tenders
           }
         }
-      } catch {}
+
+        // Fetch what's new items
+        try {
+          const whatsNewRes = await fetch('/api/admin/whats-new');
+          if (whatsNewRes.ok) {
+            const whatsNewData = await whatsNewRes.json();
+            if (mounted && Array.isArray(whatsNewData)) {
+              // Filter only active items and map to the expected format
+              const activeItems = whatsNewData
+                .filter(item => item.is_active === 1)
+                .sort((a, b) => a.display_order - b.display_order)
+                .map(item => ({
+                  title: item.title,
+                  link_url: item.type === 'link' ? item.external_url : item.file_url
+                }));
+              setWhatsNewList(activeItems);
+            }
+          }
+        } catch (error) {
+          console.error('Failed to fetch what\'s new items:', error);
+          // Set fallback data if API fails
+          if (mounted) {
+            setWhatsNewList([
+              "Cabinet Secretariat Performance Smartboard",
+              "Latest update from Ministry",
+              "New policy announcement"
+            ]);
+          }
+        } finally {
+          if (mounted) {
+            setWhatsNewLoading(false);
+          }
+        }
+      } catch { }
     })();
     return () => { mounted = false; };
   }, []);
@@ -78,8 +108,8 @@ export default function Offerings() {
                   const isObj = item && typeof item === 'object';
                   const title = isObj ? item.title : item;
                   // Construct file URL dynamically based on type
-                  const url = isObj && item.file_name 
-                    ? `/uploads/${activeTab}/${item.file_name}` 
+                  const url = isObj && item.file_name
+                    ? `/uploads/${activeTab}/${item.file_name}`
                     : null;
                   return (
                     <li key={index} className="py-[14px] px-5 border-b border-[#e8eefc] flex justify-between items-center text-[#150202] font-normal text-[1.1rem] leading-[1.5] whitespace-normal overflow-hidden text-ellipsis [display:-webkit-box] [line-clamp:3] [-webkit-line-clamp:3] [-webkit-box-orient:vertical] max-w-full last:border-b-0">
@@ -99,8 +129,8 @@ export default function Offerings() {
               </ul>
             </div>
 
-            <div className="p-3 px-5 flex justify-end rounded-b-[6px] max-w-full mt-0">
-              <a 
+            <div className="p-3 px-0 flex justify-end rounded-b-[6px] max-w-full mt-0">
+              <a
                 href={activeTab === "vacancies" ? "/offerings/vacancies" : "/offerings/tenders"}
                 className="inline-flex items-center gap-2 border border-[#0b3a82] bg-white text-[#0b3a82] py-[10px] px-[18px] rounded-[6px] cursor-pointer font-semibold no-underline hover:bg-[#f0f4ff]"
               >
@@ -120,8 +150,17 @@ export default function Offerings() {
 
             <div className="bg-[#162f6a] text-white rounded-[8px] py-4 px-0 min-h-[220px] flex flex-col">
               <div className="max-h-[260px] overflow-y-auto [scrollbar-width:thin] [scrollbar-color:#e6ecff_#162f6a]">
-                <ul className="list-none m-0 p-0">
-                  {whatsNewList.map((item, idx) => {
+                {whatsNewLoading ? (
+                  <div className="flex justify-center items-center h-32">
+                    <div className="animate-pulse flex flex-col space-y-2 w-full px-6">
+                      {[...Array(3)].map((_, i) => (
+                        <div key={i} className="h-4 bg-white/20 rounded"></div>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <ul className="list-none m-0 p-0">
+                    {whatsNewList.map((item, idx) => {
                     const isObj = item && typeof item === 'object';
                     const title = isObj ? item.title : item;
                     const url = isObj ? item.link_url : null;
@@ -141,6 +180,7 @@ export default function Offerings() {
                     );
                   })}
                 </ul>
+                )}
               </div>
             </div>
 

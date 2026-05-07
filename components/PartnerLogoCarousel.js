@@ -3,58 +3,109 @@
 import { useRef, useState, useEffect } from "react";
 import Image from "next/image";
 
-const logos = [
-  "/images/partner/president.jpg",
-  "/images/partner/pm.jpg",
-  "/images/partner/data-gov.png",
-  "/images/partner/egazette.jpg",
-  "/images/partner/india-code.png",
-  "/images/partner/esamiksha.jpg",
-];
-
 const PartnerLogoCarousel = () => {
   const containerRef = useRef(null);
   const autoRotateRef = useRef(null);
   const [isInteracting, setIsInteracting] = useState(false);
+  const [logos, setLogos] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const scroll = (direction) => {
+  useEffect(() => {
+    fetchPartnerLogos();
+  }, []);
+
+  const fetchPartnerLogos = async () => {
+    try {
+      const response = await fetch('/api/admin/partner-logos');
+      if (response.ok) {
+        const data = await response.json();
+        // Filter only active logos and map to image URLs
+        const activeLogos = data
+          .filter(logo => logo.is_active === 1)
+          .sort((a, b) => a.display_order - b.display_order)
+          .map(logo => logo.image_url);
+        setLogos(activeLogos);
+      } else {
+        // Fallback to default logos if API fails
+        setLogos([
+          "/images/partner/president.jpg",
+          "/images/partner/pm.jpg",
+          "/images/partner/data-gov.png",
+          "/images/partner/egazette.jpg",
+          "/images/partner/india-code.png",
+          "/images/partner/esamiksha.jpg",
+        ]);
+      }
+    } catch (error) {
+      console.error('Failed to fetch partner logos:', error);
+      // Fallback to default logos
+      setLogos([
+        "/images/partner/president.jpg",
+        "/images/partner/pm.jpg",
+        "/images/partner/data-gov.png",
+        "/images/partner/egazette.jpg",
+        "/images/partner/india-code.png",
+        "/images/partner/esamiksha.jpg",
+      ]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+const scroll = (direction) => {
     if (!containerRef.current) return;
     
     const container = containerRef.current;
-    const itemWidth = container.firstChild?.offsetWidth || 150; // Width of each logo item
-    const scrollAmount = itemWidth + 16; // 16px for gap between items
-    const maxScroll = container.scrollWidth - container.clientWidth;
-    const isScrollingRight = direction === 'right';
+    const items = Array.from(container.children);
+    if (items.length === 0) return;
     
-    // Calculate new scroll position
+    // Fixed item width and gap
+    const itemWidth = 160;
+    const gap = 16; // Matches the gap in CSS
+    const stepSize = itemWidth + gap;
+    
+    // Get current scroll position
+    const currentScroll = container.scrollLeft;
+    const containerWidth = container.clientWidth;
+    
+    // Calculate current item index
+    const currentItemIndex = Math.round(currentScroll / stepSize);
+    
     let newScrollPos;
-    if (isScrollingRight) {
-      // If near the end, wrap around to the start
-      if (container.scrollLeft + container.clientWidth >= container.scrollWidth - 5) {
+    
+    if (direction === 'right') {
+      // Move to next item
+      const nextIndex = currentItemIndex + 1;
+      
+      if (nextIndex >= items.length) {
+        // Wrap around to start
         newScrollPos = 0;
       } else {
-        newScrollPos = Math.min(container.scrollLeft + scrollAmount, maxScroll);
+        newScrollPos = nextIndex * stepSize;
       }
     } else {
-      // If near the start, wrap around to the end
-      if (container.scrollLeft <= 5) {
-        newScrollPos = maxScroll;
+      // Move to previous item
+      const prevIndex = currentItemIndex - 1;
+      
+      if (prevIndex < 0) {
+        // Wrap around to end - show the last item that fits in view
+        const maxVisibleItems = Math.floor(containerWidth / stepSize);
+        const lastVisibleIndex = Math.max(0, items.length - maxVisibleItems);
+        newScrollPos = lastVisibleIndex * stepSize;
       } else {
-        newScrollPos = Math.max(0, container.scrollLeft - scrollAmount);
+        newScrollPos = prevIndex * stepSize;
       }
     }
+    
+    // Ensure we don't scroll beyond bounds
+    const maxScroll = Math.max(0, (items.length - 1) * stepSize);
+    newScrollPos = Math.max(0, Math.min(newScrollPos, maxScroll));
     
     // Apply the scroll with smooth behavior
     container.scrollTo({
       left: newScrollPos,
       behavior: 'smooth'
     });
-    
-    // If we wrapped around, we need to handle the visual transition
-    if ((isScrollingRight && newScrollPos === 0) || (!isScrollingRight && newScrollPos === maxScroll)) {
-      // Force a reflow to ensure the scroll position is updated
-      void container.offsetHeight;
-    }
   };
 
   // Auto-rotate functionality - continuous circular motion, pauses on interaction
@@ -79,6 +130,22 @@ const PartnerLogoCarousel = () => {
     scroll(direction);
   };
 
+  if (loading) {
+    return (
+      <div className="w-full bg-gray-100 py-6 sm:py-8">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6">
+          <div className="flex justify-center items-center h-20">
+            <div className="animate-pulse flex space-x-4">
+              {[...Array(6)].map((_, i) => (
+                <div key={i} className="h-12 w-20 bg-gray-300 rounded-lg"></div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="w-full bg-gray-100 py-6 sm:py-8">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
@@ -86,7 +153,7 @@ const PartnerLogoCarousel = () => {
           {/* Scroll Container */}
           <div
             ref={containerRef}
-            className="flex overflow-x-auto px-2 gap-2 sm:gap-4 md:gap-6 snap-x snap-mandatory scrollbar-hide justify-center"
+            className="flex overflow-x-auto px-4 sm:px-6 lg:px-8 gap-2 sm:gap-4 md:gap-6 snap-x snap-mandatory scrollbar-hide"
             role="region"
             aria-label="Partner logos"
             onMouseEnter={() => setIsInteracting(true)}
@@ -96,20 +163,26 @@ const PartnerLogoCarousel = () => {
             style={{
               msOverflowStyle: 'none',  // IE and Edge
               scrollbarWidth: 'none',  // Firefox
+              scrollBehavior: 'smooth'
             }}
           >
             {logos.map((logo, index) => (
               <div
                 key={index}
-                className="flex-shrink-0 bg-white rounded-xl shadow-lg border border-gray-200 flex items-center justify-center relative snap-start w-1/2 h-20 sm:w-1/4 md:w-1/5 lg:w-[18%] p-2 sm:p-3"
+                className="flex-shrink-0 bg-white rounded-xl shadow-lg border border-gray-200 flex items-center justify-center relative snap-start"
+                style={{ 
+                  width: '160px', 
+                  height: '80px',
+                  minWidth: '160px'
+                }}
               >
                 <Image
                   src={logo}
                   alt={`Partner logo ${index + 1}`}
                   fill
                   style={{ objectFit: "contain" }}
-                  className="object-contain"
-                  sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 160px"
+                  className="object-contain p-2"
+                  sizes="160px"
                 />
               </div>
             ))}

@@ -17,11 +17,13 @@ export default async function handler(req, res) {
       SELECT 
         id,
         title,
+        description,
         type,
         YEAR(published_date) as year,
         file_name,
         file_size as size,
-        due_date AS closing_date,
+        published_date,
+        due_date,
         is_archived,
         created_at,
         updated_at

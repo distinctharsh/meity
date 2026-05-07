@@ -7,14 +7,6 @@ const fallbackRecent = [
   { title: "No recent documents available", description: "Check back later for updates" }
 ];
 
-const importantLinks = [
-  "Secretary to GOI List",
-  "Former Cabinet Secretary List",
-  "IGoT",
-  "EHRMS",
-  "SPARROW",
-];
-
 const personas = [
   { img: "/images/user-personas/it-professional.jpg", label: "FOR IT PROFESSIONAL" },
   { img: "/images/user-personas/researcher.jpg", label: "FOR RESEARCHER" },
@@ -27,6 +19,8 @@ const RecentDocs = () => {
   const [docs, setDocs] = useState(fallbackRecent);
   const [navLinks, setNavLinks] = useState(null);
   const [recentDocs, setRecentDocs] = useState([]);
+  const [importantLinks, setImportantLinks] = useState([]);
+  const [importantLinksLoading, setImportantLinksLoading] = useState(true);
 
   useEffect(() => {
     let mounted = true;
@@ -46,6 +40,38 @@ const RecentDocs = () => {
             if (mounted && Array.isArray(d2) && d2.length) setDocs(d2);
           }
         } catch { }
+      }
+
+      // Fetch important links
+      try {
+        const importantLinksRes = await fetch('/api/admin/important-links');
+        if (importantLinksRes.ok) {
+          const importantLinksData = await importantLinksRes.json();
+          if (mounted && Array.isArray(importantLinksData)) {
+            // Filter only active items and map to the expected format
+            const activeLinks = importantLinksData
+              .filter(link => link.is_active === 1)
+              .sort((a, b) => a.display_order - b.display_order)
+              .map(link => link.title);
+            setImportantLinks(activeLinks);
+          }
+        }
+      } catch (error) {
+        console.error('Failed to fetch important links:', error);
+        // Set fallback data if API fails
+        if (mounted) {
+          setImportantLinks([
+            "Secretary to GOI List",
+            "Former Cabinet Secretary List",
+            "IGoT",
+            "EHRMS",
+            "SPARROW",
+          ]);
+        }
+      } finally {
+        if (mounted) {
+          setImportantLinksLoading(false);
+        }
       }
     })();
     return () => { mounted = false; };
@@ -232,17 +258,27 @@ const RecentDocs = () => {
             <h3 className="text-[#162f6a] text-[1.4rem] font-bold leading-none tracking-tight m-0">Important Links</h3>
           </div>
           <div className="relative w-full">
-            <ul className="m-0 p-0 w-full mt-2 bg-white">
-              {importantLinks.map((link, i) => (
-                <li
-                  key={i}
-                  className="flex items-center justify-between border-b last:border-none border-[#e6ecff] py-3 px-4 text-[0.95rem] text-[#0b3a82] hover:bg-[#f7f9ff] cursor-pointer transition-colors"
-                >
-                  {link}
-                  <span className="text-[#0b3a82]"><FiChevronRight /></span>
-                </li>
-              ))}
-            </ul>
+            {importantLinksLoading ? (
+              <div className="flex justify-center items-center h-32 mt-2 bg-white">
+                <div className="animate-pulse flex flex-col space-y-2 w-full px-4">
+                  {[...Array(5)].map((_, i) => (
+                    <div key={i} className="h-3 bg-gray-200 rounded"></div>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <ul className="m-0 p-0 w-full mt-2 bg-white">
+                {importantLinks.map((link, i) => (
+                  <li
+                    key={i}
+                    className="flex items-center justify-between border-b last:border-none border-[#e6ecff] py-3 px-4 text-[0.95rem] text-[#0b3a82] hover:bg-[#f7f9ff] cursor-pointer transition-colors"
+                  >
+                    {link}
+                    <span className="text-[#0b3a82]"><FiChevronRight /></span>
+                  </li>
+                ))}
+              </ul>
+            )}
             <span className="absolute top-0 right-0 h-full w-[3px] bg-[#0b3a82]" aria-hidden></span>
           </div>
         </div>
