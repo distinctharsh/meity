@@ -208,8 +208,8 @@ export default function SubNavTabs({ pagePath }) {
                 return isActive ? (
                   <span
                     key={keyValue}
-                    className={"text-white font-bold relative pl-3 dot-before whitespace-nowrap"}
-                    style={{ color: '#fff', fontSize: '1.3rem', fontWeight: 800, lineHeight: '1.1' }}
+                    className={"text-white font-bold relative pl-3 dot-before whitespace-nowrap font-20-700"}
+                    style={{ color: '#fff'}}
                   >
                     {it.label}
                   </span>
@@ -217,8 +217,8 @@ export default function SubNavTabs({ pagePath }) {
                   <Link
                     key={keyValue}
                     href={displayHref}
-                    className={"text-white/80 hover:text-white whitespace-nowrap"}
-                    style={{ color: '#fff', fontSize: '1.3rem', fontWeight: 400 }}
+                    className={"text-white/80 hover:text-white whitespace-nowrap font-20-400"}
+                    style={{ color: '#fff' }}
                   >
                     {it.label}
                   </Link>

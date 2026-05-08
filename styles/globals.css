@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "./slider.css";
+
 /* Self-hosted Noto Sans; remove external Google Fonts import */
 @font-face {
   font-family: "Noto Sans";
@@ -42,6 +43,7 @@
   --font-sans: "Noto Sans", sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
+
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
@@ -50,14 +52,24 @@
 }
 
 /* Global cursor pointer for all interactive elements */
-button, a, [role="button"], [onclick], input[type="button"], input[type="submit"], 
-.cursor-pointer, .hover\\:cursor-pointer:hover {
+button,
+a,
+[role="button"],
+[onclick],
+input[type="button"],
+input[type="submit"],
+.cursor-pointer,
+.hover\\:cursor-pointer:hover {
   cursor: pointer !important;
 }
 
 /* Specific hover states */
-a:hover, button:hover, [role="button"]:hover, [onclick]:hover, 
-input[type="button"]:hover, input[type="submit"]:hover {
+a:hover,
+button:hover,
+[role="button"]:hover,
+[onclick]:hover,
+input[type="button"]:hover,
+input[type="submit"]:hover {
   cursor: pointer !important;
 }
 
@@ -445,6 +457,212 @@ body {
   height: 100%;
 }
 
-.MDJAminDiv{
+.MDJAminDiv {
   display: none;
+}
+
+
+
+
+* {
+  font-style: normal;
+  font-family: "Noto Sans", sans-serif;
+}
+
+.font-12-500 {
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.font-12-600 {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.font-16-400 {
+  font-size: 16px;
+  font-weight: 400;
+}
+
+.font-16-500 {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.font-16-600 {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.font-16-700 {
+  font-size: 16px;
+  font-weight: 700;
+}
+.font-18-500 {
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.font-20-400 {
+  font-size: 20px;
+  font-weight: 400;
+}
+.font-20-500 {
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.font-20-600 {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.font-20-700 {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.font-20-900 {
+  font-size: 20px;
+  font-weight: 900;
+}
+
+.font-24-400 {
+  font-size: 24px;
+  font-weight: 400;
+}
+
+.font-24-500 {
+  font-size: 24px;
+  font-weight: 500;
+}
+
+.font-24-600 {
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.font-24-700 {
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.font-36-700 {
+  font-size: 36px;
+  font-weight: 700;
+}
+
+.pm-content {
+  color: rgb(22, 47, 106);
+  background-color: transparent;
+  text-align: start;
+  text-indent: 0;
+  line-height: 29px;
+  text-transform: none;
+  text-decoration: none;
+}
+
+
+.about-content {
+  text-align: justify;
+  text-indent: 0;
+  line-height: 30px;
+  text-transform: none;
+  text-decoration: none;
+}
+
+.about-cards {
+  text-align: start;
+  text-indent: 0;
+  line-height: 22px;
+  text-transform: none;
+  text-decoration: none;
+}
+
+
+
+.main-heading {
+  font-size: 24px;
+  font-weight: 700;
+  color: rgb(22, 47, 106);
+  background-color: transparent;
+  text-align: start;
+  text-indent: 0;
+  line-height: normal;
+  text-transform: none;
+  text-decoration: none;
+  margin-left: 8px;
+}
+
+
+.recent-head {
+  font-size: 20px;
+  font-weight: 700;
+  color: rgb(22, 47, 106);
+  background-color: transparent;
+}
+
+.recent-text {
+  font-size: 16px;
+  font-weight: 400;
+  color: rgb(21, 2, 2);
+  background-color: transparent;
+}
+
+.important-link-text {
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  font-family: "Noto Sans", sans-serif;
+
+  color: rgb(21, 2, 2);
+  background-color: transparent;
+}
+
+
+.view-btn {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+
+  padding: 4px 6px 6px 12px;
+  gap: 8px;
+  background: #fff;
+  border: 1px solid #162f6a;
+  border-radius: 4px;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  -ms-border-radius: 4px;
+  -o-border-radius: 4px;
+  text-transform: uppercase;
+  color: #162f6a;
+}
+
+
+.view-btn-all {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+
+  padding: 4px 6px 6px 12px;
+  gap: 8px;
+
+  border-radius: 4px;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  -ms-border-radius: 4px;
+  -o-border-radius: 4px;
+  text-transform: uppercase;
+}
+
+
+.policyManager{
+  font-size: 16px;
+  font-weight: 600;
 }

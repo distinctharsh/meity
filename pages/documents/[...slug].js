@@ -84,11 +84,11 @@ export default function DocumentDetail() {
                                 <div key={file.id} className="grid grid-cols-[7fr_2fr_3fr] items-center px-4 py-3 bg-white">
                                     <div className="flex items-center gap-2">
                                         <span className="material-symbols-outlined text-gray-700">draft</span>
-                                        <p className="mb-0 text-sm text-gray-800 truncate" title={file.original_name}>
+                                        <p className="mb-0 font-16-400 truncate" title={file.original_name}>
                                             {file.original_name}
                                         </p>
                                     </div>
-                                    <div className="text-center text-sm text-gray-700">
+                                    <div className="text-center ">
                                         {new Date(file.created_at).getFullYear() || '-'}
                                     </div>
                                     <div className="flex items-center gap-2 justify-between w-full">

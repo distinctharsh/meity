@@ -114,18 +114,17 @@ export default function Tenders() {
               </select>
             </div>
 
-            {/* TABLE HEADER */}
-            <div
-              className="grid grid-cols-[2fr_4fr_2fr_2fr_2fr_2fr] font-semibold rounded-t-md px-4 py-2 text-xs"
-              style={{ background: "#a3bbf3", color: "#162f6a" }}
-            >
-              <div>Tender ID</div>
-              <div>Title</div>
-              <div className="text-center">Published Date</div>
-              <div className="text-center">Due Date</div>
-              <div className="text-center">Size</div>
-              <div className="text-center">Action</div>
-            </div>
+{/* TABLE HEADER */}
+<div
+  className="hidden lg:grid grid-cols-[2fr_2fr_2fr_2fr_2fr_2fr] bg-[#a3bbf3] text-[#162f6a] rounded-[8px] px-6 py-4 mb-3 uppercase text-[12px] font-semibold tracking-[1px]"
+>
+  <div>Tender ID</div>
+  <div>Title</div>
+  <div className="text-center">Published Date</div>
+  <div className="text-center">Due Date</div>
+  <div className="text-center">Size</div>
+  <div className="text-center">Action</div>
+</div>
 
             {/* TABLE BODY */}
             <div className="border rounded-b-md bg-white">
@@ -157,7 +156,7 @@ export default function Tenders() {
                   return (
                     <div
                       key={item.id}
-                      className="grid grid-cols-[2fr_4fr_2fr_2fr_2fr_2fr] px-4 py-3 border-t items-center"
+                      className="grid grid-cols-[2fr_2fr_2fr_2fr_2fr_2fr] px-4 py-3 border-t items-center"
                     >
                       <div className="text-sm font-medium">
                         {item.tender_id || "-"}
@@ -195,7 +194,7 @@ export default function Tenders() {
                           target="_blank"
                           className="inline-flex items-center gap-1 text-xs px-2 py-1 rounded bg-blue-100 text-blue-800 hover:bg-blue-200"
                         >
-                          <span aria-hidden="true" class="material-symbols-outlined">visibility</span>
+                          <span aria-hidden="true" className="material-symbols-outlined">visibility</span>
                           View
                         </a>
                       </div>
@@ -253,7 +252,7 @@ export default function Tenders() {
             <div className="flex justify-end mt-4">
               <a
                 href="/archives?page=tenders"
-                className="inline-flex items-center gap-2 px-3 py-1.5 rounded border text-orange-800 border-orange-300 hover:bg-orange-50"
+                className="inline-flex items-center gap-2 px-3 py-1.5 rounded border view-btn-all"
               >
                 <span
                   aria-hidden="true"

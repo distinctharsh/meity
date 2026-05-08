@@ -158,7 +158,7 @@ export default function DocumentsSlug() {
             return `
               <div class="flex items-center gap-2">
                 <span class="material-symbols-outlined text-gray-700">${icon}</span>
-                <p class="mb-0 text-sm text-gray-800">${row.title ?? ''}</p>
+                <p class="mb-0 font-16-400">${row.title ?? ''}</p>
                 ${count}
               </div>
             `;
@@ -166,7 +166,7 @@ export default function DocumentsSlug() {
         },
         {
           data: 'year',
-          render: (data) => `<div class="text-center text-sm text-gray-700">${data || '-'}</div>`
+          render: (data) => `<div class="text-center font-12-600">${data || '-'}</div>`
         },
         {
           data: null,
@@ -189,7 +189,7 @@ export default function DocumentsSlug() {
             return `
               <div class="flex items-center gap-2 justify-between w-full">
                 ${typeSize}
-                <a href="${viewHref}"${viewAttrs} class="inline-flex items-center gap-2 uppercase text-sm px-3 py-1.5 rounded bg-blue-100 text-blue-800 hover:bg-blue-200">
+                <a href="${viewHref}"${viewAttrs} class="inline-flex items-center gap-2 uppercase  px-3 py-1.5 rounded bg-blue-100 text-blue-800 hover:bg-blue-200 view-btn-all">
                   <span aria-hidden="true" class="material-symbols-outlined">visibility</span>
                   ${viewText}
                 </a>
@@ -352,7 +352,7 @@ export default function DocumentsSlug() {
                     <option value="Oldest">Oldest</option>
                   </select>
                 </div>
-                <div className="flex items-stretch rounded-md overflow-hidden border border-gray-300 bg-white" role="combobox">
+                {/* <div className="flex items-stretch rounded-md overflow-hidden border border-gray-300 bg-white" role="combobox">
                   <label htmlFor="categorySelect" className="sr-only">Filter by Category</label>
                   <span className="flex items-center px-2 border-r border-gray-300 text-gray-600">
                     <span aria-hidden="true" className="material-symbols-outlined">sort</span>
@@ -363,7 +363,7 @@ export default function DocumentsSlug() {
                     <option value="Group">Group</option>
                     <option value="Single">Single</option>
                   </select>
-                </div>
+                </div> */}
                 <div className="flex items-stretch rounded-md overflow-hidden border border-gray-300 bg-white" role="combobox">
                   <label htmlFor="pageLimitSelect" className="sr-only">Items per page</label>
                   <span className="flex items-center px-2 border-r border-gray-300 text-gray-600">
@@ -378,7 +378,7 @@ export default function DocumentsSlug() {
               </div>
             </div>
 
-            <div className="grid grid-cols-[7fr_2fr_3fr] bg-blue-200 text-blue-900 font-semibold rounded-t-md px-4 py-2 text-xs">
+            <div className="hidden lg:grid grid-cols-[7fr_2fr_3fr] bg-[#a3bbf3] text-[#162f6a] rounded-[8px] px-6 py-4 mb-3 uppercase text-[12px] font-semibold tracking-[1px]">
               <div>Title</div>
               <div className="text-center">Published Year</div>
               <div className="text-center">Type/Size</div>
@@ -449,7 +449,7 @@ export default function DocumentsSlug() {
                 </nav>
               </div>
               <div className="flex justify-end">
-                <a className="inline-flex items-center gap-2 px-3 py-1.5 rounded border text-blue-800 border-blue-300 hover:bg-blue-50" href={getArchiveUrl()}>
+                <a className="inline-flex items-center gap-2 px-3 py-1.5 rounded border text-blue-800 border-blue-300 hover:bg-blue-50 view-btn-all" href={getArchiveUrl()}>
                   <span aria-hidden="true" className="material-symbols-outlined">archive</span>
                   View Archive
                 </a>

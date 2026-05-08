@@ -185,7 +185,7 @@ export default function Archives() {
               return `
                 <div class="flex items-center gap-2">
                   <span class="material-symbols-outlined text-gray-700">${icon}</span>
-                  <p class="mb-0 text-sm text-gray-800">${row.title ?? ''}</p>
+                  <p class="mb-0 font-16-400">${row.title ?? ''}</p>
                   ${count}
                 </div>
               `;
@@ -193,7 +193,7 @@ export default function Archives() {
           },
           {
             data: 'year',
-            render: (data) => `<div class="text-center text-sm text-gray-700">${data || '-'}</div>`
+            render: (data) => `<div class="text-center ">${data || '-'}</div>`
           },
           {
             data: null,
@@ -376,7 +376,7 @@ export default function Archives() {
                     <option value="Oldest">Oldest</option>
                   </select>
                 </div>
-                <div className="flex items-stretch rounded-md overflow-hidden border border-gray-300 bg-white" role="combobox">
+                {/* <div className="flex items-stretch rounded-md overflow-hidden border border-gray-300 bg-white" role="combobox">
                   <label htmlFor="categorySelect" className="sr-only">Filter by Category</label>
                   <span className="flex items-center px-2 border-r border-gray-300 text-gray-600">
                     <span aria-hidden="true" className="material-symbols-outlined">sort</span>
@@ -387,7 +387,7 @@ export default function Archives() {
                     <option value="Group">Group</option>
                     <option value="Single">Single</option>
                   </select>
-                </div>
+                </div> */}
                 <div className="flex items-stretch rounded-md overflow-hidden border border-gray-300 bg-white" role="combobox">
                   <label htmlFor="pageLimitSelect" className="sr-only">Items per page</label>
                   <span className="flex items-center px-2 border-r border-gray-300 text-gray-600">

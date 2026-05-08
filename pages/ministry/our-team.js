@@ -167,8 +167,8 @@ export default function OurTeam() {
                           />
                         </div>
                       </div>
-                      <p className="text-[8px] sm:text-[9px] tracking-wide text-[#3a5a97] font-semibold mb-0">{m.designation || ''}</p>
-                      <p className="font-semibold text-center text-[13px] sm:text-[14px] text-gray-800">{m.name || '-'}</p>
+                      <p className="tracking-wide text-[rgb(22,47,106)] mb-0 font-12-500">{m.designation || ''}</p>
+                      <p className="font-18-500 text-center text-[color: rgb(21, 2, 2)]">{m.name || '-'}</p>
                     </button>
                     {/* Connector (skip after last) */}
                     {idx < orderedTeam.length - 1 ? (
@@ -210,12 +210,12 @@ export default function OurTeam() {
 
 
           {/* PDF Buttons container outside the blue background */}
-          <div className=" px-4 py-10 flex gap-3 sm:gap-4 flex-wrap">
+          {/* <div className=" px-4 py-10 flex gap-3 sm:gap-4 flex-wrap">
             <PdfButton label="FORMER MINISTERS" size="66.37 KB" href="#" />
             <PdfButton label="LIST OF COUNCIL OF MINISTERS" size="3.30 MB" href="#" />
             <PdfButton label="LIST OF OFFICERS/STAFF" size="461.13 KB" href="#" />
             <PdfButton label="FOREIGN DEPUTATION JS LEVEL AND ABOVE" size="365.60 KB" href="#" />
-          </div>
+          </div> */}
         </section>
 
         {/* Profile Modal (Portal) */}
@@ -353,7 +353,7 @@ export default function OurTeam() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 7h10M7 12h10M7 17h6" />
                     </svg>
                   </span>
-                  <span>{section.section}</span>
+                  <span className="uppercase font-16-600">{section.section}</span>
                 </div>
                 <div className="bg-blue-300 text-blue-900 font-semibold grid grid-cols-[2fr_2fr_3fr] px-4 py-1 text-xs">
                   <div>NAME AND DESIGNATION</div>
@@ -367,8 +367,8 @@ export default function OurTeam() {
                     className="grid grid-cols-[2fr_2fr_3fr] border border-t-0 border-gray-300 px-4 py-4 text-sm"
                   >
                     <div>
-                      <p className="font-bold">{person.name}</p>
-                      <p>{person.designation}</p>
+                      <p className="font-16-700">{person.name}</p>
+                      <p className="font-16-400">{person.designation}</p>
                     </div>
                     <div className="space-y-1">
                       {person.contact.map((contact, i) => (
@@ -404,16 +404,30 @@ export default function OurTeam() {
                             </svg>
                           )}
                           {contact.type === "email" ? (
-                            <a className="hover:underline" href={`mailto:${contact.value.replace(/\[at\]/g, '@').replace(/\[dot\]/g, '.')}`}>{contact.value}</a>
+                            <a
+                              className="hover:underline font-16-400"
+                              href={`mailto:${contact.value.replace(/\[at\]/g, '@').replace(/\[dot\]/g, '.')}`}
+                            >
+                              {contact.value}
+                            </a>
                           ) : contact.type === "phone" ? (
-                            <a className="hover:underline" href={`tel:${contact.value.replace(/[^+\d]/g, '')}`}>{contact.value}</a>
+                            <a
+                              className="hover:underline font-16-400"
+                              href={`tel:${contact.value.replace(/[^+\d]/g, '')}`}
+                            >
+                              {contact.value}
+                            </a>
                           ) : (
-                            <span>{contact.value}</span>
+                            <span className="font-16-400">
+                              {contact.value}
+                            </span>
                           )}
                         </p>
                       ))}
                     </div>
-                    <div>{person.address}</div>
+                    <div className="font-16-400">
+                      {person.address}
+                    </div>
                   </div>
                 ))}
               </div>

@@ -141,12 +141,12 @@ export default function Photos() {
                       </button>
                     </div>
                     <div className="p-1 photos-card-body">
-                      <p className="mb-0 text-lg font-semibold photos-card-title">{item.title}</p>
+                      <p className="mb-0 photos-card-title font-14-400">{item.title}</p>
                     </div>
                     <div className="px-1 py-1  flex items-center justify-between uppercase photos-card-footer">
-                      <small className="ptype" aria-label={item.dateLabel}>{item.dateLabel}</small>
+                      <small className="ptype" aria-label={item.dateLabel} font-12-600>{item.dateLabel}</small>
                       <small 
-                        className="ptype cursor-pointer hover:text-blue-600" 
+                        className="ptype cursor-pointer hover:text-blue-600 font-12-600" 
                       >
                         {item.count} Items
                       </small>

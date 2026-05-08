@@ -57,8 +57,8 @@ export default function ReportDetail() {
               ) : files.map((f) => (
                 <div key={f.id} className="grid grid-cols-[1fr_auto] items-center px-4 py-3 bg-white">
                   <div>
-                    <p className="mb-0 text-sm text-gray-800">{f.original_name}</p>
-                    <small className="text-gray-600">{f.file_type} • {f.file_size}</small>
+                    <p className="mb-0 font-16-400">{f.original_name}</p>
+                    <small className="font-12-600">{f.file_type} • {f.file_size}</small>
                   </div>
                   <div>
                     <a href={f.file_url || '#'} target={f.file_url ? '_blank' : undefined} rel={f.file_url ? 'noreferrer' : undefined} className="inline-flex items-center gap-2 uppercase text-sm px-3 py-1.5 rounded bg-blue-100 text-blue-800 hover:bg-blue-200">

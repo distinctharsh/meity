@@ -18,11 +18,11 @@ export default function Header() {
               </div>
 
               {/* Text */}
-              <div className="flex flex-col leading-[1.2] min-w-0 md:flex-1">
-                <div style={{ color: '#000', fontStyle: 'normal', fontWeight: 400, letterSpacing: '-0.08px', marginBottom: 0, fontSize: '20px', fontFamily: 'Noto Sans, sans-serif' }}>
+              <div className="flex flex-col leading-[1.2] min-w-0 md:flex-1 font-20-400">
+                <div style={{ color: '#000', letterSpacing: '-0.08px', marginBottom: 0}}>
                   Government of India
                 </div>
-                <h2 style={{ color: '#000', fontStyle: 'normal', fontWeight: 700, letterSpacing: '0', fontSize: '24px', marginBottom: 6, fontFamily: 'Noto Sans, sans-serif' }} className=" leading-[1.3]">
+                <h2 style={{ color: '#000', letterSpacing: '0', marginBottom: 6 }} className=" leading-[1.3], font-24-700">
                   Cabinet Secretariat
                 </h2>
               </div>

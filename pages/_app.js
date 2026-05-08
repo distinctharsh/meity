@@ -25,7 +25,7 @@ export default function App({ Component, pageProps }) {
         script.setAttribute('language-icon-color', '#162F6A');
         script.setAttribute('asset-path-prefix', '/bhashini');
         script.defer = true;
-        
+
         // Only append if the script doesn't already exist
         if (!document.querySelector('script[src*="website_translation_utility"]')) {
           document.body.appendChild(script);
@@ -45,7 +45,7 @@ export default function App({ Component, pageProps }) {
     <>
       {!isAdminPage && (router.pathname.startsWith('/documents') || router.pathname.startsWith('/archives')) ? (
         <>
-          <Script 
+          {/* <Script 
             src="/vendor/js/jquery-3.7.1.min.js" 
             strategy="afterInteractive"
             onLoad={() => {
@@ -57,6 +57,21 @@ export default function App({ Component, pageProps }) {
           />
           <Script 
             src="/vendor/js/jquery.dataTables.min.js" 
+            strategy="afterInteractive"
+          /> */}
+
+          <Script
+            id="jquery"
+            src="/vendor/js/jquery-3.7.1.min.js"
+            strategy="beforeInteractive"
+            onLoad={() => {
+              window.$ = window.jQuery;
+            }}
+          />
+
+          <Script
+            id="datatable"
+            src="/vendor/js/jquery.dataTables.min.js"
             strategy="afterInteractive"
           />
         </>
@@ -82,7 +97,7 @@ function SafeEventListenerGuard() {
     const proto = EventTarget && EventTarget.prototype;
     if (!proto || !proto.addEventListener) return;
     const originalAdd = proto.addEventListener;
-    const wrapped = function(type, listener, options) {
+    const wrapped = function (type, listener, options) {
       try {
         // Validate params: type must be string and listener must be function
         if (typeof type !== 'string' || typeof listener !== 'function') {

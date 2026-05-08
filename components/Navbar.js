@@ -166,10 +166,18 @@ export default function NewNavbar() {
                   >
                     <Link
                       href={item.href}
-                      className={`flex items-center justify-between md:justify-start no-underline  px-4 py-3 ${itemActive ? 'text-[22px]' : 'text-[18px]'} font-semibold transition-colors duration-200 ${itemActive
-                        ? `text-[#162f6a] border-b-8 border-[#162f6a] ${item.text !== 'Home' ? 'bg-[#fff]' : ''}`
-                        : `text-[#1b1b1b] hover:text-[#162f6a] ${item.text !== 'Home' ? 'hover:bg-[#d2dfff]' : ''}`
-                        }`}
+                      className={`flex items-center justify-between md:justify-start no-underline px-4 py-3 transition-colors duration-200
+                            ${itemActive
+                              ? 'text-[24px] font-[700] text-[#162f6a] border-b-8 border-[#162f6a]'
+                              : 'text-[20px] font-[600] text-[#1b1b1b] hover:text-[#162f6a]'
+                            }
+                            ${item.text !== 'Home'
+                              ? itemActive
+                                ? 'bg-[#fff]'
+                                : 'hover:bg-[#d2dfff]'
+                              : ''
+                            }
+                          `}
 
 
                       onClick={(e) => {
@@ -180,7 +188,7 @@ export default function NewNavbar() {
                       }}
                     >
                       <span className="flex items-center">
-                        <span className="leading-none" style={{ fontWeight: '600' }}>{item.text}</span>
+                        <span className="leading-none ">{item.text}</span>
                         {item.dropdown && (
                           <svg
                             className="ml-2 w-5 h-5 md:transform md:transition-transform md:duration-200 md:group-hover:rotate-180"
@@ -267,17 +275,27 @@ export default function NewNavbar() {
                 return (
                   <li key={index} className="">
                     <Link
-                      href={item.href}
-                      className={`flex items-center justify-between no-underline px-4 py-3 ${itemActive ? 'text-[18px]' : 'text-[16px]'} font-semibold ${itemActive ? 'text-[#162f6a]' : 'text-[#1b1b1b]'}`}
-                      onClick={(e) => {
-                        if (item.dropdown) {
-                          e.preventDefault();
-                          setActiveDropdown(activeDropdown === index ? null : index);
-                        } else {
-                          setMobileMenuOpen(false);
-                        }
-                      }}
-                    >
+  href={item.href}
+  className={`flex items-center justify-between md:justify-start no-underline px-4 py-3 
+    ${itemActive
+      ? '!text-[24px] !font-[700] !text-[rgb(22,47,106)]'
+      : '!text-[20px] !font-[600] !text-[rgb(21,2,2)]'
+    }
+    transition-colors duration-200 
+    ${itemActive
+      ? `border-b-8 ${item.text !== 'Home' ? 'bg-[#fff]' : ''}`
+      : `${item.text !== 'Home' ? 'hover:bg-[#d2dfff]' : ''}`
+    }`}
+    
+  onClick={(e) => {
+    if (item.dropdown) {
+      e.preventDefault();
+      setActiveDropdown(activeDropdown === index ? null : index);
+    } else {
+      setMobileMenuOpen(false);
+    }
+  }}
+>
                       <span className="flex items-center justify-between w-full">
                         <span>{item.text}</span>
                         {item.dropdown && (

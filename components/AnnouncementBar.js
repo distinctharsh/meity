@@ -72,7 +72,7 @@ export default function AnnouncementBar() {
       <div className="gi-container flex items-center py-[6px] px-3 overflow-hidden text-[14px]">
         {/* Left side: Title + Sound icon */}
         <div className="flex items-center font-bold text-[#12306b] mr-3 gap-1">
-          <span className="mr-1">Announcements</span>
+          <span className="mr-1 font-20-900">Announcements</span>
           <Announcement />
         </div>
 

@@ -30,9 +30,11 @@ export default function RTIPage() {
     load();
   }, []);
 
-  const toggleSection = (id) => {
-    setOpenSections(prev => ({ ...prev, [id]: !prev[id] }));
-  };
+const toggleSection = (id) => {
+  setOpenSections((prev) => ({
+    [id]: !prev[id]
+  }));
+};
 
   const content = data?.content;
   const sections = data?.sections || [];
@@ -80,11 +82,12 @@ export default function RTIPage() {
           <div className="gi-container">
         {/* Intro Section */}
         <div className="mb-10">
-          <h2 className="text-xl font-bold text-gray-900 mb-3">
+          <span className='font-24-400'>RTI</span>
+          <h2 className="font-24-500 mb-3">
             {content?.intro_heading || 'Power and Duties of Officials'}
           </h2>
           {bullets.length > 0 && (
-            <ul className="list-disc pl-5 space-y-1 text-sm text-gray-700">
+            <ul className="list-disc pl-5 space-y-1 font-16-400">
               {bullets.map((b, i) => (
                 <li key={i}>{b}</li>
               ))}
@@ -105,9 +108,13 @@ export default function RTIPage() {
                   onClick={() => toggleSection(section.id)}
                   className="w-full flex items-center justify-between px-5 py-4 text-left hover:bg-gray-50 transition-colors"
                 >
-                  <span className="font-medium text-gray-800 text-[15px]">
-                    {section.title}
-                  </span>
+                <span
+                  className={`text-[20px] text-[rgb(22,47,106)] font-["Noto_Sans"] ${
+                    isOpen ? 'font-[700]' : 'font-[500]'
+                  }`}
+                >
+                  {section.title}
+                </span>
                   <svg
                     className={`w-5 h-5 text-gray-500 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
                     fill="none"
@@ -141,24 +148,24 @@ export default function RTIPage() {
                             <tbody className="divide-y divide-gray-100">
                               {section.items.map((item) => (
                                 <tr key={item.id} className="hover:bg-gray-50">
-                                  <td className="px-4 py-3 text-gray-700">
+                                  <td className="px-4 py-3 font-16-400">
                                     {item.title}
                                   </td>
                                   <td className="px-4 py-3">
-                                    <div className="flex items-center text-gray-600 text-xs">
+                                    <div className="flex items-center font-12-600">
                                       <svg className="w-4 h-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
                                       </svg>
                                       {item.file_size || item.file_type || 'N/A'}
                                     </div>
                                   </td>
-                                  <td className="px-4 py-3">
+                                  <td className="px-4 py-3 ">
                                     {item.file_url ? (
                                       <a
                                         href={item.file_url}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="inline-flex items-center px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded text-xs font-medium transition-colors border border-gray-200"
+                                        className="inline-flex items-center px-3 py-1.5 bg-gray-100 hover:bg-gray-200  transition-colors border border-gray-200 view-btn-all"
                                       >
                                         <svg className="w-3.5 h-3.5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                           <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />

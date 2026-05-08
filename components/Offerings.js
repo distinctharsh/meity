@@ -82,7 +82,7 @@ export default function Offerings() {
               <div className="[&>svg]:block" aria-hidden>
                 <Offering />
               </div>
-              <h3 className="text-[20px] text-[#123a6b] m-0 font-bold">Key Offerings</h3>
+              <h3 className="main-heading">Key Offerings</h3>
             </div>
 
             <div className="flex mb-2.5 border border-[#162f6a] rounded overflow-hidden w-full max-w-full">
@@ -132,7 +132,7 @@ export default function Offerings() {
             <div className="p-3 px-0 flex justify-end rounded-b-[6px] max-w-full mt-0">
               <a
                 href={activeTab === "vacancies" ? "/offerings/vacancies" : "/offerings/tenders"}
-                className="inline-flex items-center gap-2 border border-[#0b3a82] bg-white text-[#0b3a82] py-[10px] px-[18px] rounded-[6px] cursor-pointer font-semibold no-underline hover:bg-[#f0f4ff]"
+                className="view-btn"
               >
                 VIEW MORE
                 <FiChevronRight />
@@ -145,7 +145,7 @@ export default function Offerings() {
               <div className="[&>svg]:block" aria-hidden>
                 <WhatsNew />
               </div>
-              <h3 className="text-[20px] text-[#123a6b] m-0 font-bold">What's New</h3>
+              <h3 className="main-heading">What's New</h3>
             </div>
 
             <div className="bg-[#162f6a] text-white rounded-[8px] py-4 px-0 min-h-[220px] flex flex-col">
@@ -185,7 +185,7 @@ export default function Offerings() {
             </div>
 
             <div className="mt-3 flex justify-end">
-              <button className="inline-flex items-center gap-2 border border-[#0b3a82] bg-white text-[#0b3a82] py-[10px] px-[18px] rounded-[6px] cursor-pointer font-semibold">
+              <button className="view-btn">
                 VIEW MORE
                 <FiChevronRight />
               </button>

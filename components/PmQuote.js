@@ -69,8 +69,8 @@ export default function EventQuote() {
         <div className="flex-1 p-[30px] flex flex-col justify-center">
           <div className="max-w-full">
             <p
-              className="text-[1.25rem] leading-[1.6] text-[#162f6a] font-medium tracking-[-0.12px]"
-              style={{ color: '#162f6a', fontSize: '1.7rem', fontStyle: 'normal', fontWeight: 500, lineHeight: '29px', letterSpacing: '-0.12px', whiteSpace: 'pre-line' }}
+              className="font-24-500 pm-content"
+              style={{ color: '#162f6a', lineHeight: '29px', letterSpacing: '-0.12px', whiteSpace: 'pre-line' }}
             >
               <span
                 className="block text-[4.4rem] text-[#162f6a] leading-none mb-5"
@@ -86,17 +86,17 @@ export default function EventQuote() {
             <hr className="border-0 h-[1px] bg-[#0b3a82] my-5" />
 
             <div className="flex justify-between items-center mb-6 flex-wrap gap-4 text-[#162f6a]">
-              <span className="uppercase text-[0.9rem] tracking-[0.5px] font-medium">
+              <span className="uppercase text-[0.9rem] tracking-[0.5px] font-16-500">
                 {quote?.author || "PRIME MINISTER"}
                 <br />
-                <span className="text-[0.85rem] text-[#0b3a82] font-medium">{formatDDMMYYYY(quote?.quote_date)}</span>
+                <span className=" text-[#0b3a82] font-16-500">{formatDDMMYYYY(quote?.quote_date)}</span>
               </span>
 
               <a
                 href={quote?.event_url || '#'}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 bg-white text-[#0b3a82] border border-[#0b3a82] py-[10px] px-5 rounded-[6px] no-underline font-semibold text-[0.9rem] transition-all hover:bg-[#f5f9ff] hover:shadow"
+                className="inline-flex items-center gap-2 bg-white text-[#0b3a82] border border-[#0b3a82] py-[10px] px-5 rounded-[6px] no-underline font-semibold text-[0.9rem] transition-all hover:bg-[#f5f9ff] hover:shadow font-12-600"
               >
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-[#0b3a82]">
                   <path d="M14 3h7v7" stroke="#0b3a82" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>

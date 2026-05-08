@@ -42,24 +42,24 @@ const Footer = () => {
           {/* Left Links Section */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
             <div>
-              <h4 className="text-lg font-semibold mb-4">USEFUL LINKS</h4>
+              <h4 className="font-20-600 mb-3">USEFUL LINKS</h4>
               <ul className="space-y-2 text-base">
-                <li><a href="#" className="  flex items-center"><span aria-hidden="true" className="material-symbols-outlined bhashini-skip-translation mr-2">chevron_right</span>Archives</a></li>
-                <li><a href="/sitemap" className="  flex items-center"><span aria-hidden="true" className="material-symbols-outlined bhashini-skip-translation mr-2">chevron_right</span>Sitemap</a></li>
+                <li><a href="#" className="font-20-400"><span aria-hidden="true" className="material-symbols-outlined bhashini-skip-translation mr-2">chevron_right</span>Archives</a></li>
+                <li><a href="/sitemap" className="font-20-400"><span aria-hidden="true" className="material-symbols-outlined bhashini-skip-translation mr-2">chevron_right</span>Sitemap</a></li>
               </ul>
             </div>
             <div>
-              <h4 className="text-lg font-semibold mb-4">Website Policies</h4>
+              <h4 className="font-20-600 mb-3">Website Policies</h4>
               <ul className="space-y-2 text-base">
-                <li><a href="#" className="  flex items-center"><span aria-hidden="true" className="material-symbols-outlined bhashini-skip-translation mr-2">chevron_right</span>Website Policies</a></li>
-                <li><a href="#" className="  flex items-center"><span aria-hidden="true" className="material-symbols-outlined bhashini-skip-translation mr-2">chevron_right</span>Help</a></li>
+                <li><a href="#" className="font-20-400"><span aria-hidden="true" className="material-symbols-outlined bhashini-skip-translation mr-2">chevron_right</span>Website Policies</a></li>
+                <li><a href="#" className="font-20-400"><span aria-hidden="true" className="material-symbols-outlined bhashini-skip-translation mr-2">chevron_right</span>Help</a></li>
               </ul>
             </div>
             <div>
-              <h4 className="text-lg font-semibold mb-4">Related Links</h4>
+              <h4 className="font-20-600 mb-3">Related Links</h4>
               <ul className="space-y-2 text-base">
-                <li><a href="#" className="  flex items-center"><span aria-hidden="true" className="material-symbols-outlined bhashini-skip-translation mr-2">chevron_right</span>Related Links</a></li>
-                <li><a href="#" className="  flex items-center"><span aria-hidden="true" className="material-symbols-outlined bhashini-skip-translation mr-2">chevron_right</span>Contact Us</a></li>
+                <li><a href="#" className="font-20-400"><span aria-hidden="true" className="material-symbols-outlined bhashini-skip-translation mr-2">chevron_right</span>Related Links</a></li>
+                <li><a href="#" className="font-20-400"><span aria-hidden="true" className="material-symbols-outlined bhashini-skip-translation mr-2">chevron_right</span>Contact Us</a></li>
               </ul>
             </div>
 
@@ -155,16 +155,16 @@ const Footer = () => {
           {/* Left Links Section */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
             <div>
-              <h4 className="text-lg font-semibold mb-4">{s1.title || "USEFUL LINKS"}</h4>
+              <h4 className="font-20-600 mb-3">{s1.title || "USEFUL LINKS"}</h4>
               <ul className="space-y-2 text-base">
                 <li>
-                  <a href={s1Links[0]?.url || "#"} className="  flex items-center">
+                  <a href={s1Links[0]?.url || "#"} className="font-20-400">
                     <span aria-hidden="true" className="material-symbols-outlined bhashini-skip-translation mr-2">chevron_right</span>
                     {s1Links[0]?.label || "Archives"}
                   </a>
                 </li>
                 <li>
-                  <a href="/sitemap" className="  flex items-center">
+                  <a href="/sitemap" className="font-20-400">
                     <span aria-hidden="true" className="material-symbols-outlined bhashini-skip-translation mr-2">chevron_right</span>
                     {s1Links[1]?.label || "Sitemap"}
                   </a>
@@ -172,16 +172,16 @@ const Footer = () => {
               </ul>
             </div>
             <div>
-              <h4 className="text-lg font-semibold mb-4">{s2.title || "Website Policies"}</h4>
+              <h4 className="font-20-600 mb-3">{s2.title || "Website Policies"}</h4>
               <ul className="space-y-2 text-base">
                 <li>
-                  <a href={s2Links[0]?.url || "#"} className="  flex items-center">
+                  <a href={s2Links[0]?.url || "#"} className="font-20-400">
                     <span aria-hidden="true" className="material-symbols-outlined bhashini-skip-translation mr-2">chevron_right</span>
                     {s2Links[0]?.label || "Website Policies"}
                   </a>
                 </li>
                 <li>
-                  <a href={s2Links[1]?.url || "#"} className="  flex items-center">
+                  <a href={s2Links[1]?.url || "#"} className="font-20-400">
                     <span aria-hidden="true" className="material-symbols-outlined bhashini-skip-translation mr-2">chevron_right</span>
                     {s2Links[1]?.label || "Help"}
                   </a>
@@ -189,16 +189,16 @@ const Footer = () => {
               </ul>
             </div>
             <div>
-              <h4 className="text-lg font-semibold mb-4">{s3.title || "Related Links"}</h4>
+              <h4 className="font-20-600 mb-3">{s3.title || "Related Links"}</h4>
               <ul className="space-y-2 text-base">
                 <li>
-                  <a href={s3Links[0]?.url || "#"} className="  flex items-center">
+                  <a href={s3Links[0]?.url || "#"} className="font-20-400">
                     <span aria-hidden="true" className="material-symbols-outlined bhashini-skip-translation mr-2">chevron_right</span>
                     {s3Links[0]?.label || "Related Links"}
                   </a>
                 </li>
                 <li>
-                  <a href={s3Links[1]?.url || "#"} className="  flex items-center">
+                  <a href={s3Links[1]?.url || "#"} className="font-20-400">
                     <span aria-hidden="true" className="material-symbols-outlined bhashini-skip-translation mr-2">chevron_right</span>
                     {s3Links[1]?.label || "Contact Us"}
                   </a>
@@ -212,11 +212,11 @@ const Footer = () => {
             </div>
           </div>
 
-          <div className="flex flex-col items-center md:items-end space-y-4">
-            <h4 className="text-lg font-semibold md:whitespace-nowrap">SUBSCRIBE FOR UPDATES</h4>
+          <div className="flex flex-col items-center md:items-end space-y-4 mt-5">
+            {/* <h4 className="text-lg font-semibold md:whitespace-nowrap">SUBSCRIBE FOR UPDATES</h4> */}
 
             {/* Social Icons */}
-            <div className="flex space-x-4">
+            {/* <div className="flex space-x-4">
               <a href={social.twitter || "#"} aria-label="Twitter">
                 <img src="/images/footer/x.jpg" alt="Twitter" width={28} height={28} style={{ width: '28px', height: '28px', objectFit: 'contain' }} />
               </a>
@@ -229,10 +229,10 @@ const Footer = () => {
               <a href={social.instagram || "#"} aria-label="Instagram">
                 <img src="/images/footer/instagram.jpg" alt="Instagram" width={28} height={28} style={{ width: '28px', height: '28px', objectFit: 'contain' }} />
               </a>
-            </div>
+            </div> */}
 
             {/* Logos */}
-            <div className="flex space-x-8">
+            <div className="flex space-x-8 mt-5">
               <div className="bg-white p-3 rounded-lg">
                 <img src="/images/footer/mygovmerisarkar.jpg" alt="MyGov" width={140} height={60} style={{ width: '140px', height: 'auto', objectFit: 'contain' }} />
               </div>

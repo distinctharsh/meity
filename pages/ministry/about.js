@@ -83,7 +83,7 @@ export default function AboutUs() {
                   <SkeletonText lines={4} />
                 </div>
               ) : (
-                <div className="text-xl text-[#123a6b] font-semibold mb-4">
+                <div className="text-[#123a6b] font-16-400 mb-4">
                   {renderContent(getContentByKey('vision'))}
                 </div>
               )}
@@ -102,7 +102,7 @@ export default function AboutUs() {
               </p> */}
 
               <div>
-                <h2 className="text-xl font-semibold text-[#123a6b] mb-2">Functions</h2>
+                <h2 className=" text-[#123a6b] mb-2 font-24-700">Functions</h2>
                 {loading ? (
                   <SkeletonText lines={3} />
                 ) : (
@@ -113,7 +113,7 @@ export default function AboutUs() {
 
 
                 <div className="mt-10">
-                  <h2 className="text-xl font-semibold text-[#123a6b] mb-2">Allocation and disposal of Government Business</h2>
+                  <h2 className=" text-[#123a6b] mb-2 font-24-700">Allocation and disposal of Government Business</h2>
                   {loading ? (
                     <SkeletonText lines={3} />
                   ) : (
@@ -123,7 +123,7 @@ export default function AboutUs() {
                   )}
                 </div>
                 <div className="mt-10">
-                  <h2 className="text-xl font-semibold text-[#123a6b] mb-2">Support to Cabinet Committees</h2>
+                  <h2 className=" text-[#123a6b] mb-2 font-24-700">Support to Cabinet Committees</h2>
                   {loading ? (
                     <SkeletonText lines={3} />
                   ) : (
@@ -133,7 +133,7 @@ export default function AboutUs() {
                   )}
                 </div>
                 <div className="mt-10">
-                  <h2 className="text-xl font-semibold text-[#123a6b] mb-2">Promotion of Inter-Ministerial Coordination</h2>
+                  <h2 className=" text-[#123a6b] mb-2 font-24-700">Promotion of Inter-Ministerial Coordination</h2>
                   {loading ? (
                     <SkeletonText lines={3} />
                   ) : (
@@ -145,7 +145,7 @@ export default function AboutUs() {
               </div>
 
               <div>
-                <h2 className="text-xl font-semibold text-[#123a6b] mb-2">Objectives</h2>
+                <h2 className=" text-[#123a6b] mb-2 font-24-700">Objectives</h2>
                 {loading ? (
                   <SkeletonText lines={4} />
                 ) : (
@@ -213,7 +213,7 @@ export default function AboutUs() {
 
 
               <div>
-                <h2 className="text-xl font-semibold text-[#123a6b] mb-2">Development</h2>
+                <h2 className=" text-[#123a6b] mb-2 font-24-700">Development</h2>
                 {loading ? (
                   <SkeletonText lines={3} />
                 ) : (
@@ -226,7 +226,7 @@ export default function AboutUs() {
 
 
                 <div className="mt-10">
-                  <h2 className="text-xl font-semibold text-[#123a6b] mb-2">In June, 1970 three departments namely:</h2>
+                  <h2 className=" text-[#123a6b] mb-2 font-24-700">In June, 1970 three departments namely:</h2>
                   {loading ? (
                     <SkeletonText lines={3} />
                   ) : (
@@ -237,7 +237,7 @@ export default function AboutUs() {
                 </div>
 
                  <div className="mt-10">
-                  <h2 className="text-xl font-semibold text-[#123a6b] mb-2">Directorate Of Public Grievances (DPG)</h2>
+                  <h2 className=" text-[#123a6b] mb-2 font-24-700">Directorate Of Public Grievances (DPG)</h2>
                   {loading ? (
                     <SkeletonText lines={3} />
                   ) : (
@@ -247,7 +247,7 @@ export default function AboutUs() {
                   )}
                 </div>
                  <div className="mt-10">
-                  <h2 className="text-xl font-semibold text-[#123a6b] mb-2">National Authority Chemical Weapons Convention (NACWC)</h2>
+                  <h2 className=" text-[#123a6b] mb-2 font-24-700">National Authority Chemical Weapons Convention (NACWC)</h2>
                   {loading ? (
                     <SkeletonText lines={3} />
                   ) : (
@@ -257,7 +257,7 @@ export default function AboutUs() {
                   )}
                 </div>
                  <div className="mt-10">
-                  <h2 className="text-xl font-semibold text-[#123a6b] mb-2">Direct Benefit Transfer(DBT) Mission</h2>
+                  <h2 className=" text-[#123a6b] mb-2 font-24-700">Direct Benefit Transfer(DBT) Mission</h2>
                   {loading ? (
                     <SkeletonText lines={3} />
                   ) : (
@@ -267,7 +267,7 @@ export default function AboutUs() {
                   )}
                 </div>
                 <div className="mt-10">
-                  <h2 className="text-xl font-semibold text-[#123a6b] mb-2">Office of the Principal Scientific Adviser (O/o PSA)</h2>
+                  <h2 className=" text-[#123a6b] mb-2 font-24-700">Office of the Principal Scientific Adviser (O/o PSA)</h2>
                   {loading ? (
                     <SkeletonText lines={3} />
                   ) : (
@@ -284,7 +284,7 @@ export default function AboutUs() {
                    {/* Download Sections */}
                 {getSectionByKey('cabinet_secretaries') && (
                   <div>
-                    <h2 className="text-xl font-semibold text-[#123a6b] mb-2">{getSectionByKey('cabinet_secretaries').title}</h2>
+                    <h2 className=" text-[#123a6b] mb-2 font-24-700">{getSectionByKey('cabinet_secretaries').title}</h2>
                     <div className="flex justify-between items-center bg-gray-100 p-4 rounded-md">
                       <p className="mb-2 md:mb-0 flex items-center gap-2 text-gray-900 font-medium">
                         <span className="material-symbols-outlined text-[#0f3c82]">draft</span>
@@ -306,7 +306,7 @@ export default function AboutUs() {
               {getSectionByKey('work_distribution') && (
                 <div className="   ">
                   <div>
-                    <h2 className="text-xl font-semibold text-[#123a6b] mb-2">{getSectionByKey('work_distribution').title}</h2>
+                    <h2 className=" text-[#123a6b] mb-2 font-24-700">{getSectionByKey('work_distribution').title}</h2>
                     <div className="flex justify-between items-center bg-gray-100 p-4 rounded-md">
                       <div className="flex items-center gap-2">
                         <p className="mb-2 md:mb-0 flex items-center gap-2 text-gray-900 font-medium">
@@ -334,7 +334,7 @@ export default function AboutUs() {
               {getSectionByKey('organization_chart') && (
                 <div className="   ">
                   <div>
-                    <h2 className="text-xl font-semibold text-[#123a6b] mb-2">{getSectionByKey('organization_chart').title}</h2>
+                    <h2 className=" text-[#123a6b] mb-2 font-24-700">{getSectionByKey('organization_chart').title}</h2>
                     <div className="flex justify-between items-center bg-gray-100 p-4 rounded-md">
                       <div className="flex items-center gap-2">
                         <p className="mb-2 md:mb-0 flex items-center gap-2 text-gray-900 font-medium">

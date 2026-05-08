@@ -93,7 +93,7 @@ export default function Reports() {
       if (!tableElRef.current) {
         try {
           const tbl = document.createElement('table');
-          tbl.className = 'w-full';
+          tbl.className = 'w-full min-w-[700px]';
           tbl.innerHTML = `
             <thead class="hidden">
               <tr>
@@ -124,7 +124,7 @@ export default function Reports() {
               return `
                 <div class="flex items-center gap-2">
                   <span class="material-symbols-outlined text-gray-700">${icon}</span>
-                  <p class="mb-0 text-sm text-gray-800">${row.title ?? ''}</p>
+                  <p class="mb-0 font-16-400">${row.title ?? ''}</p>
                   ${count}
                 </div>
               `;
@@ -132,7 +132,7 @@ export default function Reports() {
           },
           {
             data: 'year',
-            render: (data) => `<div class="text-center text-sm text-gray-700">${data || '-'}</div>`
+            render: (data) => `<div class="text-center ">${data || '-'}</div>`
           },
           {
             data: null,
@@ -297,14 +297,17 @@ export default function Reports() {
         <section className="mt-10 py-10" style={{ borderRadius: '20px' }}>
           <div className="gi-container">
             {/* Toolbar row */}
-            <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-3 mb-4">
+            <div className="flex flex-col lg:grid lg:grid-cols-[1fr_auto] gap-3 mb-4">
               {/* Search */}
               <div className="w-full">
                 <div className="flex items-stretch rounded-md overflow-hidden border border-gray-300 bg-white">
                   <span className="flex items-center px-2 border-r border-gray-300 text-gray-600">
                     <span aria-hidden="true" className="material-symbols-outlined">search</span>
                   </span>
-                  <input type="search" placeholder="Search..." className="flex-1 px-3 py-2 outline-none" value={query} onChange={(e) => setQuery(e.target.value)} />
+                  <input
+  type="search"
+  placeholder="Search..."
+  className="flex-1 min-w-0 px-3 py-2 text-[16px] outline-none" value={query} onChange={(e) => setQuery(e.target.value)} />
                   {/* mobile filter icon */}
                   <span className="flex items-center px-2 border-l border-gray-300 text-gray-600 lg:hidden">
                     <span aria-hidden="true" className="material-symbols-outlined">filter_alt</span>
@@ -325,7 +328,7 @@ export default function Reports() {
                   </select>
                 </div>
                 {/* Category */}
-                <div className="flex items-stretch rounded-md overflow-hidden border border-gray-300 bg-white" role="combobox">
+                {/* <div className="flex items-stretch rounded-md overflow-hidden border border-gray-300 bg-white" role="combobox">
                   <label htmlFor="categorySelect" className="sr-only">Filter by Category</label>
                   <span className="flex items-center px-2 border-r border-gray-300 text-gray-600">
                     <span aria-hidden="true" className="material-symbols-outlined">sort</span>
@@ -336,7 +339,7 @@ export default function Reports() {
                     <option value="Group">Group</option>
                     <option value="Single">Single</option>
                   </select>
-                </div>
+                </div> */}
                 {/* Per page */}
                 <div className="flex items-stretch rounded-md overflow-hidden border border-gray-300 bg-white" role="combobox">
                   <label htmlFor="pageLimitSelect" className="sr-only">Items per page</label>
@@ -353,14 +356,14 @@ export default function Reports() {
             </div>
 
             {/* Table header */}
-            <div className="grid grid-cols-[7fr_2fr_3fr] bg-blue-200 text-blue-900 font-semibold rounded-t-md px-4 py-2 text-xs">
+            <div className="hidden md:grid grid-cols-[7fr_2fr_3fr] bg-blue-200 text-blue-900 font-semibold rounded-t-md px-4 py-2 text-xs min-w-[700px]">
               <div>Title</div>
               <div className="text-center">Published Year</div>
               <div className="text-center">Type/Size</div>
             </div>
 
             {/* List */}
-            <div className="divide-y border border-t-0 rounded-b-md bg-white">
+            <div className="overflow-x-auto border border-t-0 rounded-b-md bg-white">
               {loading ? (
                 <div className="px-4 py-6 text-center text-gray-500">Loading reports...</div>
               ) : error ? (

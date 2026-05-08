@@ -113,7 +113,7 @@ export default function AboutSection() {
         <div className="md:flex-[2]">
           <div className="flex items-center mb-5">
             <img src="/images/icons/ministry.svg" alt="Ministry" className="mr-[15px]" />
-            <h2 className="text-[24px] font-bold text-[#162f6a] m-0 pb-[5px] relative after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-[50px] after:h-[3px] after:bg-[#ff6b35]">About Us</h2>
+            <h2 className="main-heading">About Us</h2>
           </div>
           {loading ? (
             <div className="space-y-2">
@@ -122,12 +122,12 @@ export default function AboutSection() {
               <div className="h-4 bg-gray-200 rounded animate-pulse w-3/4"></div>
             </div>
           ) : (
-            <p className="text-[15px] text-[#333] leading-[1.8] mb-[30px]">
+            <p className="font-20-400 about-content">
               {aboutText}
             </p>
           )}
 
-          <div className="flex flex-col sm:flex-row gap-5">
+          <div className="flex flex-col sm:flex-row gap-5 mt-5">
             {cardsToUse.map((card) => {
               const cardData = getCardData(card.section_key);
               const title = cardData?.title || card.title;
@@ -145,7 +145,7 @@ export default function AboutSection() {
                   </div>
 
                   {/* Title */}
-                  <span className="text-[15px] font-semibold text-gray-800 transition-all duration-300 group-hover:text-white">
+                  <span className=" font-semibold text-gray-800 transition-all duration-300 group-hover:text-white about-cards font-20-600">
                     {title}
                   </span>
                 </a>
@@ -172,8 +172,8 @@ export default function AboutSection() {
                 </a>
               </div>
               <div className="mt-[10px] text-center">
-                <h3 className="text-[14px] font-bold text-[#162f6a] mb-[3px]">Dr. T. V. Somanathan</h3>
-                <div className="text-[11px] text-[#666] uppercase tracking-[0.5px]">CABINET SECRETARY</div>
+                <h3 className="font-bold mb-[3px] font-20-600" style={{ color: "rgb(21, 2, 2)" }}>Dr. T. V. Somanathan</h3>
+                <div className="uppercase font-16-400" style={{ color: "rgb(21, 2, 2)" }}>CABINET SECRETARY</div>
               </div>
             </div>
 

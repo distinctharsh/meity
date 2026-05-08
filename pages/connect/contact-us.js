@@ -39,7 +39,7 @@ export default function Contact() {
                     <span className="material-symbols-outlined">location_on</span>
                     <div aria-label="location: Cabinet Secretariat, Government of India, Electronics Niketan, 6, CGO Complex, Lodhi Road, New Delhi – 110003">
                       <p>
-                        <b>Address</b><br />
+                        <b className="font-24-500">Address</b><br />
                         Seva Teerth <br/>New Delhi – 110011
                       </p>
                     </div>

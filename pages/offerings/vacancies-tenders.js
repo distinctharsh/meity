@@ -123,7 +123,7 @@ export default function VacanciesTenders() {
               return `
                 <div class="flex items-center gap-2">
                   <span class="material-symbols-outlined text-gray-700">${icon}</span>
-                  <p class="mb-0 text-sm text-gray-800">${row.title ?? ''}</p>
+                  <p class="mb-0 font-16-400">${row.title ?? ''}</p>
                   ${count}
                 </div>
               `;
@@ -145,7 +145,7 @@ export default function VacanciesTenders() {
           },
           {
             data: 'year',
-            render: (data) => `<div class="text-center text-sm text-gray-700">${data || '-'}</div>`
+            render: (data) => `<div class="text-center ">${data || '-'}</div>`
           },
           {
             data: null,
@@ -330,7 +330,7 @@ export default function VacanciesTenders() {
                   </select>
                 </div>
                 {/* Category */}
-                <div className="flex items-stretch rounded-md overflow-hidden border border-gray-300 bg-white" role="combobox">
+                {/* <div className="flex items-stretch rounded-md overflow-hidden border border-gray-300 bg-white" role="combobox">
                   <label htmlFor="categorySelect" className="sr-only">Filter by Category</label>
                   <span className="flex items-center px-2 border-r border-gray-300 text-gray-600">
                     <span aria-hidden="true" className="material-symbols-outlined">filter_alt</span>
@@ -341,7 +341,7 @@ export default function VacanciesTenders() {
                     <option value="Tender">Tenders</option>
                     <option value="Group">Group</option>
                   </select>
-                </div>
+                </div> */}
                 {/* Per page */}
                 <div className="flex items-stretch rounded-md overflow-hidden border border-gray-300 bg-white" role="combobox">
                   <label htmlFor="pageLimitSelect" className="sr-only">Items per page</label>

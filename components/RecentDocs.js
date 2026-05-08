@@ -118,7 +118,7 @@ const RecentDocs = () => {
         <div className="flex flex-col items-start w-full md:flex-[2] md:mr-0">
           <div className="flex items-center mb-4">
             <Document className="w-5 h-5 mr-2" />
-            <h3 className="text-[#202A3A] text-[1.4rem] font-bold leading-none tracking-tight m-0">Recent Documents</h3>
+            <h3 className="main-heading">Recent Documents</h3>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-4 mt-2 w-full">
@@ -133,7 +133,7 @@ const RecentDocs = () => {
                       href={doc.nav_link}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-[#0a2e60] hover:underline"
+                      className="recent-head"
                     >
                       {doc.nav_name}
                     </a>
@@ -141,7 +141,7 @@ const RecentDocs = () => {
                     doc.nav_name
                   )}
                 </h4>
-                <p className="text-[0.95rem] text-black leading-snug font-normal">
+                <p className="recent-text">
                   {doc.title || 'General Document'}
                 </p>
               </div>
@@ -150,7 +150,7 @@ const RecentDocs = () => {
 
           <div className="mt-4 flex justify-end w-full">
             <button
-              className="inline-flex items-center gap-2 border border-[#0b3a82] text-[#0b3a82] bg-white py-[8px] px-[16px] rounded-[6px] cursor-pointer font-semibold"
+              className="view-btn"
               onClick={async () => {
                 try {
                   // Try to load main navigation and find first active child under /documents
@@ -255,7 +255,7 @@ const RecentDocs = () => {
               alt="Important Link"
               style={{ filter: 'invert(9%) sepia(33%) saturate(1659%) hue-rotate(191deg) brightness(92%) contrast(97%)' }}
             />
-            <h3 className="text-[#162f6a] text-[1.4rem] font-bold leading-none tracking-tight m-0">Important Links</h3>
+            <h3 className="main-heading">Important Links</h3>
           </div>
           <div className="relative w-full">
             {importantLinksLoading ? (
@@ -271,7 +271,7 @@ const RecentDocs = () => {
                 {importantLinks.map((link, i) => (
                   <li
                     key={i}
-                    className="flex items-center justify-between border-b last:border-none border-[#e6ecff] py-3 px-4 text-[0.95rem] text-[#0b3a82] hover:bg-[#f7f9ff] cursor-pointer transition-colors"
+                    className="flex items-center justify-between border-b last:border-none border-[#e6ecff] py-3 px-4   hover:bg-[#f7f9ff] cursor-pointer transition-colors important-link-text"
                   >
                     {link}
                     <span className="text-[#0b3a82]"><FiChevronRight /></span>
