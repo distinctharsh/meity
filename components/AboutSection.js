@@ -161,7 +161,7 @@ export default function AboutSection() {
             {/* Minister 1 */}
             <div className="flex flex-col items-center">
               <div className="flex justify-center">
-                <a href="/ministry/cabinet-secretary">
+                <a href="/cabinet-secretariat/cabinet-secretary">
                   <Image
                     src="/images/about/cs.jpg"
                     alt="Dr. T. V. Somanathan"

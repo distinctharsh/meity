@@ -225,82 +225,78 @@ export default function AboutUs() {
 
 
 
-                <div className="mt-10">
-                  <h2 className=" text-[#123a6b] mb-2 font-24-700">In June, 1970 three departments namely:</h2>
-                  {loading ? (
-                    <SkeletonText lines={3} />
-                  ) : (
-                    <div>
-                      {renderContent(getContentByKey('development_history'))}
-                    </div>
-                  )}
-                </div>
-
-                 <div className="mt-10">
-                  <h2 className=" text-[#123a6b] mb-2 font-24-700">Directorate Of Public Grievances (DPG)</h2>
-                  {loading ? (
-                    <SkeletonText lines={3} />
-                  ) : (
-                    <div>
-                      {renderContent(getContentByKey('dpg'))}
-                    </div>
-                  )}
-                </div>
-                 <div className="mt-10">
-                  <h2 className=" text-[#123a6b] mb-2 font-24-700">National Authority Chemical Weapons Convention (NACWC)</h2>
-                  {loading ? (
-                    <SkeletonText lines={3} />
-                  ) : (
-                    <div>
-                      {renderContent(getContentByKey('nacwc'))}
-                    </div>
-                  )}
-                </div>
-                 <div className="mt-10">
-                  <h2 className=" text-[#123a6b] mb-2 font-24-700">Direct Benefit Transfer(DBT) Mission</h2>
-                  {loading ? (
-                    <SkeletonText lines={3} />
-                  ) : (
-                    <div>
-                      {renderContent(getContentByKey('dbt_mission'))}
-                    </div>
-                  )}
-                </div>
-                <div className="mt-10">
-                  <h2 className=" text-[#123a6b] mb-2 font-24-700">Office of the Principal Scientific Adviser (O/o PSA)</h2>
-                  {loading ? (
-                    <SkeletonText lines={3} />
-                  ) : (
-                    <div>
-                      {renderContent(getContentByKey('psa_office'))}
-                    </div>
-                  )}
-                </div>
-
-
-             
-
-
-                   {/* Download Sections */}
-                {getSectionByKey('cabinet_secretaries') && (
+              <div className="mt-10">
+                <h2 className=" text-[#123a6b] mb-2 font-24-700">In June, 1970 three departments namely:</h2>
+                {loading ? (
+                  <SkeletonText lines={3} />
+                ) : (
                   <div>
-                    <h2 className=" text-[#123a6b] mb-2 font-24-700">{getSectionByKey('cabinet_secretaries').title}</h2>
-                    <div className="flex justify-between items-center bg-gray-100 p-4 rounded-md">
-                      <p className="mb-2 md:mb-0 flex items-center gap-2 text-gray-900 font-medium">
-                        <span className="material-symbols-outlined text-[#0f3c82]">draft</span>
-                        {getSectionByKey('cabinet_secretaries').title}
-                      </p>
-                      <a 
-                        href={getSectionByKey('cabinet_secretaries').file_url || '#'} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        style={{ background: '#a3bbf3', color: '#162f6a', padding: '4px 8px', cursor: 'pointer', textDecoration: 'none' }}
-                      >
-                        <span aria-hidden="true" className="material-symbols-outlined bhashini-skip-translation" style={{ fontSize: '15px' }}>arrow_right_alt</span>
-                      </a>
-                    </div>
+                    {renderContent(getContentByKey('development_history'))}
                   </div>
                 )}
+              </div>
+
+              <div className="mt-10">
+                <h2 className=" text-[#123a6b] mb-2 font-24-700">Directorate Of Public Grievances (DPG)</h2>
+                {loading ? (
+                  <SkeletonText lines={3} />
+                ) : (
+                  <div>
+                    {renderContent(getContentByKey('dpg'))}
+                  </div>
+                )}
+              </div>
+              <div className="mt-10">
+                <h2 className=" text-[#123a6b] mb-2 font-24-700">National Authority Chemical Weapons Convention (NACWC)</h2>
+                {loading ? (
+                  <SkeletonText lines={3} />
+                ) : (
+                  <div>
+                    {renderContent(getContentByKey('nacwc'))}
+                  </div>
+                )}
+              </div>
+              <div className="mt-10">
+                <h2 className=" text-[#123a6b] mb-2 font-24-700">Direct Benefit Transfer(DBT) Mission</h2>
+                {loading ? (
+                  <SkeletonText lines={3} />
+                ) : (
+                  <div>
+                    {renderContent(getContentByKey('dbt_mission'))}
+                  </div>
+                )}
+              </div>
+              <div className="mt-10">
+                <h2 className=" text-[#123a6b] mb-2 font-24-700">Office of the Principal Scientific Adviser (O/o PSA)</h2>
+                {loading ? (
+                  <SkeletonText lines={3} />
+                ) : (
+                  <div>
+                    {renderContent(getContentByKey('psa_office'))}
+                  </div>
+                )}
+              </div>
+
+              {/* Download Sections */}
+              {getSectionByKey('cabinet_secretaries') && (
+                <div>
+                  <h2 className=" text-[#123a6b] mb-2 font-24-700">{getSectionByKey('cabinet_secretaries').title}</h2>
+                  <div className="flex justify-between items-center bg-gray-100 p-4 rounded-md">
+                    <p className="mb-2 md:mb-0 flex items-center gap-2 text-gray-900 font-medium">
+                      <span className="material-symbols-outlined text-[#0f3c82]">draft</span>
+                      {getSectionByKey('cabinet_secretaries').title}
+                    </p>
+                    <a
+                      href={getSectionByKey('cabinet_secretaries').file_url || '#'}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{ background: '#a3bbf3', color: '#162f6a', padding: '4px 8px', cursor: 'pointer', textDecoration: 'none' }}
+                    >
+                      <span aria-hidden="true" className="material-symbols-outlined bhashini-skip-translation" style={{ fontSize: '15px' }}>arrow_right_alt</span>
+                    </a>
+                  </div>
+                </div>
+              )}
 
 
               {getSectionByKey('work_distribution') && (
@@ -317,9 +313,9 @@ export default function AboutUs() {
                       <div className="flex items-center gap-3">
                         <Pdf />
                         <span className="text-xs text-gray-600">{getSectionByKey('work_distribution').file_size || '0 KB'}</span>
-                        <a 
-                          href={getSectionByKey('work_distribution').file_url || '#'} 
-                          target="_blank" 
+                        <a
+                          href={getSectionByKey('work_distribution').file_url || '#'}
+                          target="_blank"
                           rel="noopener noreferrer"
                           className="bg-blue-100 text-blue-600 px-3 pt-1 rounded hover:bg-blue-200 inline-flex items-center"
                           style={{ textDecoration: 'none' }}
@@ -345,9 +341,9 @@ export default function AboutUs() {
                       <div className="flex items-center gap-3">
                         <Pdf />
                         <span className="text-xs text-gray-600">{getSectionByKey('organization_chart').file_size || '0 KB'}</span>
-                        <a 
-                          href={getSectionByKey('organization_chart').file_url || '#'} 
-                          target="_blank" 
+                        <a
+                          href={getSectionByKey('organization_chart').file_url || '#'}
+                          target="_blank"
                           rel="noopener noreferrer"
                           className="bg-blue-100 text-blue-600 px-3 pt-1 rounded hover:bg-blue-200 inline-flex items-center"
                           style={{ textDecoration: 'none' }}

@@ -71,7 +71,7 @@ export default function PageHeadersAdmin() {
         <div className="bg-white rounded-lg shadow p-4 mb-4 flex items-end gap-3">
           <div className="flex-1">
             <label className="block text-sm font-medium text-gray-700">Page Path</label>
-            <input value={filterPath} onChange={(e) => setFilterPath(e.target.value)} placeholder="/ministry/about" className="mt-1 w-full border rounded px-3 py-2" />
+            <input value={filterPath} onChange={(e) => setFilterPath(e.target.value)} placeholder="/cabinet-secretariat/about" className="mt-1 w-full border rounded px-3 py-2" />
           </div>
           <div className="flex gap-2">
             <button onClick={() => refresh()} className="px-3 py-2 bg-gray-100 rounded">Apply</button>

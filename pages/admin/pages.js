@@ -205,7 +205,7 @@ function PageForm({ onClose, onSaved, editing }) {
   const [useNavDropdown, setUseNavDropdown] = useState(true);
   const [navLoading, setNavLoading] = useState(true);
   const [routeCheck, setRouteCheck] = useState({ checking: false, staticExists: false, cmsExists: false, conflict: false, message: '' });
-  const [navConflicts, setNavConflicts] = useState({}); // { '/ministry/about': { staticExists, cmsExists, conflict, message } }
+  const [navConflicts, setNavConflicts] = useState({}); // { '/cabinet-secretariat/about': { staticExists, cmsExists, conflict, message } }
   const [activeTab, setActiveTab] = useState('html');
   const [leftPanePct, setLeftPanePct] = useState(60);
   const [dragging, setDragging] = useState(false);
@@ -529,9 +529,9 @@ function PageForm({ onClose, onSaved, editing }) {
                   })}
                 </select>
               ) : (
-                <input value={form.slug} onChange={(e) => updateField('slug', e.target.value)} placeholder="/ministry/about" className="mt-1 w-full border rounded px-3 py-2" />
+                <input value={form.slug} onChange={(e) => updateField('slug', e.target.value)} placeholder="/cabinet-secretariat/about" className="mt-1 w-full border rounded px-3 py-2" />
               )}
-              <p className="text-xs text-gray-500 mt-1">This page will be available at <code>&lt;slug&gt;</code>. Example: slug "/ministry/about" → URL "/ministry/about"</p>
+              <p className="text-xs text-gray-500 mt-1">This page will be available at <code>&lt;slug&gt;</code>. Example: slug "/cabinet-secretariat/about" → URL "/cabinet-secretariat/about"</p>
               {form.slug ? (
                 <p className="text-xs text-blue-700 mt-1">Preview URL: <code>{ensureLeadingSlash(form.slug)}</code></p>
               ) : null}

@@ -311,7 +311,7 @@ export default function AdminAboutPage() {
                 <thead className="bg-gray-50">
                   <tr>
                     <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Section Key</th>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
+                    {/* <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th> */}
                     <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
                     <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Active</th>
                     <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order</th>
@@ -323,7 +323,7 @@ export default function AdminAboutPage() {
                   {items.map((r) => (
                     <tr key={r.id}>
                       <td className="px-4 py-2 text-sm text-gray-700 overflow-hidden text-ellipsis whitespace-nowrap" title={r.section_key}>{r.section_key}</td>
-                      <td className="px-4 py-2 text-sm text-gray-700 overflow-hidden text-ellipsis whitespace-nowrap" title={r.title}>{r.title || '-'}</td>
+                      {/* <td className="px-4 py-2 text-sm text-gray-700 overflow-hidden text-ellipsis whitespace-nowrap" title={r.title}>{r.title || '-'}</td> */}
                       <td className="px-4 py-2 text-sm text-gray-700 whitespace-nowrap">{r.content_type}</td>
                       <td className="px-4 py-2 text-sm text-gray-700 whitespace-nowrap">{r.is_active ? 'Yes' : 'No'}</td>
                       <td className="px-4 py-2 text-sm text-gray-700 whitespace-nowrap">{r.display_order}</td>

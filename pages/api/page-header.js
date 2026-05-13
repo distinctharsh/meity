@@ -3,7 +3,7 @@ import pool from '@/lib/db';
 export default async function handler(req, res) {
   if (req.method !== 'GET') return res.status(405).json({ message: 'Method not allowed' });
   const { path } = req.query;
-  if (!path) return res.status(400).json({ message: 'path is required, e.g. /ministry/about' });
+  if (!path) return res.status(400).json({ message: 'path is required, e.g. /cabinet-secretariat/about' });
   try {
     const [rows] = await pool.query(
       'SELECT id, page_path, background_url FROM page_headers WHERE page_path = ? LIMIT 1',
