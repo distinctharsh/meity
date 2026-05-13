@@ -18,6 +18,7 @@ export default function ReportForm({ initial, onCancel, onSaved }) {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [attachedFiles, setAttachedFiles] = useState([]); // for group
   const [pendingAttach, setPendingAttach] = useState([]); // buffer uploaded files before save
+  const [fileTitles, setFileTitles] = useState({}); // store custom file titles by file_url
 
   useEffect(() => {
     if (initial) {
@@ -39,6 +40,14 @@ export default function ReportForm({ initial, onCancel, onSaved }) {
             const res = await fetch(`/api/admin/reports/${initial.id}/files`);
             const data = res.ok ? await res.json() : [];
             setAttachedFiles(data || []);
+            // Initialize file titles with existing original_name values
+            const titles = {};
+            (data || []).forEach(f => {
+              if (f.file_url) {
+                titles[f.file_url] = f.original_name || '';
+              }
+            });
+            setFileTitles(titles);
           } catch { }
         })();
       }
@@ -160,13 +169,32 @@ export default function ReportForm({ initial, onCancel, onSaved }) {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             files: pendingAttach.map(f => ({
-              original_name: f.original_name || f.filename || 'file',
+              original_name: fileTitles[f.file_path] || f.original_name || f.filename || 'file',
               file_url: f.file_path,
               file_type: f.file_type,
               file_size: f.file_size,
             }))
           })
         });
+      }
+      // If group type, update existing file titles if changed
+      if (form.type === 'group' && initial?.id) {
+        for (const f of attachedFiles) {
+          if (f.id && f.id !== 0) {
+            const customTitle = fileTitles[f.file_url];
+            if (customTitle && customTitle !== f.original_name) {
+              try {
+                await fetch(`/api/admin/reports/${initial.id}/files/${f.id}`, {
+                  method: 'PUT',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ original_name: customTitle })
+                });
+              } catch (e) {
+                console.error('Failed to update file title', e);
+              }
+            }
+          }
+        }
       }
       await onSaved();
     } catch (e) {
@@ -209,13 +237,22 @@ export default function ReportForm({ initial, onCancel, onSaved }) {
       const up = j.files || [];
       if (form.type === 'group') {
         setPendingAttach(prev => [...prev, ...up]);
-        setAttachedFiles(prev => [...prev, ...up.map(x => ({
+        const newFiles = up.map(x => ({
           id: 0,
           original_name: x.original_name,
           file_url: x.file_path,
           file_type: x.file_type,
           file_size: x.file_size,
-        }))]);
+        }));
+        setAttachedFiles(prev => [...prev, ...newFiles]);
+        // Initialize file titles with original filename as default
+        const newTitles = {};
+        newFiles.forEach(f => {
+          if (f.file_url) {
+            newTitles[f.file_url] = f.original_name || '';
+          }
+        });
+        setFileTitles(prev => ({ ...prev, ...newTitles }));
       } else {
         // For single report, set the first file URL
         if (up[0]?.file_path) setForm(p => ({ ...p, file_url: up[0].file_path }));
@@ -234,6 +271,12 @@ export default function ReportForm({ initial, onCancel, onSaved }) {
     setPendingAttach(prev =>
       prev.filter(p => p.file_path !== file.file_url)
     );
+    // Remove file title
+    setFileTitles(prev => {
+      const next = { ...prev };
+      delete next[file.file_url];
+      return next;
+    });
     if (file.id && file.id !== 0 && initial?.id) {
       try {
         await fetch(
@@ -333,37 +376,46 @@ export default function ReportForm({ initial, onCancel, onSaved }) {
             {attachedFiles.length === 0 ? (
               <div className="text-sm text-gray-500">No files attached yet. Upload files above.</div>
             ) : (
-              <ul className="text-sm text-gray-700 space-y-1">
+              <ul className="text-sm text-gray-700 space-y-2">
                 {attachedFiles.map((f, idx) => (
                   <li
                     key={idx}
-                    className="flex items-center justify-between border rounded px-2 py-1"
+                    className="border rounded px-3 py-2"
                   >
-                    <span className="truncate mr-2">
-                      {f.original_name || f.file_url}
-                    </span>
-
-                    <div className="flex items-center gap-2">
-                      <a
-                        href={f.file_url}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="text-blue-600 underline text-xs"
-                      >
-                        View
-                      </a>
-
-                      <button
-                        type="button"
-                        onClick={() => removeAttachedFile(f, idx)}
-                        className="text-red-600 hover:text-red-800 text-sm font-bold"
-                        title="Remove"
-                      >
-                        ✕
-                      </button>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="truncate mr-2 font-medium">
+                        {f.original_name || f.file_url}
+                      </span>
+                      <div className="flex items-center gap-2">
+                        <a
+                          href={f.file_url}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="text-blue-600 underline text-xs"
+                        >
+                          View
+                        </a>
+                        <button
+                          type="button"
+                          onClick={() => removeAttachedFile(f, idx)}
+                          className="text-red-600 hover:text-red-800 text-sm font-bold"
+                          title="Remove"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-gray-600 mb-1">File Title</label>
+                      <input
+                        type="text"
+                        value={fileTitles[f.file_url] || ''}
+                        onChange={(e) => setFileTitles(prev => ({ ...prev, [f.file_url]: e.target.value }))}
+                        className="w-full border rounded px-2 py-1 text-sm"
+                        placeholder="Enter custom file title"
+                      />
                     </div>
                   </li>
-
                 ))}
               </ul>
             )}
