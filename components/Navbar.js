@@ -166,7 +166,7 @@ export default function NewNavbar() {
                   >
                     <Link
                       href={item.href}
-                      className={`flex items-center justify-between md:justify-center no-underline px-4 py-3 transition-colors duration-200 relative
+                      className={`flex items-center justify-between md:justify-center no-underline px-4 py-4 transition-colors duration-200 relative
                             ${itemActive
                           ? 'text-[24px] font-[700] text-[#162f6a]'
                           : 'text-[20px] font-[600] text-[#1b1b1b] hover:text-[#162f6a]'
@@ -215,14 +215,14 @@ export default function NewNavbar() {
                     {/* Dropdown */}
                     {item.dropdown && item.items && (
                       <div
-                        className={`md:absolute md:top-[calc(100%+6px)] md:left-0 md:min-w-[220px] md:rounded-[8px] md:py-2 md:bg-[rgba(0,0,0,0.5)] md:backdrop-blur-sm md:shadow-[0_6px_20px_rgba(0,0,0,0.3)] md:opacity-0 md:invisible md:translate-y-2 md:transition-all md:duration-200 md:group-hover:opacity-100 md:group-hover:visible md:group-hover:translate-y-0 ${activeDropdown === index ? 'block' : 'hidden'} md:block`}
+                        className={`md:absolute md:left-0 md:min-w-[220px] md:rounded-[8px]  md:bg-[rgba(0,0,0,0.72)] md:backdrop-blur-md md:shadow-[0_6px_20px_rgba(0,0,0,0.3)] md:opacity-0 md:invisible md:translate-y-2 md:transition-all md:duration-200 md:group-hover:opacity-100 md:group-hover:visible md:group-hover:translate-y-0 ${activeDropdown === index ? 'block' : 'hidden'} md:block`}
                       >
                         <ul className="list-none m-0 p-0 md:bg-transparent bg-[#f9f9f9] md:shadow-none md:pl-0 pl-6">
                           {item.items.map((subItem, subIndex) => (
                             <li key={subIndex} className="p-0">
                               <Link
                                 href={subItem.href}
-                                className="block no-underline text-[14.5px] font-medium text-center text-white md:text-white py-3 px-5 hover:bg-[rgba(255,255,255,0.08)]"
+                                className="block no-underline text-[14.5px] font-medium text-center text-white md:text-white py-3 px-5 hover:bg-[#d2dfff] hover:text-[#000] "
                               >
                                 {subItem.text}
                               </Link>
