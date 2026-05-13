@@ -213,6 +213,7 @@ export default function AdminReportsPage() {
                 <th className="px-4 py-3 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider w-20">Type</th>
                 <th className="px-4 py-3 text-center text-xs font-semibold text-slate-700 uppercase tracking-wider w-20">Year</th>
                 <th className="px-4 py-3 text-center text-xs font-semibold text-slate-700 uppercase tracking-wider w-24">Size</th>
+                <th className="px-4 py-3 text-center text-xs font-semibold text-slate-700 uppercase tracking-wider w-24">Title</th>
                 <th className="px-4 py-3 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider w-48">Nav Name</th>
                 <th className="px-4 py-3 text-center text-xs font-semibold text-slate-700 uppercase tracking-wider w-20">Nav ID</th>
                 <th className="px-4 py-3 text-center text-xs font-semibold text-slate-700 uppercase tracking-wider w-20">Order</th>
@@ -231,6 +232,7 @@ export default function AdminReportsPage() {
                   </td>
                   <td className="px-4 py-3 text-sm text-slate-800 text-center whitespace-nowrap">{r.year || '-'}</td>
                   <td className="px-4 py-3 text-sm text-slate-800 text-center whitespace-nowrap">{r.size || '-'}</td>
+                  <td className="px-4 py-3 text-sm text-slate-800 text-center whitespace-nowrap">{r.title || '-'}</td>
                   <td
                     className="px-4 py-3 text-sm text-slate-800 max-w-[20rem] whitespace-normal break-words"
                     title={(r.nav_name || r.nav_link || '-') || ''}

@@ -146,9 +146,9 @@ export default function OurTeam() {
         <SubNavTabs pagePath="/ministry/our-team" />
 
         {/* Main Content */}
-        <section className=" mt-10 py-12" style={{ backgroundColor: '#d2dfff', borderRadius: '20px' }}>
+        <section className=" mt-10 py-8" style={{ backgroundColor: '#d2dfff', borderRadius: '20px', width: '94%', marginLeft: 'auto', marginRight: 'auto' }}>
 
-          <div className="gi-container p-8 flex flex-col items-center min-h-[300px] rounded-md">
+          <div className="gi-container p-4 sm:p-6 md:p-10 flex flex-col items-center min-h-[300px] rounded-md">
             {/* Cards container */}
             <div className="flex flex-col items-center relative">
               {orderedTeam && orderedTeam.length > 0 ? (
@@ -157,13 +157,13 @@ export default function OurTeam() {
                     {/* Card */}
                     <button type="button" onClick={() => setSelectedMember(m)} className="relative bg-white rounded-xl shadow-md w-[320px] min-h-[136px] px-5 pt-16 pb-4 sm:pt-20 sm:pb-5 flex flex-col items-center z-10 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-300 transition" aria-label={`Open profile of ${m.name || 'member'}`}>
                       <div className="absolute -top-14 left-1/2 -translate-x-1/2">
-                        <div className="w-[88px] h-[88px] rounded-full bg-white shadow-md overflow-hidden">
+                        <div className="w-[120px] h-[120px] rounded-full bg-white shadow-md overflow-hidden">
                           <Image
                             src={(m.photo_url) || "/images/our-team/a.jpg"}
-                            width={88}
-                            height={88}
+                            width={120}
+                            height={120}
                             alt={m.name || 'Profile photo'}
-                            className="w-full h-full object-cover"
+                            className=""
                           />
                         </div>
                       </div>
@@ -222,7 +222,7 @@ export default function OurTeam() {
         {selectedMember && typeof window !== 'undefined' && createPortal(
           <div className="fixed inset-0 flex items-center justify-center p-4" style={{ zIndex: 100000 }}>
             <div className="fixed inset-0 bg-black/60" onClick={closeModal} style={{ zIndex: 99999 }} />
-            <div className="relative bg-white w-[340px] sm:w-[360px] mx-auto rounded-xl shadow-2xl ring-1 ring-black/10 px-6 py-5" style={{ zIndex: 100001 }}>
+            <div className="relative bg-white w-full max-w-[360px] mx-4 mx-auto rounded-xl shadow-2xl ring-1 ring-black/10 px-6 py-5" style={{ zIndex: 100001 }}>
               <button onClick={closeModal} className="absolute top-3 right-3 inline-flex items-center justify-center w-9 h-9 rounded-full hover:bg-gray-100" aria-label="Close">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 text-gray-600"><path fillRule="evenodd" d="M5.47 5.47a.75.75 0 011.06 0L12 10.94l5.47-5.47a.75.75 0 111.06 1.06L13.06 12l5.47 5.47a.75.75 0 11-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 01-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 010-1.06z" clipRule="evenodd" /></svg>
               </button>
@@ -355,7 +355,7 @@ export default function OurTeam() {
                   </span>
                   <span className="uppercase font-16-600">{section.section}</span>
                 </div>
-                <div className="bg-blue-300 text-blue-900 font-semibold grid grid-cols-[2fr_2fr_3fr] px-4 py-1 text-xs">
+                <div className="hidden md:grid bg-blue-300 text-blue-900 font-semibold grid-cols-[2fr_2fr_3fr] px-4 py-2 text-xs">
                   <div>NAME AND DESIGNATION</div>
                   <div>CONTACT</div>
                   <div>ADDRESS</div>
@@ -364,7 +364,7 @@ export default function OurTeam() {
                 {section.people.map((person, idx) => (
                   <div
                     key={idx}
-                    className="grid grid-cols-[2fr_2fr_3fr] border border-t-0 border-gray-300 px-4 py-4 text-sm"
+                    className="border border-t-0 border-gray-300 p-4"
                   >
                     <div>
                       <p className="font-16-700">{person.name}</p>

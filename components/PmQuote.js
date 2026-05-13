@@ -97,6 +97,15 @@ export default function EventQuote() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 bg-white text-[#0b3a82] border border-[#0b3a82] py-[10px] px-5 rounded-[6px] no-underline font-semibold text-[0.9rem] transition-all hover:bg-[#f5f9ff] hover:shadow font-12-600"
+                onClick={(e) => {
+                  if (quote?.event_url) {
+                    e.preventDefault();
+                    const confirmed = window.confirm('This would take you to an external website that opens in a new tab. Do you want to continue anyway?');
+                    if (confirmed) {
+                      window.open(quote.event_url, '_blank', 'noopener,noreferrer');
+                    }
+                  }
+                }}
               >
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-[#0b3a82]">
                   <path d="M14 3h7v7" stroke="#0b3a82" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>

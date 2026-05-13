@@ -6,24 +6,27 @@ import PageHeader from "@/components/PageHeader";
 
 export default function Vacancies() {
   const router = useRouter();
+
   const effectivePath =
     (router?.asPath && String(router.asPath).split("?")[0]) ||
     "/offerings/vacancies";
 
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
+
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState("Newest");
+
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(9);
-  // 🔥 FETCH DATA
+
+  // FETCH DATA
   useEffect(() => {
     async function load() {
       try {
         setLoading(true);
-        const url = "/api/offerings/vacancies";
 
-        const res = await fetch(url);
+        const res = await fetch("/api/offerings/vacancies");
         const data = await res.json();
 
         const mapped = (data || []).map((item) => ({
@@ -51,141 +54,235 @@ export default function Vacancies() {
     load();
   }, []);
 
-  // 🔍 SEARCH
+  // SEARCH
   const filtered = useMemo(() => {
     return items.filter((i) =>
       i.title.toLowerCase().includes(query.toLowerCase())
     );
   }, [items, query]);
 
-  // 🔃 SORT
+  // SORT
   const sorted = useMemo(() => {
     return [...filtered].sort((a, b) => {
-      if (sort === "Oldest") return a.year - b.year;
-      return b.year - a.year;
+      if (sort === "Oldest") {
+        return Number(a.year || 0) - Number(b.year || 0);
+      }
+
+      return Number(b.year || 0) - Number(a.year || 0);
     });
   }, [filtered, sort]);
 
-  // 📄 PAGINATION
-  const totalPages = Math.ceil(sorted.length / perPage);
+  // PAGINATION
+  const totalPages = Math.max(
+    1,
+    Math.ceil(sorted.length / perPage)
+  );
+
   const paginated = sorted.slice(
     (currentPage - 1) * perPage,
     currentPage * perPage
   );
 
   return (
-    <main>
+    <main id="main">
       <PageHeader pagePath={effectivePath} />
       <SubNavTabs pagePath={effectivePath} />
 
       <section className="mt-10 py-10">
         <div className="gi-container">
 
-          {/* SEARCH + FILTER */}
-          <div className="flex flex-wrap gap-2 mb-6">
-            <input
-              placeholder="Search..."
-              className="border px-3 py-2 w-full md:w-[300px] rounded"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-            />
+          {/* SEARCH + FILTER TOOLBAR */}
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 mb-6">
 
-            <select
-              value={sort}
-              onChange={(e) => setSort(e.target.value)}
-              className="border px-2 py-2 rounded"
-            >
-              <option value="Newest">Latest</option>
-              <option value="Oldest">Oldest</option>
-            </select>
+            {/* SEARCH */}
+            <div className="w-full lg:w-[320px]">
+              <div className="flex items-stretch rounded-md overflow-hidden border border-gray-300 bg-white">
 
-            <select
-              value={perPage}
-              onChange={(e) => setPerPage(Number(e.target.value))}
-              className="border px-2 py-2 rounded"
-            >
-              <option value={5}>5</option>
-              <option value={10}>10</option>
-              <option value={15}>15</option>
-            </select>
+                <span className="flex items-center px-2 border-r border-gray-300 text-gray-600">
+                  <span
+                    aria-hidden="true"
+                    className="material-symbols-outlined"
+                  >
+                    search
+                  </span>
+                </span>
+
+                <input
+                  type="search"
+                  placeholder="Search..."
+                  className="flex-1 px-3 py-2 outline-none"
+                  value={query}
+                  onChange={(e) => {
+                    setQuery(e.target.value);
+                    setCurrentPage(1);
+                  }}
+                />
+
+              </div>
+            </div>
+
+            {/* RIGHT FILTERS */}
+            <div className="flex flex-wrap items-center justify-end gap-2">
+
+              {/* SORT */}
+              <div className="flex items-stretch rounded-md overflow-hidden border border-gray-300 bg-white">
+
+                <span className="flex items-center px-2 border-r border-gray-300 text-gray-600">
+                  <span
+                    aria-hidden="true"
+                    className="material-symbols-outlined"
+                  >
+                    sort
+                  </span>
+                </span>
+
+                <select
+                  value={sort}
+                  onChange={(e) => {
+                    setSort(e.target.value);
+                    setCurrentPage(1);
+                  }}
+                  className="px-3 py-2 bg-white outline-none"
+                >
+                  <option value="Newest">Latest</option>
+                  <option value="Oldest">Oldest</option>
+                </select>
+
+              </div>
+
+              {/* PER PAGE */}
+              <div className="flex items-stretch rounded-md overflow-hidden border border-gray-300 bg-white">
+
+                <span className="flex items-center px-2 border-r border-gray-300 text-gray-600">
+                  <span className="material-symbols-outlined">
+                    list_alt
+                  </span>
+                </span>
+
+                <select
+                  value={perPage}
+                  onChange={(e) => {
+                    setPerPage(Number(e.target.value));
+                    setCurrentPage(1);
+                  }}
+                  className="px-3 py-2 bg-white outline-none"
+                >
+                  <option value={6}>6 per page</option>
+                  <option value={9}>9 per page</option>
+                  <option value={12}>12 per page</option>
+                </select>
+
+              </div>
+
+            </div>
           </div>
 
           {/* CARD GRID */}
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
             {loading ? (
-              <div className="col-span-3 text-center py-10">Loading...</div>
+              <div className="col-span-3 text-center py-10 text-gray-500">
+                Loading...
+              </div>
             ) : paginated.length === 0 ? (
-              <div className="col-span-3 text-center py-10">No data found</div>
+              <div className="col-span-3 text-center py-10 text-gray-500">
+                No data found
+              </div>
             ) : (
               paginated.map((item) => (
                 <div
                   key={item.id}
-                  className="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition overflow-hidden flex flex-col h-full"
+                  className="bg-white rounded-[14px] border border-[#d2dfff] shadow-sm hover:shadow-md transition overflow-hidden flex flex-col h-full"
                 >
-                  {/* TOP HEADER - Fixed Height */}
-                  <div className="bg-[#8ea2d8] text-center text-[#1a2e6c] font-semibold py-3 px-4 text-[15px] min-h-[50px] flex items-center justify-center">
+
+                  {/* CARD HEADER */}
+                  <div className="bg-[#a3bbf3] text-[#162f6a] text-center font-semibold px-5 py-4 text-[14px] uppercase tracking-[0.5px] min-h-[70px] flex items-center justify-center">
                     {item.title}
                   </div>
 
-                  {/* CONTENT AREA - flex-grow ensures this fills space */}
+                  {/* CARD BODY */}
                   <div className="p-5 flex flex-col flex-grow">
-                    
-                    {/* DESCRIPTION - Restricted height for symmetry */}
-                    <p className="text-[13px] text-gray-700 leading-relaxed line-clamp-3 mb-4">
+
+                    {/* DESCRIPTION */}
+                    <p className="text-[13px] text-gray-700 leading-relaxed line-clamp-3 min-h-[60px] mb-5">
                       {item.description || "No description available."}
                     </p>
 
-                    {/* DETAILS - middle section */}
-                    <div className="space-y-2 text-[13px] text-gray-700 flex-grow">
-                      {/* Published Date */}
-                      <div className="flex items-center gap-2">
-                        
-                        <span className="font-medium">Published Date</span>
-                        <span className="ml-auto text-gray-600">{item.published_date || "-"}</span>
+                    {/* DETAILS */}
+                    <div className="space-y-3 text-[13px] flex-grow">
+
+                      {/* PUBLISHED DATE */}
+                      <div className="flex items-center justify-between border-b border-gray-100 pb-2">
+                        <span className="font-medium text-gray-700">
+                          Published Date
+                        </span>
+
+                        <span className="text-gray-600">
+                          {item.published_date || "-"}
+                        </span>
                       </div>
 
-                      {/* Due Date */}
-                      <div className="flex items-center gap-2">
-                        
-                        <span className="font-medium">Due Date</span>
-                        <span className="ml-auto text-gray-600 font-semibold text-red-600">{item.due_date || "-"}</span>
+                      {/* DUE DATE */}
+                      <div className="flex items-center justify-between border-b border-gray-100 pb-2">
+                        <span className="font-medium text-gray-700">
+                          Due Date
+                        </span>
+
+                        <span className="text-red-600 font-semibold">
+                          {item.due_date || "-"}
+                        </span>
                       </div>
-                      
-                      
+
                     </div>
 
-                    {/* BUTTON - Hamesha bottom par rahega */}
-                    <div className="mt-6 pt-4 border-t border-gray-100 text-center">
+                    {/* BUTTON */}
+                    <div className="mt-6 pt-4 border-t border-gray-100">
+
                       <a
                         href={item.file_url || "#"}
                         target="_blank"
-                        className="inline-block w-full py-2.5 text-[13px] rounded-md bg-[#dbe4ff] text-[#1a2e6c] font-bold hover:bg-[#b8c9ff] transition"
+                        rel="noreferrer"
+                        className="inline-flex items-center justify-center gap-2 w-full py-3 rounded-md bg-[#d2dfff] text-[#162f6a] font-semibold text-[13px] uppercase hover:bg-[#bfd0ff] transition"
                       >
-                        VIEW DOCUMENT
+                        <span
+                          aria-hidden="true"
+                          className="material-symbols-outlined text-[18px]"
+                        >
+                          visibility
+                        </span>
+
+                        View Document
                       </a>
+
                     </div>
+
                   </div>
                 </div>
               ))
             )}
           </div>
 
-          {/* PAGINATION */}
-          <div className="flex justify-between items-center mt-8">
-            <div>
-              Page {currentPage} of {totalPages || 1}
-            </div>
+          {/* PAGINATION + ARCHIVE */}
+          <div className="mt-10 flex flex-col md:flex-row items-center justify-between gap-5">
 
-            <div className="flex gap-2">
+            {/* PAGINATION */}
+            <div className="flex items-center gap-3">
+
               <button
                 onClick={() =>
                   setCurrentPage((p) => Math.max(1, p - 1))
                 }
                 disabled={currentPage === 1}
-                className="px-3 py-1 border rounded disabled:opacity-50"
+                className="w-9 h-9 inline-flex items-center justify-center rounded-full border border-[#c7d7ff] text-[#123a6b] disabled:opacity-40"
               >
-                Prev
+                <span className="material-symbols-outlined text-[18px]">
+                  chevron_left
+                </span>
               </button>
+
+              <div className="text-[14px] text-[#123a6b] font-medium">
+                Page {currentPage} of {totalPages}
+              </div>
 
               <button
                 onClick={() =>
@@ -194,22 +291,30 @@ export default function Vacancies() {
                   )
                 }
                 disabled={currentPage === totalPages}
-                className="px-3 py-1 border rounded disabled:opacity-50"
+                className="w-9 h-9 inline-flex items-center justify-center rounded-full border border-[#c7d7ff] text-[#123a6b] disabled:opacity-40"
               >
-                Next
+                <span className="material-symbols-outlined text-[18px]">
+                  chevron_right
+                </span>
               </button>
-            </div>
-          </div>
 
-          {/* ARCHIVE LINK */}
-          <div className="flex justify-end mt-6">
+            </div>
+
+            {/* ARCHIVE */}
             <a
               href="/archives?page=vacancies"
-              className="inline-flex items-center gap-2 px-4 py-2 border rounded bg-white text-[#162f6a] hover:bg-[#a3bbf3] transition"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-md border border-[#bfd0ff] text-[#162f6a] hover:bg-[#edf2ff] transition"
             >
-              <span aria-hidden="true" className="material-symbols-outlined">archive</span>
+              <span
+                aria-hidden="true"
+                className="material-symbols-outlined"
+              >
+                archive
+              </span>
+
               View Archive
             </a>
+
           </div>
 
         </div>

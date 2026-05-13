@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Offering from "./icons/Offering";
 import { FiChevronRight } from 'react-icons/fi';
 import WhatsNew from "../components/icons/whats-new";
+import { showConfirmationPopup } from './common/ConfirmationPopup';
 
 export default function Offerings() {
   const [activeTab, setActiveTab] = useState("vacancies");
@@ -168,7 +169,19 @@ export default function Offerings() {
                       <li key={idx} className="px-6">
                         <div className="flex items-center justify-between py-3 border-b border-[#3b5390]">
                           {url ? (
-                            <a href={url} target="_blank" rel="noopener noreferrer" className="text-white no-underline hover:underline flex-1 pr-3">
+                            <a 
+                              href={url} 
+                              target="_blank" 
+                              rel="noopener noreferrer" 
+                              className="text-white no-underline hover:underline flex-1 pr-3"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                const confirmed = window.confirm('This would take you to an external website that opens in a new tab. Do you want to continue anyway?');
+                                if (confirmed) {
+                                  window.open(url, '_blank', 'noopener,noreferrer');
+                                }
+                              }}
+                            >
                               {title}
                             </a>
                           ) : (

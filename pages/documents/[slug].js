@@ -12,17 +12,17 @@ export default function DocumentsSlug() {
   const effectivePath = slug
     ? '/documents/' + (Array.isArray(slug) ? slug.join('/') : String(slug))
     : '/documents';
-  
+
   // Generate archive page URL based on current slug
   const getArchiveUrl = () => {
-    const pageName = slug 
+    const pageName = slug
       ? (Array.isArray(slug) ? slug.join('-') : String(slug))
       : 'reports';
     return `/archives?page=${encodeURIComponent(pageName)}`;
   };
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("");
-  const [sort, setSort] = useState("Newest");
+  const [sort, setSort] = useState("Latest");
   const [perPage, setPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   const [yearFilter, setYearFilter] = useState("");
@@ -51,11 +51,11 @@ export default function DocumentsSlug() {
         const navItem = router.query?.nav_item;
         const archivedOnly = router.query?.archived_only;
         const qs = [];
-        
+
         if (archivedOnly) {
           qs.push('archived_only=1');
         }
-        
+
         if (navQuery) {
           qs.push('nav=' + encodeURIComponent(String(navQuery)));
         } else if (navItem) {
@@ -70,7 +70,7 @@ export default function DocumentsSlug() {
           const nav = (router && router.asPath) || (typeof window !== 'undefined' ? window.location.pathname : '/documents/reports');
           qs.push('nav=' + encodeURIComponent(nav.split('?')[0]));
         }
-        
+
         if (qs.length > 0) {
           apiUrl += '?' + qs.join('&');
         }
@@ -149,44 +149,44 @@ export default function DocumentsSlug() {
       const dt = $(tableElRef.current).DataTable({
         data: items,
         columns: [
-        {
-          data: null,
-          orderable: false,
-          render: (data, type, row) => {
-            const icon = row.type === 'group' ? 'file_copy' : 'draft';
-            const count = row.count ? `<span class="ml-1 inline-flex justify-center items-center w-6 h-6 text-[11px] rounded bg-blue-100 text-blue-700">${row.count}</span>` : '';
-            return `
+          {
+            data: null,
+            orderable: false,
+            render: (data, type, row) => {
+              const icon = row.type === 'group' ? 'file_copy' : 'draft';
+              const count = row.count ? `<span class="ml-1 inline-flex justify-center items-center w-6 h-6 text-[11px] rounded bg-blue-100 text-blue-700">${row.count}</span>` : '';
+              return `
               <div class="flex items-center gap-2">
                 <span class="material-symbols-outlined text-gray-700">${icon}</span>
                 <p class="mb-0 font-16-400">${row.title ?? ''}</p>
                 ${count}
               </div>
             `;
-          }
-        },
-        {
-          data: 'year',
-          render: (data) => `<div class="text-center font-12-600">${data || '-'}</div>`
-        },
-        {
-          data: null,
-          orderable: false,
-          render: (data, type, row) => {
-            const isGroup = row.type === 'group';
-            const fileUrl = row.file_url || '#';
-            const target = row.file_url ? ' target="_blank" rel="noreferrer"' : '';
-            const typeSize = !isGroup
-              ? `
+            }
+          },
+          {
+            data: 'year',
+            render: (data) => `<div class="text-center font-12-600">${data || '-'}</div>`
+          },
+          {
+            data: null,
+            orderable: false,
+            render: (data, type, row) => {
+              const isGroup = row.type === 'group';
+              const fileUrl = row.file_url || '#';
+              const target = row.file_url ? ' target="_blank" rel="noreferrer"' : '';
+              const typeSize = !isGroup
+                ? `
                 <div class="flex items-center gap-2 mx-auto">
                   <span class="text-[10px] px-1.5 py-0.5 rounded bg-gray-100">PDF</span>
                   <small class="text-gray-700">${row.size || ''}</small>
                 </div>
               `
-              : '<span></span>';
-            const viewHref = isGroup ? `/documents/report/${row.id}` : fileUrl;
-            const viewAttrs = isGroup ? '' : target;
-            const viewText = isGroup ? 'View All' : 'View';
-            return `
+                : '<span></span>';
+              const viewHref = isGroup ? `/documents/report/${row.id}` : fileUrl;
+              const viewAttrs = isGroup ? '' : target;
+              const viewText = isGroup ? 'View All' : 'View';
+              return `
               <div class="flex items-center gap-2 justify-between w-full">
                 ${typeSize}
                 <a href="${viewHref}"${viewAttrs} class="inline-flex items-center gap-2 uppercase  px-3 py-1.5 rounded bg-blue-100 text-blue-800 hover:bg-blue-200 view-btn-all">
@@ -195,48 +195,64 @@ export default function DocumentsSlug() {
                 </a>
               </div>
             `;
+            }
           }
-        }
-      ],
-      searching: true,
-      paging: true,
-      info: false,
-      lengthChange: false,
-      pageLength: perPage,
-      ordering: true,
-      order: sort === 'Oldest' ? [[1, 'asc']] : [[1, 'desc']],
-      dom: 't',
-      autoWidth: false,
-      drawCallback: function () {
-        const info = this.api().page.info();
-        setTotalPages(Math.max(1, info.pages || 1));
-        setCurrentPage((info.page || 0) + 1);
-      },
-      createdRow: function (row) {
-        row.className = 'items-center px-4 py-3 bg-white';
-        try {
-          row.style.display = 'grid';
-          row.style.gridTemplateColumns = '7fr 2fr 3fr';
-          row.style.alignItems = 'center';
-        } catch {
-        }
-        try {
-          const $cells = $('td', row);
-          $cells.eq(0).addClass('');
-          $cells.eq(1).addClass('text-center');
-          $cells.eq(2).addClass('');
-        } catch {
-        }
-      },
-      language: {
-        emptyTable: 'No reports found.'
-      }
-    });
+        ],
+        searching: true,
+        paging: true,
+        info: false,
+        lengthChange: false,
+        pageLength: perPage,
+        ordering: true,
+        order: sort === 'Oldest' ? [[1, 'asc']] : [[1, 'desc']],
+        dom: 't',
+        autoWidth: false,
+        drawCallback: function () {
+          const info = this.api().page.info();
+          setTotalPages(Math.max(1, info.pages || 1));
+          setCurrentPage((info.page || 0) + 1);
+        },
+        createdRow: function (row) {
+          row.className = 'items-center bg-white rounded-[8px] border border-[#dbe4ff] px-6  mb-3 shadow-sm';
+          try {
+            row.style.display = 'grid';
+            row.style.gridTemplateColumns = '2fr 2fr 2fr';
+            row.style.alignItems = 'center';
+          } catch {
+          }
+          try {
+            const $cells = $('td', row);
 
-    try {
-      $(tableElRef.current).find('tbody').addClass('divide-y');
-    } catch {
-    }
+            $cells.css({
+              width: '100%',
+              padding: '16px 12px',
+              display: 'flex',
+              alignItems: 'center'
+            });
+
+            $cells.eq(0).css({
+              justifyContent: 'flex-start'
+            });
+
+            $cells.eq(1).css({
+              justifyContent: 'center'
+            });
+
+            $cells.eq(2).css({
+              justifyContent: 'center'
+            });
+          } catch {
+          }
+        },
+        language: {
+          emptyTable: 'No reports found.'
+        }
+      });
+
+      try {
+        $(tableElRef.current).find('tbody').addClass('divide-y');
+      } catch {
+      }
 
       dataTableRef.current = dt;
 
@@ -291,19 +307,29 @@ export default function DocumentsSlug() {
     const dt = dataTableRef.current;
     if (!dt) return;
     dt.search(query || '').draw();
+    // Reset to first page when search changes
+    if (query) {
+      dt.page(0).draw(false);
+      setCurrentPage(1);
+    }
   }, [query]);
 
   useEffect(() => {
     const dt = dataTableRef.current;
     if (!dt) return;
     dt.page.len(perPage);
-    dt.draw(false);
+    // Reset to first page when per page changes
+    dt.page(0).draw(false);
+    setCurrentPage(1);
   }, [perPage]);
 
   useEffect(() => {
     const dt = dataTableRef.current;
     if (!dt) return;
     dt.order(sort === 'Oldest' ? [1, 'asc'] : [1, 'desc']).draw();
+    // Reset to first page when sorting changes
+    dt.page(0).draw(false);
+    setCurrentPage(1);
   }, [sort]);
 
   useEffect(() => {
@@ -329,8 +355,8 @@ export default function DocumentsSlug() {
         <section className="mt-10 py-10" style={{ borderRadius: '20px' }}>
           <div className="gi-container">
             {/* Toolbar & filters (same UI as reports) */}
-            <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-3 mb-4">
-              <div className="w-full">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 mb-4">
+              <div className="w-full lg:w-[320px]">
                 <div className="flex items-stretch rounded-md overflow-hidden border border-gray-300 bg-white">
                   <span className="flex items-center px-2 border-r border-gray-300 text-gray-600">
                     <span aria-hidden="true" className="material-symbols-outlined">search</span>
@@ -378,13 +404,23 @@ export default function DocumentsSlug() {
               </div>
             </div>
 
-            <div className="hidden lg:grid grid-cols-[7fr_2fr_3fr] bg-[#a3bbf3] text-[#162f6a] rounded-[8px] px-6 py-4 mb-3 uppercase text-[12px] font-semibold tracking-[1px]">
+            <div
+              // className="grid grid-cols-[7fr_2fr_3fr] bg-blue-200 text-blue-900 font-semibold rounded-t-md px-4 py-2 text-xs"
+
+              className="hidden lg:grid grid-cols-[2fr_2fr_2fr] bg-[#a3bbf3] text-[#162f6a] rounded-[8px] px-6 py-4 mb-3 uppercase text-[12px] font-semibold tracking-[1px]"
+
+            >
               <div>Title</div>
               <div className="text-center">Published Year</div>
               <div className="text-center">Type/Size</div>
             </div>
+            {/* <div className="grid grid-cols-[7fr_2fr_3fr] bg-blue-200 text-blue-900 font-semibold rounded-t-md px-4 py-2 text-xs">
+              <div>Title</div>
+              <div className="text-center">Published Year</div>
+              <div className="text-center">Type/Size</div>
+            </div> */}
 
-            <div className="divide-y border border-t-0 rounded-b-md bg-white">
+            <div className="divide-y">
               {loading ? (
                 <div className="px-4 py-6 text-center text-gray-500">Loading reports...</div>
               ) : error ? (

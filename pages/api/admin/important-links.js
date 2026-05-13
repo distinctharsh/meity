@@ -42,6 +42,8 @@ async function handlePost(req, res) {
     const { 
       title, 
       url, 
+      file_path,
+      link_type = 'url',
       is_active = 1 
     } = req.body;
 
@@ -49,8 +51,13 @@ async function handlePost(req, res) {
       return res.status(400).json({ message: 'Title is required' });
     }
 
-    if (!url) {
-      return res.status(400).json({ message: 'URL is required' });
+    // Validate based on link type
+    if (link_type === 'url' && !url) {
+      return res.status(400).json({ message: 'URL is required for external links' });
+    }
+
+    if (link_type === 'file' && !file_path) {
+      return res.status(400).json({ message: 'File upload is required for file links' });
     }
 
     // Get the maximum display_order and increment by 1
@@ -59,8 +66,8 @@ async function handlePost(req, res) {
     const newDisplayOrder = maxOrder + 1;
 
     const [result] = await pool.query(
-      'INSERT INTO important_links (title, url, display_order, is_active) VALUES (?, ?, ?, ?)',
-      [title, url, newDisplayOrder, is_active]
+      'INSERT INTO important_links (title, url, file_path, link_type, display_order, is_active) VALUES (?, ?, ?, ?, ?, ?)',
+      [title, url || null, file_path || null, link_type, newDisplayOrder, is_active]
     );
 
     return res.status(201).json({ 
@@ -75,7 +82,7 @@ async function handlePost(req, res) {
 
 async function handlePut(req, res) {
   try {
-    const { id, title, url, is_active } = req.body;
+    const { id, title, url, file_path, link_type, is_active } = req.body;
 
     if (!id) {
       return res.status(400).json({ message: 'Item ID is required' });
@@ -92,6 +99,14 @@ async function handlePut(req, res) {
     if (url !== undefined) {
       updates.push('url = ?');
       values.push(url);
+    }
+    if (file_path !== undefined) {
+      updates.push('file_path = ?');
+      values.push(file_path);
+    }
+    if (link_type !== undefined) {
+      updates.push('link_type = ?');
+      values.push(link_type);
     }
     if (is_active !== undefined) {
       updates.push('is_active = ?');

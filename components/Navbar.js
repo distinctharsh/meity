@@ -142,8 +142,8 @@ export default function NewNavbar() {
   };
 
   return (
-    <nav className="hidden md:block bg-white shadow-[0_2px_4px_rgba(0,0,0,0.1)] border-t border-[#d0d0d0] sticky z-[299]" style={{ borderBottom: '2px solid #162f6a', top: stickyTop }}>
-      <div className="px-[7%]">
+    <nav className="hidden md:block bg-white shadow-[0_2px_4px_rgba(0,0,0,0.1)]  sticky z-[299]" style={{ borderBottom: '2px solid #162f6a', top: stickyTop }}>
+      <div className="px-[2%]">
         {/* Bar container */}
         <div className="flex items-center justify-between h-13">
           {/* Listen for header-triggered toggle on mobile */}
@@ -156,27 +156,27 @@ export default function NewNavbar() {
           <div
             className={`flex-1 hidden md:flex`}
           >
-            <ul className="flex flex-row md:items-center justify-between m-0 p-0 w-full">
+            <ul className="flex flex-row md:items-center  m-0 p-0">
               {(loading ? [] : navItems).map((item, index) => {
                 const itemActive = (isActive(item.href) || (item.items && item.items.some((si) => isActive(si.href))));
                 return (
                   <li
                     key={index}
-                    className={`group relative md:w-auto w-full`}
+                    className={`group relative md:w-auto w-full hover:bg-[#d2dfff] md:min-w-[240px]`}
                   >
                     <Link
                       href={item.href}
-                      className={`flex items-center justify-between md:justify-start no-underline px-4 py-3 transition-colors duration-200
+                      className={`flex items-center justify-between md:justify-center no-underline px-4 py-3 transition-colors duration-200 relative
                             ${itemActive
-                              ? 'text-[24px] font-[700] text-[#162f6a] border-b-8 border-[#162f6a]'
-                              : 'text-[20px] font-[600] text-[#1b1b1b] hover:text-[#162f6a]'
-                            }
+                          ? 'text-[24px] font-[700] text-[#162f6a]'
+                          : 'text-[20px] font-[600] text-[#1b1b1b] hover:text-[#162f6a]'
+                        }
                             ${item.text !== 'Home'
-                              ? itemActive
-                                ? 'bg-[#fff]'
-                                : 'hover:bg-[#d2dfff]'
-                              : ''
-                            }
+                          ? itemActive
+                            ? 'bg-[#fff]'
+                            : 'hover:bg-[#d2dfff]'
+                          : ''
+                        }
                           `}
 
 
@@ -188,7 +188,13 @@ export default function NewNavbar() {
                       }}
                     >
                       <span className="flex items-center">
-                        <span className="leading-none ">{item.text}</span>
+                        <span className="leading-none relative inline-block">
+                          {item.text}
+
+                          {itemActive && (
+                            <span className="absolute left-0 -bottom-[14px] w-full h-[7px] bg-[#162f6a]" />
+                          )}
+                        </span>
                         {item.dropdown && (
                           <svg
                             className="ml-2 w-5 h-5 md:transform md:transition-transform md:duration-200 md:group-hover:rotate-180"
@@ -216,7 +222,7 @@ export default function NewNavbar() {
                             <li key={subIndex} className="p-0">
                               <Link
                                 href={subItem.href}
-                                className="block no-underline text-[14.5px] font-medium text-white md:text-white py-3 px-5 hover:bg-[rgba(255,255,255,0.08)]"
+                                className="block no-underline text-[14.5px] font-medium text-center text-white md:text-white py-3 px-5 hover:bg-[rgba(255,255,255,0.08)]"
                               >
                                 {subItem.text}
                               </Link>
@@ -275,29 +281,36 @@ export default function NewNavbar() {
                 return (
                   <li key={index} className="">
                     <Link
-  href={item.href}
-  className={`flex items-center justify-between md:justify-start no-underline px-4 py-3 
+                      href={item.href}
+                      className={`flex items-center justify-between md:justify-start no-underline px-4 py-3 relative
     ${itemActive
-      ? '!text-[24px] !font-[700] !text-[rgb(22,47,106)]'
-      : '!text-[20px] !font-[600] !text-[rgb(21,2,2)]'
-    }
+                          ? '!text-[24px] !font-[700] !text-[rgb(22,47,106)]'
+                          : '!text-[20px] !font-[600] !text-[rgb(21,2,2)]'
+                        }
     transition-colors duration-200 
     ${itemActive
-      ? `border-b-8 ${item.text !== 'Home' ? 'bg-[#fff]' : ''}`
-      : `${item.text !== 'Home' ? 'hover:bg-[#d2dfff]' : ''}`
-    }`}
-    
-  onClick={(e) => {
-    if (item.dropdown) {
-      e.preventDefault();
-      setActiveDropdown(activeDropdown === index ? null : index);
-    } else {
-      setMobileMenuOpen(false);
-    }
-  }}
->
+                          ? `${item.text !== 'Home' ? 'bg-[#fff]' : ''}`
+                          : `${item.text !== 'Home' ? 'hover:bg-[#d2dfff]' : ''}`
+                        }`}
+
+                      onClick={(e) => {
+                        if (item.dropdown) {
+                          e.preventDefault();
+                          setActiveDropdown(activeDropdown === index ? null : index);
+                        } else {
+                          setMobileMenuOpen(false);
+                        }
+                      }}
+                    >
                       <span className="flex items-center justify-between w-full">
-                        <span>{item.text}</span>
+                        <span className="relative">{item.text}
+                          {itemActive && (
+                            <span
+                              className="absolute bottom-0 left-0 right-0 h-2 bg-[rgb(22,47,106)]"
+                              style={{ transform: 'translateY(4px)' }}
+                            />
+                          )}
+                        </span>
                         {item.dropdown && (
                           <svg
                             className="w-5 h-5"

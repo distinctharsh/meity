@@ -114,17 +114,17 @@ export default function Tenders() {
               </select>
             </div>
 
-{/* TABLE HEADER */}
-<div
-  className="hidden lg:grid grid-cols-[2fr_2fr_2fr_2fr_2fr_2fr] bg-[#a3bbf3] text-[#162f6a] rounded-[8px] px-6 py-4 mb-3 uppercase text-[12px] font-semibold tracking-[1px]"
->
-  <div>Tender ID</div>
-  <div>Title</div>
-  <div className="text-center">Published Date</div>
-  <div className="text-center">Due Date</div>
-  <div className="text-center">Size</div>
-  <div className="text-center">Action</div>
-</div>
+            {/* TABLE HEADER */}
+            <div
+              className="hidden lg:grid grid-cols-[2fr_2fr_2fr_2fr_2fr_2fr] bg-[#a3bbf3] text-[#162f6a] rounded-[8px] px-6 py-4 mb-3 uppercase text-[12px] font-semibold tracking-[1px]"
+            >
+              <div>Tender ID</div>
+              <div>Title</div>
+              <div className="text-center">Published Date</div>
+              <div className="text-center">Due Date</div>
+              <div className="text-center">Size</div>
+              <div className="text-center">Action</div>
+            </div>
 
             {/* TABLE BODY */}
             <div className="border rounded-b-md bg-white">
@@ -142,7 +142,7 @@ export default function Tenders() {
                   const isUrgent =
                     dueDate &&
                     dueDate <
-                      new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000);
+                    new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000);
 
                   let badgeClass = "text-[10px] px-1.5 py-0.5 rounded ";
                   if (isExpired) {
@@ -172,8 +172,8 @@ export default function Tenders() {
                       <div className="text-center text-sm">
                         {item.published_date
                           ? new Date(
-                              item.published_date
-                            ).toLocaleDateString("en-GB")
+                            item.published_date
+                          ).toLocaleDateString("en-GB")
                           : "-"}
                       </div>
                       <div className="text-center text-sm">
@@ -226,11 +226,10 @@ export default function Tenders() {
                   <button
                     key={p}
                     onClick={() => setCurrentPage(p)}
-                    className={`w-8 h-8 rounded-full ${
-                      p === currentPage
+                    className={`w-8 h-8 rounded-full ${p === currentPage
                         ? "bg-[#c7d7ff] text-[#123a6b] font-semibold"
                         : "text-[#123a6b] hover:bg-[#e8efff]"
-                    }`}
+                      }`}
                   >
                     {p}
                   </button>

@@ -172,7 +172,7 @@ export default function ImportantLinksManagement() {
                     Title
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    URL
+                    Link
                   </th>
                   <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-24">
                     Status
@@ -199,16 +199,29 @@ export default function ImportantLinksManagement() {
                       </td>
                       <td className="px-6 py-4">
                         <div className="text-sm text-gray-900">
-                          <a
-                            href={link.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-blue-600 hover:text-blue-800 flex items-center truncate max-w-xs"
-                            title={link.url}
-                          >
-                            <span className="mr-2">🔗</span>
-                            {link.url}
-                          </a>
+                          {link.link_type === 'url' ? (
+                            <a
+                              href={link.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-blue-600 hover:text-blue-800 flex items-center truncate max-w-xs"
+                              title={link.url}
+                            >
+                              <span className="mr-2">🔗</span>
+                              {link.url}
+                            </a>
+                          ) : (
+                            <a
+                              href={link.file_path}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-blue-600 hover:text-blue-800 flex items-center truncate max-w-xs"
+                              title={link.file_path}
+                            >
+                              <span className="mr-2">📄</span>
+                              {link.file_path ? link.file_path.split('/').pop() : 'File'}
+                            </a>
+                          )}
                         </div>
                       </td>
                       <td className="px-6 py-4 text-center">
