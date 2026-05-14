@@ -227,7 +227,7 @@ group-hover:text-[#162f6a]
                     {/* Dropdown */}
                     {item.dropdown && item.items && (
                       <div
-                        className={`md:absolute mt-1 md:left-0 md:min-w-[240px] md:rounded-b-[8px]  md:bg-[rgba(0,0,0,0.72)] md:backdrop-blur-md md:shadow-[0_6px_20px_rgba(0,0,0,0.3)] md:opacity-0 md:invisible md:translate-y-2 md:transition-all md:duration-200 md:group-hover:opacity-100 md:group-hover:visible md:group-hover:translate-y-0 ${activeDropdown === index ? 'block' : 'hidden'} md:block`}
+                        className={`md:absolute  md:left-0 md:min-w-[240px] md:rounded-b-[8px]  md:bg-[rgba(0,0,0,0.72)] md:backdrop-blur-md md:shadow-[0_6px_20px_rgba(0,0,0,0.3)] md:opacity-0 md:invisible md:translate-y-2 md:transition-all md:duration-200 md:group-hover:opacity-100 md:group-hover:visible md:group-hover:translate-y-0 ${activeDropdown === index ? 'block' : 'hidden'} md:block`}
                       >
                         <ul className="list-none m-0 p-0 md:bg-transparent bg-[#f9f9f9] md:shadow-none md:pl-0 pl-6">
                           {item.items.map((subItem, subIndex) => (
