@@ -74,9 +74,12 @@ export default function AboutUs() {
 
         {/* Main Content */}
         <section className="bg-white py-12">
-          <div className="gi-container grid md:grid-cols-[1fr_2fr] gap-10">
+          <div className="gi-container flex flex-col md:grid md:grid-cols-[280px_minmax(0,1fr)] gap-6 md:gap-10">
             {/* Left Box - Vision (shrink to content height) */}
-            <div className="bg-gray-100 p-6 rounded-lg inline-block align-top" style={{ height: 'fit-content', position: 'sticky', top: '250px' }}>
+            <div
+              className="bg-gray-100 p-6 rounded-lg inline-block align-top md:sticky md:top-[250px]"
+              style={{ height: 'fit-content' }}
+            >
               {loading ? (
                 <div className="space-y-3">
                   <Skeleton variant="title" />
