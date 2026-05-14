@@ -145,7 +145,7 @@ export default function NewNavbar() {
     <nav className="hidden md:block bg-white shadow-[0_2px_4px_rgba(0,0,0,0.1)]  sticky z-[299]" style={{ borderBottom: '2px solid #162f6a', top: stickyTop }}>
       <div className="px-[2%]">
         {/* Bar container */}
-        <div className="flex items-center justify-between h-13">
+        <div className="flex justify-between h-13">
           {/* Listen for header-triggered toggle on mobile */}
           {typeof window !== 'undefined' && (
             // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -156,27 +156,39 @@ export default function NewNavbar() {
           <div
             className={`flex-1 hidden md:flex`}
           >
-            <ul className="flex flex-row md:items-center  m-0 p-0">
+            <ul className="flex flex-row md:items-center h-full m-0 p-0">
               {(loading ? [] : navItems).map((item, index) => {
                 const itemActive = (isActive(item.href) || (item.items && item.items.some((si) => isActive(si.href))));
                 return (
                   <li
                     key={index}
-                    className={`group relative md:w-auto w-full hover:bg-[#d2dfff] md:min-w-[240px]`}
+                    className={`group relative md:w-auto w-full hover:bg-[#d2dfff] md:min-w-[240px] h-full`}
                   >
                     <Link
                       href={item.href}
-                      className={`flex items-center justify-between md:justify-center no-underline px-4 py-4 transition-colors duration-200 relative
+                      className={`flex h-full items-center justify-between md:justify-center no-underline px-4 py-3 transition-colors duration-200 relative
                             ${itemActive
-                          ? 'text-[24px] font-[700] text-[#162f6a]'
-                          : 'text-[20px] font-[600] text-[#1b1b1b] hover:text-[#162f6a]'
-                        }
+  ? 'text-[24px] font-[700] text-[#162f6a] bg-[#d2dfff]'
+  : 'text-[20px] font-[600] text-[#1b1b1b]'
+}
+
+group-hover:bg-[#d2dfff]
+group-hover:text-[#162f6a]
                             ${item.text !== 'Home'
                           ? itemActive
                             ? 'bg-[#fff]'
                             : 'hover:bg-[#d2dfff]'
                           : ''
                         }
+
+                         ${item.text == 'Home'
+                          ? itemActive
+                            ? 'bg-[#fff]'
+                            : 'hover:bg-[#d2dfff]'
+                          : ''
+                        }
+
+                        
                           `}
 
 
@@ -215,7 +227,7 @@ export default function NewNavbar() {
                     {/* Dropdown */}
                     {item.dropdown && item.items && (
                       <div
-                        className={`md:absolute md:left-0 md:min-w-[240px] md:rounded-[8px]  md:bg-[rgba(0,0,0,0.72)] md:backdrop-blur-md  md:opacity-0 md:invisible md:translate-y-2 md:transition-all md:duration-200 md:group-hover:opacity-100 md:group-hover:visible md:group-hover:translate-y-0 ${activeDropdown === index ? 'block' : 'hidden'} md:block`}
+                        className={`md:absolute mt-1 md:left-0 md:min-w-[240px] md:rounded-b-[8px]  md:bg-[rgba(0,0,0,0.72)] md:backdrop-blur-md md:shadow-[0_6px_20px_rgba(0,0,0,0.3)] md:opacity-0 md:invisible md:translate-y-2 md:transition-all md:duration-200 md:group-hover:opacity-100 md:group-hover:visible md:group-hover:translate-y-0 ${activeDropdown === index ? 'block' : 'hidden'} md:block`}
                       >
                         <ul className="list-none m-0 p-0 md:bg-transparent bg-[#f9f9f9] md:shadow-none md:pl-0 pl-6">
                           {item.items.map((subItem, subIndex) => (
