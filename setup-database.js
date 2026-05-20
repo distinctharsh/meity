@@ -12,7 +12,7 @@ async function setupDatabase() {
     connection = await mysql.createConnection({
       host: 'localhost',
       user: 'root',
-      password: '', // Update this if you have a password
+      password: '123456', // Update this if you have a password
     });
 
 

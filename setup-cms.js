@@ -27,7 +27,7 @@ if (!fs.existsSync(envFile)) {
   const envContent = `# Database Configuration
 DB_HOST=localhost
 DB_USER=root
-DB_PASSWORD=
+DB_PASSWORD=123456
 DB_NAME=cabsec_cms
 
 # JWT Secret (change this in production)
