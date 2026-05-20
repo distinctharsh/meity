@@ -8,8 +8,9 @@ export async function getServerSideProps(context) {
   const slug = '/' + slugArr.join('/');
   try {
     const [rows] = await pool.query(
-      `SELECT p.*
+      `SELECT p.*, n.name as nav_name, n.link as nav_link
        FROM pages p
+       LEFT JOIN navigation_items n ON n.id = p.navigation_item_id
        WHERE p.slug = ? AND p.is_active = TRUE
        LIMIT 1`,
       [slug]
