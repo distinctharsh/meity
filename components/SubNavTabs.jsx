@@ -31,13 +31,14 @@ export default function SubNavTabs({ pagePath }) {
         if (!effectivePath) {
           return;
         }
-        // Always derive from main navigation (DB-driven) - use subnav API to include hidden parents
-        const navRes = await fetchWithCacheBusting('/api/navigation-subnav');
+        // Load from database using page-header API (navigation_items table)
+        const res = await fetch(`/api/page-header?path=${encodeURIComponent(effectivePath)}`);
+        const data = res.ok ? await res.json() : null;
+
+        // Fetch navigation items for subnav tabs
+        const navRes = await fetch('/api/navigation');
         if (navRes.ok) {
           const nav = await navRes.json();
-          
-          // Check Documents section specifically
-          const documentsSection = nav.find(n => (n.name || n.label || n.text)?.toLowerCase()?.includes('document'));
 
           const derived = deriveFromNavigation(nav, effectivePath);
           if (mounted) setItems(derived);
@@ -294,37 +295,60 @@ function deriveFromNavigation(nav, path) {
   let sectionNode = findByLink(nav, sectionPath);
 
   // Check if this is for comprehensive archive page
-  const isArchiveAllPath = path === '/archives/all' || path.startsWith('/archives/');
+  const isArchiveAllPath = path === '/archives' || path === '/archives/all' || path.startsWith('/archives/');
   
   if (isArchiveAllPath) {
-    // For comprehensive archive pages, combine all sections that have document-like content
-    const allSections = ['documents', 'offerings'];
+    // For comprehensive archive pages, combine documents and offerings sections
+    // Support both English and Hindi section names
+    const allSections = [
+      'documents', 'offerings', 'document', 'offering',  // English
+      'दस्तावेज', 'प्रसाद',
+    ];
     let allChildren = [];
-    
+
     allSections.forEach(sectionName => {
       const section = nav.find(n => {
         const name = (n.name || n.label || n.text || '').toLowerCase();
-        return name.includes(sectionName);
+        const link = (n.link || n.href || '').toLowerCase();
+        return name.includes(sectionName) || link.includes(sectionName);
       });
-      
+
       if (section && section.children) {
-        // Add archive parameter to each child link
         const childrenWithArchive = section.children.map(child => ({
           ...child,
           link: child.link || child.href,
           href: child.link || child.href,
-          // Store original link for archive reference
           originalLink: child.link || child.href
         }));
         allChildren = allChildren.concat(childrenWithArchive);
       }
     });
-    
+
+    // Fallback: if no sections found, collect all children
+    if (allChildren.length === 0) {
+      const collectAllChildren = (nodes) => {
+        for (const n of nodes || []) {
+          if (n.children && n.children.length) {
+            const childrenWithArchive = n.children.map(child => ({
+              ...child,
+              link: child.link || child.href,
+              href: child.link || child.href,
+              originalLink: child.link || child.href
+            }));
+            allChildren = allChildren.concat(childrenWithArchive);
+          }
+          if (n.children && n.children.length) {
+            collectAllChildren(n.children);
+          }
+        }
+      };
+      collectAllChildren(nav);
+    }
+
     const tabs = allChildren
       .filter((c) => (c.is_active !== false && (c.is_show !== false)))
       .map((c) => {
         const originalHref = c.originalLink || c.link || c.href || '#';
-        // Convert document links to archive format
         const slug = originalHref
           .replace(/^\/+/, '')
           .split('/')
@@ -332,11 +356,11 @@ function deriveFromNavigation(nav, path) {
           .join('-');
 
         const href = '/archives?page=' + encodeURIComponent(slug);
-        const raw = c.name || c.label || c.title || '';
+        const raw = c.text || c.name || c.label || c.title || '';
         const label = raw && String(raw).trim().length ? raw : formatLabelFromHref(originalHref);
         return { label, href: originalHref, archiveHref: href, id: c.id };
       });
-    
+
     return tabs;
   }
 
@@ -371,7 +395,7 @@ function deriveFromNavigation(nav, path) {
     .filter((c) => (c.is_active !== false && (c.is_show !== false))) // Only show children that are active AND visible
     .map((c) => {
       const href = c.link || c.href || '#';
-      const raw = c.name || c.label || c.title || '';
+      const raw = c.text || c.name || c.label || c.title || '';
       const label = raw && String(raw).trim().length ? raw : formatLabelFromHref(href);
       return { label, href, id: c.id };
     });

@@ -4,6 +4,7 @@ import SubNavTabs from "@/components/SubNavTabs";
 import PageHeader from "@/components/PageHeader";
 import Skeleton, { SkeletonText, SkeletonSection, SkeletonDownloadCard } from "@/components/Skeleton";
 import { useEffect, useState } from "react";
+import { t } from '@/lib/translations';
 
 export default function AboutUs() {
   const [aboutContent, setAboutContent] = useState([]);
@@ -105,7 +106,7 @@ export default function AboutUs() {
               </p> */}
 
               <div>
-                <h2 className=" text-[#123a6b] mb-2 font-24-700">Functions</h2>
+                <h2 className=" text-[#123a6b] mb-2 font-24-700"> {t('functions')}</h2>
                 {loading ? (
                   <SkeletonText lines={3} />
                 ) : (
@@ -116,7 +117,7 @@ export default function AboutUs() {
 
 
                 <div className="mt-10">
-                  <h2 className=" text-[#123a6b] mb-2 font-24-700">Allocation and disposal of Government Business</h2>
+                  <h2 className=" text-[#123a6b] mb-2 font-24-700">{t('allocation_disposal')}</h2>
                   {loading ? (
                     <SkeletonText lines={3} />
                   ) : (
@@ -126,7 +127,7 @@ export default function AboutUs() {
                   )}
                 </div>
                 <div className="mt-10">
-                  <h2 className=" text-[#123a6b] mb-2 font-24-700">Support to Cabinet Committees</h2>
+                  <h2 className=" text-[#123a6b] mb-2 font-24-700">{t('support_cabinet_committees')}</h2>
                   {loading ? (
                     <SkeletonText lines={3} />
                   ) : (
@@ -136,7 +137,7 @@ export default function AboutUs() {
                   )}
                 </div>
                 <div className="mt-10">
-                  <h2 className=" text-[#123a6b] mb-2 font-24-700">Promotion of Inter-Ministerial Coordination</h2>
+                  <h2 className=" text-[#123a6b] mb-2 font-24-700">{t('inter_ministerial_coordination')}</h2>
                   {loading ? (
                     <SkeletonText lines={3} />
                   ) : (
@@ -148,7 +149,7 @@ export default function AboutUs() {
               </div>
 
               <div>
-                <h2 className=" text-[#123a6b] mb-2 font-24-700">Objectives</h2>
+                <h2 className=" text-[#123a6b] mb-2 font-24-700">{t('objectives')}</h2>
                 {loading ? (
                   <SkeletonText lines={4} />
                 ) : (
@@ -216,7 +217,7 @@ export default function AboutUs() {
 
 
               <div>
-                <h2 className=" text-[#123a6b] mb-2 font-24-700">Development</h2>
+                <h2 className=" text-[#123a6b] mb-2 font-24-700">{t('development')}</h2>
                 {loading ? (
                   <SkeletonText lines={3} />
                 ) : (
@@ -229,7 +230,7 @@ export default function AboutUs() {
 
 
               <div className="mt-10">
-                <h2 className=" text-[#123a6b] mb-2 font-24-700">In June, 1970 three departments namely:</h2>
+                <h2 className=" text-[#123a6b] mb-2 font-24-700"> {t('june_1970_departments')}:</h2>
                 {loading ? (
                   <SkeletonText lines={3} />
                 ) : (
@@ -240,7 +241,7 @@ export default function AboutUs() {
               </div>
 
               <div className="mt-10">
-                <h2 className=" text-[#123a6b] mb-2 font-24-700">Directorate Of Public Grievances (DPG)</h2>
+                <h2 className=" text-[#123a6b] mb-2 font-24-700">{t('dpg')}</h2>
                 {loading ? (
                   <SkeletonText lines={3} />
                 ) : (
@@ -250,7 +251,7 @@ export default function AboutUs() {
                 )}
               </div>
               <div className="mt-10">
-                <h2 className=" text-[#123a6b] mb-2 font-24-700">National Authority Chemical Weapons Convention (NACWC)</h2>
+                <h2 className=" text-[#123a6b] mb-2 font-24-700">{t('nacwc')}</h2>
                 {loading ? (
                   <SkeletonText lines={3} />
                 ) : (
@@ -260,7 +261,7 @@ export default function AboutUs() {
                 )}
               </div>
               <div className="mt-10">
-                <h2 className=" text-[#123a6b] mb-2 font-24-700">Direct Benefit Transfer(DBT) Mission</h2>
+                <h2 className=" text-[#123a6b] mb-2 font-24-700">{t('dbt_mission')}</h2>
                 {loading ? (
                   <SkeletonText lines={3} />
                 ) : (
@@ -270,7 +271,7 @@ export default function AboutUs() {
                 )}
               </div>
               <div className="mt-10">
-                <h2 className=" text-[#123a6b] mb-2 font-24-700">Office of the Principal Scientific Adviser (O/o PSA)</h2>
+                <h2 className=" text-[#123a6b] mb-2 font-24-700">{t('psa_office')}</h2>
                 {loading ? (
                   <SkeletonText lines={3} />
                 ) : (

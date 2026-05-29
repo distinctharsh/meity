@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import Footer from "@/components/Footer";
 import PageHeader from "@/components/PageHeader";
 import SubNavTabs from "@/components/SubNavTabs";
+import { t } from '@/lib/translations';
 
 export default function Sitemap() {
   const [navigationData, setNavigationData] = useState(null);
@@ -85,7 +86,7 @@ export default function Sitemap() {
               </span>
 
               <a href="/" className="text-[14px] text-[#222] font-medium hover:text-blue-600">
-                Home
+                {t('home_link')}
               </a>
             </div>
 
@@ -103,7 +104,7 @@ export default function Sitemap() {
               ))
             ) : (
               <div className="text-center py-8">
-                <p className="text-gray-500">No navigation items available</p>
+                <p className="text-gray-500">{t('no_navigation_items')}</p>
               </div>
             )}
 

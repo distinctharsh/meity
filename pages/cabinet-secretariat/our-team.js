@@ -6,6 +6,7 @@ import Skeleton, { SkeletonTable } from "@/components/Skeleton";
 import Image from "next/image";
 import { useEffect, useState, useMemo } from "react";
 import { createPortal } from "react-dom";
+import { t } from '@/lib/translations';
 
 export default function OurTeam() {
   // Load admin-managed team for dynamic top cards (Minister / MoS)
@@ -356,9 +357,9 @@ export default function OurTeam() {
                   <span className="uppercase font-16-600">{section.section}</span>
                 </div>
                 <div className="hidden md:grid bg-blue-300 text-blue-900 font-semibold grid-cols-[2fr_2fr_3fr] px-4 py-2 text-xs">
-                  <div>NAME AND DESIGNATION</div>
-                  <div>CONTACT</div>
-                  <div>ADDRESS</div>
+                  <div>{t('name_and_designation')}</div>
+                  <div>{t('contact')}</div>
+                  <div>{t('address')}</div>
                 </div>
 
                 {section.people.map((person, idx) => (
@@ -366,67 +367,70 @@ export default function OurTeam() {
                     key={idx}
                     className="border border-t-0 border-gray-300 p-4"
                   >
-                    <div>
-                      <p className="font-16-700">{person.name}</p>
-                      <p className="font-16-400">{person.designation}</p>
-                    </div>
-                    <div className="space-y-1">
-                      {person.contact.map((contact, i) => (
-                        <p key={i} className="flex items-center gap-2">
-                          {contact.type === "phone" && (
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="h-4 w-4 text-gray-600"
-                              viewBox="0 0 24 24"
-                              fill="currentColor"
-                            >
-                              <path d="M2.003 5.884c-.09-1.04.71-1.93 1.75-2.02l2.51-.22c.87-.08 1.66.46 1.9 1.3l.57 2.07c.2.74-.04 1.53-.62 2.05l-1.12.98a14.99 14.99 0 007.58 7.58l.98-1.12c.52-.58 1.31-.82 2.05-.62l2.07.57c.84.24 1.38 1.03 1.3 1.9l-.22 2.51c-.09 1.04-.98 1.84-2.02 1.75-9.9-.85-17.8-8.74-18.66-18.64z" />
-                            </svg>
-                          )}
-                          {contact.type === "fax" && (
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="h-4 w-4 text-gray-600"
-                              viewBox="0 0 24 24"
-                              fill="currentColor"
-                            >
-                              <path d="M6 3h12v5H6V3zm-2 6h16a2 2 0 012 2v6a2 2 0 01-2 2H6a2 2 0 01-2-2V11a2 2 0 012-2zm4 2v6h8v-6H8z" />
-                            </svg>
-                          )}
-                          {contact.type === "email" && (
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="h-4 w-4 text-gray-600"
-                              viewBox="0 0 24 24"
-                              fill="currentColor"
-                            >
-                              <path d="M20 4H4a2 2 0 00-2 2v12a2 2 0 002 2h16a2 2 0 002-2V6a2 2 0 00-2-2zm-1.4 4.25l-6.13 4.09a1 1 0 01-1.06 0L5.28 8.25a1 1 0 111.1-1.66L12 10.3l5.62-3.7a1 1 0 111.1 1.66z" />
-                            </svg>
-                          )}
-                          {contact.type === "email" ? (
-                            <a
-                              className="hover:underline font-16-400"
-                              href={`mailto:${contact.value.replace(/\[at\]/g, '@').replace(/\[dot\]/g, '.')}`}
-                            >
-                              {contact.value}
-                            </a>
-                          ) : contact.type === "phone" ? (
-                            <a
-                              className="hover:underline font-16-400"
-                              href={`tel:${contact.value.replace(/[^+\d]/g, '')}`}
-                            >
-                              {contact.value}
-                            </a>
-                          ) : (
-                            <span className="font-16-400">
-                              {contact.value}
-                            </span>
-                          )}
-                        </p>
-                      ))}
-                    </div>
-                    <div className="font-16-400">
-                      {person.address}
+                    <div className="grid md:grid-cols-[2fr_2fr_3fr] gap-4">
+
+                      {/* Name + Designation */}
+                      <div>
+                        <p className="font-16-700">{person.name}</p>
+                        <p className="font-16-400">{person.designation}</p>
+                      </div>
+                      <div className="space-y-1">
+                        {person.contact.map((contact, i) => (
+                          <p key={i} className="flex items-center gap-2">
+                            {contact.type === "phone" && (
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-4 w-4 text-gray-600"
+                                viewBox="0 0 24 24"
+                                fill="currentColor"
+                              >
+                                <path d="M2.003 5.884c-.09-1.04.71-1.93 1.75-2.02l2.51-.22c.87-.08 1.66.46 1.9 1.3l.57 2.07c.2.74-.04 1.53-.62 2.05l-1.12.98a14.99 14.99 0 007.58 7.58l.98-1.12c.52-.58 1.31-.82 2.05-.62l2.07.57c.84.24 1.38 1.03 1.3 1.9l-.22 2.51c-.09 1.04-.98 1.84-2.02 1.75-9.9-.85-17.8-8.74-18.66-18.64z" />
+                              </svg>
+                            )}
+                            {contact.type === "fax" && (
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-4 w-4 text-gray-600"
+                                viewBox="0 0 24 24"
+                                fill="currentColor"
+                              >
+                                <path d="M6 3h12v5H6V3zm-2 6h16a2 2 0 012 2v6a2 2 0 01-2 2H6a2 2 0 01-2-2V11a2 2 0 012-2zm4 2v6h8v-6H8z" />
+                              </svg>
+                            )}
+                            {contact.type === "email" && (
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-4 w-4 text-gray-600"
+                                viewBox="0 0 24 24"
+                                fill="currentColor"
+                              >
+                                <path d="M20 4H4a2 2 0 00-2 2v12a2 2 0 002 2h16a2 2 0 002-2V6a2 2 0 00-2-2zm-1.4 4.25l-6.13 4.09a1 1 0 01-1.06 0L5.28 8.25a1 1 0 111.1-1.66L12 10.3l5.62-3.7a1 1 0 111.1 1.66z" />
+                              </svg>
+                            )}
+                            {contact.type === "email" ? (
+                              <a
+                                href={`mailto:${contact.value.replace(/\[at\]/g, '@').replace(/\[dot\]/g, '.')}`}
+                                className="hover:underline font-16-400"
+                              >
+                                {contact.value}
+                              </a>
+                            ) : contact.type === "phone" ? (
+                              <a
+                                href={`tel:${contact.value.replace(/[^+\d]/g, '')}`}
+                                className="hover:underline font-16-400"
+                              >
+                                {contact.value}
+                              </a>
+                            ) : (
+                              <span className="font-16-400">{contact.value}</span>
+                            )}
+                          </p>
+                        ))}
+                      </div>
+                      <div className="font-16-400">
+                        {person.address}
+                      </div>
+
                     </div>
                   </div>
                 ))}

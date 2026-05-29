@@ -2,6 +2,7 @@
 import { FaUsers, FaThLarge, FaChartBar } from "react-icons/fa";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { t } from '@/lib/translations';
 
 export default function AboutSection() {
   const [aboutContent, setAboutContent] = useState([]);
@@ -80,17 +81,17 @@ export default function AboutSection() {
   // Fallback cards if no navigation found
   const defaultCards = [
     {
-      title: "Our Team",
+      title: t("our_team"),
       icon: <FaUsers />,
       section_key: "our_team"
     },
     {
-      title: "Our Organisations",
+      title: t("our_organisations"),
       icon: <FaThLarge />,
       section_key: "our_organisations"
     },
     {
-      title: "Our Performance",
+      title: t("our_performance"),
       icon: <FaChartBar />,
       section_key: "our_performance"
     }
@@ -113,7 +114,7 @@ export default function AboutSection() {
         <div className="md:flex-[2]">
           <div className="flex items-center mb-5">
             <img src="/images/icons/ministry.svg" alt="Ministry" className="mr-[15px]" />
-            <h2 className="main-heading">About Us</h2>
+            <h2 className="main-heading">{t("about")}</h2>
           </div>
           {loading ? (
             <div className="space-y-2">
@@ -172,8 +173,8 @@ export default function AboutSection() {
                 </a>
               </div>
               <div className="mt-[10px] text-center">
-                <h3 className="font-bold mb-[3px] font-20-600" style={{ color: "rgb(21, 2, 2)" }}>Dr. T. V. Somanathan</h3>
-                <div className="uppercase font-16-400" style={{ color: "rgb(21, 2, 2)" }}>CABINET SECRETARY</div>
+                <h3 className="font-bold mb-[3px] font-20-600" style={{ color: "rgb(21, 2, 2)" }}>{t("dr_t_v__somanathan")}</h3>
+                <div className="uppercase font-16-400" style={{ color: "rgb(21, 2, 2)" }}>{t("cabinet_secretary")}</div>
               </div>
             </div>
 

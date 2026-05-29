@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import { t } from '@/lib/translations';
 
 const Footer = () => {
   const [data, setData] = useState(null);
@@ -42,35 +43,35 @@ const Footer = () => {
           {/* Left Links Section */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
             <div>
-              <h4 className="font-20-600 mb-3">USEFUL LINKS</h4>
+              <h4 className="font-20-600 mb-3">{t('useful_links')}</h4>
               <ul className="space-y-2 text-base">
-                <li><a href="#" className="font-20-400"><span aria-hidden="true" className="material-symbols-outlined bhashini-skip-translation mr-2">chevron_right</span>Archives</a></li>
-                <li><a href="/sitemap" className="font-20-400"><span aria-hidden="true" className="material-symbols-outlined bhashini-skip-translation mr-2">chevron_right</span>Sitemap</a></li>
+                <li><a href="#" className="font-20-400"><span aria-hidden="true" className="material-symbols-outlined bhashini-skip-translation mr-2">chevron_right</span>{t('archives')}</a></li>
+                <li><a href="/sitemap" className="font-20-400"><span aria-hidden="true" className="material-symbols-outlined bhashini-skip-translation mr-2">chevron_right</span>{t('sitemap')}</a></li>
               </ul>
             </div>
             <div>
-              <h4 className="font-20-600 mb-3">Website Policies</h4>
+              <h4 className="font-20-600 mb-3">{t('website_policies')}</h4>
               <ul className="space-y-2 text-base">
-                <li><a href="#" className="font-20-400"><span aria-hidden="true" className="material-symbols-outlined bhashini-skip-translation mr-2">chevron_right</span>Website Policies</a></li>
-                <li><a href="#" className="font-20-400"><span aria-hidden="true" className="material-symbols-outlined bhashini-skip-translation mr-2">chevron_right</span>Help</a></li>
+                <li><a href="#" className="font-20-400"><span aria-hidden="true" className="material-symbols-outlined bhashini-skip-translation mr-2">chevron_right</span>{t('website_policies')}</a></li>
+                <li><a href="#" className="font-20-400"><span aria-hidden="true" className="material-symbols-outlined bhashini-skip-translation mr-2">chevron_right</span>{t('help')}</a></li>
               </ul>
             </div>
             <div>
-              <h4 className="font-20-600 mb-3">Related Links</h4>
+              <h4 className="font-20-600 mb-3">{t('related_links')}</h4>
               <ul className="space-y-2 text-base">
-                <li><a href="#" className="font-20-400"><span aria-hidden="true" className="material-symbols-outlined bhashini-skip-translation mr-2">chevron_right</span>Related Links</a></li>
-                <li><a href="#" className="font-20-400"><span aria-hidden="true" className="material-symbols-outlined bhashini-skip-translation mr-2">chevron_right</span>Contact Us</a></li>
+                <li><a href="#" className="font-20-400"><span aria-hidden="true" className="material-symbols-outlined bhashini-skip-translation mr-2">chevron_right</span>{t('related_links')}</a></li>
+                <li><a href="#" className="font-20-400"><span aria-hidden="true" className="material-symbols-outlined bhashini-skip-translation mr-2">chevron_right</span>{t('contact_us')}</a></li>
               </ul>
             </div>
 
             {/* Footer Bottom Text */}
             <div className="text-left text-gray-300 text-base">
-              This Website belongs to Cabinet Secretariat, Government of India
+              {t('website_belongs_to')}
             </div>
           </div>
 
           <div className="flex flex-col items-center md:items-end space-y-4">
-            <h4 className="text-lg font-semibold md:whitespace-nowrap">SUBSCRIBE FOR UPDATES</h4>
+            <h4 className="text-lg font-semibold md:whitespace-nowrap">{t('subscribe_for_updates')}</h4>
 
             {/* Social Icons */}
             <div className="flex space-x-4">
@@ -99,7 +100,7 @@ const Footer = () => {
             </div>
 
             {/* Last Updated */}
-            <p className="text-sm text-gray-300 md:whitespace-nowrap">Last Updated On: 12.09.2025</p>
+            <p className="text-sm text-gray-300 md:whitespace-nowrap">{t('last_update_on')}12.09.2025</p>
 
           </div>
         </div>
@@ -155,7 +156,7 @@ const Footer = () => {
           {/* Left Links Section */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
             <div>
-              <h4 className="font-20-600 mb-3">{s1.title || "USEFUL LINKS"}</h4>
+              <h4 className="font-20-600 mb-3">{t("useful_links")}</h4>
               <ul className="space-y-2 text-base">
                 <li>
                   <a href={s1Links[0]?.url || "#"} className="font-20-400">
@@ -172,8 +173,8 @@ const Footer = () => {
               </ul>
             </div>
             <div>
-              <h4 className="font-20-600 mb-3">{s2.title || "Website Policies"}</h4>
-              <ul className="space-y-2 text-base">
+              {/* <h4 className="font-20-600 mb-3">{s2.title || "Website Policies"}</h4> */}
+              <ul className="space-y-2 text-base mt-[34px]">
                 <li>
                   <a href={s2Links[0]?.url || "#"} className="font-20-400">
                     <span aria-hidden="true" className="material-symbols-outlined bhashini-skip-translation mr-2">chevron_right</span>
@@ -189,8 +190,8 @@ const Footer = () => {
               </ul>
             </div>
             <div>
-              <h4 className="font-20-600 mb-3">{s3.title || "Related Links"}</h4>
-              <ul className="space-y-2 text-base">
+              {/* <h4 className="font-20-600 mb-3">{s3.title || "Related Links"}</h4> */}
+              <ul className="space-y-2 text-base mt-[34px]">
                 <li>
                   <a href={s3Links[0]?.url || "#"} className="font-20-400">
                     <span aria-hidden="true" className="material-symbols-outlined bhashini-skip-translation mr-2">chevron_right</span>
@@ -242,7 +243,7 @@ const Footer = () => {
             </div>
 
             {/* Last Updated */}
-            <p className="text-sm text-gray-300 md:whitespace-nowrap">Last Updated On: {lastUpdated}</p>
+            <p className="text-sm text-gray-300 md:whitespace-nowrap">{t('last_update_on')}: {lastUpdated}</p>
 
           </div>
         </div>

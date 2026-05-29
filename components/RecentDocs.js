@@ -3,16 +3,17 @@ import { FiChevronRight } from 'react-icons/fi';
 import Image from 'next/image';
 import Document from './icons/Document';
 import { showConfirmationPopup } from './common/ConfirmationPopup';
+import { t } from '@/lib/translations';
 
 const fallbackRecent = [
-  { title: "No recent documents available", description: "Check back later for updates" }
+  { title: t('no_recent_documents'), description: t('check_back_later') }
 ];
 
 const personas = [
-  { img: "/images/user-personas/it-professional.jpg", label: "FOR IT PROFESSIONAL" },
-  { img: "/images/user-personas/researcher.jpg", label: "FOR RESEARCHER" },
-  { img: "/images/user-personas/media.jpg", label: "FOR MEDIA" },
-  { img: "/images/user-personas/business-owner.jpg", label: "FOR BUSINESS OWNER" },
+  { img: "/images/user-personas/it-professional.jpg", label: t('for_it_professional') },
+  { img: "/images/user-personas/researcher.jpg", label: t('for_researcher') },
+  { img: "/images/user-personas/media.jpg", label: t('for_media') },
+  { img: "/images/user-personas/business-owner.jpg", label: t('for_business_owner') },
 ];
 
 const RecentDocs = () => {
@@ -115,10 +116,10 @@ const RecentDocs = () => {
       // For external URLs, show confirmation popup
       if (link.link_type === 'url' && link.url) {
         const confirmed = await showConfirmationPopup({
-          title: "External Website",
-          message: "This would take you to an external website that opens in a new tab. Do you want to continue anyway?",
-          confirmText: "Continue",
-          cancelText: "Cancel"
+          title: t('external_website'),
+          message: t('external_website_message'),
+          confirmText: t('continue'),
+          cancelText: t('cancel')
         });
         
         if (confirmed) {
@@ -145,7 +146,7 @@ const RecentDocs = () => {
             <div className="flex flex-col items-start w-full md:flex-[2] md:mr-0">
               <div className="flex items-center mb-4">
                 <Document className="w-5 h-5 mr-2" />
-                <h3 className="main-heading">Recent Documents</h3>
+                <h3 className="main-heading">{t('recent_documents')}</h3>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-4 mt-2 w-full">
@@ -231,7 +232,7 @@ const RecentDocs = () => {
                     }
                   }}
                 >
-                  VIEW MORE
+                  {t('view_more')}
                   <FiChevronRight />
                 </button>
               </div>
@@ -245,7 +246,7 @@ const RecentDocs = () => {
                   alt="Important Link"
                   style={{ filter: 'invert(9%) sepia(33%) saturate(1659%) hue-rotate(191deg) brightness(92%) contrast(97%)' }}
                 />
-                <h3 className="main-heading">Important Links</h3>
+                <h3 className="main-heading">{t('important_links')}</h3>
               </div>
               <div className="relative w-full">
                 {importantLinksLoading ? (

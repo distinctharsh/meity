@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { fetchAnnouncements } from "@/utils/api";
 import { parseBoolean } from "@/utils/debug";
 import Announcement from "./icons/Announcement";
+import { t } from '@/lib/translations';
 
 export default function AnnouncementBar() {
   const [isPaused, setIsPaused] = useState(false);
@@ -40,11 +41,11 @@ export default function AnnouncementBar() {
       <div className="bg-[#e0e0e0]">
         <div className="gi-container flex items-center py-[6px] px-3 overflow-hidden text-[14px]">
           <div className="flex items-center font-bold text-[#12306b] mr-3 gap-1">
-            <span className="mr-1">Announcements</span>
+            <span className="mr-1">{t('announcements')}</span>
             <span className="text-[16px]">🔊</span>
           </div>
           <div className="flex-1 text-center text-[#1a1a1a]">
-            Loading announcements...
+            {t('loading_announcements')}
           </div>
         </div>
       </div>
@@ -56,7 +57,7 @@ export default function AnnouncementBar() {
   //     <div className="bg-[#e0e0e0]">
   //       <div className="gi-container flex items-center py-[6px] px-3 overflow-hidden text-[14px]">
   //         <div className="flex items-center font-bold text-[#12306b] mr-3 gap-1">
-  //           <span className="mr-1">Announcements</span>
+  //           <span className="mr-1">{t('announcements')}</span>
   //          <Announcement />
   //         </div>
   //         <div className="flex-1 text-center text-[#1a1a1a]">
@@ -72,7 +73,7 @@ export default function AnnouncementBar() {
       <div className="gi-container flex items-center py-[6px] px-3 overflow-hidden text-[14px]">
         {/* Left side: Title + Sound icon */}
         <div className="flex items-center font-bold text-[#12306b] mr-3 gap-1">
-          <span className="mr-1 font-20-900">Announcements</span>
+          <span className="mr-1 font-20-900">{t('announcements')}</span>
           <Announcement />
         </div>
 
@@ -93,7 +94,7 @@ export default function AnnouncementBar() {
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    {announcement.link_text || 'Read More'}
+                    {announcement.link_text || t('read_more')}
                   </a>
                 )}
               </span>
@@ -105,8 +106,17 @@ export default function AnnouncementBar() {
         <button
           className="ml-3   text-blue-600 text-[16px] font-bold w-8 h-8  cursor-pointer flex items-center justify-center transition-all duration-200 hover:scale-110 "
           onClick={() => setIsPaused(!isPaused)}
-          aria-label={isPaused ? 'Play announcements' : 'Pause announcements'}
-          title={isPaused ? 'Resume announcements' : 'Pause announcements (or hover to pause)'}
+          aria-label={
+            isPaused
+              ? t('play_announcements')
+              : t('pause_announcements')
+          }
+
+          title={
+            isPaused
+              ? t('resume_announcements')
+              : t('pause_announcements')
+          }
         >
           {isPaused ? (
             <svg className="w-4 h-4 ml-0.5" fill="currentColor" viewBox="0 0 24 24">

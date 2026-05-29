@@ -472,12 +472,12 @@ export default function Archives() {
                   </ul>
                 </nav>
               </div>
-              <div className="flex justify-end">
+              {/* <div className="flex justify-end">
                 <a className="inline-flex items-center gap-2 px-3 py-1.5 rounded border text-blue-800 border-blue-300 hover:bg-blue-50" href="/documents/reports">
                   <span aria-hidden="true" className="material-symbols-outlined">arrow_back</span>
                   Back to Reports
                 </a>
-              </div>
+              </div> */}
             </div>
           </div>
         </section>

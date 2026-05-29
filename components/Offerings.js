@@ -3,6 +3,7 @@ import Offering from "./icons/Offering";
 import { FiChevronRight } from 'react-icons/fi';
 import WhatsNew from "../components/icons/whats-new";
 import { showConfirmationPopup } from './common/ConfirmationPopup';
+import { t } from '@/lib/translations';
 
 export default function Offerings() {
   const [activeTab, setActiveTab] = useState("vacancies");
@@ -83,7 +84,7 @@ export default function Offerings() {
               <div className="[&>svg]:block" aria-hidden>
                 <Offering />
               </div>
-              <h3 className="main-heading">Key Offerings</h3>
+              <h3 className="main-heading">{t('our_offerings')}</h3>
             </div>
 
             <div className="flex mb-2.5 border border-[#162f6a] rounded overflow-hidden w-full max-w-full">
@@ -92,14 +93,14 @@ export default function Offerings() {
                 onClick={() => handleTabClick("vacancies")}
                 aria-selected={activeTab === "vacancies"}
               >
-                Vacancies
+                {t('vacancies')}
               </button>
               <button
                 className={`${activeTab === "tenders" ? 'text-white bg-[#222e4c] font-semibold' : 'text-[#222e4c] bg-white font-normal'} flex-1 text-center py-3 border-0 cursor-pointer select-none text-[1.2rem]`}
                 onClick={() => handleTabClick("tenders")}
                 aria-selected={activeTab === "tenders"}
               >
-                Tenders
+                {t('tenders')}
               </button>
             </div>
 
@@ -135,7 +136,7 @@ export default function Offerings() {
                 href={activeTab === "vacancies" ? "/offerings/vacancies" : "/offerings/tenders"}
                 className="view-btn"
               >
-                VIEW MORE
+                 {t('view_more')}
                 <FiChevronRight />
               </a>
             </div>
@@ -146,7 +147,7 @@ export default function Offerings() {
               <div className="[&>svg]:block" aria-hidden>
                 <WhatsNew />
               </div>
-              <h3 className="main-heading">What's New</h3>
+              <h3 className="main-heading">{t('whats_new')}</h3>
             </div>
 
             <div className="bg-[#162f6a] text-white rounded-[8px] py-4 px-0 min-h-[220px] flex flex-col">
@@ -199,7 +200,7 @@ export default function Offerings() {
 
             <div className="mt-3 flex justify-end">
               <button className="view-btn">
-                VIEW MORE
+                {t('view_more')}
                 <FiChevronRight />
               </button>
             </div>

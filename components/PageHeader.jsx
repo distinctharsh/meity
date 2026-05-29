@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
+import { t } from '@/lib/translations';
 
 // Helper: title-case from slug/segment
 function toTitleCase(str = '') {
@@ -15,16 +16,79 @@ export default function PageHeader({ pagePath, fallbackHeading, fallbackSubheadi
   const effectivePath = pagePath || router?.pathname || '';
   const [cfg, setCfg] = useState(null);
   const [parentTargetHref, setParentTargetHref] = useState(null);
+  const [breadcrumbPath, setBreadcrumbPath] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let mounted = true;
     async function load() {
       try {
+        setLoading(true);
         if (!effectivePath) return;
         // Load header config
         const res = await fetch(`/api/page-header?path=${encodeURIComponent(effectivePath)}`);
         const data = res.ok ? await res.json() : null;
         if (mounted) setCfg(data);
+
+        // Fetch navigation items for breadcrumb
+        try {
+          const navRes = await fetch('/api/navigation');
+          if (navRes.ok) {
+            const nav = await navRes.json();
+
+            // Build flat map of navigation items
+            const navMap = new Map();
+            const buildNavMap = (nodes) => {
+              for (const n of nodes || []) {
+                navMap.set(n.href || n.link, n);
+                if (n.children && n.children.length) {
+                  buildNavMap(n.children);
+                }
+              }
+            };
+            buildNavMap(nav);
+
+            // Find current navigation item
+            const currentItem = navMap.get(effectivePath);
+
+            // Build breadcrumb path by traversing parent_id
+            const buildBreadcrumb = (node, path = []) => {
+              if (!node) return path;
+              // Use field priority for Hindi text support
+              const name = node.text || node.name || node.label || node.title || '';
+              path.unshift({ name, href: node.href || node.link });
+
+              // Find parent by traversing the tree
+              const findParent = (nodes, targetId, parent = null) => {
+                for (const n of nodes || []) {
+                  if (n.id === targetId) return parent;
+                  if (n.children && n.children.length) {
+                    const p = findParent(n.children, targetId, n);
+                    if (p) return p;
+                  }
+                }
+                return null;
+              };
+
+              const parent = findParent(nav, node.id);
+              if (parent) {
+                return buildBreadcrumb(parent, path);
+              }
+              return path;
+            };
+
+            if (currentItem) {
+              const path = buildBreadcrumb(currentItem);
+              if (mounted) setBreadcrumbPath(path);
+            } else if (mounted) {
+              setBreadcrumbPath([]);
+            }
+          } else if (mounted) {
+            setBreadcrumbPath([]);
+          }
+        } catch (e2) {
+          if (mounted) setBreadcrumbPath([]);
+        }
 
         // Derive breadcrumb target: use same logic as SubNavTabs to compute tabs, then pick the first tab href
         const parts = (effectivePath || '').split('/').filter(Boolean);
@@ -49,7 +113,7 @@ export default function PageHeader({ pagePath, fallbackHeading, fallbackSubheadi
               let children = sectionNode?.children || [];
               if (!children.length) {
                 const currentNode = findByLink(nav, effectivePath);
-                const parentOf = (nodes, target, parent=null) => {
+                const parentOf = (nodes, target, parent = null) => {
                   for (const n of nodes || []) {
                     if (n === target) return parent;
                     if (n.children && n.children.length) {
@@ -75,34 +139,76 @@ export default function PageHeader({ pagePath, fallbackHeading, fallbackSubheadi
         }
       } catch (e) {
         console.error('PageHeader load error', e);
+      } finally {
+        if (mounted) setLoading(false);
       }
     }
     load();
     return () => { mounted = false; };
   }, [effectivePath]);
 
-  // Compute derived breadcrumb info
-  const crumbs = useMemo(() => {
-    const parts = (effectivePath || '').split('/').filter(Boolean);
-    if (parts.length <= 1) return null;
-    const parent = `/${parts[0]}`;
-    return { parent_label: toTitleCase(parts[0]), parent_href: parent };
-  }, [effectivePath]);
 
-  // Build final config with sensible defaults if API returned null
   const final = useMemo(() => {
     const base = cfg || {};
+
     return {
-      heading: base.heading || fallbackHeading || toTitleCase((effectivePath || '').split('/').filter(Boolean).slice(-1)[0] || ''),
-      subheading: base.subheading || fallbackSubheading || '',
-      background_url: base.background_url || fallbackBackgroundUrl || '/images/headers/about-default.jpg',
-      overlay: base.overlay !== undefined ? base.overlay : true,
-      breadcrumb_enabled: base.breadcrumb_enabled !== undefined ? base.breadcrumb_enabled : true,
-      text_color: base.text_color || '#ffffff',
-      parent_label: base.parent_label || crumbs?.parent_label || null,
-      parent_href: base.parent_href || crumbs?.parent_href || null,
+      heading:
+        base.heading ||
+        (!loading ? fallbackHeading : '') ||
+        (!loading
+          ? (
+            breadcrumbPath.length
+              ? breadcrumbPath[breadcrumbPath.length - 1].name
+              : toTitleCase(
+                (effectivePath || '')
+                  .split('/')
+                  .filter(Boolean)
+                  .slice(-1)[0] || ''
+              )
+          )
+          : ''),
+
+      subheading:
+        base.subheading ||
+        fallbackSubheading ||
+        '',
+
+      background_url:
+        base.background_url ||
+        fallbackBackgroundUrl ||
+        '/images/headers/about-default.jpg',
+
+      overlay:
+        base.overlay !== undefined
+          ? base.overlay
+          : true,
+
+      breadcrumb_enabled:
+        base.breadcrumb_enabled !== undefined
+          ? base.breadcrumb_enabled
+          : true,
+
+      text_color:
+        base.text_color ||
+        '#ffffff',
+
+      // backend se ayega
+      parent_label:
+        base.parent_label || null,
+
+      parent_href:
+        base.parent_href || null
     };
-  }, [cfg, fallbackHeading, fallbackSubheading, fallbackBackgroundUrl, effectivePath, crumbs]);
+
+  }, [
+    cfg,
+    loading,
+    fallbackHeading,
+    fallbackSubheading,
+    fallbackBackgroundUrl,
+    effectivePath,
+    breadcrumbPath
+  ]);
 
   const textColor = final.text_color || '#ffffff';
 
@@ -126,22 +232,49 @@ export default function PageHeader({ pagePath, fallbackHeading, fallbackSubheadi
         ) : null}
         {final.breadcrumb_enabled ? (
           <p className="opacity-99 mb-4" style={{ position: 'relative', zIndex: 1, color: textColor }}>
-            <a href="/" className="hover:underline" style={{ color: textColor }}>Home</a>
-            {final.parent_label ? (
+            {breadcrumbPath.length > 0 ? (
               <>
-                {' '}/{' '}
-                {parentTargetHref && parentTargetHref !== router.asPath ? (
-                  <a href={parentTargetHref} className="hover:underline" style={{ color: textColor }}>
-                    {final.parent_label}
-                  </a>
-                ) : (
-                  <span style={{ color: textColor }}>{final.parent_label}</span>
-                )}
+                <a href="/" className="hover:underline" style={{ color: textColor }}>{t('home')}</a>
+                {breadcrumbPath.map((item, index) => (
+                  <span key={index}>
+                    <span style={{ color: textColor }}> / </span>
+                    {item.href && item.href !== router.asPath ? (
+                      <a href={item.href} className="hover:underline" style={{ color: textColor }}>
+                        {item.name}
+                      </a>
+                    ) : (
+                      <span style={{ color: textColor }}>{item.name}</span>
+                    )}
+                  </span>
+                ))}
               </>
-            ) : null}
+            ) : (
+              <>
+                <a href="/" className="hover:underline" style={{ color: textColor }}>{t('home')}</a>
+                {final.parent_label ? (
+                  <>
+                    {' '}/{' '}
+                    {parentTargetHref && parentTargetHref !== router.asPath ? (
+                      <a href={parentTargetHref} className="hover:underline" style={{ color: textColor }}>
+                        {final.parent_label}
+                      </a>
+                    ) : (
+                      <span style={{ color: textColor }}>{final.parent_label}</span>
+                    )}
+                  </>
+                ) : null}
+              </>
+            )}
           </p>
         ) : null}
-        <h1 className="text-4xl font-bold" style={{ position: 'relative', zIndex: 1, color: textColor }}>{final.heading}</h1>
+        {final.heading ? (
+          <h1
+            className="text-4xl font-bold"
+            style={{ position: 'relative', zIndex: 1, color: textColor }}
+          >
+            {final.heading}
+          </h1>
+        ) : null}
         {final.subheading ? (
           <p className="text-xl md:text-2xl opacity-90" style={{ position: 'relative', zIndex: 1, color: textColor }}>{final.subheading}</p>
         ) : null}

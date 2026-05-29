@@ -1,6 +1,7 @@
 "use client";
 import AccessibilityBar from "./AccessibilityBar";
 import Emblem from "./icons/Emblem";
+import { t } from '@/lib/translations';
 
 export default function Header() {
   return (
@@ -20,17 +21,17 @@ export default function Header() {
               {/* Text */}
               <div className="flex flex-col leading-[1.2] min-w-0 md:flex-1 font-20-400">
                 <div style={{ color: '#000', letterSpacing: '-0.08px', marginBottom: 0}}>
-                  Government of India
+                  {t('government_of_india')}
                 </div>
                 <h2 style={{ color: '#000', letterSpacing: '0', marginBottom: 6 }} className=" leading-[1.3], font-24-700">
-                  Cabinet Secretariat
+                  {t('cabinet_secretariat')}
                 </h2>
               </div>
             </div>
 
             {/* Digital India (mobile only, above search) */}
             <div className="md:hidden w-full flex justify-center my-1">
-              <img src="/images/digitalindia.svg" alt="Digital India" width={120} height={120} style={{ width: 120, height: 'auto' }} />
+              <img src="/images/digitalindia.svg" alt={t('digital_india')} width={120} height={120} style={{ width: 120, height: 'auto' }} />
             </div>
 
             {/* Search (desktop only) */}
@@ -38,10 +39,10 @@ export default function Header() {
               <div className="flex items-center border-[2px] border-[#ebeaea] border-b-[3px] border-b-[#123a6b] rounded-t-[12px] overflow-hidden w-full max-w-[320px] md:max-w-[400px] md:w-[300px] bg-white mb-0 md:mb-[10px]">
                 <input
                   type="text"
-                  placeholder="Search..."
+                  placeholder={t('search_placeholder')}
                   className="flex-1 border-0 outline-none py-[10px] px-[9px] text-[14px] font-sans border-r border-[#ebeaea] placeholder:text-[16px] placeholder:text-[#453636]"
                 />
-                <button className="bg-transparent border-0 px-4 pt-2 cursor-pointer text-[#123a6b] text-[20px] border-l border-[#ebeaea]" title="Search">
+                <button className="bg-transparent border-0 px-4 pt-2 cursor-pointer text-[#123a6b] text-[20px] border-l border-[#ebeaea]" title={t('search')}>
                   <span className="material-symbols-outlined">search</span>
                 </button>
               </div>
@@ -55,7 +56,7 @@ export default function Header() {
           <div className="hidden md:flex justify-center  order-3 md:order-none">
             
             <div >
-              <img src="/images/digitalindia.svg" alt="Digital India" width={100} height={100} style={{ width: 200, height: 'auto' }} />
+              <img src="/images/digitalindia.svg" alt={t('digital_india')} width={100} height={100} style={{ width: 200, height: 'auto' }} />
             </div>
           </div>
 
@@ -72,15 +73,14 @@ export default function Header() {
                   }, 0);
                 }}
                 className="bg-transparent border-0 cursor-pointer p-[6px] inline-flex"
-                aria-label="Skip to main content"
-                title="Skip to main content"
+                aria-label={t('skip_to_main_content_label')}
+                title={t('skip_to_main_content_label')}
               >
-                <img src="/images/icons/skip.svg" alt="Skip to main content" />
+                <img src="/images/icons/skip.svg" alt={t('skip_to_main_content_label')} />
               </a>
-              <div className="border-x border-[#162f6a] p-[2px] flex items-center">
-                {/* Bhashini plugin will hydrate this empty container into the dropdown */}
+              {/* <div className="border-x border-[#162f6a] p-[2px] flex items-center">
                 <div className="bhashini-plugin-container" />
-              </div>
+              </div> */}
               <AccessibilityBar />
             </div>
           </div>
@@ -95,10 +95,10 @@ export default function Header() {
           <div className="flex items-center border-[2px] border-[#ebeaea] border-b-[3px] border-b-[#123a6b] rounded-t-[12px] overflow-hidden w-full max-w-[320px] bg-white">
             <input
               type="text"
-              placeholder="Search..."
+              placeholder={t('search_placeholder')}
               className="flex-1 border-0 outline-none py-[10px] px-[9px] text-[14px] font-sans border-r border-[#ebeaea] placeholder:text-[16px] placeholder:text-[#453636]"
             />
-            <button className="bg-transparent border-0 px-4 pt-2 cursor-pointer text-[#123a6b] text-[20px] border-l border-[#ebeaea]" title="Search">
+            <button className="bg-transparent border-0 px-4 pt-2 cursor-pointer text-[#123a6b] text-[20px] border-l border-[#ebeaea]" title={t('search')}>
               <span className="material-symbols-outlined">search</span>
             </button>
           </div>
@@ -110,7 +110,7 @@ export default function Header() {
               window.dispatchEvent(new Event('toggle-navbar'));
             }
           }}
-          aria-label="Toggle navigation"
+          aria-label={t('toggle_navigation_label')}
         >
           <span className="material-symbols-outlined">menu</span>
         </button>

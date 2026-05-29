@@ -1,6 +1,7 @@
 "use client";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { t } from '@/lib/translations';
 
 export default function EventQuote() {
   const [quote, setQuote] = useState(null);
@@ -100,19 +101,27 @@ export default function EventQuote() {
                 onClick={(e) => {
                   if (quote?.event_url) {
                     e.preventDefault();
-                    const confirmed = window.confirm('This would take you to an external website that opens in a new tab. Do you want to continue anyway?');
+
+                    const confirmed = window.confirm(
+                      t("external_website_message")
+                    );
+
                     if (confirmed) {
-                      window.open(quote.event_url, '_blank', 'noopener,noreferrer');
+                      window.open(
+                        quote.event_url,
+                        "_blank",
+                        "noopener,noreferrer"
+                      );
                     }
                   }
                 }}
               >
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-[#0b3a82]">
-                  <path d="M14 3h7v7" stroke="#0b3a82" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M10 14L21 3" stroke="#0b3a82" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M21 14v7H3V3h7" stroke="#0b3a82" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M14 3h7v7" stroke="#0b3a82" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M10 14L21 3" stroke="#0b3a82" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M21 14v7H3V3h7" stroke="#0b3a82" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
-                VIEW EVENT
+                {t("view_event")}
               </a>
             </div>
 

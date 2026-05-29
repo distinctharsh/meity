@@ -3,6 +3,7 @@ import Image from "next/image";
 import { useMemo, useState } from "react";
 import SubNavTabs from "@/components/SubNavTabs";
 import PageHeader from "@/components/PageHeader";
+import { t } from '@/lib/translations';
 
 export default function SchemesAndServices() {
   const [category, setCategory] = useState("");
@@ -79,7 +80,7 @@ export default function SchemesAndServices() {
                     role="searchbox"
                     name="scheme"
                     aria-label="search"
-                    placeholder="Search..."
+                    placeholder={t('search_placeholder')}
                     className="flex-1 px-3 py-2 outline-none"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
@@ -104,14 +105,14 @@ export default function SchemesAndServices() {
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
                   >
-                    <option value="">Schemes and Services</option>
-                    <option value="Service">Services</option>
-                    <option value="Scheme">Schemes</option>
+                    <option value="">{t('schemes_and_services')}</option>
+                    <option value="Service">{t('services')}</option>
+                    <option value="Scheme">{t('schemes')}</option>
                   </select>
                 </div>
                 {/* Per page */}
                 <div className="flex items-stretch rounded-md overflow-hidden border border-gray-300 bg-white" role="combobox">
-                  <label htmlFor="pageLimitSelect" className="sr-only">Items per page</label>
+                  <label htmlFor="pageLimitSelect" className="sr-only">{t('items_per_page')}</label>
                   <span className="flex items-center px-2 border-r border-gray-300 text-gray-600">
                     <span className="material-symbols-outlined">list_alt</span>
                   </span>
@@ -123,9 +124,9 @@ export default function SchemesAndServices() {
                     value={perPage}
                     onChange={(e) => setPerPage(parseInt(e.target.value, 10))}
                   >
-                    <option value="10">10 per page</option>
-                    <option value="15">15 per page</option>
-                    <option value="20">20 per page</option>
+                    <option value="10">10 {t('per_page')}</option>
+                    <option value="15">15 {t('per_page')}</option>
+                    <option value="20">20 {t('per_page')}</option>
                   </select>
                 </div>
               </div>

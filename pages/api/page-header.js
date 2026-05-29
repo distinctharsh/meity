@@ -6,7 +6,22 @@ export default async function handler(req, res) {
   if (!path) return res.status(400).json({ message: 'path is required, e.g. /cabinet-secretariat/about' });
   try {
     const [rows] = await pool.query(
-      'SELECT id, page_path, background_url FROM page_headers WHERE page_path = ? LIMIT 1',
+      `
+        SELECT 
+            ph.id,
+            ph.page_path,
+            ph.background_url,
+            ni.name AS parent_label,
+            ni.link AS parent_href
+
+        FROM page_headers ph
+
+        LEFT JOIN navigation_items ni
+        ON ni.link = SUBSTRING_INDEX(ph.page_path,'/',2)
+
+        WHERE ph.page_path = ?
+        LIMIT 1
+        `,
       [path]
     );
     if (!rows.length) return res.status(200).json(null);

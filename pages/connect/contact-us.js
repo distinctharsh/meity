@@ -1,31 +1,14 @@
 import Footer from "@/components/Footer";
 import SubNavTabs from "@/components/SubNavTabs";
+import PageHeader from "@/components/PageHeader";
+import { t } from '@/lib/translations';
 
 export default function Contact() {
   return (
     <>
       <main id="main">
-        {/* Hero Section */}
-        <section
-          className="bg-[#123a6b] text-white px-4 hero-before"
-          style={{
-            background: `url('/images/connect/banner.jpg') no-repeat center center`,
-            backgroundSize: 'cover',
-            paddingTop: '90px',
-            paddingBottom: '90px',
-            position: 'relative'
-          }}
-        >
-          <div className="gi-container relative z-[1]">
-            <p className="opacity-99 mb-4">
-              <a href="/" className="hover:underline">Home</a> / <a href="/connect/contact-us" className="underline hover:decoration-yellow-400 hover:decoration-2 hover:underline-offset-2">Contact</a>
-            </p>
-            <h1 className="text-4xl font-bold opacity-99 text-white">Contact Us</h1>
-          </div>
-          <div className="absolute inset-0" style={{ background: 'linear-gradient(90deg, rgb(22, 47, 106) 20%, transparent 70%)' }} />
-        </section>
 
-        {/* Tabs (DB-driven for current route) */}
+        <PageHeader />
         <SubNavTabs />
 
         {/* Main content */}
@@ -73,7 +56,7 @@ export default function Contact() {
                       </div>
                     </div>
 
-              
+
                   </div>
 
                   {/* QR */}

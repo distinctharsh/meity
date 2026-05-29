@@ -1,5 +1,6 @@
 import Offerings from "@/components/Offerings";
 import Footer from "@/components/Footer";
+import { t } from '@/lib/translations';
 
 export default function OfferingsPage() {
   return (
@@ -10,10 +11,10 @@ export default function OfferingsPage() {
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto text-center">
               <h1 className="text-4xl md:text-5xl font-bold mb-6">
-                Our Offerings
+                {t('our_offerings')}
               </h1>
               <p className="text-xl md:text-2xl mb-8 opacity-90">
-                Comprehensive Digital Solutions for Citizens and Businesses
+                {t('offerings_subtitle')}
               </p>
             </div>
           </div>
@@ -27,21 +28,21 @@ export default function OfferingsPage() {
           <div className="container mx-auto px-4">
             <div className="max-w-6xl mx-auto">
               <h2 className="text-3xl font-bold text-center mb-12 text-[#123a6b]">
-                Digital Services
+                {t('digital_services')}
               </h2>
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                 <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
                   <div className="w-12 h-12 bg-[#123a6b] rounded-lg flex items-center justify-center mb-4">
                     <span className="material-symbols-outlined text-white text-xl">account_balance</span>
                   </div>
-                  <h3 className="text-xl font-semibold mb-3 text-[#123a6b]">Digital Governance</h3>
+                  <h3 className="text-xl font-semibold mb-3 text-[#123a6b]">{t('digital_governance')}</h3>
                   <p className="text-gray-600 mb-4">
-                    Streamlined government services accessible online for all citizens.
+                    {t('digital_governance_desc')}
                   </p>
                   <ul className="text-sm text-gray-500 space-y-1">
-                    <li>• Online Application Processing</li>
-                    <li>• Digital Document Verification</li>
-                    <li>• E-Governance Portals</li>
+                    <li>• {t('online_application_processing')}</li>
+                    <li>• {t('digital_document_verification')}</li>
+                    <li>• {t('e_governance_portals')}</li>
                   </ul>
                 </div>
 
@@ -49,14 +50,14 @@ export default function OfferingsPage() {
                   <div className="w-12 h-12 bg-[#123a6b] rounded-lg flex items-center justify-center mb-4">
                     <span className="material-symbols-outlined text-white text-xl">school</span>
                   </div>
-                  <h3 className="text-xl font-semibold mb-3 text-[#123a6b]">Digital Education</h3>
+                  <h3 className="text-xl font-semibold mb-3 text-[#123a6b]">{t('digital_education')}</h3>
                   <p className="text-gray-600 mb-4">
-                    Technology-enabled learning solutions for students and educators.
+                    {t('digital_education_desc')}
                   </p>
                   <ul className="text-sm text-gray-500 space-y-1">
-                    <li>• Online Learning Platforms</li>
-                    <li>• Digital Classrooms</li>
-                    <li>• E-Library Resources</li>
+                    <li>• {t('online_learning_platforms')}</li>
+                    <li>• {t('digital_classrooms')}</li>
+                    <li>• {t('e_library_resources')}</li>
                   </ul>
                 </div>
 
@@ -64,14 +65,14 @@ export default function OfferingsPage() {
                   <div className="w-12 h-12 bg-[#123a6b] rounded-lg flex items-center justify-center mb-4">
                     <span className="material-symbols-outlined text-white text-xl">health_and_safety</span>
                   </div>
-                  <h3 className="text-xl font-semibold mb-3 text-[#123a6b]">Digital Health</h3>
+                  <h3 className="text-xl font-semibold mb-3 text-[#123a6b]">{t('digital_health')}</h3>
                   <p className="text-gray-600 mb-4">
-                    Healthcare solutions powered by digital technology.
+                    {t('digital_health_desc')}
                   </p>
                   <ul className="text-sm text-gray-500 space-y-1">
-                    <li>• Telemedicine Services</li>
-                    <li>• Digital Health Records</li>
-                    <li>• Health Monitoring Apps</li>
+                    <li>• {t('telemedicine_services')}</li>
+                    <li>• {t('digital_health_records')}</li>
+                    <li>• {t('health_monitoring_apps')}</li>
                   </ul>
                 </div>
 
@@ -79,14 +80,14 @@ export default function OfferingsPage() {
                   <div className="w-12 h-12 bg-[#123a6b] rounded-lg flex items-center justify-center mb-4">
                     <span className="material-symbols-outlined text-white text-xl">business</span>
                   </div>
-                  <h3 className="text-xl font-semibold mb-3 text-[#123a6b]">Digital Commerce</h3>
+                  <h3 className="text-xl font-semibold mb-3 text-[#123a6b]">{t('digital_commerce')}</h3>
                   <p className="text-gray-600 mb-4">
-                    E-commerce and digital payment solutions for businesses.
+                    {t('digital_commerce_desc')}
                   </p>
                   <ul className="text-sm text-gray-500 space-y-1">
-                    <li>• Online Marketplaces</li>
-                    <li>• Digital Payment Systems</li>
-                    <li>• E-Invoicing Solutions</li>
+                    <li>• {t('online_marketplaces')}</li>
+                    <li>• {t('digital_payment_systems')}</li>
+                    <li>• {t('e_invoicing_solutions')}</li>
                   </ul>
                 </div>
 
@@ -94,14 +95,14 @@ export default function OfferingsPage() {
                   <div className="w-12 h-12 bg-[#123a6b] rounded-lg flex items-center justify-center mb-4">
                     <span className="material-symbols-outlined text-white text-xl">security</span>
                   </div>
-                  <h3 className="text-xl font-semibold mb-3 text-[#123a6b]">Cybersecurity</h3>
+                  <h3 className="text-xl font-semibold mb-3 text-[#123a6b]">{t('cybersecurity')}</h3>
                   <p className="text-gray-600 mb-4">
-                    Comprehensive security solutions for digital infrastructure.
+                    {t('cybersecurity_desc')}
                   </p>
                   <ul className="text-sm text-gray-500 space-y-1">
-                    <li>• Threat Detection</li>
-                    <li>• Data Protection</li>
-                    <li>• Security Audits</li>
+                    <li>• {t('threat_detection')}</li>
+                    <li>• {t('data_protection')}</li>
+                    <li>• {t('security_audits')}</li>
                   </ul>
                 </div>
 
@@ -109,14 +110,14 @@ export default function OfferingsPage() {
                   <div className="w-12 h-12 bg-[#123a6b] rounded-lg flex items-center justify-center mb-4">
                     <span className="material-symbols-outlined text-white text-xl">smart_toy</span>
                   </div>
-                  <h3 className="text-xl font-semibold mb-3 text-[#123a6b]">AI & Innovation</h3>
+                  <h3 className="text-xl font-semibold mb-3 text-[#123a6b]">{t('ai_innovation')}</h3>
                   <p className="text-gray-600 mb-4">
-                    Artificial Intelligence and emerging technology solutions.
+                    {t('ai_innovation_desc')}
                   </p>
                   <ul className="text-sm text-gray-500 space-y-1">
-                    <li>• AI-Powered Services</li>
-                    <li>• Machine Learning Tools</li>
-                    <li>• Innovation Labs</li>
+                    <li>• {t('ai_powered_services')}</li>
+                    <li>• {t('machine_learning_tools')}</li>
+                    <li>• {t('innovation_labs')}</li>
                   </ul>
                 </div>
               </div>
@@ -129,45 +130,45 @@ export default function OfferingsPage() {
           <div className="container mx-auto px-4">
             <div className="max-w-6xl mx-auto">
               <h2 className="text-3xl font-bold text-center mb-12 text-[#123a6b]">
-                Success Stories
+                {t('success_stories')}
               </h2>
               <div className="grid md:grid-cols-2 gap-8">
                 <div className="bg-gradient-to-r from-[#123a6b] to-[#1e4a7a] text-white p-8 rounded-lg">
-                  <h3 className="text-2xl font-bold mb-4">Digital India Impact</h3>
+                  <h3 className="text-2xl font-bold mb-4">{t('digital_india_impact')}</h3>
                   <div className="space-y-4">
                     <div className="flex justify-between items-center">
-                      <span>Digital Transactions</span>
+                      <span>{t('digital_transactions')}</span>
                       <span className="text-2xl font-bold">₹100+ Cr</span>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span>Citizens Served</span>
+                      <span>{t('citizens_served')}</span>
                       <span className="text-2xl font-bold">50+ Cr</span>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span>Services Online</span>
+                      <span>{t('services_online')}</span>
                       <span className="text-2xl font-bold">3000+</span>
                     </div>
                   </div>
                 </div>
 
                 <div className="bg-white p-8 rounded-lg shadow-lg">
-                  <h3 className="text-2xl font-bold mb-4 text-[#123a6b]">Key Achievements</h3>
+                  <h3 className="text-2xl font-bold mb-4 text-[#123a6b]">{t('key_achievements')}</h3>
                   <ul className="space-y-3">
                     <li className="flex items-start">
                       <span className="material-symbols-outlined text-green-500 mr-3 mt-1">check_circle</span>
-                      <span>100% Digital Payment Infrastructure</span>
+                      <span>100% {t('digital_payment_infrastructure')}</span>
                     </li>
                     <li className="flex items-start">
                       <span className="material-symbols-outlined text-green-500 mr-3 mt-1">check_circle</span>
-                      <span>Universal Internet Connectivity</span>
+                      <span>{t('universal_internet_connectivity')}</span>
                     </li>
                     <li className="flex items-start">
                       <span className="material-symbols-outlined text-green-500 mr-3 mt-1">check_circle</span>
-                      <span>Digital Literacy Programs</span>
+                      <span>{t('digital_literacy_programs')}</span>
                     </li>
                     <li className="flex items-start">
                       <span className="material-symbols-outlined text-green-500 mr-3 mt-1">check_circle</span>
-                      <span>E-Governance Excellence</span>
+                      <span>{t('e_governance_excellence')}</span>
                     </li>
                   </ul>
                 </div>

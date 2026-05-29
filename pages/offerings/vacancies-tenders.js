@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import Image from "next/image";
 import SubNavTabs from "@/components/SubNavTabs";
 import PageHeader from "@/components/PageHeader";
+import { t } from '@/lib/translations';
 
 export default function VacanciesTenders() {
   const router = useRouter();
@@ -37,7 +38,7 @@ export default function VacanciesTenders() {
         let apiUrl = '/api/offerings/vacancies-tenders';
         
         const res = await fetch(apiUrl);
-        if (!res.ok) throw new Error('Failed to load vacancies and tenders');
+        if (!res.ok) throw new Error(t('failed_to_load_vacancies_tenders'));
         const data = await res.json();
         
         // Normalize to existing UI shape
@@ -54,7 +55,7 @@ export default function VacanciesTenders() {
         }));
         if (mounted) setItems(mapped);
       } catch (e) {
-        if (mounted) setError(e.message || 'Failed to load vacancies and tenders');
+        if (mounted) setError(e.message || t('failed_to_load_vacancies_tenders'));
       } finally {
         if (mounted) setLoading(false);
       }
@@ -368,7 +369,7 @@ export default function VacanciesTenders() {
             {/* List */}
             <div className="divide-y border border-t-0 rounded-b-md bg-white">
               {loading ? (
-                <div className="px-4 py-6 text-center text-gray-500">Loading vacancies and tenders...</div>
+                <div className="px-4 py-6 text-center text-gray-500">{t('loading_vacancies_tenders')}</div>
               ) : error ? (
                 <div className="px-4 py-6 text-center text-red-600">{error}</div>
               ) : (

@@ -49,7 +49,7 @@ async function ensureTable() {
         type ENUM('vacancy', 'tender') NOT NULL DEFAULT 'vacancy',
         description TEXT NULL,
         tender_id VARCHAR(50) NULL,
-        published_date DATE DEFAULT CURRENT_DATE,
+        published_date DATE NULL,
         closing_date DATE NULL,
         file_name VARCHAR(255) NULL,
         file_size VARCHAR(50) NULL,

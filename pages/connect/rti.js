@@ -3,6 +3,7 @@ import Head from 'next/head';
 import Footer from "@/components/Footer";
 import SubNavTabs from "@/components/SubNavTabs";
 import PageHeader from "@/components/PageHeader";
+import { t } from '@/lib/translations';
 
 export default function RTIPage() {
   const [data, setData] = useState(null);
@@ -72,17 +73,17 @@ const toggleSection = (id) => {
 
       <main id="main">
         {/* Dynamic Page Header */}
-        <PageHeader pagePath="/connect/rti" />
+        <PageHeader/>
 
         {/* Tabs (DB-driven for current route) */}
-        <SubNavTabs pagePath="/connect/rti" />
+        <SubNavTabs/>
 
         {/* Main Content */}
         <section className="bg-white py-12">
           <div className="gi-container">
         {/* Intro Section */}
         <div className="mb-10">
-          <span className='font-24-400'>RTI</span>
+          <span className='font-24-400'>{content?.title || t('rti')}</span>
           <h2 className="font-24-500 mb-3">
             {content?.intro_heading || 'Power and Duties of Officials'}
           </h2>

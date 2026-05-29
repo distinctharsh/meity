@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/router";
 import SubNavTabs from "@/components/SubNavTabs";
 import PageHeader from "@/components/PageHeader";
+import { t } from '@/lib/translations';
 
 export default function Tenders() {
   const router = useRouter();
@@ -89,7 +90,7 @@ export default function Tenders() {
             {/* SEARCH + FILTERS */}
             <div className="flex gap-2 mb-4 flex-wrap">
               <input
-                placeholder="Search tenders..."
+                placeholder={t('search_tenders')}
                 className="border px-3 py-2 flex-1 min-w-[200px]"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
@@ -100,8 +101,8 @@ export default function Tenders() {
                 onChange={(e) => setSort(e.target.value)}
                 className="border px-2"
               >
-                <option value="Newest">Latest</option>
-                <option value="Oldest">Oldest</option>
+                <option value="Newest">{t('latest')}</option>
+                <option value="Oldest">{t('oldest')}</option>
               </select>
 
               <select
@@ -109,8 +110,9 @@ export default function Tenders() {
                 onChange={(e) => setPerPage(Number(e.target.value))}
                 className="border px-2"
               >
+                <option value={5}>5</option>
                 <option value={10}>10</option>
-                <option value={20}>20</option>
+                <option value={15}>15</option>
               </select>
             </div>
 
@@ -118,20 +120,20 @@ export default function Tenders() {
             <div
               className="hidden lg:grid grid-cols-[2fr_2fr_2fr_2fr_2fr_2fr] bg-[#a3bbf3] text-[#162f6a] rounded-[8px] px-6 py-4 mb-3 uppercase text-[12px] font-semibold tracking-[1px]"
             >
-              <div>Tender ID</div>
-              <div>Title</div>
-              <div className="text-center">Published Date</div>
-              <div className="text-center">Due Date</div>
-              <div className="text-center">Size</div>
-              <div className="text-center">Action</div>
+              <div>{t('tender_id')}</div>
+              <div>{t('title_label')}</div>
+              <div className="text-center">{t('published_date')}</div>
+              <div className="text-center">{t('due_date')}</div>
+              <div className="text-center">{t('size')}</div>
+              <div className="text-center">{t('action')}</div>
             </div>
 
             {/* TABLE BODY */}
             <div className="border rounded-b-md bg-white">
               {loading ? (
-                <div className="p-4 text-center">Loading...</div>
+                <div className="p-4 text-center">{t('loading_text')}</div>
               ) : paginated.length === 0 ? (
-                <div className="p-4 text-center">No tenders found</div>
+                <div className="p-4 text-center">{t('no_tenders_found')}</div>
               ) : (
                 paginated.map((item) => {
                   const dueDate = item.due_date
@@ -195,7 +197,7 @@ export default function Tenders() {
                           className="inline-flex items-center gap-1 text-xs px-2 py-1 rounded bg-blue-100 text-blue-800 hover:bg-blue-200"
                         >
                           <span aria-hidden="true" className="material-symbols-outlined">visibility</span>
-                          View
+                          {t('view')}
                         </a>
                       </div>
                     </div>
@@ -207,7 +209,7 @@ export default function Tenders() {
             {/* PAGINATION */}
             <div className="flex justify-between items-center mt-6">
               <div>
-                Page {currentPage} of {totalPages}
+                {t('page_of')} {currentPage} {t('of')} {totalPages}
               </div>
 
               <div className="flex gap-2">
@@ -216,7 +218,7 @@ export default function Tenders() {
                   disabled={currentPage === 1}
                   className="px-3 py-1 border rounded disabled:opacity-40"
                 >
-                  Prev
+                  {t('prev')}
                 </button>
 
                 {Array.from(
@@ -242,7 +244,7 @@ export default function Tenders() {
                   disabled={currentPage === totalPages}
                   className="px-3 py-1 border rounded disabled:opacity-40"
                 >
-                  Next
+                  {t('next')}
                 </button>
               </div>
             </div>
@@ -259,7 +261,7 @@ export default function Tenders() {
                 >
                   archive
                 </span>
-                View Archive
+                {t('view_archive')}
               </a>
             </div>
           </div>

@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/router";
 import SubNavTabs from "@/components/SubNavTabs";
 import PageHeader from "@/components/PageHeader";
+import { t } from '@/lib/translations';
 
 export default function Vacancies() {
   const router = useRouter();
@@ -35,12 +36,11 @@ export default function Vacancies() {
           description: item.description || "",
           year: item.year || "",
           published_date: item.published_date || "",
-          start_date: item.start_date || "",
           due_date: item.due_date || "",
           file_url: item.file_name
-            ? `/uploads/vacancies/${item.file_name}`
+            ? `/uploads/${item.file_name}`
             : null,
-          file_size: item.file_size || item.size || "-",
+          file_size: item.size || "-"
         }));
 
         setItems(mapped);
@@ -109,7 +109,7 @@ export default function Vacancies() {
 
                 <input
                   type="search"
-                  placeholder="Search..."
+                  placeholder={t('search_placeholder')}
                   className="flex-1 px-3 py-2 outline-none"
                   value={query}
                   onChange={(e) => {
@@ -144,8 +144,8 @@ export default function Vacancies() {
                   }}
                   className="px-3 py-2 bg-white outline-none"
                 >
-                  <option value="Newest">Latest</option>
-                  <option value="Oldest">Oldest</option>
+                  <option value="Newest">{t('latest')}</option>
+                  <option value="Oldest">{t('oldest')}</option>
                 </select>
 
               </div>
@@ -167,9 +167,9 @@ export default function Vacancies() {
                   }}
                   className="px-3 py-2 bg-white outline-none"
                 >
-                  <option value={6}>6 per page</option>
-                  <option value={9}>9 per page</option>
-                  <option value={12}>12 per page</option>
+                  <option value={5}>5 {t('per_page')}</option>
+                  <option value={10}>10 {t('per_page')}</option>
+                  <option value={15}>15 {t('per_page')}</option>
                 </select>
 
               </div>
@@ -182,11 +182,11 @@ export default function Vacancies() {
 
             {loading ? (
               <div className="col-span-3 text-center py-10 text-gray-500">
-                Loading...
+                {t('loading_text')}
               </div>
             ) : paginated.length === 0 ? (
               <div className="col-span-3 text-center py-10 text-gray-500">
-                No data found
+                {t('no_data_found')}
               </div>
             ) : (
               paginated.map((item) => (
@@ -205,7 +205,7 @@ export default function Vacancies() {
 
                     {/* DESCRIPTION */}
                     <p className="text-[13px] text-gray-700 leading-relaxed line-clamp-3 min-h-[60px] mb-5">
-                      {item.description || "No description available."}
+                      {item.description || t('no_description_available')}
                     </p>
 
                     {/* DETAILS */}
@@ -214,7 +214,7 @@ export default function Vacancies() {
                       {/* PUBLISHED DATE */}
                       <div className="flex items-center justify-between border-b border-gray-100 pb-2">
                         <span className="font-medium text-gray-700">
-                          Published Date
+                          {t('published_date')}
                         </span>
 
                         <span className="text-gray-600">
@@ -225,7 +225,7 @@ export default function Vacancies() {
                       {/* DUE DATE */}
                       <div className="flex items-center justify-between border-b border-gray-100 pb-2">
                         <span className="font-medium text-gray-700">
-                          Due Date
+                          {t('due_date')}
                         </span>
 
                         <span className="text-red-600 font-semibold">
@@ -238,10 +238,8 @@ export default function Vacancies() {
                     {/* BUTTON */}
                     <div className="mt-6 pt-4 border-t border-gray-100">
 
-                      <a
-                        href={item.file_url || "#"}
-                        target="_blank"
-                        rel="noreferrer"
+                      <button
+                        onClick={() => router.push(`/offerings/vacancies/${item.id}`)}
                         className="inline-flex items-center justify-center gap-2 w-full py-3 rounded-md bg-[#d2dfff] text-[#162f6a] font-semibold text-[13px] uppercase hover:bg-[#bfd0ff] transition"
                       >
                         <span
@@ -251,8 +249,8 @@ export default function Vacancies() {
                           visibility
                         </span>
 
-                        View Document
-                      </a>
+                        {t('view_document')}
+                      </button>
 
                     </div>
 
@@ -281,7 +279,7 @@ export default function Vacancies() {
               </button>
 
               <div className="text-[14px] text-[#123a6b] font-medium">
-                Page {currentPage} of {totalPages}
+                {t('page_of')} {currentPage} {t('of')} {totalPages}
               </div>
 
               <button
@@ -312,7 +310,7 @@ export default function Vacancies() {
                 archive
               </span>
 
-              View Archive
+              {t('view_archive')}
             </a>
 
           </div>
