@@ -201,7 +201,7 @@ export default function SubNavTabs({ pagePath }) {
                   }
                 }
                 
-                const keyValue = displayHref || it.id;
+                const keyValue = it.id ? `${it.id}-${displayHref}` : displayHref;
                 const isActive = isActiveItem(it, displayHref) || 
                   (effectivePath === '/archives/all' && router.query?.page && 
                    displayHref.includes(router.query.page));
@@ -345,7 +345,17 @@ function deriveFromNavigation(nav, path) {
       collectAllChildren(nav);
     }
 
-    const tabs = allChildren
+    // Deduplicate children based on original link to prevent duplicate tabs
+    const uniqueChildrenMap = new Map();
+    allChildren.forEach((c) => {
+      const originalHref = c.originalLink || c.link || c.href || '#';
+      if (!uniqueChildrenMap.has(originalHref)) {
+        uniqueChildrenMap.set(originalHref, c);
+      }
+    });
+    const uniqueChildren = Array.from(uniqueChildrenMap.values());
+
+    const tabs = uniqueChildren
       .filter((c) => (c.is_active !== false && (c.is_show !== false)))
       .map((c) => {
         const originalHref = c.originalLink || c.link || c.href || '#';

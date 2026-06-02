@@ -13,8 +13,8 @@ export default async function handler(req, res) {
     const { archived } = req.query;
     const showArchived = archived === 'true';
 
-    const [rows] = await pool.query(`
-  SELECT 
+  const [rows] = await pool.query(`
+  SELECT
     id,
     title,
     description,
@@ -28,9 +28,14 @@ export default async function handler(req, res) {
     created_at,
     updated_at
   FROM vacancies_tenders
-  WHERE is_active = 1 AND type = 'vacancy' AND is_archived = ?
+  WHERE type = 'vacancy'
+    AND (
+      (? = 0 AND is_active = 1 AND is_archived = 0)
+      OR
+      (? = 1 AND is_archived = 1)
+    )
   ORDER BY published_date DESC, created_at DESC
-`, [showArchived ? 1 : 0]);
+`, [showArchived ? 1 : 0, showArchived ? 1 : 0]);
 
     res.status(200).json(rows);
   } catch (error) {

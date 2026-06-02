@@ -13,24 +13,33 @@ export default async function handler(req, res) {
     const { archived } = req.query;
     const showArchived = archived === 'true';
 
-    const [rows] = await pool.query(`
-      SELECT 
-        id,
-        title,
-        type,
-        tender_id,
-        published_date,
-        YEAR(published_date) as year,
-        file_name,
-        file_size as size,
-        due_date AS closing_date,
-        is_archived,
-        created_at,
-        updated_at
-      FROM vacancies_tenders 
-      WHERE is_active = 1 AND type = 'tender' AND is_archived = ?
-      ORDER BY published_date DESC, created_at DESC
-    `, [showArchived ? 1 : 0]);
+   let query = `
+  SELECT
+    id,
+    title,
+    type,
+    tender_id,
+    published_date,
+    YEAR(published_date) AS year,
+    file_name,
+    file_size AS size,
+    due_date AS closing_date,
+    is_archived,
+    created_at,
+    updated_at
+  FROM vacancies_tenders
+  WHERE type = 'tender'
+`;
+
+if (showArchived) {
+  query += ` AND is_archived = 1`;
+} else {
+  query += ` AND is_active = 1 AND is_archived = 0`;
+}
+
+query += ` ORDER BY published_date DESC, created_at DESC`;
+
+const [rows] = await pool.query(query);
 
     res.status(200).json(rows);
   } catch (error) {
