@@ -8,12 +8,25 @@ export default async function handler(req, res) {
   const { id } = req.query;
 
   try {
-    const [files] = await db.query(`
-      SELECT id, original_name, file_url, file_type, file_size, created_at 
-      FROM report_files 
-      WHERE report_id = ? 
-      ORDER BY created_at DESC
-    `, [id]);
+    // Check if is_archived column exists in report_files
+    const [cols] = await db.query('SHOW COLUMNS FROM report_files LIKE ?', ['is_archived']);
+    const hasArchived = Array.isArray(cols) && cols.length > 0;
+
+    const query = hasArchived
+      ? `
+        SELECT id, original_name, file_url, file_type, file_size, created_at 
+        FROM report_files 
+        WHERE report_id = ? AND is_archived = FALSE
+        ORDER BY created_at DESC
+      `
+      : `
+        SELECT id, original_name, file_url, file_type, file_size, created_at 
+        FROM report_files 
+        WHERE report_id = ? 
+        ORDER BY created_at DESC
+      `;
+
+    const [files] = await db.query(query, [id]);
 
     return res.status(200).json({
       success: true,
