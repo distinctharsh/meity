@@ -14,13 +14,13 @@ export default async function handler(req, res) {
 
     const query = hasArchived
       ? `
-        SELECT id, original_name, file_url, file_type, file_size, created_at 
+        SELECT id, original_name, file_url, file_type, file_size, created_at, publish_date 
         FROM report_files 
         WHERE report_id = ? AND is_archived = FALSE
         ORDER BY created_at DESC
       `
       : `
-        SELECT id, original_name, file_url, file_type, file_size, created_at 
+        SELECT id, original_name, file_url, file_type, file_size, created_at, publish_date 
         FROM report_files 
         WHERE report_id = ? 
         ORDER BY created_at DESC

@@ -85,7 +85,7 @@ export default function ReportDetail() {
                   {/* Date */}
                   <div className="text-center">
                     <p className="text-[13px] font-semibold text-[#2c3e66] mb-0">
-                      {new Date(f.created_at).toLocaleDateString('en-GB')}
+                      {new Date(f.publish_date || f.created_at).toLocaleDateString('en-GB')}
                     </p>
                   </div>
 
@@ -98,12 +98,7 @@ export default function ReportDetail() {
                     <div className="flex flex-col leading-tight">
 
                       <small className="text-[#1d3f91] font-semibold">
-                        {f.file_size
-                          ? `${(f.file_size / 1024 > 1024
-                            ? (f.file_size / 1024 / 1024).toFixed(2) + ' MB'
-                            : (f.file_size / 1024).toFixed(2) + ' KB'
-                          )}`
-                          : '-'}
+                        {f.file_size || '-'}
                       </small>
                     </div>
                   </div>
