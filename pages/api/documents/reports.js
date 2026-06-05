@@ -31,10 +31,11 @@ export default async function handler(req, res) {
     let params = [];
     let whereClause = '';
     if (archivedOnly) {
-      if (hasArchived) {
-        whereClause = 'WHERE r.is_archived = TRUE';
+      // Only show reports that have archived files
+      if (hasFilesArchived) {
+        whereClause = 'WHERE EXISTS (SELECT 1 FROM report_files rf WHERE rf.report_id = r.id AND rf.is_archived = TRUE)';
       } else {
-        // No archived column; nothing to return for archived-only requests
+        // No is_archived in report_files; nothing to return for archived-only requests
         whereClause = 'WHERE 0';
       }
     } else {
@@ -79,8 +80,10 @@ export default async function handler(req, res) {
     }
 
     // Build subquery conditions for report_files based on is_archived
-    const filesWhereClause = hasFilesArchived ? 'WHERE rf.report_id = r.id AND rf.is_archived = FALSE' : 'WHERE rf.report_id = r.id';
-    const firstFileWhereClause = hasFilesArchived ? 'WHERE rf2.report_id = r.id AND rf2.is_archived = FALSE' : 'WHERE rf2.report_id = r.id';
+    // When archived_only is true, show archived files; otherwise show non-archived files
+    const archivedFileFilter = archivedOnly ? 'TRUE' : 'FALSE';
+    const filesWhereClause = hasFilesArchived ? `WHERE rf.report_id = r.id AND rf.is_archived = ${archivedFileFilter}` : 'WHERE rf.report_id = r.id';
+    const firstFileWhereClause = hasFilesArchived ? `WHERE rf2.report_id = r.id AND rf2.is_archived = ${archivedFileFilter}` : 'WHERE rf2.report_id = r.id';
 
     const [rows] = await pool.query(
       `SELECT r.id, r.title, r.type, r.year, r.size, r.file_url,

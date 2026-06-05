@@ -210,7 +210,7 @@ export default function Archives() {
                   </div>
                 `
                 : '<span></span>';
-              const viewHref = isGroup ? `/documents/report/${row.id}` : fileUrl;
+              const viewHref = isGroup ? `/documents/report/${row.id}?archived=1` : fileUrl;
               const viewAttrs = isGroup ? '' : target;
               const viewText = isGroup ? 'View All' : 'View';
               return `

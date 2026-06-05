@@ -97,7 +97,7 @@ export default function DocumentDetail() {
                                                 {file.file_type?.toUpperCase() || 'FILE'}
                                             </span>
                                             <small className="text-gray-700">
-                                                {file.file_size ? formatFileSize(file.file_size) : ''}
+                                                {file.file_size ? file.file_size : ''}
                                             </small>
                                         </div>
                                         <a
@@ -120,14 +120,4 @@ export default function DocumentDetail() {
             </main>
         </>
     );
-}
-
-// Helper function to format file size
-function formatFileSize(bytes) {
-    if (!bytes) return '';
-    if (bytes === 0) return '0 Bytes';
-    const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }
