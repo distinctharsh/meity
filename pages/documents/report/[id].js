@@ -14,6 +14,8 @@ export default function ReportDetail() {
   const tableHostRef = useRef(null);
   const tableElRef = useRef(null);
   const dataTableRef = useRef(null);
+  const [breadcrumb, setBreadcrumb] = useState([]);
+  const [reportTitle, setReportTitle] = useState("");
 
   const formatFileSize = (bytes) => {
     if (!bytes || isNaN(bytes)) return '';
@@ -57,6 +59,32 @@ export default function ReportDetail() {
     load();
     return () => { mounted = false; };
   }, [id, archived]);
+
+  // Fetch breadcrumb data from API
+  useEffect(() => {
+    let mounted = true;
+    async function loadBreadcrumb() {
+      if (!id) return;
+      try {
+        const res = await fetch(`/api/documents/${encodeURIComponent(String(id))}/breadcrumb`);
+        const data = await res.json();
+
+        if (res.ok && data.success) {
+          if (mounted) setBreadcrumb(data.breadcrumb || []);
+          if (mounted) setReportTitle(data.reportTitle || '');
+        } else {
+          if (mounted) setBreadcrumb([]);
+          if (mounted) setReportTitle('');
+        }
+      } catch (e) {
+        console.error('Error loading breadcrumb:', e);
+        if (mounted) setBreadcrumb([]);
+        if (mounted) setReportTitle('');
+      }
+    }
+    loadBreadcrumb();
+    return () => { mounted = false; };
+  }, [id]);
 
   // Initialize DataTable
   useEffect(() => {
@@ -242,8 +270,11 @@ export default function ReportDetail() {
   return (
     <>
       <main id="main">
-        <PageHeader pagePath="/documents/reports" />
-        <SubNavTabs />
+        <PageHeader
+          fallbackHeading={reportTitle}
+          breadcrumbPath={breadcrumb}
+        />
+        {/* <SubNavTabs /> */}
 
         <section className="mt-10 py-10" style={{ borderRadius: '20px' }}>
           <div className="gi-container">

@@ -11,13 +11,17 @@ function toTitleCase(str = '') {
     .replace(/\b\w/g, (m) => m.toUpperCase());
 }
 
-export default function PageHeader({ pagePath, fallbackHeading, fallbackSubheading, fallbackBackgroundUrl }) {
+export default function PageHeader({ pagePath, fallbackHeading, fallbackSubheading, fallbackBackgroundUrl, breadcrumbPath: externalBreadcrumb = [] }) {
   const router = useRouter();
   const effectivePath = pagePath || router?.pathname || '';
   const [cfg, setCfg] = useState(null);
   const [parentTargetHref, setParentTargetHref] = useState(null);
-  const [breadcrumbPath, setBreadcrumbPath] = useState([]);
+  const [autoBreadcrumbPath, setAutoBreadcrumbPath] = useState([]);
   const [loading, setLoading] = useState(true);
+  const breadcrumbPath =
+  externalBreadcrumb.length > 0
+    ? externalBreadcrumb
+    : autoBreadcrumbPath;
 
   useEffect(() => {
     let mounted = true;
@@ -79,15 +83,15 @@ export default function PageHeader({ pagePath, fallbackHeading, fallbackSubheadi
 
             if (currentItem) {
               const path = buildBreadcrumb(currentItem);
-              if (mounted) setBreadcrumbPath(path);
+              if (mounted) setAutoBreadcrumbPath(path);
             } else if (mounted) {
-              setBreadcrumbPath([]);
+              setAutoBreadcrumbPath([]);
             }
           } else if (mounted) {
-            setBreadcrumbPath([]);
+            setAutoBreadcrumbPath([]);
           }
         } catch (e2) {
-          if (mounted) setBreadcrumbPath([]);
+          if (mounted) setAutoBreadcrumbPath([]);
         }
 
         // Derive breadcrumb target: use same logic as SubNavTabs to compute tabs, then pick the first tab href
