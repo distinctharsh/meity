@@ -349,11 +349,21 @@ export default function VacanciesTenders() {
                   <span className="flex items-center px-2 border-r border-gray-300 text-gray-600">
                     <span aria-hidden="true" className="material-symbols-outlined">list_alt</span>
                   </span>
-                  <select id="pageLimitSelect" className="px-3 py-2 bg-white outline-none" role="combobox" aria-label="pages" value={perPage} onChange={(e) => setPerPage(parseInt(e.target.value, 10))}>
-                    <option value={10}>10 per page</option>
-                    <option value={15}>15 per page</option>
-                    <option value={20}>20 per page</option>
+                  <select
+                    id="pageLimitSelect"
+                    className="px-3 py-2 bg-white outline-none"
+                    role="combobox"
+                    aria-label="pages"
+                    value={perPage}
+                    onChange={(e) => setPerPage(parseInt(e.target.value, 10))}
+                    >
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                    <option value="-1">All</option>
                   </select>
+
                 </div>
               </div>
             </div>

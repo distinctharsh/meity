@@ -11,6 +11,11 @@ export default function ReportDetail() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [yearFilter, setYearFilter] = useState("");
+  const [query, setQuery] = useState("");
+  const [sort, setSort] = useState("Newest");
+  const [perPage, setPerPage] = useState(10);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const tableHostRef = useRef(null);
   const tableElRef = useRef(null);
   const dataTableRef = useRef(null);
@@ -196,11 +201,16 @@ export default function ReportDetail() {
         paging: true,
         info: false,
         lengthChange: false,
-        pageLength: 10,
+        pageLength: perPage,
         ordering: true,
-        order: [[1, 'desc']],
+        order: sort === 'Oldest' ? [[1, 'asc']] : [[1, 'desc']],
         dom: 'rtip',
         autoWidth: false,
+        drawCallback: function () {
+          const info = this.api().page.info();
+          setTotalPages(Math.max(1, info.pages || 1));
+          setCurrentPage((info.page || 0) + 1);
+        },
         createdRow: function (row) {
           row.className = 'items-center px-6 py-4 bg-white border border-[#dbe4ff] rounded-[8px] mb-3 shadow-sm';
           try {
@@ -264,6 +274,38 @@ export default function ReportDetail() {
     }
   }, [yearFilter]);
 
+  // Handle search query changes
+  useEffect(() => {
+    const dt = dataTableRef.current;
+    if (!dt) return;
+    dt.search(query || '').draw();
+    // Reset to first page when search changes
+    if (query) {
+      dt.page(0).draw(false);
+      setCurrentPage(1);
+    }
+  }, [query]);
+
+  // Handle sort changes
+  useEffect(() => {
+    const dt = dataTableRef.current;
+    if (!dt) return;
+    dt.order(sort === 'Oldest' ? [1, 'asc'] : [1, 'desc']).draw();
+    // Reset to first page when sorting changes
+    dt.page(0).draw(false);
+    setCurrentPage(1);
+  }, [sort]);
+
+  // Handle per page changes
+  useEffect(() => {
+    const dt = dataTableRef.current;
+    if (!dt) return;
+    dt.page.len(perPage);
+    // Reset to first page when per page changes
+    dt.page(0).draw(false);
+    setCurrentPage(1);
+  }, [perPage]);
+
   // Extract unique years from files
   const years = files ? Array.from(new Set(files.map(f => new Date(f.publish_date || f.created_at).getFullYear()))).sort((a, b) => b - a) : [];
 
@@ -279,27 +321,62 @@ export default function ReportDetail() {
         <section className="mt-10 py-10" style={{ borderRadius: '20px' }}>
           <div className="gi-container">
 
-            {/* Year Filter */}
-            {years.length > 0 && (
-              <div className="flex justify-end mb-4">
+            {/* Toolbar & filters */}
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 mb-4">
+              <div className="w-full lg:w-[320px]">
                 <div className="flex items-stretch rounded-md overflow-hidden border border-gray-300 bg-white">
                   <span className="flex items-center px-2 border-r border-gray-300 text-gray-600">
-                    <span aria-hidden="true" className="material-symbols-outlined">calendar_month</span>
+                    <span aria-hidden="true" className="material-symbols-outlined">search</span>
                   </span>
-                  <select
-                    className="px-3 py-2 bg-white outline-none"
-                    aria-label="Filter by year"
-                    value={yearFilter}
-                    onChange={(e) => setYearFilter(e.target.value)}
-                  >
-                    <option value="">All Years</option>
-                    {years.map((y) => (
-                      <option key={y} value={y}>{y}</option>
-                    ))}
+                  <input type="search" placeholder="Search..." className="flex-1 px-3 py-2 outline-none" value={query} onChange={(e) => setQuery(e.target.value)} />
+                </div>
+              </div>
+              <div className="flex flex-wrap items-center justify-end gap-2">
+                {/* Year Filter */}
+                {years.length > 0 && (
+                  <div className="flex items-stretch rounded-md overflow-hidden border border-gray-300 bg-white">
+                    <span className="flex items-center px-2 border-r border-gray-300 text-gray-600">
+                      <span aria-hidden="true" className="material-symbols-outlined">calendar_month</span>
+                    </span>
+                    <select
+                      className="px-3 py-2 bg-white outline-none"
+                      aria-label="Filter by year"
+                      value={yearFilter}
+                      onChange={(e) => setYearFilter(e.target.value)}
+                    >
+                      <option value="">All Years</option>
+                      {years.map((y) => (
+                        <option key={y} value={y}>{y}</option>
+                      ))}
+                    </select>
+                  </div>
+                )}
+                {/* Sort Dropdown */}
+                <div className="flex items-stretch rounded-md overflow-hidden border border-gray-300 bg-white">
+                  <span className="flex items-center px-2 border-r border-gray-300 text-gray-600">
+                    <span aria-hidden="true" className="material-symbols-outlined">sort</span>
+                  </span>
+                  <select className="px-3 py-2 bg-white outline-none" role="listbox" aria-label="select" value={sort} onChange={(e) => setSort(e.target.value)}>
+                    <option value="Newest">Latest</option>
+                    <option value="Oldest">Oldest</option>
+                  </select>
+                </div>
+                {/* Items per page */}
+                <div className="flex items-stretch rounded-md overflow-hidden border border-gray-300 bg-white" role="combobox">
+                  <label htmlFor="pageLimitSelect" className="sr-only">Items per page</label>
+                  <span className="flex items-center px-2 border-r border-gray-300 text-gray-600">
+                    <span className="material-symbols-outlined">list_alt</span>
+                  </span>
+                  <select id="pageLimitSelect" className="px-3 py-2 bg-white outline-none" role="combobox" aria-label="pages" value={perPage} onChange={(e) => setPerPage(parseInt(e.target.value, 10))}>
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                    <option value="-1">All</option>
                   </select>
                 </div>
               </div>
-            )}
+            </div>
 
             {/* DataTable */}
             <div className="">

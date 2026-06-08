@@ -162,7 +162,7 @@ export default function NewNavbar() {
                 return (
                   <li
                     key={index}
-                    className={`group relative md:w-auto w-full hover:bg-[#d2dfff] md:min-w-[240px] h-full`}
+                    className={`group relative md:w-auto w-full hover:bg-[#d2dfff] md:min-w-[140px] lg:min-w-[180px] xl:min-w-[220px] 2xl:min-w-[240px] h-full`}
                   >
                     <Link
                       href={item.href}

@@ -373,7 +373,6 @@ export default function DocumentsSlug() {
                     <span aria-hidden="true" className="material-symbols-outlined">sort</span>
                   </span>
                   <select className="px-3 py-2 bg-white outline-none" role="listbox" aria-label="select" value={sort} onChange={(e) => setSort(e.target.value)}>
-                    <option value="">Sort by</option>
                     <option value="Newest">Latest</option>
                     <option value="Oldest">Oldest</option>
                   </select>
@@ -396,19 +395,18 @@ export default function DocumentsSlug() {
                     <span className="material-symbols-outlined">list_alt</span>
                   </span>
                   <select id="pageLimitSelect" className="px-3 py-2 bg-white outline-none" role="combobox" aria-label="pages" value={perPage} onChange={(e) => setPerPage(parseInt(e.target.value, 10))}>
-                    <option value={10}>10 per page</option>
-                    <option value={15}>15 per page</option>
-                    <option value={20}>20 per page</option>
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                    <option value="-1">All</option>
                   </select>
                 </div>
               </div>
             </div>
 
             <div
-              // className="grid grid-cols-[7fr_2fr_3fr] bg-blue-200 text-blue-900 font-semibold rounded-t-md px-4 py-2 text-xs"
-
-              className="hidden lg:grid grid-cols-[2fr_2fr_2fr] bg-[#a3bbf3] text-[#162f6a] rounded-[8px] px-6 py-4 mb-3 uppercase text-[12px] font-semibold tracking-[1px]"
-
+              className="hidden lg:grid grid-cols-[2fr_2fr_2fr] bg-blue-200 text-blue-900 font-semibold rounded-t-md px-4 py-2 text-xs"
             >
               <div>Title</div>
               <div className="text-center">Published Year</div>
