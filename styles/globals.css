@@ -666,3 +666,20 @@ body {
 table.dataTable.no-footer {
   border-bottom: none !important;
 }
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #e5e7eb;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #9ca3af;
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #6b7280;
+}

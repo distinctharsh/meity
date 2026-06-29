@@ -160,13 +160,14 @@ export default function NewNavbar() {
               {(loading ? [] : navItems).map((item, index) => {
                 const itemActive = (isActive(item.href) || (item.items && item.items.some((si) => isActive(si.href))));
                 return (
-                  <li
-                    key={index}
+                        <li
+                          key={index}
                     className={`group relative md:w-auto w-full hover:bg-[#d2dfff] md:min-w-[140px] lg:min-w-[180px] xl:min-w-[220px] 2xl:min-w-[240px] h-full`}
-                  >
-                    <Link
-                      href={item.href}
-                      className={`flex h-full items-center justify-between md:justify-center no-underline px-4 py-3 transition-colors duration-200 relative
+                    tabIndex={0}
+                        >
+                                                    <Link
+                          href={item.href}
+                          className={`flex h-full items-center justify-between md:justify-center no-underline px-4 py-3 transition-colors duration-200 relative
                             ${itemActive
   ? 'text-[24px] font-[700] text-[#162f6a] bg-[#d2dfff]'
   : 'text-[20px] font-[600] text-[#1b1b1b]'
@@ -192,13 +193,23 @@ group-hover:text-[#162f6a]
                           `}
 
 
-                      onClick={(e) => {
-                        if (item.dropdown && typeof window !== 'undefined' && window.innerWidth < 769) {
-                          e.preventDefault();
-                          toggleDropdown(index);
-                        }
-                      }}
-                    >
+                          onClick={(e) => {
+                            if (
+                              item.dropdown &&
+                              typeof window !== "undefined" &&
+                              window.innerWidth < 769
+                            ) {
+                              e.preventDefault();
+                              toggleDropdown(index);
+                            }
+                          }}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter" && item.dropdown) {
+                              e.preventDefault();
+                              toggleDropdown(index);
+                            }
+                          }}
+                        >
                       <span className="flex items-center">
                         <span className="leading-none relative inline-block">
                           {item.text}
@@ -226,9 +237,29 @@ group-hover:text-[#162f6a]
 
                     {/* Dropdown */}
                     {item.dropdown && item.items && (
-                      <div
-                        className={`md:absolute  md:left-0 md:min-w-[240px] md:rounded-b-[8px]  md:bg-[rgba(0,0,0,0.72)] md:backdrop-blur-md md:shadow-[0_6px_20px_rgba(0,0,0,0.3)] md:opacity-0 md:invisible md:translate-y-2 md:transition-all md:duration-200 md:group-hover:opacity-100 md:group-hover:visible md:group-hover:translate-y-0 ${activeDropdown === index ? 'block' : 'hidden'} md:block`}
-                      >
+                        <div
+                        className={`md:absolute md:left-0 md:min-w-[240px]
+                        md:rounded-b-[8px]
+                        md:bg-[rgba(0,0,0,0.72)]
+                        md:backdrop-blur-md
+                        md:shadow-[0_6px_20px_rgba(0,0,0,0.3)]
+                        md:opacity-0
+                        md:invisible
+                        md:translate-y-2
+                        md:transition-all
+                        md:duration-200
+
+                        md:group-hover:opacity-100
+                        md:group-hover:visible
+                        md:group-hover:translate-y-0
+
+                        md:group-focus-within:opacity-100
+                        md:group-focus-within:visible
+                        md:group-focus-within:translate-y-0
+
+                        ${activeDropdown === index ? 'block' : 'hidden'}
+                        md:block`}
+                        >
                         <ul className="list-none m-0 p-0 md:bg-transparent bg-[#f9f9f9] md:shadow-none md:pl-0 pl-6">
                           {item.items.map((subItem, subIndex) => (
                             <li key={subIndex} className="p-0">
@@ -292,18 +323,18 @@ group-hover:text-[#162f6a]
                 const itemActive = isActive(item.href) || (item.items && item.items.some((si) => isActive(si.href)));
                 return (
                   <li key={index} className="">
-                    <Link
+                      <Link
                       href={item.href}
                       className={`flex items-center justify-between md:justify-start no-underline px-4 py-3 relative
-    ${itemActive
-                          ? '!text-[24px] !font-[700] !text-[rgb(22,47,106)]'
-                          : '!text-[20px] !font-[600] !text-[rgb(21,2,2)]'
-                        }
-    transition-colors duration-200 
-    ${itemActive
-                          ? `${item.text !== 'Home' ? 'bg-[#fff]' : ''}`
-                          : `${item.text !== 'Home' ? 'hover:bg-[#d2dfff]' : ''}`
-                        }`}
+                      ${itemActive
+                      ? '!text-[24px] !font-[700] !text-[rgb(22,47,106)]'
+                      : '!text-[20px] !font-[600] !text-[rgb(21,2,2)]'
+                      }
+                      transition-colors duration-200 
+                      ${itemActive
+                      ? `${item.text !== 'Home' ? 'bg-[#fff]' : ''}`
+                      : `${item.text !== 'Home' ? 'hover:bg-[#d2dfff]' : ''}`
+                      }`}
 
                       onClick={(e) => {
                         if (item.dropdown) {
