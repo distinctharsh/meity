@@ -406,7 +406,7 @@ export default function DocumentsSlug() {
             </div>
 
             <div
-              className="hidden lg:grid grid-cols-[2fr_2fr_2fr] bg-blue-200 text-blue-900 font-semibold rounded-t-md px-4 py-2 text-xs"
+              className="hidden lg:grid grid-cols-[2fr_2fr_2fr] bg-blue-200 text-blue-900 font-semibold rounded-t-md px-4 py-2 mb-3 text-xs"
             >
               <div>Title</div>
               <div className="text-center">Published Year</div>

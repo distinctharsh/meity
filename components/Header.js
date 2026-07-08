@@ -21,7 +21,7 @@ export default function Header() {
   const languages =
   process.env.NEXT_PUBLIC_LANGUAGE === "2"
     ? ["Hindi (हिन्दी)"]
-    : ["English", "Hindi (हिन्दी)"];
+    : ["English"];
 
   useEffect(() => {
     const handleClickOutside = (event) => {
