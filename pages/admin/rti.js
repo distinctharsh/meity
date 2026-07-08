@@ -536,8 +536,10 @@ export default function AdminRTIPage() {
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm bg-white"
                       >
                         <option value="">Select section...</option>
-                        {sections.map(s => (
-                          <option key={s.id} value={s.id}>{s.title}</option>
+                        {sections.map((s, index) => (
+                          <option key={s.id} value={s.id}>
+                            {index + 1}. {s.title}
+                          </option>
                         ))}
                       </select>
                     </div>
@@ -627,12 +629,12 @@ export default function AdminRTIPage() {
               )}
 
               {/* Group items by section */}
-              {sections.map(sec => {
+              {sections.map((sec, index) => {
                 const secItems = items.filter(i => i.section_id === sec.id);
                 if (secItems.length === 0) return null;
                 return (
                   <div key={sec.id} className="mb-6">
-                    <h3 className="text-sm font-semibold text-gray-700 mb-2 uppercase tracking-wide">{sec.title}</h3>
+                    <h3 className="text-sm font-semibold text-gray-700 mb-2 uppercase tracking-wide">{index + 1}. {sec.title}</h3>
                     <div className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
                       <table className="w-full text-sm">
                         <thead className="bg-gray-50">

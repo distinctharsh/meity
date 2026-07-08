@@ -98,7 +98,7 @@ const toggleSection = (id) => {
 
         {/* Accordion Sections */}
         <div className="space-y-3">
-          {sections.map((section) => {
+          {sections.map((section, index) => {
             const isOpen = !!openSections[section.id];
             return (
               <div
@@ -114,7 +114,7 @@ const toggleSection = (id) => {
                     isOpen ? 'font-[700]' : 'font-[500]'
                   }`}
                 >
-                  {section.title}
+                  {index + 1}. {section.title}
                 </span>
                   <svg
                     className={`w-5 h-5 text-gray-500 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
