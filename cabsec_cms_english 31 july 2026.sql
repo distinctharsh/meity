@@ -16,10 +16,12 @@
 
 
 -- Dumping database structure for cabsec_cms
+DROP DATABASE IF EXISTS `cabsec_cms`;
 CREATE DATABASE IF NOT EXISTS `cabsec_cms` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
 USE `cabsec_cms`;
 
 -- Dumping structure for table cabsec_cms.about_content
+DROP TABLE IF EXISTS `about_content`;
 CREATE TABLE IF NOT EXISTS `about_content` (
   `id` int NOT NULL AUTO_INCREMENT,
   `section_key` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
@@ -57,6 +59,7 @@ INSERT INTO `about_content` (`id`, `section_key`, `title`, `content`, `content_t
 	(15, 'organization_chart', 'Organization Chart', '', 'download', 15, 1, '/uploads/about/1777531230866-437747717.xlsx', '9.59 KB', 'Employee Family Details..xlsx', '2026-04-30 06:34:39', '2026-04-30 06:40:30');
 
 -- Dumping structure for table cabsec_cms.announcements
+DROP TABLE IF EXISTS `announcements`;
 CREATE TABLE IF NOT EXISTS `announcements` (
   `id` int NOT NULL AUTO_INCREMENT,
   `title` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
@@ -75,6 +78,7 @@ CREATE TABLE IF NOT EXISTS `announcements` (
 DELETE FROM `announcements`;
 
 -- Dumping structure for table cabsec_cms.audit_trails
+DROP TABLE IF EXISTS `audit_trails`;
 CREATE TABLE IF NOT EXISTS `audit_trails` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `ip` varchar(256) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
@@ -84,7 +88,11 @@ CREATE TABLE IF NOT EXISTS `audit_trails` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin;
 
+-- Dumping data for table cabsec_cms.audit_trails: ~0 rows (approximately)
+DELETE FROM `audit_trails`;
+
 -- Dumping structure for table cabsec_cms.cms_users
+DROP TABLE IF EXISTS `cms_users`;
 CREATE TABLE IF NOT EXISTS `cms_users` (
   `id` int NOT NULL AUTO_INCREMENT,
   `username` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
@@ -105,6 +113,7 @@ INSERT INTO `cms_users` (`id`, `username`, `email`, `password_hash`, `role`, `is
 	(1, 'admin', 'admin@cabsec.gov.in', '$2a$10$z1rXO8Gq6xcCduSP641V5uDiXexfRdoxrBn338.t09TkLq0TgWKaq', 'super_admin', 1, '2025-09-15 09:03:11', '2026-04-30 07:11:56');
 
 -- Dumping structure for table cabsec_cms.directory_entries
+DROP TABLE IF EXISTS `directory_entries`;
 CREATE TABLE IF NOT EXISTS `directory_entries` (
   `id` int NOT NULL AUTO_INCREMENT,
   `role` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
@@ -127,6 +136,7 @@ INSERT INTO `directory_entries` (`id`, `role`, `name`, `tags_json`, `phones_json
 	(2, 'Additional Secretary', 'Shri Abhishek Singh', '[]', '["+91-11-24369222 (Office)"]', '["as[at]cabsec[dot]gov[dot]in"]', 'Electronics Niketan, 6, CGO Complex, Lodhi Road, New Delhi: 110003', 1, 1, '2025-10-22 06:58:41', '2026-05-07 10:13:02');
 
 -- Dumping structure for table cabsec_cms.footer
+DROP TABLE IF EXISTS `footer`;
 CREATE TABLE IF NOT EXISTS `footer` (
   `id` int NOT NULL AUTO_INCREMENT,
   `type` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'main',
@@ -147,6 +157,7 @@ INSERT INTO `footer` (`id`, `type`, `sections`, `social_links`, `copyright`, `cr
 	(1, 'main', '[{"title":"USEFUL LINKS","links":[{"label":"Archives","url":"/archives"},{"label":"Sitemap","url":"#"}]},{"title":"Website Policies","links":[{"label":"Website Policies","url":"/policies/terms-of-use"},{"label":"Help","url":"/help"}]},{"title":"Related Links","links":[{"label":"Related Links","url":"/related-links"},{"label":"Contact Us","url":"/connect/contact-us"}]}]', '{"twitter":"","youtube":"","facebook":"","instagram":""}', 'This Website belong to Cabinet Secretariat, Government of India', '2025-11-10 09:51:04', '2026-05-12 09:24:53');
 
 -- Dumping structure for table cabsec_cms.hero_slides
+DROP TABLE IF EXISTS `hero_slides`;
 CREATE TABLE IF NOT EXISTS `hero_slides` (
   `id` int NOT NULL AUTO_INCREMENT,
   `image_url` varchar(500) COLLATE utf8mb4_general_ci NOT NULL,
@@ -166,6 +177,7 @@ INSERT INTO `hero_slides` (`id`, `image_url`, `link_url`, `display_order`, `is_a
 	(10, '/uploads/slider/1776922661401_qurit3.jpg', '', 2, 1, '2026-04-23 05:37:42', '2026-04-23 05:54:09');
 
 -- Dumping structure for table cabsec_cms.important_links
+DROP TABLE IF EXISTS `important_links`;
 CREATE TABLE IF NOT EXISTS `important_links` (
   `id` int NOT NULL AUTO_INCREMENT,
   `title` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
@@ -188,6 +200,7 @@ INSERT INTO `important_links` (`id`, `title`, `url`, `file_path`, `link_type`, `
 	(4, 'Test', NULL, '/uploads/important-links/59563377ca25aecacdfe800ebb09fded.pdf', 'file', 4, 1, '2026-05-12 08:53:14', '2026-05-12 08:53:14');
 
 -- Dumping structure for table cabsec_cms.media_library
+DROP TABLE IF EXISTS `media_library`;
 CREATE TABLE IF NOT EXISTS `media_library` (
   `id` int NOT NULL AUTO_INCREMENT,
   `filename` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
@@ -204,7 +217,7 @@ CREATE TABLE IF NOT EXISTS `media_library` (
   CONSTRAINT `media_library_ibfk_1` FOREIGN KEY (`uploaded_by`) REFERENCES `cms_users` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=107 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Dumping data for table cabsec_cms.media_library: ~105 rows (approximately)
+-- Dumping data for table cabsec_cms.media_library: ~106 rows (approximately)
 DELETE FROM `media_library`;
 INSERT INTO `media_library` (`id`, `filename`, `original_name`, `file_path`, `file_type`, `file_size`, `alt_text`, `caption`, `uploaded_by`, `created_at`) VALUES
 	(1, 'files-1759739848075-317601665.jpg', 'a.jpg', '/uploads/files-1759739848075-317601665.jpg', 'image/jpeg', 241210, NULL, NULL, 1, '2025-10-06 08:37:28'),
@@ -315,6 +328,7 @@ INSERT INTO `media_library` (`id`, `filename`, `original_name`, `file_path`, `fi
 	(106, 'files-1780916831522-830222981.jpg', 'aa.jpg', '/report_document/files-1780916831522-830222981.jpg', 'image/jpeg', 86360, NULL, NULL, 1, '2026-06-08 11:07:11');
 
 -- Dumping structure for table cabsec_cms.navigation_items
+DROP TABLE IF EXISTS `navigation_items`;
 CREATE TABLE IF NOT EXISTS `navigation_items` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
@@ -330,7 +344,7 @@ CREATE TABLE IF NOT EXISTS `navigation_items` (
   CONSTRAINT `navigation_items_ibfk_1` FOREIGN KEY (`parent_id`) REFERENCES `navigation_items` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=77 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Dumping data for table cabsec_cms.navigation_items: ~33 rows (approximately)
+-- Dumping data for table cabsec_cms.navigation_items: ~32 rows (approximately)
 DELETE FROM `navigation_items`;
 INSERT INTO `navigation_items` (`id`, `name`, `link`, `parent_id`, `display_order`, `is_active`, `is_show`, `created_at`, `updated_at`) VALUES
 	(1, 'Home', '/', NULL, 1, 1, 1, '2025-09-15 09:03:11', '2025-10-17 05:20:43'),
@@ -367,6 +381,7 @@ INSERT INTO `navigation_items` (`id`, `name`, `link`, `parent_id`, `display_orde
 	(72, 'RTI', '/connect/rti', 22, 1, 1, 1, '2026-05-05 05:53:32', '2026-05-05 07:15:46');
 
 -- Dumping structure for table cabsec_cms.offerings
+DROP TABLE IF EXISTS `offerings`;
 CREATE TABLE IF NOT EXISTS `offerings` (
   `id` int NOT NULL AUTO_INCREMENT,
   `title` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
@@ -393,6 +408,7 @@ INSERT INTO `offerings` (`id`, `title`, `description`, `icon`, `link_url`, `cate
 	(16, 'Complete AOB Rules', '', NULL, 'https://master-cabsec.digifootprint.gov.in/static/uploads/2025/06/22034aee4a2445812bacdeb87c1ad473.pdf', 'whats_new', 0, 1, '2026-04-23 06:14:13', '2026-04-23 06:14:13', NULL, NULL, NULL);
 
 -- Dumping structure for table cabsec_cms.our_team
+DROP TABLE IF EXISTS `our_team`;
 CREATE TABLE IF NOT EXISTS `our_team` (
   `id` int NOT NULL AUTO_INCREMENT,
   `role` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
@@ -425,6 +441,7 @@ INSERT INTO `our_team` (`id`, `role`, `name`, `designation`, `photo_url`, `displ
 	(4, '', 'Dr. T. V. Somanathan', 'CABINET SECRETARY', 'http://localhost:3000/images/our-team/a.jpg', 0, 1, '2026-04-23 11:55:26', '2026-05-05 09:58:23', 'cabinetsy@nic.in', '+91-11-23016696', '', '', 'CABINET SECRETARY', 'OFFICE OF CABINET SECRETARY', 'H.S. Rawat', 'Staff Officer to CS', '01123016696', '01123011241', '', '', '');
 
 -- Dumping structure for table cabsec_cms.our_team_contacts
+DROP TABLE IF EXISTS `our_team_contacts`;
 CREATE TABLE IF NOT EXISTS `our_team_contacts` (
   `id` int NOT NULL AUTO_INCREMENT,
   `person_id` int NOT NULL,
@@ -479,6 +496,7 @@ INSERT INTO `our_team_contacts` (`id`, `person_id`, `type`, `value`, `display_or
 	(82, 21, 'email', 'namrata[dot]gandhi[at]nic[dot]in', 1, 1, '2026-04-23 12:41:04', '2026-04-23 12:41:04');
 
 -- Dumping structure for table cabsec_cms.our_team_people
+DROP TABLE IF EXISTS `our_team_people`;
 CREATE TABLE IF NOT EXISTS `our_team_people` (
   `id` int NOT NULL AUTO_INCREMENT,
   `section_id` int NOT NULL,
@@ -516,6 +534,7 @@ INSERT INTO `our_team_people` (`id`, `section_id`, `name`, `designation`, `addre
 	(21, 11, 'Ms. Namrata Gandhi', 'Deputy Secretary', 'Seva Teerth,New Delhi - 110011', 1, 1, '2026-04-23 12:41:04', '2026-04-23 12:41:04');
 
 -- Dumping structure for table cabsec_cms.our_team_sections
+DROP TABLE IF EXISTS `our_team_sections`;
 CREATE TABLE IF NOT EXISTS `our_team_sections` (
   `id` int NOT NULL AUTO_INCREMENT,
   `title` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
@@ -539,6 +558,7 @@ INSERT INTO `our_team_sections` (`id`, `title`, `display_order`, `is_active`, `c
 	(11, ' Deputy Secretary', 7, 1, '2026-04-23 12:39:26', '2026-04-23 12:39:26');
 
 -- Dumping structure for table cabsec_cms.page_headers
+DROP TABLE IF EXISTS `page_headers`;
 CREATE TABLE IF NOT EXISTS `page_headers` (
   `id` int NOT NULL AUTO_INCREMENT,
   `page_path` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
@@ -559,6 +579,7 @@ INSERT INTO `page_headers` (`id`, `page_path`, `background_url`, `created_at`, `
 	(4, '/related-links', 'https://master-cabsec.digifootprint.gov.in/static/uploads/2025/06/c9eb6cc608da2c0049dd9c4a8ea30f5c.jpg', '2026-05-06 11:45:57', '2026-05-06 11:45:57');
 
 -- Dumping structure for table cabsec_cms.page_templates
+DROP TABLE IF EXISTS `page_templates`;
 CREATE TABLE IF NOT EXISTS `page_templates` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
@@ -579,6 +600,7 @@ INSERT INTO `page_templates` (`id`, `name`, `template_key`, `description`, `sche
 	(1, 'Hero + Tabs', 'hero_tabs', 'Hero section at top with image/title/subtitle and tabbed content sections', '{"fields": [{"key": "hero_title", "label": "Hero Title", "type": "text", "required": true}, {"key": "hero_subtitle", "label": "Hero Subtitle", "type": "text", "required": false}, {"key": "hero_image_url", "label": "Hero Image URL", "type": "image", "required": false}, {"key": "tabs", "label": "Tabs", "type": "array", "itemSchema": {"fields": [{"key": "label", "label": "Tab Label", "type": "text", "required": true}, {"key": "content", "label": "Content HTML", "type": "richtext", "required": false}]}}]}', 1, '2025-11-07 08:37:25', '2025-11-07 08:37:25');
 
 -- Dumping structure for table cabsec_cms.pages
+DROP TABLE IF EXISTS `pages`;
 CREATE TABLE IF NOT EXISTS `pages` (
   `id` int NOT NULL AUTO_INCREMENT,
   `title` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
@@ -624,6 +646,7 @@ INSERT INTO `pages` (`id`, `title`, `slug`, `parent_id`, `hero_title`, `hero_sub
 	(32, 'Contact Us', '/connect/contact-us', NULL, NULL, NULL, NULL, NULL, '{"html":"<div class=\\"contact-section\\">\\r\\n\\r\\n    <div class=\\"address-card\\">\\r\\n        <div class=\\"title\\">\\r\\n            <span>📍</span>\\r\\n            <h2>Address</h2>\\r\\n        </div>\\r\\n\\r\\n        <p>Seva Teerth</p>\\r\\n        <p>New Delhi - 110011</p>\\r\\n\\r\\n        <div class=\\"block\\">\\r\\n            <h4>Content Related and Web Information Manager (WIM)</h4>\\r\\n            <p>Shri Ashish Malhotra</p>\\r\\n            <p>Director</p>\\r\\n            <p>Seva Teerth, New Delhi - 110011</p>\\r\\n            <p>+91-11-23018467</p>\\r\\n            <a href=\\"#\\">cabinet[at]nic[dot]in</a>\\r\\n        </div>\\r\\n\\r\\n        <div class=\\"block\\">\\r\\n            <h4>Chief Information Officer (CIO)</h4>\\r\\n            <p>Shri Satendra Singh</p>\\r\\n            <p>Additional Secretary</p>\\r\\n            <p>Seva Teerth, New Delhi - 110011</p>\\r\\n            <p>+91-11-23012697</p>\\r\\n            <a href=\\"#\\">satendra[dot]singhias[at]gov[dot]in</a>\\r\\n        </div>\\r\\n\\r\\n        <div class=\\"qr\\">\\r\\n            <svg aria-label=\\"QR code\\" viewBox=\\"0 0 29 29\\" xmlns=\\"http://www.w3.org/2000/svg\\" height=\\"100\\" width=\\"100\\" style={{ height: \'150px\', maxWidth: \'100%\', width: \'100%\' }}>\\r\\n                      <path d=\\"       M 7 0 l 1 0 0 1 -1 0 Z   M 10 0 l 1 0 0 1 -1 0 Z M 11 0 l 1 0 0 1 -1 0 Z M 12 0 l 1 0 0 1 -1 0 Z  M 14 0 l 1 0 0 1 -1 0 Z M 15 0 l 1 0 0 1 -1 0 Z      M 21 0 l 1 0 0 1 -1 0 Z         M 1 1 l 1 0 0 1 -1 0 Z M 2 1 l 1 0 0 1 -1 0 Z M 3 1 l 1 0 0 1 -1 0 Z M 4 1 l 1 0 0 1 -1 0 Z M 5 1 l 1 0 0 1 -1 0 Z  M 7 1 l 1 0 0 1 -1 0 Z M 8 1 l 1 0 0 1 -1 0 Z M 9 1 l 1 0 0 1 -1 0 Z M 10 1 l 1 0 0 1 -1 0 Z M 11 1 l 1 0 0 1 -1 0 Z M 12 1 l 1 0 0 1 -1 0 Z  M 14 1 l 1 0 0 1 -1 0 Z M 15 1 l 1 0 0 1 -1 0 Z M 16 1 l 1 0 0 1 -1 0 Z   M 19 1 l 1 0 0 1 -1 0 Z M 20 1 l 1 0 0 1 -1 0 Z M 21 1 l 1 0 0 1 -1 0 Z  M 23 1 l 1 0 0 1 -1 0 Z M 24 1 l 1 0 0 1 -1 0 Z M 25 1 l 1 0 0 1 -1 0 Z M 26 1 l 1 0 0 1 -1 0 Z M 27 1 l 1 0 0 1 -1 0 Z   M 1 2 l 1 0 0 1 -1 0 Z    M 5 2 l 1 0 0 1 -1 0 Z  M 7 2 l 1 0 0 1 -1 0 Z  M 9 2 l 1 0 0 1 -1 0 Z M 10 2 l 1 0 0 1 -1 0 Z     M 15 2 l 1 0 0 1 -1 0 Z  M 17 2 l 1 0 0 1 -1 0 Z M 18 2 l 1 0 0 1 -1 0 Z M 19 2 l 1 0 0 1 -1 0 Z  M 21 2 l 1 0 0 1 -1 0 Z  M 23 2 l 1 0 0 1 -1 0 Z    M 27 2 l 1 0 0 1 -1 0 Z   M 1 3 l 1 0 0 1 -1 0 Z    M 5 3 l 1 0 0 1 -1 0 Z  M 7 3 l 1 0 0 1 -1 0 Z   M 10 3 l 1 0 0 1 -1 0 Z  M 12 3 l 1 0 0 1 -1 0 Z   M 15 3 l 1 0 0 1 -1 0 Z M 16 3 l 1 0 0 1 -1 0 Z   M 19 3 l 1 0 0 1 -1 0 Z M 20 3 l 1 0 0 1 -1 0 Z M 21 3 l 1 0 0 1 -1 0 Z  M 23 3 l 1 0 0 1 -1 0 Z    M 27 3 l 1 0 0 1 -1 0 Z   M 1 4 l 1 0 0 1 -1 0 Z    M 5 4 l 1 0 0 1 -1 0 Z  M 7 4 l 1 0 0 1 -1 0 Z     M 12 4 l 1 0 0 1 -1 0 Z M 13 4 l 1 0 0 1 -1 0 Z    M 17 4 l 1 0 0 1 -1 0 Z M 18 4 l 1 0 0 1 -1 0 Z  M 20 4 l 1 0 0 1 -1 0 Z M 21 4 l 1 0 0 1 -1 0 Z  M 23 4 l 1 0 0 1 -1 0 Z    M 27 4 l 1 0 0 1 -1 0 Z   M 1 5 l 1 0 0 1 -1 0 Z M 2 5 l 1 0 0 1 -1 0 Z M 3 5 l 1 0 0 1 -1 0 Z M 4 5 l 1 0 0 1 -1 0 Z M 5 5 l 1 0 0 1 -1 0 Z  M 7 5 l 1 0 0 1 -1 0 Z M 8 5 l 1 0 0 1 -1 0 Z  M 10 5 l 1 0 0 1 -1 0 Z M 11 5 l 1 0 0 1 -1 0 Z    M 15 5 l 1 0 0 1 -1 0 Z     M 20 5 l 1 0 0 1 -1 0 Z M 21 5 l 1 0 0 1 -1 0 Z  M 23 5 l 1 0 0 1 -1 0 Z M 24 5 l 1 0 0 1 -1 0 Z M 25 5 l 1 0 0 1 -1 0 Z M 26 5 l 1 0 0 1 -1 0 Z M 27 5 l 1 0 0 1 -1 0 Z         M 7 6 l 1 0 0 1 -1 0 Z  M 9 6 l 1 0 0 1 -1 0 Z  M 11 6 l 1 0 0 1 -1 0 Z  M 13 6 l 1 0 0 1 -1 0 Z  M 15 6 l 1 0 0 1 -1 0 Z  M 17 6 l 1 0 0 1 -1 0 Z  M 19 6 l 1 0 0 1 -1 0 Z  M 21 6 l 1 0 0 1 -1 0 Z        M 0 7 l 1 0 0 1 -1 0 Z M 1 7 l 1 0 0 1 -1 0 Z M 2 7 l 1 0 0 1 -1 0 Z M 3 7 l 1 0 0 1 -1 0 Z M 4 7 l 1 0 0 1 -1 0 Z M 5 7 l 1 0 0 1 -1 0 Z M 6 7 l 1 0 0 1 -1 0 Z M 7 7 l 1 0 0 1 -1 0 Z M 8 7 l 1 0 0 1 -1 0 Z  M 10 7 l 1 0 0 1 -1 0 Z  M 12 7 l 1 0 0 1 -1 0 Z M 13 7 l 1 0 0 1 -1 0 Z       M 20 7 l 1 0 0 1 -1 0 Z M 21 7 l 1 0 0 1 -1 0 Z M 22 7 l 1 0 0 1 -1 0 Z M 23 7 l 1 0 0 1 -1 0 Z M 24 7 l 1 0 0 1 -1 0 Z M 25 7 l 1 0 0 1 -1 0 Z M 26 7 l 1 0 0 1 -1 0 Z M 27 7 l 1 0 0 1 -1 0 Z M 28 7 l 1 0 0 1 -1 0 Z     M 4 8 l 1 0 0 1 -1 0 Z M 5 8 l 1 0 0 1 -1 0 Z  M 7 8 l 1 0 0 1 -1 0 Z  M 9 8 l 1 0 0 1 -1 0 Z M 10 8 l 1 0 0 1 -1 0 Z M 11 8 l 1 0 0 1 -1 0 Z M 12 8 l 1 0 0 1 -1 0 Z     M 17 8 l 1 0 0 1 -1 0 Z  M 19 8 l 1 0 0 1 -1 0 Z M 20 8 l 1 0 0 1 -1 0 Z  M 22 8 l 1 0 0 1 -1 0 Z M 23 8 l 1 0 0 1 -1 0 Z    M 27 8 l 1 0 0 1 -1 0 Z  M 0 9 l 1 0 0 1 -1 0 Z   M 3 9 l 1 0 0 1 -1 0 Z   M 6 9 l 1 0 0 1 -1 0 Z  M 8 9 l 1 0 0 1 -1 0 Z  M 10 9 l 1 0 0 1 -1 0 Z M 11 9 l 1 0 0 1 -1 0 Z M 12 9 l 1 0 0 1 -1 0 Z M 13 9 l 1 0 0 1 -1 0 Z M 14 9 l 1 0 0 1 -1 0 Z   M 17 9 l 1 0 0 1 -1 0 Z M 18 9 l 1 0 0 1 -1 0 Z  M 20 9 l 1 0 0 1 -1 0 Z   M 23 9 l 1 0 0 1 -1 0 Z  M 25 9 l 1 0 0 1 -1 0 Z M 26 9 l 1 0 0 1 -1 0 Z M 27 9 l 1 0 0 1 -1 0 Z    M 2 10 l 1 0 0 1 -1 0 Z   M 5 10 l 1 0 0 1 -1 0 Z  M 7 10 l 1 0 0 1 -1 0 Z M 8 10 l 1 0 0 1 -1 0 Z M 9 10 l 1 0 0 1 -1 0 Z M 10 10 l 1 0 0 1 -1 0 Z M 11 10 l 1 0 0 1 -1 0 Z M 12 10 l 1 0 0 1 -1 0 Z M 13 10 l 1 0 0 1 -1 0 Z  M 15 10 l 1 0 0 1 -1 0 Z M 16 10 l 1 0 0 1 -1 0 Z M 17 10 l 1 0 0 1 -1 0 Z M 18 10 l 1 0 0 1 -1 0 Z M 19 10 l 1 0 0 1 -1 0 Z M 20 10 l 1 0 0 1 -1 0 Z   M 23 10 l 1 0 0 1 -1 0 Z  M 25 10 l 1 0 0 1 -1 0 Z   M 28 10 l 1 0 0 1 -1 0 Z M 0 11 l 1 0 0 1 -1 0 Z M 1 11 l 1 0 0 1 -1 0 Z    M 5 11 l 1 0 0 1 -1 0 Z M 6 11 l 1 0 0 1 -1 0 Z   M 9 11 l 1 0 0 1 -1 0 Z M 10 11 l 1 0 0 1 -1 0 Z     M 15 11 l 1 0 0 1 -1 0 Z  M 17 11 l 1 0 0 1 -1 0 Z M 18 11 l 1 0 0 1 -1 0 Z M 19 11 l 1 0 0 1 -1 0 Z  M 21 11 l 1 0 0 1 -1 0 Z M 22 11 l 1 0 0 1 -1 0 Z M 23 11 l 1 0 0 1 -1 0 Z M 24 11 l 1 0 0 1 -1 0 Z M 25 11 l 1 0 0 1 -1 0 Z M 26 11 l 1 0 0 1 -1 0 Z M 27 11 l 1 0 0 1 -1 0 Z  M 0 12 l 1 0 0 1 -1 0 Z  M 2 12 l 1 0 0 1 -1 0 Z   M 5 12 l 1 0 0 1 -1 0 Z   M 8 12 l 1 0 0 1 -1 0 Z  M 10 12 l 1 0 0 1 -1 0 Z  M 12 12 l 1 0 0 1 -1 0 Z  M 14 12 l 1 0 0 1 -1 0 Z M 15 12 l 1 0 0 1 -1 0 Z  M 17 12 l 1 0 0 1 -1 0 Z M 18 12 l 1 0 0 1 -1 0 Z  M 20 12 l 1 0 0 1 -1 0 Z M 21 12 l 1 0 0 1 -1 0 Z M 22 12 l 1 0 0 1 -1 0 Z  M 24 12 l 1 0 0 1 -1 0 Z   M 27 12 l 1 0 0 1 -1 0 Z M 28 12 l 1 0 0 1 -1 0 Z  M 1 13 l 1 0 0 1 -1 0 Z M 2 13 l 1 0 0 1 -1 0 Z   M 5 13 l 1 0 0 1 -1 0 Z M 6 13 l 1 0 0 1 -1 0 Z M 7 13 l 1 0 0 1 -1 0 Z  M 9 13 l 1 0 0 1 -1 0 Z   M 12 13 l 1 0 0 1 -1 0 Z M 13 13 l 1 0 0 1 -1 0 Z M 14 13 l 1 0 0 1 -1 0 Z M 15 13 l 1 0 0 1 -1 0 Z   M 18 13 l 1 0 0 1 -1 0 Z  M 20 13 l 1 0 0 1 -1 0 Z M 21 13 l 1 0 0 1 -1 0 Z  M 23 13 l 1 0 0 1 -1 0 Z M 24 13 l 1 0 0 1 -1 0 Z M 25 13 l 1 0 0 1 -1 0 Z    M 0 14 l 1 0 0 1 -1 0 Z M 1 14 l 1 0 0 1 -1 0 Z M 2 14 l 1 0 0 1 -1 0 Z  M 4 14 l 1 0 0 1 -1 0 Z       M 11 14 l 1 0 0 1 -1 0 Z  M 13 14 l 1 0 0 1 -1 0 Z  M 15 14 l 1 0 0 1 -1 0 Z  M 17 14 l 1 0 0 1 -1 0 Z    M 21 14 l 1 0 0 1 -1 0 Z  M 23 14 l 1 0 0 1 -1 0 Z M 24 14 l 1 0 0 1 -1 0 Z M 25 14 l 1 0 0 1 -1 0 Z    M 0 15 l 1 0 0 1 -1 0 Z M 1 15 l 1 0 0 1 -1 0 Z     M 6 15 l 1 0 0 1 -1 0 Z M 7 15 l 1 0 0 1 -1 0 Z M 8 15 l 1 0 0 1 -1 0 Z   M 11 15 l 1 0 0 1 -1 0 Z  M 13 15 l 1 0 0 1 -1 0 Z M 14 15 l 1 0 0 1 -1 0 Z M 15 15 l 1 0 0 1 -1 0 Z M 16 15 l 1 0 0 1 -1 0 Z M 17 15 l 1 0 0 1 -1 0 Z    M 21 15 l 1 0 0 1 -1 0 Z M 22 15 l 1 0 0 1 -1 0 Z M 23 15 l 1 0 0 1 -1 0 Z  M 25 15 l 1 0 0 1 -1 0 Z M 26 15 l 1 0 0 1 -1 0 Z  M 28 15 l 1 0 0 1 -1 0 Z     M 4 16 l 1 0 0 1 -1 0 Z    M 8 16 l 1 0 0 1 -1 0 Z M 9 16 l 1 0 0 1 -1 0 Z   M 12 16 l 1 0 0 1 -1 0 Z M 13 16 l 1 0 0 1 -1 0 Z M 14 16 l 1 0 0 1 -1 0 Z M 15 16 l 1 0 0 1 -1 0 Z M 16 16 l 1 0 0 1 -1 0 Z      M 22 16 l 1 0 0 1 -1 0 Z M 23 16 l 1 0 0 1 -1 0 Z   M 26 16 l 1 0 0 1 -1 0 Z  M 28 16 l 1 0 0 1 -1 0 Z M 0 17 l 1 0 0 1 -1 0 Z  M 2 17 l 1 0 0 1 -1 0 Z M 3 17 l 1 0 0 1 -1 0 Z  M 5 17 l 1 0 0 1 -1 0 Z M 6 17 l 1 0 0 1 -1 0 Z  M 8 17 l 1 0 0 1 -1 0 Z   M 11 17 l 1 0 0 1 -1 0 Z   M 14 17 l 1 0 0 1 -1 0 Z M 15 17 l 1 0 0 1 -1 0 Z M 16 17 l 1 0 0 1 -1 0 Z M 17 17 l 1 0 0 1 -1 0 Z M 18 17 l 1 0 0 1 -1 0 Z M 19 17 l 1 0 0 1 -1 0 Z   M 22 17 l 1 0 0 1 -1 0 Z  M 24 17 l 1 0 0 1 -1 0 Z    M 28 17 l 1 0 0 1 -1 0 Z  M 1 18 l 1 0 0 1 -1 0 Z  M 3 18 l 1 0 0 1 -1 0 Z M 4 18 l 1 0 0 1 -1 0 Z M 5 18 l 1 0 0 1 -1 0 Z    M 9 18 l 1 0 0 1 -1 0 Z    M 13 18 l 1 0 0 1 -1 0 Z M 14 18 l 1 0 0 1 -1 0 Z  M 16 18 l 1 0 0 1 -1 0 Z  M 18 18 l 1 0 0 1 -1 0 Z M 19 18 l 1 0 0 1 -1 0 Z   M 22 18 l 1 0 0 1 -1 0 Z   M 25 18 l 1 0 0 1 -1 0 Z  M 27 18 l 1 0 0 1 -1 0 Z M 28 18 l 1 0 0 1 -1 0 Z M 0 19 l 1 0 0 1 -1 0 Z M 1 19 l 1 0 0 1 -1 0 Z M 2 19 l 1 0 0 1 -1 0 Z   M 5 19 l 1 0 0 1 -1 0 Z M 6 19 l 1 0 0 1 -1 0 Z M 7 19 l 1 0 0 1 -1 0 Z  M 9 19 l 1 0 0 1 -1 0 Z  M 11 19 l 1 0 0 1 -1 0 Z  M 13 19 l 1 0 0 1 -1 0 Z M 14 19 l 1 0 0 1 -1 0 Z  M 16 19 l 1 0 0 1 -1 0 Z    M 20 19 l 1 0 0 1 -1 0 Z M 21 19 l 1 0 0 1 -1 0 Z M 22 19 l 1 0 0 1 -1 0 Z  M 24 19 l 1 0 0 1 -1 0 Z M 25 19 l 1 0 0 1 -1 0 Z  M 27 19 l 1 0 0 1 -1 0 Z M 28 19 l 1 0 0 1 -1 0 Z M 0 20 l 1 0 0 1 -1 0 Z    M 4 20 l 1 0 0 1 -1 0 Z M 5 20 l 1 0 0 1 -1 0 Z  M 7 20 l 1 0 0 1 -1 0 Z M 8 20 l 1 0 0 1 -1 0 Z      M 14 20 l 1 0 0 1 -1 0 Z  M 16 20 l 1 0 0 1 -1 0 Z           M 27 20 l 1 0 0 1 -1 0 Z M 28 20 l 1 0 0 1 -1 0 Z M 0 21 l 1 0 0 1 -1 0 Z M 1 21 l 1 0 0 1 -1 0 Z M 2 21 l 1 0 0 1 -1 0 Z M 3 21 l 1 0 0 1 -1 0 Z M 4 21 l 1 0 0 1 -1 0 Z M 5 21 l 1 0 0 1 -1 0 Z M 6 21 l 1 0 0 1 -1 0 Z M 7 21 l 1 0 0 1 -1 0 Z    M 11 21 l 1 0 0 1 -1 0 Z   M 14 21 l 1 0 0 1 -1 0 Z M 15 21 l 1 0 0 1 -1 0 Z   M 18 21 l 1 0 0 1 -1 0 Z M 19 21 l 1 0 0 1 -1 0 Z  M 21 21 l 1 0 0 1 -1 0 Z M 22 21 l 1 0 0 1 -1 0 Z M 23 21 l 1 0 0 1 -1 0 Z             M 7 22 l 1 0 0 1 -1 0 Z M 8 22 l 1 0 0 1 -1 0 Z M 9 22 l 1 0 0 1 -1 0 Z M 10 22 l 1 0 0 1 -1 0 Z    M 14 22 l 1 0 0 1 -1 0 Z M 15 22 l 1 0 0 1 -1 0 Z M 16 22 l 1 0 0 1 -1 0 Z M 17 22 l 1 0 0 1 -1 0 Z M 18 22 l 1 0 0 1 -1 0 Z   M 21 22 l 1 0 0 1 -1 0 Z  M 23 22 l 1 0 0 1 -1 0 Z   M 26 22 l 1 0 0 1 -1 0 Z  M 28 22 l 1 0 0 1 -1 0 Z  M 1 23 l 1 0 0 1 -1 0 Z M 2 23 l 1 0 0 1 -1 0 Z M 3 23 l 1 0 0 1 -1 0 Z M 4 23 l 1 0 0 1 -1 0 Z M 5 23 l 1 0 0 1 -1 0 Z  M 7 23 l 1 0 0 1 -1 0 Z M 8 23 l 1 0 0 1 -1 0 Z M 9 23 l 1 0 0 1 -1 0 Z M 10 23 l 1 0 0 1 -1 0 Z M 11 23 l 1 0 0 1 -1 0 Z M 12 23 l 1 0 0 1 -1 0 Z M 13 23 l 1 0 0 1 -1 0 Z M 14 23 l 1 0 0 1 -1 0 Z M 15 23 l 1 0 0 1 -1 0 Z  M 17 23 l 1 0 0 1 -1 0 Z M 18 23 l 1 0 0 1 -1 0 Z M 19 23 l 1 0 0 1 -1 0 Z  M 21 23 l 1 0 0 1 -1 0 Z M 22 23 l 1 0 0 1 -1 0 Z M 23 23 l 1 0 0 1 -1 0 Z   M 26 23 l 1 0 0 1 -1 0 Z    M 1 24 l 1 0 0 1 -1 0 Z    M 5 24 l 1 0 0 1 -1 0 Z  M 7 24 l 1 0 0 1 -1 0 Z M 8 24 l 1 0 0 1 -1 0 Z   M 11 24 l 1 0 0 1 -1 0 Z  M 13 24 l 1 0 0 1 -1 0 Z  M 15 24 l 1 0 0 1 -1 0 Z   M 18 24 l 1 0 0 1 -1 0 Z M 19 24 l 1 0 0 1 -1 0 Z      M 25 24 l 1 0 0 1 -1 0 Z     M 1 25 l 1 0 0 1 -1 0 Z    M 5 25 l 1 0 0 1 -1 0 Z  M 7 25 l 1 0 0 1 -1 0 Z      M 13 25 l 1 0 0 1 -1 0 Z   M 16 25 l 1 0 0 1 -1 0 Z   M 19 25 l 1 0 0 1 -1 0 Z M 20 25 l 1 0 0 1 -1 0 Z  M 22 25 l 1 0 0 1 -1 0 Z    M 26 25 l 1 0 0 1 -1 0 Z M 27 25 l 1 0 0 1 -1 0 Z   M 1 26 l 1 0 0 1 -1 0 Z    M 5 26 l 1 0 0 1 -1 0 Z  M 7 26 l 1 0 0 1 -1 0 Z  M 9 26 l 1 0 0 1 -1 0 Z   M 12 26 l 1 0 0 1 -1 0 Z  M 14 26 l 1 0 0 1 -1 0 Z M 15 26 l 1 0 0 1 -1 0 Z M 16 26 l 1 0 0 1 -1 0 Z  M 18 26 l 1 0 0 1 -1 0 Z M 19 26 l 1 0 0 1 -1 0 Z   M 22 26 l 1 0 0 1 -1 0 Z  M 24 26 l 1 0 0 1 -1 0 Z M 25 26 l 1 0 0 1 -1 0 Z  M 27 26 l 1 0 0 1 -1 0 Z   M 1 27 l 1 0 0 1 -1 0 Z M 2 27 l 1 0 0 1 -1 0 Z M 3 27 l 1 0 0 1 -1 0 Z M 4 27 l 1 0 0 1 -1 0 Z M 5 27 l 1 0 0 1 -1 0 Z  M 7 27 l 1 0 0 1 -1 0 Z     M 12 27 l 1 0 0 1 -1 0 Z M 13 27 l 1 0 0 1 -1 0 Z    M 17 27 l 1 0 0 1 -1 0 Z M 18 27 l 1 0 0 1 -1 0 Z M 19 27 l 1 0 0 1 -1 0 Z   M 22 27 l 1 0 0 1 -1 0 Z    M 26 27 l 1 0 0 1 -1 0 Z  M 28 27 l 1 0 0 1 -1 0 Z        M 7 28 l 1 0 0 1 -1 0 Z   M 10 28 l 1 0 0 1 -1 0 Z M 11 28 l 1 0 0 1 -1 0 Z  M 13 28 l 1 0 0 1 -1 0 Z  M 15 28 l 1 0 0 1 -1 0 Z M 16 28 l 1 0 0 1 -1 0 Z   M 19 28 l 1 0 0 1 -1 0 Z  M 21 28 l 1 0 0 1 -1 0 Z M 22 28 l 1 0 0 1 -1 0 Z M 23 28 l 1 0 0 1 -1 0 Z  M 25 28 l 1 0 0 1 -1 0 Z M 26 28 l 1 0 0 1 -1 0 Z  M 28 28 l 1 0 0 1 -1 0 Z\\" fill=\\"#FFFFFF\\"></path>\\r\\n                      <path d=\\"M 0 0 l 1 0 0 1 -1 0 Z M 1 0 l 1 0 0 1 -1 0 Z M 2 0 l 1 0 0 1 -1 0 Z M 3 0 l 1 0 0 1 -1 0 Z M 4 0 l 1 0 0 1 -1 0 Z M 5 0 l 1 0 0 1 -1 0 Z M 6 0 l 1 0 0 1 -1 0 Z  M 8 0 l 1 0 0 1 -1 0 Z M 9 0 l 1 0 0 1 -1 0 Z    M 13 0 l 1 0 0 1 -1 0 Z   M 16 0 l 1 0 0 1 -1 0 Z M 17 0 l 1 0 0 1 -1 0 Z M 18 0 l 1 0 0 1 -1 0 Z M 19 0 l 1 0 0 1 -1 0 Z M 20 0 l 1 0 0 1 -1 0 Z  M 22 0 l 1 0 0 1 -1 0 Z M 23 0 l 1 0 0 1 -1 0 Z M 24 0 l 1 0 0 1 -1 0 Z M 25 0 l 1 0 0 1 -1 0 Z M 26 0 l 1 0 0 1 -1 0 Z M 27 0 l 1 0 0 1 -1 0 Z M 28 0 l 1 0 0 1 -1 0 Z M 0 1 l 1 0 0 1 -1 0 Z      M 6 1 l 1 0 0 1 -1 0 Z       M 13 1 l 1 0 0 1 -1 0 Z    M 17 1 l 1 0 0 1 -1 0 Z M 18 1 l 1 0 0 1 -1 0 Z    M 22 1 l 1 0 0 1 -1 0 Z      M 28 1 l 1 0 0 1 -1 0 Z M 0 2 l 1 0 0 1 -1 0 Z  M 2 2 l 1 0 0 1 -1 0 Z M 3 2 l 1 0 0 1 -1 0 Z M 4 2 l 1 0 0 1 -1 0 Z  M 6 2 l 1 0 0 1 -1 0 Z  M 8 2 l 1 0 0 1 -1 0 Z   M 11 2 l 1 0 0 1 -1 0 Z M 12 2 l 1 0 0 1 -1 0 Z M 13 2 l 1 0 0 1 -1 0 Z M 14 2 l 1 0 0 1 -1 0 Z  M 16 2 l 1 0 0 1 -1 0 Z    M 20 2 l 1 0 0 1 -1 0 Z  M 22 2 l 1 0 0 1 -1 0 Z  M 24 2 l 1 0 0 1 -1 0 Z M 25 2 l 1 0 0 1 -1 0 Z M 26 2 l 1 0 0 1 -1 0 Z  M 28 2 l 1 0 0 1 -1 0 Z M 0 3 l 1 0 0 1 -1 0 Z  M 2 3 l 1 0 0 1 -1 0 Z M 3 3 l 1 0 0 1 -1 0 Z M 4 3 l 1 0 0 1 -1 0 Z  M 6 3 l 1 0 0 1 -1 0 Z  M 8 3 l 1 0 0 1 -1 0 Z M 9 3 l 1 0 0 1 -1 0 Z  M 11 3 l 1 0 0 1 -1 0 Z  M 13 3 l 1 0 0 1 -1 0 Z M 14 3 l 1 0 0 1 -1 0 Z   M 17 3 l 1 0 0 1 -1 0 Z M 18 3 l 1 0 0 1 -1 0 Z    M 22 3 l 1 0 0 1 -1 0 Z  M 24 3 l 1 0 0 1 -1 0 Z M 25 3 l 1 0 0 1 -1 0 Z M 26 3 l 1 0 0 1 -1 0 Z  M 28 3 l 1 0 0 1 -1 0 Z M 0 4 l 1 0 0 1 -1 0 Z  M 2 4 l 1 0 0 1 -1 0 Z M 3 4 l 1 0 0 1 -1 0 Z M 4 4 l 1 0 0 1 -1 0 Z  M 6 4 l 1 0 0 1 -1 0 Z  M 8 4 l 1 0 0 1 -1 0 Z M 9 4 l 1 0 0 1 -1 0 Z M 10 4 l 1 0 0 1 -1 0 Z M 11 4 l 1 0 0 1 -1 0 Z   M 14 4 l 1 0 0 1 -1 0 Z M 15 4 l 1 0 0 1 -1 0 Z M 16 4 l 1 0 0 1 -1 0 Z   M 19 4 l 1 0 0 1 -1 0 Z   M 22 4 l 1 0 0 1 -1 0 Z  M 24 4 l 1 0 0 1 -1 0 Z M 25 4 l 1 0 0 1 -1 0 Z M 26 4 l 1 0 0 1 -1 0 Z  M 28 4 l 1 0 0 1 -1 0 Z M 0 5 l 1 0 0 1 -1 0 Z      M 6 5 l 1 0 0 1 -1 0 Z   M 9 5 l 1 0 0 1 -1 0 Z   M 12 5 l 1 0 0 1 -1 0 Z M 13 5 l 1 0 0 1 -1 0 Z M 14 5 l 1 0 0 1 -1 0 Z  M 16 5 l 1 0 0 1 -1 0 Z M 17 5 l 1 0 0 1 -1 0 Z M 18 5 l 1 0 0 1 -1 0 Z M 19 5 l 1 0 0 1 -1 0 Z   M 22 5 l 1 0 0 1 -1 0 Z      M 28 5 l 1 0 0 1 -1 0 Z M 0 6 l 1 0 0 1 -1 0 Z M 1 6 l 1 0 0 1 -1 0 Z M 2 6 l 1 0 0 1 -1 0 Z M 3 6 l 1 0 0 1 -1 0 Z M 4 6 l 1 0 0 1 -1 0 Z M 5 6 l 1 0 0 1 -1 0 Z M 6 6 l 1 0 0 1 -1 0 Z  M 8 6 l 1 0 0 1 -1 0 Z  M 10 6 l 1 0 0 1 -1 0 Z  M 12 6 l 1 0 0 1 -1 0 Z  M 14 6 l 1 0 0 1 -1 0 Z  M 16 6 l 1 0 0 1 -1 0 Z  M 18 6 l 1 0 0 1 -1 0 Z  M 20 6 l 1 0 0 1 -1 0 Z  M 22 6 l 1 0 0 1 -1 0 Z M 23 6 l 1 0 0 1 -1 0 Z M 24 6 l 1 0 0 1 -1 0 Z M 25 6 l 1 0 0 1 -1 0 Z M 26 6 l 1 0 0 1 -1 0 Z M 27 6 l 1 0 0 1 -1 0 Z M 28 6 l 1 0 0 1 -1 0 Z          M 9 7 l 1 0 0 1 -1 0 Z  M 11 7 l 1 0 0 1 -1 0 Z   M 14 7 l 1 0 0 1 -1 0 Z M 15 7 l 1 0 0 1 -1 0 Z M 16 7 l 1 0 0 1 -1 0 Z M 17 7 l 1 0 0 1 -1 0 Z M 18 7 l 1 0 0 1 -1 0 Z M 19 7 l 1 0 0 1 -1 0 Z          M 0 8 l 1 0 0 1 -1 0 Z M 1 8 l 1 0 0 1 -1 0 Z M 2 8 l 1 0 0 1 -1 0 Z M 3 8 l 1 0 0 1 -1 0 Z   M 6 8 l 1 0 0 1 -1 0 Z  M 8 8 l 1 0 0 1 -1 0 Z     M 13 8 l 1 0 0 1 -1 0 Z M 14 8 l 1 0 0 1 -1 0 Z M 15 8 l 1 0 0 1 -1 0 Z M 16 8 l 1 0 0 1 -1 0 Z  M 18 8 l 1 0 0 1 -1 0 Z   M 21 8 l 1 0 0 1 -1 0 Z   M 24 8 l 1 0 0 1 -1 0 Z M 25 8 l 1 0 0 1 -1 0 Z M 26 8 l 1 0 0 1 -1 0 Z  M 28 8 l 1 0 0 1 -1 0 Z  M 1 9 l 1 0 0 1 -1 0 Z M 2 9 l 1 0 0 1 -1 0 Z  M 4 9 l 1 0 0 1 -1 0 Z M 5 9 l 1 0 0 1 -1 0 Z  M 7 9 l 1 0 0 1 -1 0 Z  M 9 9 l 1 0 0 1 -1 0 Z      M 15 9 l 1 0 0 1 -1 0 Z M 16 9 l 1 0 0 1 -1 0 Z   M 19 9 l 1 0 0 1 -1 0 Z  M 21 9 l 1 0 0 1 -1 0 Z M 22 9 l 1 0 0 1 -1 0 Z  M 24 9 l 1 0 0 1 -1 0 Z    M 28 9 l 1 0 0 1 -1 0 Z M 0 10 l 1 0 0 1 -1 0 Z M 1 10 l 1 0 0 1 -1 0 Z  M 3 10 l 1 0 0 1 -1 0 Z M 4 10 l 1 0 0 1 -1 0 Z  M 6 10 l 1 0 0 1 -1 0 Z        M 14 10 l 1 0 0 1 -1 0 Z       M 21 10 l 1 0 0 1 -1 0 Z M 22 10 l 1 0 0 1 -1 0 Z  M 24 10 l 1 0 0 1 -1 0 Z  M 26 10 l 1 0 0 1 -1 0 Z M 27 10 l 1 0 0 1 -1 0 Z    M 2 11 l 1 0 0 1 -1 0 Z M 3 11 l 1 0 0 1 -1 0 Z M 4 11 l 1 0 0 1 -1 0 Z   M 7 11 l 1 0 0 1 -1 0 Z M 8 11 l 1 0 0 1 -1 0 Z   M 11 11 l 1 0 0 1 -1 0 Z M 12 11 l 1 0 0 1 -1 0 Z M 13 11 l 1 0 0 1 -1 0 Z M 14 11 l 1 0 0 1 -1 0 Z  M 16 11 l 1 0 0 1 -1 0 Z    M 20 11 l 1 0 0 1 -1 0 Z        M 28 11 l 1 0 0 1 -1 0 Z  M 1 12 l 1 0 0 1 -1 0 Z  M 3 12 l 1 0 0 1 -1 0 Z M 4 12 l 1 0 0 1 -1 0 Z  M 6 12 l 1 0 0 1 -1 0 Z M 7 12 l 1 0 0 1 -1 0 Z  M 9 12 l 1 0 0 1 -1 0 Z  M 11 12 l 1 0 0 1 -1 0 Z  M 13 12 l 1 0 0 1 -1 0 Z   M 16 12 l 1 0 0 1 -1 0 Z   M 19 12 l 1 0 0 1 -1 0 Z    M 23 12 l 1 0 0 1 -1 0 Z  M 25 12 l 1 0 0 1 -1 0 Z M 26 12 l 1 0 0 1 -1 0 Z   M 0 13 l 1 0 0 1 -1 0 Z   M 3 13 l 1 0 0 1 -1 0 Z M 4 13 l 1 0 0 1 -1 0 Z    M 8 13 l 1 0 0 1 -1 0 Z  M 10 13 l 1 0 0 1 -1 0 Z M 11 13 l 1 0 0 1 -1 0 Z     M 16 13 l 1 0 0 1 -1 0 Z M 17 13 l 1 0 0 1 -1 0 Z  M 19 13 l 1 0 0 1 -1 0 Z   M 22 13 l 1 0 0 1 -1 0 Z    M 26 13 l 1 0 0 1 -1 0 Z M 27 13 l 1 0 0 1 -1 0 Z M 28 13 l 1 0 0 1 -1 0 Z    M 3 14 l 1 0 0 1 -1 0 Z  M 5 14 l 1 0 0 1 -1 0 Z M 6 14 l 1 0 0 1 -1 0 Z M 7 14 l 1 0 0 1 -1 0 Z M 8 14 l 1 0 0 1 -1 0 Z M 9 14 l 1 0 0 1 -1 0 Z M 10 14 l 1 0 0 1 -1 0 Z  M 12 14 l 1 0 0 1 -1 0 Z  M 14 14 l 1 0 0 1 -1 0 Z  M 16 14 l 1 0 0 1 -1 0 Z  M 18 14 l 1 0 0 1 -1 0 Z M 19 14 l 1 0 0 1 -1 0 Z M 20 14 l 1 0 0 1 -1 0 Z  M 22 14 l 1 0 0 1 -1 0 Z    M 26 14 l 1 0 0 1 -1 0 Z M 27 14 l 1 0 0 1 -1 0 Z M 28 14 l 1 0 0 1 -1 0 Z   M 2 15 l 1 0 0 1 -1 0 Z M 3 15 l 1 0 0 1 -1 0 Z M 4 15 l 1 0 0 1 -1 0 Z M 5 15 l 1 0 0 1 -1 0 Z    M 9 15 l 1 0 0 1 -1 0 Z M 10 15 l 1 0 0 1 -1 0 Z  M 12 15 l 1 0 0 1 -1 0 Z      M 18 15 l 1 0 0 1 -1 0 Z M 19 15 l 1 0 0 1 -1 0 Z M 20 15 l 1 0 0 1 -1 0 Z    M 24 15 l 1 0 0 1 -1 0 Z   M 27 15 l 1 0 0 1 -1 0 Z  M 0 16 l 1 0 0 1 -1 0 Z M 1 16 l 1 0 0 1 -1 0 Z M 2 16 l 1 0 0 1 -1 0 Z M 3 16 l 1 0 0 1 -1 0 Z  M 5 16 l 1 0 0 1 -1 0 Z M 6 16 l 1 0 0 1 -1 0 Z M 7 16 l 1 0 0 1 -1 0 Z   M 10 16 l 1 0 0 1 -1 0 Z M 11 16 l 1 0 0 1 -1 0 Z      M 17 16 l 1 0 0 1 -1 0 Z M 18 16 l 1 0 0 1 -1 0 Z M 19 16 l 1 0 0 1 -1 0 Z M 20 16 l 1 0 0 1 -1 0 Z M 21 16 l 1 0 0 1 -1 0 Z   M 24 16 l 1 0 0 1 -1 0 Z M 25 16 l 1 0 0 1 -1 0 Z  M 27 16 l 1 0 0 1 -1 0 Z   M 1 17 l 1 0 0 1 -1 0 Z   M 4 17 l 1 0 0 1 -1 0 Z   M 7 17 l 1 0 0 1 -1 0 Z  M 9 17 l 1 0 0 1 -1 0 Z M 10 17 l 1 0 0 1 -1 0 Z  M 12 17 l 1 0 0 1 -1 0 Z M 13 17 l 1 0 0 1 -1 0 Z       M 20 17 l 1 0 0 1 -1 0 Z M 21 17 l 1 0 0 1 -1 0 Z  M 23 17 l 1 0 0 1 -1 0 Z  M 25 17 l 1 0 0 1 -1 0 Z M 26 17 l 1 0 0 1 -1 0 Z M 27 17 l 1 0 0 1 -1 0 Z  M 0 18 l 1 0 0 1 -1 0 Z  M 2 18 l 1 0 0 1 -1 0 Z    M 6 18 l 1 0 0 1 -1 0 Z M 7 18 l 1 0 0 1 -1 0 Z M 8 18 l 1 0 0 1 -1 0 Z  M 10 18 l 1 0 0 1 -1 0 Z M 11 18 l 1 0 0 1 -1 0 Z M 12 18 l 1 0 0 1 -1 0 Z   M 15 18 l 1 0 0 1 -1 0 Z  M 17 18 l 1 0 0 1 -1 0 Z   M 20 18 l 1 0 0 1 -1 0 Z M 21 18 l 1 0 0 1 -1 0 Z  M 23 18 l 1 0 0 1 -1 0 Z M 24 18 l 1 0 0 1 -1 0 Z  M 26 18 l 1 0 0 1 -1 0 Z      M 3 19 l 1 0 0 1 -1 0 Z M 4 19 l 1 0 0 1 -1 0 Z    M 8 19 l 1 0 0 1 -1 0 Z  M 10 19 l 1 0 0 1 -1 0 Z  M 12 19 l 1 0 0 1 -1 0 Z   M 15 19 l 1 0 0 1 -1 0 Z  M 17 19 l 1 0 0 1 -1 0 Z M 18 19 l 1 0 0 1 -1 0 Z M 19 19 l 1 0 0 1 -1 0 Z    M 23 19 l 1 0 0 1 -1 0 Z   M 26 19 l 1 0 0 1 -1 0 Z    M 1 20 l 1 0 0 1 -1 0 Z M 2 20 l 1 0 0 1 -1 0 Z M 3 20 l 1 0 0 1 -1 0 Z   M 6 20 l 1 0 0 1 -1 0 Z   M 9 20 l 1 0 0 1 -1 0 Z M 10 20 l 1 0 0 1 -1 0 Z M 11 20 l 1 0 0 1 -1 0 Z M 12 20 l 1 0 0 1 -1 0 Z M 13 20 l 1 0 0 1 -1 0 Z  M 15 20 l 1 0 0 1 -1 0 Z  M 17 20 l 1 0 0 1 -1 0 Z M 18 20 l 1 0 0 1 -1 0 Z M 19 20 l 1 0 0 1 -1 0 Z M 20 20 l 1 0 0 1 -1 0 Z M 21 20 l 1 0 0 1 -1 0 Z M 22 20 l 1 0 0 1 -1 0 Z M 23 20 l 1 0 0 1 -1 0 Z M 24 20 l 1 0 0 1 -1 0 Z M 25 20 l 1 0 0 1 -1 0 Z M 26 20 l 1 0 0 1 -1 0 Z           M 8 21 l 1 0 0 1 -1 0 Z M 9 21 l 1 0 0 1 -1 0 Z M 10 21 l 1 0 0 1 -1 0 Z  M 12 21 l 1 0 0 1 -1 0 Z M 13 21 l 1 0 0 1 -1 0 Z   M 16 21 l 1 0 0 1 -1 0 Z M 17 21 l 1 0 0 1 -1 0 Z   M 20 21 l 1 0 0 1 -1 0 Z    M 24 21 l 1 0 0 1 -1 0 Z M 25 21 l 1 0 0 1 -1 0 Z M 26 21 l 1 0 0 1 -1 0 Z M 27 21 l 1 0 0 1 -1 0 Z M 28 21 l 1 0 0 1 -1 0 Z M 0 22 l 1 0 0 1 -1 0 Z M 1 22 l 1 0 0 1 -1 0 Z M 2 22 l 1 0 0 1 -1 0 Z M 3 22 l 1 0 0 1 -1 0 Z M 4 22 l 1 0 0 1 -1 0 Z M 5 22 l 1 0 0 1 -1 0 Z M 6 22 l 1 0 0 1 -1 0 Z     M 11 22 l 1 0 0 1 -1 0 Z M 12 22 l 1 0 0 1 -1 0 Z M 13 22 l 1 0 0 1 -1 0 Z      M 19 22 l 1 0 0 1 -1 0 Z M 20 22 l 1 0 0 1 -1 0 Z  M 22 22 l 1 0 0 1 -1 0 Z  M 24 22 l 1 0 0 1 -1 0 Z M 25 22 l 1 0 0 1 -1 0 Z  M 27 22 l 1 0 0 1 -1 0 Z  M 0 23 l 1 0 0 1 -1 0 Z      M 6 23 l 1 0 0 1 -1 0 Z          M 16 23 l 1 0 0 1 -1 0 Z    M 20 23 l 1 0 0 1 -1 0 Z    M 24 23 l 1 0 0 1 -1 0 Z M 25 23 l 1 0 0 1 -1 0 Z  M 27 23 l 1 0 0 1 -1 0 Z M 28 23 l 1 0 0 1 -1 0 Z M 0 24 l 1 0 0 1 -1 0 Z  M 2 24 l 1 0 0 1 -1 0 Z M 3 24 l 1 0 0 1 -1 0 Z M 4 24 l 1 0 0 1 -1 0 Z  M 6 24 l 1 0 0 1 -1 0 Z   M 9 24 l 1 0 0 1 -1 0 Z M 10 24 l 1 0 0 1 -1 0 Z  M 12 24 l 1 0 0 1 -1 0 Z  M 14 24 l 1 0 0 1 -1 0 Z  M 16 24 l 1 0 0 1 -1 0 Z M 17 24 l 1 0 0 1 -1 0 Z   M 20 24 l 1 0 0 1 -1 0 Z M 21 24 l 1 0 0 1 -1 0 Z M 22 24 l 1 0 0 1 -1 0 Z M 23 24 l 1 0 0 1 -1 0 Z M 24 24 l 1 0 0 1 -1 0 Z  M 26 24 l 1 0 0 1 -1 0 Z M 27 24 l 1 0 0 1 -1 0 Z M 28 24 l 1 0 0 1 -1 0 Z M 0 25 l 1 0 0 1 -1 0 Z  M 2 25 l 1 0 0 1 -1 0 Z M 3 25 l 1 0 0 1 -1 0 Z M 4 25 l 1 0 0 1 -1 0 Z  M 6 25 l 1 0 0 1 -1 0 Z  M 8 25 l 1 0 0 1 -1 0 Z M 9 25 l 1 0 0 1 -1 0 Z M 10 25 l 1 0 0 1 -1 0 Z M 11 25 l 1 0 0 1 -1 0 Z M 12 25 l 1 0 0 1 -1 0 Z  M 14 25 l 1 0 0 1 -1 0 Z M 15 25 l 1 0 0 1 -1 0 Z  M 17 25 l 1 0 0 1 -1 0 Z M 18 25 l 1 0 0 1 -1 0 Z   M 21 25 l 1 0 0 1 -1 0 Z  M 23 25 l 1 0 0 1 -1 0 Z M 24 25 l 1 0 0 1 -1 0 Z M 25 25 l 1 0 0 1 -1 0 Z   M 28 25 l 1 0 0 1 -1 0 Z M 0 26 l 1 0 0 1 -1 0 Z  M 2 26 l 1 0 0 1 -1 0 Z M 3 26 l 1 0 0 1 -1 0 Z M 4 26 l 1 0 0 1 -1 0 Z  M 6 26 l 1 0 0 1 -1 0 Z  M 8 26 l 1 0 0 1 -1 0 Z  M 10 26 l 1 0 0 1 -1 0 Z M 11 26 l 1 0 0 1 -1 0 Z  M 13 26 l 1 0 0 1 -1 0 Z    M 17 26 l 1 0 0 1 -1 0 Z   M 20 26 l 1 0 0 1 -1 0 Z M 21 26 l 1 0 0 1 -1 0 Z  M 23 26 l 1 0 0 1 -1 0 Z   M 26 26 l 1 0 0 1 -1 0 Z  M 28 26 l 1 0 0 1 -1 0 Z M 0 27 l 1 0 0 1 -1 0 Z      M 6 27 l 1 0 0 1 -1 0 Z  M 8 27 l 1 0 0 1 -1 0 Z M 9 27 l 1 0 0 1 -1 0 Z M 10 27 l 1 0 0 1 -1 0 Z M 11 27 l 1 0 0 1 -1 0 Z   M 14 27 l 1 0 0 1 -1 0 Z M 15 27 l 1 0 0 1 -1 0 Z M 16 27 l 1 0 0 1 -1 0 Z    M 20 27 l 1 0 0 1 -1 0 Z M 21 27 l 1 0 0 1 -1 0 Z  M 23 27 l 1 0 0 1 -1 0 Z M 24 27 l 1 0 0 1 -1 0 Z M 25 27 l 1 0 0 1 -1 0 Z  M 27 27 l 1 0 0 1 -1 0 Z  M 0 28 l 1 0 0 1 -1 0 Z M 1 28 l 1 0 0 1 -1 0 Z M 2 28 l 1 0 0 1 -1 0 Z M 3 28 l 1 0 0 1 -1 0 Z M 4 28 l 1 0 0 1 -1 0 Z M 5 28 l 1 0 0 1 -1 0 Z M 6 28 l 1 0 0 1 -1 0 Z  M 8 28 l 1 0 0 1 -1 0 Z M 9 28 l 1 0 0 1 -1 0 Z   M 12 28 l 1 0 0 1 -1 0 Z  M 14 28 l 1 0 0 1 -1 0 Z   M 17 28 l 1 0 0 1 -1 0 Z M 18 28 l 1 0 0 1 -1 0 Z  M 20 28 l 1 0 0 1 -1 0 Z    M 24 28 l 1 0 0 1 -1 0 Z   M 27 28 l 1 0 0 1 -1 0 Z \\" fill=\\"#000000\\"></path>\\r\\n                    </svg>\\r\\n        </div>\\r\\n    </div>\\r\\n\\r\\n    <div class=\\"map-card\\">\\r\\n        <iframe\\r\\n            src=\\"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3502.5412182926093!2d77.19751527546225!3d28.61353708494304!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390ce2fd6c90d0bf%3A0x60eca3ac6c2490a0!2sCabinet%20Secretariat!5e0!3m2!1sen!2sin!4v1758187287431!5m2!1sen!2sin\\"\\r\\n        >\\r\\n        </iframe>\\r\\n    </div>\\r\\n\\r\\n</div>","css":".contact-section{\\r\\n    margin: 2%  0%;\\r\\n    display: flex;\\r\\n}\\r\\n.address-card{\\r\\n    width:32%;\\r\\n    padding:12px 18px;\\r\\n}\\r\\n\\r\\n.map-card{\\r\\n    width:68%;\\r\\n}\\r\\n\\r\\n.title{\\r\\n    display:flex;\\r\\n    align-items:center;\\r\\n    gap:8px;\\r\\n    margin-bottom:10px;\\r\\n}\\r\\n\\r\\n.title h2{\\r\\n    font-size:18px;\\r\\n    font-weight:600;\\r\\n    color:#111;\\r\\n}\\r\\n\\r\\n.address-card p{\\r\\n    font-size:13px;\\r\\n    margin: 0;\\r\\n    color:#222;\\r\\n}\\r\\n\\r\\n.block{\\r\\n    margin-top:14px;\\r\\n}\\r\\n\\r\\n.block h4{\\r\\n    font-size:13px;\\r\\n    font-weight:700;\\r\\n    line-height:1.4;\\r\\n    margin-bottom:4px;\\r\\n    color:#111;\\r\\n}\\r\\n\\r\\n.block a{\\r\\n    font-size:13px;\\r\\n    color:#2563eb;\\r\\n    text-decoration:none;\\r\\n}\\r\\n\\r\\n.qr{\\r\\n    margin-top:15px;\\r\\n    text-align:center;\\r\\n}\\r\\n\\r\\n.qr img{\\r\\n    width:150px;\\r\\n    height:150px;\\r\\n}\\r\\n\\r\\n.map-card iframe{\\r\\n    width:100%;\\r\\n    height:575px;\\r\\n    border:0;\\r\\n}\\r\\n\\r\\n@media(max-width:768px){\\r\\n\\r\\n    .contact-section{\\r\\n        flex-direction:column;\\r\\n    }\\r\\n\\r\\n    .address-card,\\r\\n    .map-card{\\r\\n        width:100%;\\r\\n    }\\r\\n\\r\\n    .map-card iframe{\\r\\n        height:400px;\\r\\n    }\\r\\n}","js":""}', 0, 1, '2026-06-08 10:13:18', '2026-06-08 11:00:22', 60);
 
 -- Dumping structure for table cabsec_cms.partner_logos
+DROP TABLE IF EXISTS `partner_logos`;
 CREATE TABLE IF NOT EXISTS `partner_logos` (
   `id` int NOT NULL AUTO_INCREMENT,
   `title` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
@@ -647,6 +670,7 @@ INSERT INTO `partner_logos` (`id`, `title`, `image_url`, `alt_text`, `display_or
 	(6, '', '/uploads/media/1778068636290_w4oql3.jpg', 'dd10418bcbdd24e8c56f2ca2ef3c85a8', 7, 1, '2026-05-06 11:57:18', '2026-05-06 11:57:18');
 
 -- Dumping structure for table cabsec_cms.photo_galleries
+DROP TABLE IF EXISTS `photo_galleries`;
 CREATE TABLE IF NOT EXISTS `photo_galleries` (
   `id` int NOT NULL AUTO_INCREMENT,
   `title` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
@@ -664,6 +688,7 @@ INSERT INTO `photo_galleries` (`id`, `title`, `date`, `images`, `created_at`, `u
 	(2, 'test', '2025-06-05', '[{"url":"/uploads/media/1777447061526_3iy1bq.jpg","alt":""}]', '2026-04-28 12:54:11', '2026-04-29 07:17:42');
 
 -- Dumping structure for table cabsec_cms.pm_quotes
+DROP TABLE IF EXISTS `pm_quotes`;
 CREATE TABLE IF NOT EXISTS `pm_quotes` (
   `id` int NOT NULL AUTO_INCREMENT,
   `quote_text` text COLLATE utf8mb4_general_ci NOT NULL,
@@ -682,6 +707,7 @@ INSERT INTO `pm_quotes` (`id`, `quote_text`, `author`, `image_url`, `event_url`,
 	(1, 'भारत आज सिर्फ growth कि वजह से नहीं जाना जा रहा बल्कि governance,\n transparency और innovation के नए benchmarks सेट कर रहा है|\n', 'PM’s address on the 17th Civil Services Day', 'http://localhost:3000/images/pm/pm-modi.jpg', 'https://www.pmindia.gov.in/en/news_updates/pms-address-on-the-17th-civil-services-day/?comment=disable', '2026-04-18', '2025-10-14 07:45:11', '2026-06-04 11:54:27');
 
 -- Dumping structure for table cabsec_cms.recent_docs
+DROP TABLE IF EXISTS `recent_docs`;
 CREATE TABLE IF NOT EXISTS `recent_docs` (
   `id` int NOT NULL AUTO_INCREMENT,
   `title` varchar(500) COLLATE utf8mb4_general_ci NOT NULL,
@@ -703,6 +729,7 @@ INSERT INTO `recent_docs` (`id`, `title`, `description`, `link_url`, `display_or
 	(4, 'Gazettes Notifications', 'LDCE Rules for the posts of ASO', NULL, 3, 1, '2025-10-14 12:51:38', '2025-10-14 12:51:38');
 
 -- Dumping structure for table cabsec_cms.report_files
+DROP TABLE IF EXISTS `report_files`;
 CREATE TABLE IF NOT EXISTS `report_files` (
   `id` int NOT NULL AUTO_INCREMENT,
   `report_id` int NOT NULL,
@@ -717,7 +744,7 @@ CREATE TABLE IF NOT EXISTS `report_files` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=10408 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Dumping data for table cabsec_cms.report_files: ~2,176 rows (approximately)
+-- Dumping data for table cabsec_cms.report_files: ~2,149 rows (approximately)
 DELETE FROM `report_files`;
 INSERT INTO `report_files` (`id`, `report_id`, `original_name`, `file_url`, `file_type`, `file_size`, `is_active`, `is_archived`, `created_at`, `publish_date`) VALUES
 	(1, 1, 'List of Council of Ministers', '/report_document/councilofministers/english/1_Upload_1.pdf', NULL, '87.2 KB', 0, 1, '2026-05-29 08:41:11', '2016-07-12 00:00:00'),
@@ -2871,6 +2898,7 @@ INSERT INTO `report_files` (`id`, `report_id`, `original_name`, `file_url`, `fil
 	(2149, 42, 'Revised composition of Internal Complaints Committee (ICC) under the Sexual Harassment of Women at Workplace (Prevention, Prohibition and redressal) Act, 2013-Reg.', '/report_document/circular/circulargeneral/english/1_Upload_4174.pdf', NULL, '376.3 KB', 1, 0, '2026-05-29 08:41:11', '2025-03-20 00:00:00');
 
 -- Dumping structure for table cabsec_cms.reports
+DROP TABLE IF EXISTS `reports`;
 CREATE TABLE IF NOT EXISTS `reports` (
   `id` int DEFAULT NULL,
   `title` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
@@ -2964,6 +2992,7 @@ INSERT INTO `reports` (`id`, `title`, `type`, `year`, `size`, `file_url`, `nav_i
 	(125, 'Miscellaneous', 'group', NULL, NULL, 'circular/circularcabinet/miscellaneous/English', 51, NULL, 0, 1, 0, '2026-06-03 09:12:08', '2026-06-03 09:12:55');
 
 -- Dumping structure for table cabsec_cms.rti_items
+DROP TABLE IF EXISTS `rti_items`;
 CREATE TABLE IF NOT EXISTS `rti_items` (
   `id` int NOT NULL AUTO_INCREMENT,
   `section_id` int DEFAULT NULL,
@@ -3044,6 +3073,7 @@ INSERT INTO `rti_items` (`id`, `section_id`, `title`, `file_url`, `file_size`, `
 	(376, 45, 'CPIO and Appellate Authorities', '/report_document/rti/cpios/english/1_Upload_4170.pdf', '105.5 KB', 'PDF', 0, 1, '2026-05-26 09:20:52', '2026-05-26 09:20:52');
 
 -- Dumping structure for table cabsec_cms.rti_page_content
+DROP TABLE IF EXISTS `rti_page_content`;
 CREATE TABLE IF NOT EXISTS `rti_page_content` (
   `id` int NOT NULL AUTO_INCREMENT,
   `page_title` varchar(255) COLLATE utf8mb4_general_ci DEFAULT 'RTI',
@@ -3062,6 +3092,7 @@ INSERT INTO `rti_page_content` (`id`, `page_title`, `intro_heading`, `intro_bull
 	(2, 'RTI', 'Power and Duties of Officials', '["To Provide Secretarial assistance to the Cabinet and Cabinet Committees.",\r\n  "To Frame Rules of Business."]', 1, '2026-05-05 05:40:54');
 
 -- Dumping structure for table cabsec_cms.rti_sections
+DROP TABLE IF EXISTS `rti_sections`;
 CREATE TABLE IF NOT EXISTS `rti_sections` (
   `id` int NOT NULL AUTO_INCREMENT,
   `title` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
@@ -3077,19 +3108,20 @@ CREATE TABLE IF NOT EXISTS `rti_sections` (
 -- Dumping data for table cabsec_cms.rti_sections: ~11 rows (approximately)
 DELETE FROM `rti_sections`;
 INSERT INTO `rti_sections` (`id`, `title`, `display_order`, `is_active`, `created_at`, `updated_at`) VALUES
-	(3, '3. Categories of Documents', 3, 1, '2026-05-05 05:31:13', '2026-05-05 05:31:13'),
-	(4, '4. ISTM', 4, 1, '2026-05-05 05:31:13', '2026-05-05 05:31:13'),
-	(36, '6. Work Distribution', 6, 1, '2026-05-05 05:31:13', '2026-05-27 06:24:29'),
-	(44, '10. Organization Chart', 10, 1, '2026-05-05 07:17:37', '2026-05-27 06:40:40'),
-	(45, '1. CPIO and Appellate Authorities', 1, 1, '2026-05-05 05:31:13', '2026-05-27 06:26:08'),
-	(46, '9. Request Form/ Facilities/ Fee', 9, 1, '2026-05-05 07:16:45', '2026-05-27 06:49:38'),
-	(47, '8. Budget Allocation', 8, 1, '2026-05-05 05:31:13', '2026-05-27 06:23:42'),
-	(49, '7. Officials Monthly Remuneration', 7, 1, '2026-05-05 05:31:13', '2026-05-27 07:03:38'),
-	(85, '11. Quarterly Report', 11, 1, '2026-05-05 07:17:57', '2026-05-27 06:38:43'),
-	(89, '5. FAQ Under Right to Information Act 2005', 5, 1, '2026-05-05 05:31:13', '2026-05-27 06:58:33'),
-	(152, '2. Record Officer', 2, 1, '2026-05-05 05:31:13', '2026-05-27 06:25:44');
+	(3, 'Categories of Documents', 3, 1, '2026-05-05 05:31:13', '2026-07-08 06:31:18'),
+	(4, 'ISTM', 4, 1, '2026-05-05 05:31:13', '2026-07-08 06:32:30'),
+	(36, 'Work Distribution', 6, 1, '2026-05-05 05:31:13', '2026-07-08 06:32:20'),
+	(44, 'Organization Chart', 10, 1, '2026-05-05 07:17:37', '2026-07-08 06:31:32'),
+	(45, 'CPIO and Appellate Authorities', 1, 1, '2026-05-05 05:31:13', '2026-07-08 06:26:47'),
+	(46, 'Request Form/ Facilities/ Fee', 9, 1, '2026-05-05 07:16:45', '2026-07-08 06:31:37'),
+	(47, 'Budget Allocation', 8, 1, '2026-05-05 05:31:13', '2026-07-08 06:31:42'),
+	(49, 'Officials Monthly Remuneration', 7, 1, '2026-05-05 05:31:13', '2026-07-08 06:31:52'),
+	(85, 'Quarterly Report', 11, 1, '2026-05-05 07:17:57', '2026-07-08 06:31:27'),
+	(89, 'FAQ Under Right to Information Act 2005', 5, 1, '2026-05-05 05:31:13', '2026-07-08 06:32:25'),
+	(152, 'Record Officer', 2, 1, '2026-05-05 05:31:13', '2026-07-08 06:31:13');
 
 -- Dumping structure for table cabsec_cms.social_media_posts
+DROP TABLE IF EXISTS `social_media_posts`;
 CREATE TABLE IF NOT EXISTS `social_media_posts` (
   `id` int NOT NULL AUTO_INCREMENT,
   `platform` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
@@ -3105,6 +3137,7 @@ CREATE TABLE IF NOT EXISTS `social_media_posts` (
 DELETE FROM `social_media_posts`;
 
 -- Dumping structure for table cabsec_cms.vacancies_tenders
+DROP TABLE IF EXISTS `vacancies_tenders`;
 CREATE TABLE IF NOT EXISTS `vacancies_tenders` (
   `id` int NOT NULL AUTO_INCREMENT,
   `title` varchar(255) NOT NULL,
@@ -3115,7 +3148,7 @@ CREATE TABLE IF NOT EXISTS `vacancies_tenders` (
   `due_date` date DEFAULT NULL,
   `file_name` varchar(255) DEFAULT NULL,
   `file_size` varchar(255) DEFAULT NULL,
-  `is_active` tinyint(1) NOT NULL DEFAULT '1',
+  `is_active` int DEFAULT '1',
   `is_archived` tinyint(1) NOT NULL DEFAULT '0',
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -3123,9 +3156,9 @@ CREATE TABLE IF NOT EXISTS `vacancies_tenders` (
   KEY `idx_vacancies_tenders_type` (`type`),
   KEY `idx_vacancies_tenders_published` (`published_date`),
   KEY `idx_vacancies_tenders_active` (`is_active`,`is_archived`)
-) ENGINE=InnoDB AUTO_INCREMENT=173 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=174 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Dumping data for table cabsec_cms.vacancies_tenders: ~48 rows (approximately)
+-- Dumping data for table cabsec_cms.vacancies_tenders: ~49 rows (approximately)
 DELETE FROM `vacancies_tenders`;
 INSERT INTO `vacancies_tenders` (`id`, `title`, `type`, `description`, `tender_id`, `published_date`, `due_date`, `file_name`, `file_size`, `is_active`, `is_archived`, `created_at`, `updated_at`) VALUES
 	(1, 'Invitation to Tender for annual contract for repair of Furniture items etc.', 'tender', NULL, 'Tenders 2016', '2016-07-01', NULL, '/report_document/tender/english/1_Upload_140.pdf', '243.5 KB', 0, 1, '2026-06-01 04:42:26', '2026-06-01 09:41:27'),
@@ -3148,7 +3181,7 @@ INSERT INTO `vacancies_tenders` (`id`, `title`, `type`, `description`, `tender_i
 	(18, 'Annual Maintenance Contract(AMC) for Electrical Appliances in Cabinet Secretariat, Rashtrapati Bhawan-Notice Inviting Tender.', 'tender', NULL, 'Tenders 2014', '2014-12-08', NULL, '/report_document/tender/english/1_Upload_787.pdf', '1004.1 KB', 0, 1, '2026-06-01 04:42:26', '2026-06-01 10:03:24'),
 	(19, 'Supplying and installation of MS-Office, Printers, Scanners.', 'tender', NULL, 'Tenders 2014', '2014-08-27', NULL, '/report_document/tender/english/1_Upload_788.pdf', '100.8 KB', 0, 1, '2026-06-01 04:42:26', '2026-06-01 10:03:32'),
 	(20, 'Filling up the post of Staff Car Driver (Ordinary Grade), in the Cabinet Secretariat(Main).', 'vacancy', NULL, '22', '2015-06-24', NULL, '/report_document/vacancies/english/1_Upload_789.pdf', '24.7 KB', 0, 1, '2026-06-01 04:42:26', '2026-06-01 09:44:32'),
-	(21, 'Notice Regarding DEO Grade  A  Vacancies.', 'vacancy', NULL, '26', '2011-08-26', NULL, '/report_document/vacancies/english/1_Upload_790.pdf', '206.6 KB', 0, 1, '2026-06-01 04:42:26', '2026-06-01 08:54:49'),
+	(21, 'Notice Regarding DEO Grade  A  Vacancies.', 'vacancy', NULL, '26', '2011-08-26', NULL, '/report_document/vacancies/english/1_Upload_790.pdf', '206.6 KB', 1, 1, '2026-06-01 04:42:26', '2026-07-08 10:03:29'),
 	(22, 'Notice Regarding DEO Grade  C  Vacancies', 'vacancy', NULL, '26', '2011-08-26', NULL, '/report_document/vacancies/english/1_Upload_791.pdf', '320.3 KB', 0, 1, '2026-06-01 04:42:26', '2026-06-01 05:58:14'),
 	(23, 'Filling up of the post of Staff Car Driver (Ordinary Grade) in the Cabinet Secretariat (Main)', 'vacancy', NULL, '26', '2017-03-09', NULL, '/report_document/vacancies/english/1_Upload_1198.pdf', '100.7 KB', 0, 1, '2026-06-01 04:42:26', '2026-06-01 08:51:58'),
 	(24, 'Invitation to Tender for annual maintenance contract of Desktop, Printers, Scanners, Laptops & Servers etc.', 'tender', NULL, 'Tenders 2017', '2017-04-07', NULL, '/report_document/tender/english/1_Upload_1200.pdf', '4.4 MB', 0, 1, '2026-06-01 04:42:26', '2026-06-01 09:40:07'),
@@ -3174,10 +3207,12 @@ INSERT INTO `vacancies_tenders` (`id`, `title`, `type`, `description`, `tender_i
 	(44, 'Filling up of vacant posts of Scientists in "D" and "G" levels in the Office of Principal Scientific Adviser to GOI on Deputations basis', 'vacancy', NULL, '26', '2021-01-06', NULL, '/report_document/vacancies/english/1_Upload_2660.pdf', '9.4 MB', 0, 1, '2026-06-01 04:42:26', '2026-06-01 07:19:18'),
 	(45, 'Filling up of one (01) post of Staff Car Driver(Ordinary Grade) [Group "C", non-Gazetted, non-Ministerial, Pay Level - 2 ] in Cabinet Secretariat on deputation / absorption basis.', 'vacancy', NULL, '26', '2022-11-14', NULL, '/report_document/vacancies/english/1_Upload_3325.pdf', '1.9 MB', 0, 1, '2026-06-01 04:42:26', '2026-06-01 05:58:14'),
 	(46, 'Filling up of one (01) post of Protocol Officer (Group "B", Non-Gazetted, Non-Ministerial, Pay Level-7) in Cabinet Secretariat on deputation/ absorption basis-reg.', 'vacancy', NULL, '26', '2023-03-21', NULL, '/report_document/vacancies/english/1_Upload_3570.pdf', '1.6 MB', 0, 1, '2026-06-01 04:42:26', '2026-06-01 07:19:19'),
-	(47, 'Filling up of one (01) post of Protocol Officer (Group "B", Non-Gazetted, Non-Ministerial, Pay Level-7) in Cabinet Secretariat on deputation/ absorption basis-extension of date for submitting the application-regarding.', 'vacancy', NULL, '26', '2023-04-24', NULL, '/report_document/vacancies/english/1_Upload_3584.pdf', '430.6 KB', 0, 1, '2026-06-01 04:42:26', '2026-06-01 07:19:20'),
-	(48, 'Filling up of two posts of Staff Car Driver (Ordinary Grade) in Cabinet Secretariat-Reg.', 'vacancy', NULL, '26', '2025-01-13', NULL, '/report_document/vacancies/english/1_Upload_3873.pdf', '1.3 MB', 0, 1, '2026-06-01 04:42:26', '2026-06-01 09:48:31');
+	(47, 'Filling up of one (01) post of Protocol Officer (Group "B", Non-Gazetted, Non-Ministerial, Pay Level-7) in Cabinet Secretariat on deputation/ absorption basis-extension of date for submitting the application-regarding.', 'vacancy', NULL, '26', '2023-04-24', NULL, '/report_document/vacancies/english/1_Upload_3584.pdf', '430.6 KB', 1, 1, '2026-06-01 04:42:26', '2026-07-08 10:03:36'),
+	(48, 'Filling up of two posts of Staff Car Driver (Ordinary Grade) in Cabinet Secretariat-Reg.', 'vacancy', NULL, '26', '2025-01-13', NULL, '/report_document/vacancies/english/1_Upload_3873.pdf', '1.3 MB', 1, 1, '2026-06-01 04:42:26', '2026-07-08 10:03:35'),
+	(173, 'Test', 'vacancy', 'Test the description....', NULL, '2026-07-08', NULL, '1783503352852-x1wtunvay2.pdf', '569.1 KB', 1, 0, '2026-07-08 09:35:52', '2026-07-08 10:01:04');
 
 -- Dumping structure for table cabsec_cms.whats_new
+DROP TABLE IF EXISTS `whats_new`;
 CREATE TABLE IF NOT EXISTS `whats_new` (
   `id` int NOT NULL AUTO_INCREMENT,
   `title` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,

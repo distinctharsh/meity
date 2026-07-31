@@ -16,10 +16,12 @@
 
 
 -- Dumping database structure for cabsec_cms_hi
+DROP DATABASE IF EXISTS `cabsec_cms_hi`;
 CREATE DATABASE IF NOT EXISTS `cabsec_cms_hi` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
 USE `cabsec_cms_hi`;
 
 -- Dumping structure for table cabsec_cms_hi.about_content
+DROP TABLE IF EXISTS `about_content`;
 CREATE TABLE IF NOT EXISTS `about_content` (
   `id` int NOT NULL AUTO_INCREMENT,
   `section_key` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
@@ -57,6 +59,7 @@ INSERT INTO `about_content` (`id`, `section_key`, `title`, `content`, `content_t
 	(15, 'organization_chart', 'Organization Chart', '', 'download', 15, 1, '/uploads/about/1777531230866-437747717.xlsx', '9.59 KB', 'Employee Family Details..xlsx', '2026-04-30 06:34:39', '2026-04-30 06:40:30');
 
 -- Dumping structure for table cabsec_cms_hi.announcements
+DROP TABLE IF EXISTS `announcements`;
 CREATE TABLE IF NOT EXISTS `announcements` (
   `id` int NOT NULL AUTO_INCREMENT,
   `title` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
@@ -75,6 +78,7 @@ CREATE TABLE IF NOT EXISTS `announcements` (
 DELETE FROM `announcements`;
 
 -- Dumping structure for table cabsec_cms_hi.audit_trails
+DROP TABLE IF EXISTS `audit_trails`;
 CREATE TABLE IF NOT EXISTS `audit_trails` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `ip` varchar(256) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
@@ -84,7 +88,11 @@ CREATE TABLE IF NOT EXISTS `audit_trails` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6460 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin;
 
+-- Dumping data for table cabsec_cms_hi.audit_trails: ~0 rows (approximately)
+DELETE FROM `audit_trails`;
+
 -- Dumping structure for table cabsec_cms_hi.cms_users
+DROP TABLE IF EXISTS `cms_users`;
 CREATE TABLE IF NOT EXISTS `cms_users` (
   `id` int NOT NULL AUTO_INCREMENT,
   `username` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
@@ -105,6 +113,7 @@ INSERT INTO `cms_users` (`id`, `username`, `email`, `password_hash`, `role`, `is
 	(1, 'admin', 'admin@cabsec.gov.in', '$2a$10$z1rXO8Gq6xcCduSP641V5uDiXexfRdoxrBn338.t09TkLq0TgWKaq', 'super_admin', 1, '2025-09-15 09:03:11', '2026-04-30 07:11:56');
 
 -- Dumping structure for table cabsec_cms_hi.directory_entries
+DROP TABLE IF EXISTS `directory_entries`;
 CREATE TABLE IF NOT EXISTS `directory_entries` (
   `id` int NOT NULL AUTO_INCREMENT,
   `role` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
@@ -127,6 +136,7 @@ INSERT INTO `directory_entries` (`id`, `role`, `name`, `tags_json`, `phones_json
 	(2, 'Additional Secretary', 'Shri Abhishek Singh', '[]', '["+91-11-24369222 (Office)"]', '["as[at]cabsec[dot]gov[dot]in"]', 'Electronics Niketan, 6, CGO Complex, Lodhi Road, New Delhi: 110003', 1, 1, '2025-10-22 06:58:41', '2026-05-07 10:13:02');
 
 -- Dumping structure for table cabsec_cms_hi.footer
+DROP TABLE IF EXISTS `footer`;
 CREATE TABLE IF NOT EXISTS `footer` (
   `id` int NOT NULL AUTO_INCREMENT,
   `type` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'main',
@@ -147,6 +157,7 @@ INSERT INTO `footer` (`id`, `type`, `sections`, `social_links`, `copyright`, `cr
 	(1, 'main', '[{"title":"USEFUL LINKS","links":[{"label":"पुरालेख","url":"/archives"},{"label":"साइटमैप","url":"#"}]},{"title":"Website Policies","links":[{"label":"वेबसाइट नीतियाँ","url":"/policies/terms-of-use"},{"label":"मदद","url":"/help"}]},{"title":"Related Links","links":[{"label":"संबंधित लिंक","url":"/related-links"},{"label":"हमसे संपर्क करें","url":"/connect/contact-us"}]}]', '{"twitter":"","youtube":"","facebook":"","instagram":""}', 'यह वेबसाइट भारत सरकार के मंत्रिमंडल सचिवालय की है।', '2025-11-10 09:51:04', '2026-05-20 09:08:49');
 
 -- Dumping structure for table cabsec_cms_hi.hero_slides
+DROP TABLE IF EXISTS `hero_slides`;
 CREATE TABLE IF NOT EXISTS `hero_slides` (
   `id` int NOT NULL AUTO_INCREMENT,
   `image_url` varchar(500) COLLATE utf8mb4_general_ci NOT NULL,
@@ -166,6 +177,7 @@ INSERT INTO `hero_slides` (`id`, `image_url`, `link_url`, `display_order`, `is_a
 	(10, '/uploads/slider/1776922661401_qurit3.jpg', '', 2, 1, '2026-04-23 05:37:42', '2026-04-23 05:54:09');
 
 -- Dumping structure for table cabsec_cms_hi.important_links
+DROP TABLE IF EXISTS `important_links`;
 CREATE TABLE IF NOT EXISTS `important_links` (
   `id` int NOT NULL AUTO_INCREMENT,
   `title` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
@@ -188,6 +200,7 @@ INSERT INTO `important_links` (`id`, `title`, `url`, `file_path`, `link_type`, `
 	(4, 'Test', NULL, '/uploads/important-links/59563377ca25aecacdfe800ebb09fded.pdf', 'file', 4, 1, '2026-05-12 08:53:14', '2026-05-12 08:53:14');
 
 -- Dumping structure for table cabsec_cms_hi.media_library
+DROP TABLE IF EXISTS `media_library`;
 CREATE TABLE IF NOT EXISTS `media_library` (
   `id` int NOT NULL AUTO_INCREMENT,
   `filename` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
@@ -202,9 +215,9 @@ CREATE TABLE IF NOT EXISTS `media_library` (
   PRIMARY KEY (`id`),
   KEY `uploaded_by` (`uploaded_by`),
   CONSTRAINT `media_library_ibfk_1` FOREIGN KEY (`uploaded_by`) REFERENCES `cms_users` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=106 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=108 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Dumping data for table cabsec_cms_hi.media_library: ~105 rows (approximately)
+-- Dumping data for table cabsec_cms_hi.media_library: ~107 rows (approximately)
 DELETE FROM `media_library`;
 INSERT INTO `media_library` (`id`, `filename`, `original_name`, `file_path`, `file_type`, `file_size`, `alt_text`, `caption`, `uploaded_by`, `created_at`) VALUES
 	(1, 'files-1759739848075-317601665.jpg', 'a.jpg', '/uploads/files-1759739848075-317601665.jpg', 'image/jpeg', 241210, NULL, NULL, 1, '2025-10-06 08:37:28'),
@@ -311,9 +324,12 @@ INSERT INTO `media_library` (`id`, `filename`, `original_name`, `file_path`, `fi
 	(102, 'files-1778664440206-650638054.pdf', '5901f9cca66693ae4590cc226fe3f86e.pdf', '/report_document/files-1778664440206-650638054.pdf', 'application/pdf', 122340, NULL, NULL, 1, '2026-05-13 09:27:20'),
 	(103, 'files-1778664469407-808596754.pdf', '5901f9cca66693ae4590cc226fe3f86e.pdf', '/report_document/files-1778664469407-808596754.pdf', 'application/pdf', 122340, NULL, NULL, 1, '2026-05-13 09:27:49'),
 	(104, 'files-1778666287716-408867729.pdf', 'ChatGPT.pdf', '/report_document/files-1778666287716-408867729.pdf', 'application/pdf', 332743, NULL, NULL, 1, '2026-05-13 09:58:07'),
-	(105, 'files-1778666287744-773175403.pdf', '5901f9cca66693ae4590cc226fe3f86e.pdf', '/report_document/files-1778666287744-773175403.pdf', 'application/pdf', 122340, NULL, NULL, 1, '2026-05-13 09:58:07');
+	(105, 'files-1778666287744-773175403.pdf', '5901f9cca66693ae4590cc226fe3f86e.pdf', '/report_document/files-1778666287744-773175403.pdf', 'application/pdf', 122340, NULL, NULL, 1, '2026-05-13 09:58:07'),
+	(106, 'file-1783418359155-648537363.pdf', 'Complaint Redressal Ticketing (CRT) System.pdf', '/report_document/file-1783418359155-648537363.pdf', 'application/pdf', 14491, NULL, NULL, 1, '2026-07-07 09:59:19'),
+	(107, 'file-1783418468992-315068543.pdf', '1_Upload_2549.pdf', '/report_document/file-1783418468992-315068543.pdf', 'application/pdf', 582734, NULL, NULL, 1, '2026-07-07 10:01:08');
 
 -- Dumping structure for table cabsec_cms_hi.navigation_items
+DROP TABLE IF EXISTS `navigation_items`;
 CREATE TABLE IF NOT EXISTS `navigation_items` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
@@ -366,6 +382,7 @@ INSERT INTO `navigation_items` (`id`, `name`, `link`, `parent_id`, `display_orde
 	(72, 'आरटीआई', '/connect/rti', 22, 1, 1, 1, '2026-05-05 05:53:32', '2026-05-20 06:34:07');
 
 -- Dumping structure for table cabsec_cms_hi.offerings
+DROP TABLE IF EXISTS `offerings`;
 CREATE TABLE IF NOT EXISTS `offerings` (
   `id` int NOT NULL AUTO_INCREMENT,
   `title` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
@@ -392,6 +409,7 @@ INSERT INTO `offerings` (`id`, `title`, `description`, `icon`, `link_url`, `cate
 	(16, 'Complete AOB Rules', '', NULL, 'https://master-cabsec.digifootprint.gov.in/static/uploads/2025/06/22034aee4a2445812bacdeb87c1ad473.pdf', 'whats_new', 0, 1, '2026-04-23 06:14:13', '2026-04-23 06:14:13', NULL, NULL, NULL);
 
 -- Dumping structure for table cabsec_cms_hi.our_team
+DROP TABLE IF EXISTS `our_team`;
 CREATE TABLE IF NOT EXISTS `our_team` (
   `id` int NOT NULL AUTO_INCREMENT,
   `role` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
@@ -424,6 +442,7 @@ INSERT INTO `our_team` (`id`, `role`, `name`, `designation`, `photo_url`, `displ
 	(4, '', 'Dr. T. V. Somanathan', 'CABINET SECRETARY', 'http://localhost:3000/images/our-team/a.jpg', 0, 1, '2026-04-23 11:55:26', '2026-05-05 09:58:23', 'cabinetsy@nic.in', '+91-11-23016696', '', '', 'CABINET SECRETARY', 'OFFICE OF CABINET SECRETARY', 'H.S. Rawat', 'Staff Officer to CS', '01123016696', '01123011241', '', '', '');
 
 -- Dumping structure for table cabsec_cms_hi.our_team_contacts
+DROP TABLE IF EXISTS `our_team_contacts`;
 CREATE TABLE IF NOT EXISTS `our_team_contacts` (
   `id` int NOT NULL AUTO_INCREMENT,
   `person_id` int NOT NULL,
@@ -478,6 +497,7 @@ INSERT INTO `our_team_contacts` (`id`, `person_id`, `type`, `value`, `display_or
 	(82, 21, 'email', 'namrata[dot]gandhi[at]nic[dot]in', 1, 1, '2026-04-23 12:41:04', '2026-04-23 12:41:04');
 
 -- Dumping structure for table cabsec_cms_hi.our_team_people
+DROP TABLE IF EXISTS `our_team_people`;
 CREATE TABLE IF NOT EXISTS `our_team_people` (
   `id` int NOT NULL AUTO_INCREMENT,
   `section_id` int NOT NULL,
@@ -515,6 +535,7 @@ INSERT INTO `our_team_people` (`id`, `section_id`, `name`, `designation`, `addre
 	(21, 11, 'Ms. Namrata Gandhi', 'Deputy Secretary', 'Seva Teerth,New Delhi - 110011', 1, 1, '2026-04-23 12:41:04', '2026-04-23 12:41:04');
 
 -- Dumping structure for table cabsec_cms_hi.our_team_sections
+DROP TABLE IF EXISTS `our_team_sections`;
 CREATE TABLE IF NOT EXISTS `our_team_sections` (
   `id` int NOT NULL AUTO_INCREMENT,
   `title` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
@@ -538,6 +559,7 @@ INSERT INTO `our_team_sections` (`id`, `title`, `display_order`, `is_active`, `c
 	(11, ' Deputy Secretary', 7, 1, '2026-04-23 12:39:26', '2026-04-23 12:39:26');
 
 -- Dumping structure for table cabsec_cms_hi.page_headers
+DROP TABLE IF EXISTS `page_headers`;
 CREATE TABLE IF NOT EXISTS `page_headers` (
   `id` int NOT NULL AUTO_INCREMENT,
   `page_path` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
@@ -558,6 +580,7 @@ INSERT INTO `page_headers` (`id`, `page_path`, `background_url`, `created_at`, `
 	(4, '/related-links', 'https://master-cabsec.digifootprint.gov.in/static/uploads/2025/06/c9eb6cc608da2c0049dd9c4a8ea30f5c.jpg', '2026-05-06 11:45:57', '2026-05-06 11:45:57');
 
 -- Dumping structure for table cabsec_cms_hi.page_templates
+DROP TABLE IF EXISTS `page_templates`;
 CREATE TABLE IF NOT EXISTS `page_templates` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
@@ -578,6 +601,7 @@ INSERT INTO `page_templates` (`id`, `name`, `template_key`, `description`, `sche
 	(1, 'Hero + Tabs', 'hero_tabs', 'Hero section at top with image/title/subtitle and tabbed content sections', '{"fields": [{"key": "hero_title", "label": "Hero Title", "type": "text", "required": true}, {"key": "hero_subtitle", "label": "Hero Subtitle", "type": "text", "required": false}, {"key": "hero_image_url", "label": "Hero Image URL", "type": "image", "required": false}, {"key": "tabs", "label": "Tabs", "type": "array", "itemSchema": {"fields": [{"key": "label", "label": "Tab Label", "type": "text", "required": true}, {"key": "content", "label": "Content HTML", "type": "richtext", "required": false}]}}]}', 1, '2025-11-07 08:37:25', '2025-11-07 08:37:25');
 
 -- Dumping structure for table cabsec_cms_hi.pages
+DROP TABLE IF EXISTS `pages`;
 CREATE TABLE IF NOT EXISTS `pages` (
   `id` int NOT NULL AUTO_INCREMENT,
   `title` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
@@ -622,6 +646,7 @@ INSERT INTO `pages` (`id`, `title`, `slug`, `parent_id`, `hero_title`, `hero_sub
 	(29, 'Cabinet Secretary', '/cabinet-secretariat/cabinet-secretary', NULL, NULL, NULL, NULL, NULL, '{"html":"<!DOCTYPE html>\\r\\n<html lang=\\"en\\">\\r\\n<head>\\r\\n  <meta charset=\\"UTF-8\\">\\r\\n  <title>Profile</title>\\r\\n  <link rel=\\"stylesheet\\" href=\\"style.css\\">\\r\\n</head>\\r\\n<body>\\r\\n\\r\\n<div class=\\"container\\">\\r\\n  \\r\\n  <div class=\\"profile-card\\">\\r\\n    \\r\\n    <!-- Left Image -->\\r\\n    <div class=\\"profile-image\\">\\r\\n      <img src=\\"http://localhost:3000/images/our-team/a.jpg\\" alt=\\"Profile Photo\\">\\r\\n    </div>\\r\\n\\r\\n    <!-- Right Content -->\\r\\n    <div class=\\"profile-content\\">\\r\\n     <h2>Dr. T. V. Somanathan</h2><h3><strong>CABINET SECRETARY</strong></h3><p>Dr. T. V. Somanathan is a distinguished Indian Administrative Service officer of the 1987 batch, Tamil Nadu cadre, currently serving as the <strong>Cabinet Secretary of India</strong> since <strong>30 August 2024</strong>. With an illustrious career spanning over three decades, he has held several key positions at both national and international levels.</p><p>Prior to his appointment as Cabinet Secretary, Dr. Somanathan served as the <strong>Finance Secretary of India</strong>, heading the <strong>Department of Expenditure</strong>. His earlier roles at the Centre include serving as <strong>Additional Secretary</strong> and <strong>Joint Secretary in the Prime Ministerâ€™s Office (PMO)</strong>, where he played a pivotal role in various governance and policy initiatives.</p><p>Internationally, Dr. Somanathan served as <strong>Director, Corporate Affairs</strong> at the <strong>World Bank Group</strong> in Washington, D.C., having initially joined through its prestigious <strong>Young Professionals Program</strong>. His expertise in public finance and economic policy has been widely recognized both in India and abroad.</p><p>In the Ministry of Corporate Affairs, he contributed significantly as <strong>Joint Secretary</strong>, focusing on reforms and regulatory frameworks that enhanced corporate governance.</p><h3><strong>Educational Qualifications</strong></h3><ul><li><strong>Ph.D. in Economics</strong>, University of Calcutta</li><li><strong>Executive Development Program</strong>, Harvard Business School</li><li><strong>Chartered Accountant (CA)</strong></li><li><strong>Cost Accountant (CMA)</strong></li><li><strong>Company Secretary (CS)</strong></li></ul><p>Dr. Somanathan combines deep academic insight with practical administrative experience, making him one of Indiaâ€™s most respected civil servants. His professional journey reflects a commitment to excellence, integrity, and nation-building.</p>\\r\\n\\r\\n    </div>\\r\\n\\r\\n  </div>\\r\\n\\r\\n</div>\\r\\n\\r\\n</body>\\r\\n</html>","css":"body {\\r\\n  margin: 0;\\r\\n  font-family: Arial, sans-serif;\\r\\n}\\r\\n\\r\\n.container {\\r\\n  display: flex;\\r\\n  justify-content: center;\\r\\n  padding: 40px;\\r\\n}\\r\\n\\r\\n.profile-card {\\r\\n  display: flex;\\r\\n  gap: 40px;\\r\\n  padding: 30px;\\r\\n  max-width: 1100px;\\r\\n  width: 100%;\\r\\n}\\r\\n\\r\\n.profile-image img {\\r\\n  width: 280px;\\r\\n  height: auto;\\r\\n  object-fit: cover;\\r\\n}\\r\\n\\r\\n.profile-content {\\r\\n  flex: 1;\\r\\n}\\r\\n\\r\\n.profile-content h1 {\\r\\n  margin: 0;\\r\\n  font-size: 24px;\\r\\n  color: #1a2a5a;\\r\\n}\\r\\n\\r\\n.profile-content h3 {\\r\\n  margin-top: 5px;\\r\\n  font-size: 14px;\\r\\n  letter-spacing: 1px;\\r\\n}\\r\\n\\r\\n.profile-content p {\\r\\n  font-size: 14px;\\r\\n  line-height: 1.6;\\r\\n  color: #333;\\r\\n}\\r\\n\\r\\n.profile-content h4 {\\r\\n  margin-top: 20px;\\r\\n  font-size: 16px;\\r\\n}\\r\\n\\r\\n.profile-content ul {\\r\\n  padding-left: 20px;\\r\\n}\\r\\n\\r\\n.profile-content ul li {\\r\\n  margin-bottom: 8px;\\r\\n  font-size: 14px;\\r\\n}","js":""}', 0, 1, '2026-05-05 10:29:48', '2026-05-13 06:01:52', NULL);
 
 -- Dumping structure for table cabsec_cms_hi.partner_logos
+DROP TABLE IF EXISTS `partner_logos`;
 CREATE TABLE IF NOT EXISTS `partner_logos` (
   `id` int NOT NULL AUTO_INCREMENT,
   `title` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
@@ -645,6 +670,7 @@ INSERT INTO `partner_logos` (`id`, `title`, `image_url`, `alt_text`, `display_or
 	(6, '', '/uploads/media/1778068636290_w4oql3.jpg', 'dd10418bcbdd24e8c56f2ca2ef3c85a8', 7, 1, '2026-05-06 11:57:18', '2026-05-06 11:57:18');
 
 -- Dumping structure for table cabsec_cms_hi.photo_galleries
+DROP TABLE IF EXISTS `photo_galleries`;
 CREATE TABLE IF NOT EXISTS `photo_galleries` (
   `id` int NOT NULL AUTO_INCREMENT,
   `title` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
@@ -662,6 +688,7 @@ INSERT INTO `photo_galleries` (`id`, `title`, `date`, `images`, `created_at`, `u
 	(2, 'test', '2025-06-05', '[{"url":"/uploads/media/1777447061526_3iy1bq.jpg","alt":""}]', '2026-04-28 12:54:11', '2026-04-29 07:17:42');
 
 -- Dumping structure for table cabsec_cms_hi.pm_quotes
+DROP TABLE IF EXISTS `pm_quotes`;
 CREATE TABLE IF NOT EXISTS `pm_quotes` (
   `id` int NOT NULL AUTO_INCREMENT,
   `quote_text` text COLLATE utf8mb4_general_ci NOT NULL,
@@ -680,6 +707,7 @@ INSERT INTO `pm_quotes` (`id`, `quote_text`, `author`, `image_url`, `event_url`,
 	(1, 'भारत आज सिर्फ growth कि वजह से नहीं जाना जा रहा बल्कि governance,\n transparency और innovation के नए benchmarks सेट कर रहा है|\n\n', 'PMâ€™s address on the 17th Civil Services Day', 'http://localhost:3000/images/pm/pm-modi.jpg', 'https://www.pmindia.gov.in/en/news_updates/pms-address-on-the-17th-civil-services-day/?comment=disable', '2026-04-18', '2025-10-14 07:45:11', '2026-05-20 06:25:48');
 
 -- Dumping structure for table cabsec_cms_hi.recent_docs
+DROP TABLE IF EXISTS `recent_docs`;
 CREATE TABLE IF NOT EXISTS `recent_docs` (
   `id` int NOT NULL AUTO_INCREMENT,
   `title` varchar(500) COLLATE utf8mb4_general_ci NOT NULL,
@@ -701,6 +729,7 @@ INSERT INTO `recent_docs` (`id`, `title`, `description`, `link_url`, `display_or
 	(4, 'Gazettes Notifications', 'LDCE Rules for the posts of ASO', NULL, 3, 1, '2025-10-14 12:51:38', '2025-10-14 12:51:38');
 
 -- Dumping structure for table cabsec_cms_hi.report_files
+DROP TABLE IF EXISTS `report_files`;
 CREATE TABLE IF NOT EXISTS `report_files` (
   `id` int NOT NULL AUTO_INCREMENT,
   `report_id` int NOT NULL,
@@ -1701,6 +1730,7 @@ INSERT INTO `report_files` (`id`, `report_id`, `original_name`, `file_url`, `fil
 	(12411, 63, 'अधिकारियों का मासिक वेतन', '/report_document/rti/mremuneration/hindi/1_Upload_4172.pdf', 'application/pdf', '234.2 KB', 1, 0, '2026-06-10 09:09:15', '2026-02-18 00:00:00');
 
 -- Dumping structure for table cabsec_cms_hi.reports
+DROP TABLE IF EXISTS `reports`;
 CREATE TABLE IF NOT EXISTS `reports` (
   `id` int DEFAULT NULL,
   `title` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
@@ -1786,46 +1816,77 @@ INSERT INTO `reports` (`id`, `title`, `type`, `year`, `size`, `file_url`, `nav_i
 	(154, 'अभिलेख अधिकारी', 'group', NULL, NULL, NULL, 0, 0, 0, 1, 0, '2026-06-08 12:40:35', '2026-06-08 12:40:35');
 
 -- Dumping structure for table cabsec_cms_hi.rti_items
+DROP TABLE IF EXISTS `rti_items`;
 CREATE TABLE IF NOT EXISTS `rti_items` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `section_id` int NOT NULL,
-  `title` varchar(500) COLLATE utf8mb4_general_ci NOT NULL,
-  `file_url` varchar(1000) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `file_size` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `file_type` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `display_order` int DEFAULT '0',
-  `is_active` tinyint(1) DEFAULT '1',
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  KEY `idx_rti_items_section` (`section_id`),
-  KEY `idx_rti_items_order` (`display_order`),
-  KEY `idx_rti_items_active` (`is_active`),
-  CONSTRAINT `rti_items_ibfk_1` FOREIGN KEY (`section_id`) REFERENCES `rti_sections` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `section_id` int DEFAULT NULL,
+  `title` varchar(500) DEFAULT NULL,
+  `file_url` varchar(1000) DEFAULT NULL,
+  `file_size` varchar(50) DEFAULT NULL,
+  `file_type` varchar(100) DEFAULT NULL,
+  `display_order` int DEFAULT NULL,
+  `is_active` tinyint(1) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=66 DEFAULT CHARSET=utf8mb3;
 
--- Dumping data for table cabsec_cms_hi.rti_items: ~17 rows (approximately)
+-- Dumping data for table cabsec_cms_hi.rti_items: ~50 rows (approximately)
 DELETE FROM `rti_items`;
 INSERT INTO `rti_items` (`id`, `section_id`, `title`, `file_url`, `file_size`, `file_type`, `display_order`, `is_active`, `created_at`, `updated_at`) VALUES
-	(1, 8, 'Budget Allocation (13.03.2025)', '/report_document/file-1777959822593-633976319.pdf', '324.94 KB', 'PDF', 0, 1, '2026-05-05 05:43:48', '2026-05-05 05:43:48'),
-	(2, 8, 'Budget Allocation (23.08.2024)', '/report_document/file-1777959893881-929305855.pdf', '324.94 KB', 'PDF', 1, 1, '2026-05-05 05:44:55', '2026-05-05 05:44:55'),
-	(3, 8, 'Budget Allocation (26.03.2024)', '/report_document/file-1777959906615-71733489.pdf', '324.94 KB', 'PDF', 2, 1, '2026-05-05 05:45:07', '2026-05-05 05:45:07'),
-	(4, 8, 'Budget Allocation (24.03.2023)', '/report_document/file-1777959917082-465876166.pdf', '324.94 KB', 'PDF', 3, 1, '2026-05-05 05:45:18', '2026-05-05 05:45:18'),
-	(5, 8, 'Budget Allocation (03.03.2022)', '/report_document/file-1777959930722-969703747.pdf', '324.94 KB', 'PDF', 4, 1, '2026-05-05 05:45:31', '2026-05-05 05:45:31'),
-	(6, 8, 'Budget Allocation (17.01.2022)', '/report_document/file-1777959945873-590978872.pdf', '324.94 KB', 'PDF', 5, 1, '2026-05-05 05:45:46', '2026-05-05 05:45:46'),
-	(7, 8, 'Budget Allocation (17.03.2021)', '/report_document/file-1777959956196-352234508.pdf', '324.94 KB', 'PDF', 6, 1, '2026-05-05 05:45:56', '2026-05-05 05:45:56'),
-	(8, 1, 'Work Allocation of CPIOs & FAAs', '/report_document/file-1777959969732-298326791.pdf', '324.94 KB', 'PDF', 0, 1, '2026-05-05 05:46:10', '2026-05-05 05:46:10'),
-	(9, 2, 'Record Officer', '/report_document/file-1777959983650-682436314.pdf', '324.94 KB', 'PDF', 0, 1, '2026-05-05 05:46:24', '2026-05-05 05:46:24'),
-	(10, 3, 'Categories of Documents', '/report_document/file-1777959996264-973797930.pdf', '324.94 KB', 'PDF', 0, 1, '2026-05-05 05:46:36', '2026-05-05 05:46:36'),
-	(11, 4, 'ISTM', '/report_document/file-1777960012379-867019956.pdf', '324.94 KB', 'PDF', 0, 1, '2026-05-05 05:46:53', '2026-05-05 05:46:53'),
-	(12, 5, 'FAQ Under Right to Information Act 2005', '/report_document/file-1777960023435-929188584.pdf', '324.94 KB', 'PDF', 0, 1, '2026-05-05 05:47:05', '2026-05-05 05:47:05'),
-	(13, 6, 'Work Distribution', '/report_document/file-1777960034207-35404351.pdf', '324.94 KB', 'PDF', 0, 1, '2026-05-05 05:47:14', '2026-05-05 05:47:14'),
-	(14, 7, 'Officials Monthly Remuneration', '/report_document/file-1777960048730-661263383.pdf', '324.94 KB', 'PDF', 0, 1, '2026-05-05 05:47:29', '2026-05-05 05:47:29'),
-	(15, 17, 'Request Form/ Facilities/ Fee', '/report_document/file-1777965440790-814569059.pdf', '324.94 KB', 'PDF', 0, 1, '2026-05-05 07:17:22', '2026-05-05 07:17:22'),
-	(16, 18, 'Organization Chart', '/report_document/file-1777965466202-766366221.pdf', '324.94 KB', 'PDF', 0, 1, '2026-05-05 07:17:46', '2026-05-05 07:17:46'),
-	(17, 19, 'Quarterly Report', '/report_document/file-1777965486105-327371154.pdf', '324.94 KB', 'PDF', 0, 1, '2026-05-05 07:18:06', '2026-05-05 07:18:06');
+	(1, 61, 'अनुरोध प्रपत्र/सुविधा/फीस', '/report_document/rti/requestform/hindi/1_Upload_1160.pdf', '186.2 KB', 'PDF', 0, 1, '2026-06-30 05:29:42', '2026-06-30 05:29:42'),
+	(2, 87, '2018-2019, दूसरी तिमाही (जुलाई-सितंबर)', '/report_document/rti/qr/hindi/1_Upload_1772.pdf', '51 KB', 'PDF', 0, 1, '2026-06-30 05:29:42', '2026-06-30 05:29:42'),
+	(3, 87, '2018-2019, तीसरी तिमाही (अक्टूबर-दिसंबर)', '/report_document/rti/qr/hindi/1_Upload_1824.pdf', '880.2 KB', 'PDF', 0, 1, '2026-06-30 05:29:42', '2026-06-30 05:29:42'),
+	(4, 87, '2018-2019, चौथी तिमाही (जनवरी-मार्च)', '/report_document/rti/qr/hindi/1_Upload_1872.pdf', '1 MB', 'PDF', 0, 1, '2026-06-30 05:29:42', '2026-06-30 05:29:42'),
+	(5, 87, '2019-2020, पहली तिमाही (अप्रैल-जून)', '/report_document/rti/qr/hindi/1_Upload_1922.pdf', '254.5 KB', 'PDF', 0, 1, '2026-06-30 05:29:42', '2026-06-30 05:29:42'),
+	(6, 87, '2019-2020, दूसरी तिमाही (जुलाई-सितंबर)', '/report_document/rti/qr/hindi/1_Upload_2000.pdf', '1 MB', 'PDF', 0, 1, '2026-06-30 05:29:42', '2026-06-30 05:29:42'),
+	(7, 62, 'पदधारी निर्देशिका', '/report_document/rti/directory/hindi/1_Upload_2033.pdf', '920.4 KB', 'PDF', 0, 1, '2026-06-30 05:29:42', '2026-07-07 09:58:08'),
+	(8, 87, '2019-2020, तीसरी तिमाही (अक्टूबर-दिसंबर)', '/report_document/rti/qr/hindi/1_Upload_2206.pdf', '656.3 KB', 'PDF', 0, 1, '2026-06-30 05:29:42', '2026-06-30 05:29:42'),
+	(9, 87, '2019-2020, चौथी तिमाही (जनवरी-मार्च)', '/report_document/rti/qr/hindi/1_Upload_2375.pdf', '1003.3 KB', 'PDF', 0, 1, '2026-06-30 05:29:42', '2026-06-30 05:29:42'),
+	(10, 87, '2020-2021, पहली तिमाही (अप्रैल-जून)', '/report_document/rti/qr/hindi/1_Upload_2393.pdf', '2.3 MB', 'PDF', 0, 1, '2026-06-30 05:29:42', '2026-06-30 05:29:42'),
+	(11, 87, '2020-2021, दूसरी तिमाही (जुलाई-सितंबर)', '/report_document/rti/qr/hindi/1_Upload_2620.pdf', '1 MB', 'PDF', 0, 1, '2026-06-30 05:29:42', '2026-06-30 05:29:42'),
+	(12, 87, '2020-2021 तृतीया तिमाही (अक्टूबर - दिसंबर )', '/report_document/rti/qr/hindi/1_Upload_2780.pdf', '888.2 KB', 'PDF', 0, 1, '2026-06-30 05:29:42', '2026-06-30 05:29:42'),
+	(13, 67, 'बजट आबंटन', '/report_document/rti/budget/hindi/1_Upload_2940.pdf', '600.1 KB', 'PDF', 0, 1, '2026-06-30 05:29:42', '2026-06-30 05:29:42'),
+	(14, 87, '2020-2021, चौथी तिमाही (जनवरी-मार्च)', '/report_document/rti/qr/hindi/1_Upload_2992.pdf', '128.9 KB', 'PDF', 0, 1, '2026-06-30 05:29:42', '2026-06-30 05:29:42'),
+	(15, 87, '2021-2022, पहली तिमाही (अप्रैल-जून)', '/report_document/rti/qr/hindi/1_Upload_3049.pdf', '125.7 KB', 'PDF', 0, 1, '2026-06-30 05:29:42', '2026-06-30 05:29:42'),
+	(16, 87, '2021-2022, दूसरी तिमाही (जुलाई-सितंबर)', '/report_document/rti/qr/hindi/1_Upload_3119.pdf', '125.7 KB', 'PDF', 0, 1, '2026-06-30 05:29:42', '2026-06-30 05:29:42'),
+	(17, 67, 'बजट आबंटन', '/report_document/rti/budget/hindi/1_Upload_3155.pdf', '471.2 KB', 'PDF', 0, 1, '2026-06-30 05:29:42', '2026-06-30 05:29:42'),
+	(18, 87, '2021-2022 तृतीया तिमाही (अक्टूबर - दिसंबर )', '/report_document/rti/qr/hindi/1_Upload_3164.pdf', '143.9 KB', 'PDF', 0, 1, '2026-06-30 05:29:42', '2026-06-30 05:29:42'),
+	(19, 124, 'सूचना का अधिकार अधिनियम, 2005 के अंतर्गत प्रायः पूछे जाने वाले प्रश्न', '/report_document/faq_under_rti_act_2005/Hindi/1_Upload_3168.pdf', '322.8 KB', 'PDF', 0, 1, '2026-06-30 05:29:42', '2026-06-30 05:29:42'),
+	(20, 67, 'बजट आबंटन', '/report_document/rti/budget/hindi/1_Upload_3183.pdf', '355.5 KB', 'PDF', 0, 1, '2026-06-30 05:29:42', '2026-06-30 05:29:42'),
+	(21, 87, '2021-2022, चौथी तिमाही (जनवरी-मार्च)', '/report_document/rti/qr/hindi/1_Upload_3224.pdf', '143 KB', 'PDF', 0, 1, '2026-06-30 05:29:42', '2026-06-30 05:29:42'),
+	(22, 87, '2022-2023, पहली तिमाही (अप्रैल-जून)', '/report_document/rti/qr/hindi/1_Upload_3320.pdf', '142.7 KB', 'PDF', 0, 1, '2026-06-30 05:29:42', '2026-06-30 05:29:42'),
+	(23, 87, '2022-2023, दूसरी तिमाही (जुलाई-सितंबर)', '/report_document/rti/qr/hindi/1_Upload_3324.pdf', '143.6 KB', 'PDF', 0, 1, '2026-06-30 05:29:42', '2026-06-30 05:29:42'),
+	(24, 87, '2022-2023 तृतीया तिमाही (अक्टूबर - दिसंबर )', '/report_document/rti/qr/hindi/1_Upload_3538.pdf', '86.9 KB', 'PDF', 0, 1, '2026-06-30 05:29:42', '2026-06-30 05:29:42'),
+	(25, 87, '2017-2018, चौथी तिमाही (जनवरी-मार्च)', '/report_document/rti/qr/hindi/1_Upload_3605.pdf', '76.6 KB', 'PDF', 0, 1, '2026-06-30 05:29:42', '2026-06-30 05:29:42'),
+	(26, 87, '2018-2019, पहली तिमाही (अप्रैल-जून)', '/report_document/rti/qr/hindi/1_Upload_3606.pdf', '75.5 KB', 'PDF', 0, 1, '2026-06-30 05:29:42', '2026-06-30 05:29:42'),
+	(27, 87, '2022-2023, चौथी तिमाही (जनवरी-मार्च)', '/report_document/rti/qr/hindi/1_Upload_3632.pdf', '86.1 KB', 'PDF', 0, 1, '2026-06-30 05:29:42', '2026-06-30 05:29:42'),
+	(28, 67, 'बजट आबंटन', '/report_document/rti/budget/hindi/1_Upload_3642.pdf', '52 KB', 'PDF', 0, 1, '2026-06-30 05:29:42', '2026-06-30 05:29:42'),
+	(29, 87, '2023-2024, पहली तिमाही (अप्रैल-जून)', '/report_document/rti/qr/hindi/1_Upload_3739.pdf', '86.2 KB', 'PDF', 0, 1, '2026-06-30 05:29:42', '2026-06-30 05:29:42'),
+	(30, 60, 'केंद्रीय लोकसूचना अधिकारी तथा अपील प्राधिकारी', '/report_document/rti/cpios/hindi/1_Upload_3764.pdf', '145.6 KB', 'PDF', 0, 1, '2026-06-30 05:29:42', '2026-06-30 05:29:42'),
+	(31, 87, '2023-2024, दूसरी तिमाही (जुलाई-सितंबर)', '/report_document/rti/qr/hindi/1_Upload_3772.pdf', '86.4 KB', 'PDF', 0, 1, '2026-06-30 05:29:42', '2026-06-30 05:29:42'),
+	(32, 87, '2023-2024 तृतीया तिमाही (अक्टूबर - दिसंबर )', '/report_document/rti/qr/hindi/1_Upload_3818.pdf', '87.1 KB', 'PDF', 0, 1, '2026-06-30 05:29:42', '2026-06-30 05:29:42'),
+	(33, 87, '2023-2024, चौथी तिमाही (जनवरी-मार्च)', '/report_document/rti/qr/hindi/1_Upload_3867.pdf', '48 KB', 'PDF', 0, 1, '2026-06-30 05:29:42', '2026-06-30 05:29:42'),
+	(34, 87, '2024-2025, पहली तिमाही (अप्रैल-जून)', '/report_document/rti/qr/hindi/1_Upload_3903.pdf', '487.1 KB', 'PDF', 0, 1, '2026-06-30 05:29:42', '2026-06-30 05:29:42'),
+	(35, 87, '2024-2025, दूसरी तिमाही (जुलाई-सितंबर)', '/report_document/rti/qr/hindi/1_Upload_3957.pdf', '49.2 KB', 'PDF', 0, 1, '2026-06-30 05:29:42', '2026-06-30 05:29:42'),
+	(36, 64, 'संगठन चार्ट', '/report_document/rti/organisationchart/hindi/1_Upload_3986.pdf', '125.5 KB', 'PDF', 0, 1, '2026-06-30 05:29:42', '2026-06-30 05:29:42'),
+	(37, 87, '2024-2025 तृतीया तिमाही (अक्टूबर - दिसंबर)', '/report_document/rti/qr/hindi/1_Upload_3989.pdf', '52.8 KB', 'PDF', 0, 1, '2026-06-30 05:29:42', '2026-06-30 05:29:42'),
+	(38, 87, '2024-2025, चौथी तिमाही (जनवरी-मार्च)', '/report_document/rti/qr/hindi/1_Upload_4050.pdf', '51.9 KB', 'PDF', 0, 1, '2026-06-30 05:29:42', '2026-06-30 05:29:42'),
+	(39, 87, '2025-2026, पहली तिमाही (अप्रैल-जून)', '/report_document/rti/qr/hindi/1_Upload_4080.pdf', '50.7 KB', 'PDF', 0, 1, '2026-06-30 05:29:42', '2026-06-30 05:29:42'),
+	(40, 63, 'अधिकारियों का मासिक वेतन', '/report_document/rti/mremuneration/hindi/1_Upload_4088.pdf', '228.8 KB', 'PDF', 0, 1, '2026-06-30 05:29:42', '2026-06-30 05:29:42'),
+	(41, 62, 'अधिकारियों की निर्देशिका', '/report_document/rti/directory/hindi/1_Upload_4106.pdf', '864.5 KB', 'PDF', 0, 1, '2026-06-30 05:29:42', '2026-06-30 05:29:42'),
+	(42, 87, '2025-2026, दूसरी तिमाही (जुलाई-सितंबर)', '/report_document/rti/qr/hindi/1_Upload_4112.pdf', '665.4 KB', 'PDF', 0, 1, '2026-06-30 05:29:42', '2026-06-30 05:29:42'),
+	(43, 62, 'अधिकारियों की निर्देशिका', '/report_document/rti/directory/hindi/1_Upload_4126.pdf', '831.5 KB', 'PDF', 0, 1, '2026-06-30 05:29:42', '2026-06-30 05:29:42'),
+	(44, 62, 'अधिकारियों की निर्देशिका', '/report_document/rti/directory/hindi/1_Upload_4137.pdf', '93.1 KB', 'PDF', 0, 1, '2026-06-30 05:29:42', '2026-06-30 05:29:42'),
+	(45, 62, 'अधिकारियों की निर्देशिका', '/report_document/rti/directory/hindi/1_Upload_4150.pdf', '135.5 KB', 'PDF', 0, 1, '2026-06-30 05:29:42', '2026-06-30 05:29:42'),
+	(46, 62, 'अधिकारियों की निर्देशिका', '/report_document/rti/directory/hindi/1_Upload_4154.pdf', '135.8 KB', 'PDF', 0, 1, '2026-06-30 05:29:42', '2026-06-30 05:29:42'),
+	(47, 64, 'संगठन चार्ट', '/report_document/rti/organisationchart/hindi/1_Upload_4157.pdf', '142.1 KB', 'PDF', 0, 1, '2026-06-30 05:29:42', '2026-06-30 05:29:42'),
+	(48, 87, '2025-2026 तृतीया तिमाही (अक्टूबर - दिसंबर)', '/report_document/rti/qr/hindi/1_Upload_4167.pdf', '45.8 KB', 'PDF', 0, 1, '2026-06-30 05:29:42', '2026-06-30 05:29:42'),
+	(49, 60, 'केंद्रीय लोकसूचना अधिकारी तथा अपील प्राधिकारी', '/report_document/rti/cpios/hindi/1_Upload_4171.pdf', '196.3 KB', 'PDF', 0, 1, '2026-06-30 05:29:42', '2026-06-30 05:29:42'),
+	(50, 63, 'अधिकारियों का मासिक वेतन', '/report_document/rti/mremuneration/hindi/1_Upload_4172.pdf', '234.2 KB', 'PDF', 0, 1, '2026-06-30 05:29:42', '2026-06-30 05:29:42');
 
 -- Dumping structure for table cabsec_cms_hi.rti_page_content
+DROP TABLE IF EXISTS `rti_page_content`;
 CREATE TABLE IF NOT EXISTS `rti_page_content` (
   `id` int NOT NULL AUTO_INCREMENT,
   `page_title` varchar(255) COLLATE utf8mb4_general_ci DEFAULT 'RTI',
@@ -1844,6 +1905,7 @@ INSERT INTO `rti_page_content` (`id`, `page_title`, `intro_heading`, `intro_bull
 	(2, 'RTI', 'Power and Duties of Officials', '["To Provide Secretarial assistance to the Cabinet and Cabinet Committees.",\r\n  "To Frame Rules of Business."]', 1, '2026-05-05 05:40:54');
 
 -- Dumping structure for table cabsec_cms_hi.rti_sections
+DROP TABLE IF EXISTS `rti_sections`;
 CREATE TABLE IF NOT EXISTS `rti_sections` (
   `id` int NOT NULL AUTO_INCREMENT,
   `title` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
@@ -1854,24 +1916,25 @@ CREATE TABLE IF NOT EXISTS `rti_sections` (
   PRIMARY KEY (`id`),
   KEY `idx_rti_sections_order` (`display_order`),
   KEY `idx_rti_sections_active` (`is_active`)
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=154 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Dumping data for table cabsec_cms_hi.rti_sections: ~11 rows (approximately)
 DELETE FROM `rti_sections`;
 INSERT INTO `rti_sections` (`id`, `title`, `display_order`, `is_active`, `created_at`, `updated_at`) VALUES
-	(1, '1. CPIO and Appellate Authorities', 1, 1, '2026-05-05 05:31:13', '2026-05-05 05:31:13'),
-	(2, '2. Record Officer', 2, 1, '2026-05-05 05:31:13', '2026-05-05 05:31:13'),
-	(3, '3. Categories of Documents', 3, 1, '2026-05-05 05:31:13', '2026-05-05 05:31:13'),
-	(4, '4. ISTM', 4, 1, '2026-05-05 05:31:13', '2026-05-05 05:31:13'),
-	(5, '5. FAQ Under Right to Information Act 2005', 5, 1, '2026-05-05 05:31:13', '2026-05-05 05:31:13'),
-	(6, '6. Work Distribution', 6, 1, '2026-05-05 05:31:13', '2026-05-05 05:31:13'),
-	(7, '7. Officials Monthly Remuneration', 7, 1, '2026-05-05 05:31:13', '2026-05-05 05:31:13'),
-	(8, '8. Budget Allocation', 8, 1, '2026-05-05 05:31:13', '2026-05-05 05:31:13'),
-	(17, '9. Request Form/ Facilities/ Fee', 9, 1, '2026-05-05 07:16:45', '2026-05-05 07:17:01'),
-	(18, '10. Organization Chart', 10, 1, '2026-05-05 07:17:37', '2026-05-05 07:17:37'),
-	(19, '11. Quarterly Report', 11, 1, '2026-05-05 07:17:57', '2026-05-05 07:17:57');
+	(4, 'रिकॉर्ड अधिकारी', 2, 1, '2026-05-05 05:31:13', '2026-07-31 10:06:05'),
+	(36, 'दस्तावेज़ों की श्रेणियाँ', 3, 1, '2026-05-05 05:31:13', '2026-07-31 10:06:07'),
+	(44, 'आईएसटीएम', 4, 1, '2026-05-05 05:31:13', '2026-07-31 10:06:10'),
+	(46, 'कार्य विभाजन', 6, 1, '2026-05-05 05:31:13', '2026-07-31 10:06:12'),
+	(61, 'अनुरोध प्रपत्र/ सुविधाएँ/ शुल्कअनुरोध प्रपत्र/ सुविधाएँ/ शुल्क', 9, 1, '2026-05-05 07:16:45', '2026-07-31 10:06:17'),
+	(62, 'सीपीआईओ और अपीलीय प्राधिकारी', 1, 1, '2026-05-05 05:31:13', '2026-07-31 10:06:22'),
+	(63, 'अधिकारियों का मासिक पारिश्रमिक', 7, 1, '2026-05-05 05:31:13', '2026-07-31 10:06:27'),
+	(64, 'संगठन चार्टसंगठन चार्ट', 10, 1, '2026-05-05 07:17:37', '2026-07-31 10:06:30'),
+	(67, 'बजट आवंटनबजट', 8, 1, '2026-05-05 05:31:13', '2026-07-31 10:06:33'),
+	(87, 'त्रैमासिक विवरणत्रैमासिक विवरण', 11, 1, '2026-05-05 07:17:57', '2026-07-31 10:06:35'),
+	(124, 'सूचना का अधिकार अधिनियम 2005 के अंतर्गत अक्सर पूछे जाने वाले प्रश्न', 5, 1, '2026-05-05 05:31:13', '2026-07-31 10:06:38');
 
 -- Dumping structure for table cabsec_cms_hi.social_media_posts
+DROP TABLE IF EXISTS `social_media_posts`;
 CREATE TABLE IF NOT EXISTS `social_media_posts` (
   `id` int NOT NULL AUTO_INCREMENT,
   `platform` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
@@ -1887,6 +1950,7 @@ CREATE TABLE IF NOT EXISTS `social_media_posts` (
 DELETE FROM `social_media_posts`;
 
 -- Dumping structure for table cabsec_cms_hi.vacancies_tenders
+DROP TABLE IF EXISTS `vacancies_tenders`;
 CREATE TABLE IF NOT EXISTS `vacancies_tenders` (
   `id` int NOT NULL AUTO_INCREMENT,
   `title` varchar(255) NOT NULL,
@@ -1897,7 +1961,7 @@ CREATE TABLE IF NOT EXISTS `vacancies_tenders` (
   `due_date` date DEFAULT NULL,
   `file_name` varchar(255) DEFAULT NULL,
   `file_size` varchar(255) DEFAULT NULL,
-  `is_active` tinyint(1) NOT NULL DEFAULT '1',
+  `is_active` int DEFAULT '1',
   `is_archived` tinyint(1) NOT NULL DEFAULT '0',
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -1910,13 +1974,14 @@ CREATE TABLE IF NOT EXISTS `vacancies_tenders` (
 -- Dumping data for table cabsec_cms_hi.vacancies_tenders: ~5 rows (approximately)
 DELETE FROM `vacancies_tenders`;
 INSERT INTO `vacancies_tenders` (`id`, `title`, `type`, `description`, `tender_id`, `published_date`, `due_date`, `file_name`, `file_size`, `is_active`, `is_archived`, `created_at`, `updated_at`) VALUES
-	(1, 'डेस्कटॉप, प्रिंटर, स्कैनर, लैपटॉप और सर्वर आदि के वार्षिक रखरखाव अनुबंध के लिए निविदा में निमंत्रण', 'निविदाऐं', NULL, '23', '2017-04-07', NULL, '/report_document/tender/hindi/1_Upload_1204.pdf', '5.6 MB', 1, 1, '2026-06-08 07:17:33', '2026-06-08 07:17:33'),
-	(2, 'कैबिनेट सचिवालय, राष्ट्रपति भवन में फर्नीचर वस्तुओं आदि की मरम्मत के लिए वार्षिक अनुबंध- निविदा आमंत्रित करने के लिए सूचना', 'निविदाऐं', NULL, '23', '2018-02-01', NULL, '/report_document/tender/hindi/1_Upload_1374.pdf', '2.5 MB', 1, 1, '2026-06-08 07:17:33', '2026-06-08 07:17:33'),
-	(3, 'कैबिनेट सचिवालय, राष्ट्रपति भवन और इसके विंग में विद्युत उपकरणों की मरम्मत के लिए वार्षिक रखरखाव अनुबंध (एएमसी) - निविदा आमंत्रित करने की सूचना।', 'निविदाऐं', NULL, '23', '2018-06-18', NULL, '/report_document/tender/hindi/1_Upload_1432.pdf', '420.1 KB', 1, 1, '2026-06-08 07:17:33', '2026-06-08 07:17:33'),
-	(4, 'मंत्रिमंडल सचिवालय में प्रोटोकॉल अधिकारी  (समूह "ख",अराजपत्रित, अननुसचिवीय, वेतन स्तर-7) के एक (01) पद को  प्रतिनियुक्ति/आमेलन के आधार पर भरे जाने के संबंध में।', 'रिक्तियों', NULL, '74', '2023-04-24', NULL, '/report_document/vacancies/hindi/1_Upload_3596.pdf', '327.7 KB', 1, 1, '2026-06-08 07:17:33', '2026-06-08 07:17:33'),
-	(5, 'मंत्रिमंडल सचिवालय में वेतन मैट्रिक्स के लेवल 2 (रु. 19900-63200/-) में स्टाफ कार ड्राइवर ग्रेड (साधारण ग्रेड) में एक पद (1) भरा जाना', 'रिक्तियों', NULL, '74', '2024-06-11', NULL, '/report_document/vacancies/hindi/1_Upload_3874.pdf', '381.8 KB', 1, 1, '2026-06-08 07:17:33', '2026-06-08 07:17:33');
+	(1, 'डेस्कटॉप, प्रिंटर, स्कैनर, लैपटॉप और सर्वर आदि के वार्षिक रखरखाव अनुबंध के लिए निविदा में निमंत्रण', 'tender', NULL, '23', '2017-04-07', NULL, '/report_document/tender/hindi/1_Upload_1204.pdf', '5.6 MB', 0, 1, '2026-06-08 07:17:33', '2026-07-07 06:15:55'),
+	(2, 'कैबिनेट सचिवालय, राष्ट्रपति भवन में फर्नीचर वस्तुओं आदि की मरम्मत के लिए वार्षिक अनुबंध- निविदा आमंत्रित करने के लिए सूचना', 'tender', NULL, '23', '2018-02-01', NULL, '/report_document/tender/hindi/1_Upload_1374.pdf', '2.5 MB', 0, 1, '2026-06-08 07:17:33', '2026-07-07 06:15:55'),
+	(3, 'कैबिनेट सचिवालय, राष्ट्रपति भवन और इसके विंग में विद्युत उपकरणों की मरम्मत के लिए वार्षिक रखरखाव अनुबंध (एएमसी) - निविदा आमंत्रित करने की सूचना।', 'tender', NULL, '23', '2018-06-18', NULL, '/report_document/tender/hindi/1_Upload_1432.pdf', '420.1 KB', 0, 1, '2026-06-08 07:17:33', '2026-07-07 06:15:55'),
+	(4, 'मंत्रिमंडल सचिवालय में प्रोटोकॉल अधिकारी  (समूह "ख",अराजपत्रित, अननुसचिवीय, वेतन स्तर-7) के एक (01) पद को  प्रतिनियुक्ति/आमेलन के आधार पर भरे जाने के संबंध में।', 'vacancy', NULL, '74', '2023-04-24', NULL, '/report_document/vacancies/hindi/1_Upload_3596.pdf', '327.7 KB', 1, 0, '2026-06-08 07:17:33', '2026-07-07 06:15:55'),
+	(5, 'मंत्रिमंडल सचिवालय में वेतन मैट्रिक्स के लेवल 2 (रु. 19900-63200/-) में स्टाफ कार ड्राइवर ग्रेड (साधारण ग्रेड) में एक पद (1) भरा जाना', 'vacancy', NULL, '74', '2024-06-11', NULL, '/report_document/vacancies/hindi/1_Upload_3874.pdf', '381.8 KB', 1, 0, '2026-06-08 07:17:33', '2026-07-07 06:15:55');
 
 -- Dumping structure for table cabsec_cms_hi.whats_new
+DROP TABLE IF EXISTS `whats_new`;
 CREATE TABLE IF NOT EXISTS `whats_new` (
   `id` int NOT NULL AUTO_INCREMENT,
   `title` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,

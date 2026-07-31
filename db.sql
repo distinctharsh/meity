@@ -84,9 +84,6 @@ CREATE TABLE IF NOT EXISTS `audit_trails` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin;
 
--- Dumping data for table cabsec_cms.audit_trails: ~0 rows (approximately)
-DELETE FROM `audit_trails`;
-
 -- Dumping structure for table cabsec_cms.cms_users
 CREATE TABLE IF NOT EXISTS `cms_users` (
   `id` int NOT NULL AUTO_INCREMENT,
