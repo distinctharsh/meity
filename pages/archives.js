@@ -3,6 +3,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from 'next/router';
 import SubNavTabs from "@/components/SubNavTabs";
 import PageHeader from "@/components/PageHeader";
+import { t } from '@/lib/translations';
 
 export default function Archives() {
   const router = useRouter();
@@ -254,7 +255,7 @@ export default function Archives() {
           }
         },
         language: {
-          emptyTable: `No archived ${pageType} found.`
+          emptyTable: `${t('no_files_attached')}`
         }
       });
 

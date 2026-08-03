@@ -192,7 +192,7 @@ export default function Vacancies() {
                           {t('latest_update')}
                         </span>
                         <span className="text-blue-600 underline text-xs max-w-[120px] truncate">
-                          {item.file_url ? "संलग्न फ़ाइल..." : "अपरिभाषित..."}
+                          {item.file_url}
                         </span>
                       </div>
                     </div>
