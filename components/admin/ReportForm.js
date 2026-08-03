@@ -9,8 +9,7 @@ export default function ReportForm({ initial, onCancel, onSaved }) {
     nav_item_id: null,
     nav_link: '',
     display_order: '',
-    is_active: true,
-    is_archived: false,
+    status: 1, // 1 = Active, 2 = Archived, 0 = Deleted
   });
   const [navOptions, setNavOptions] = useState([]);
   const [saving, setSaving] = useState(false);
@@ -39,8 +38,7 @@ export default function ReportForm({ initial, onCancel, onSaved }) {
         nav_item_id: initial.nav_item_id ?? null,
         nav_link: initial.nav_link || '',
         display_order: initial.display_order ?? '',
-        is_active: !!initial.is_active,
-        is_archived: !!initial.is_archived,
+        status: initial.is_active === 2 ? 2 : (initial.is_active === 0 ? 0 : 1), // Convert to new status system
       });
       // Load existing files for group if editing
       if (initial.type === 'group') {
@@ -167,6 +165,8 @@ export default function ReportForm({ initial, onCancel, onSaved }) {
         ...form,
         year: form.year ? Number(form.year) : null,
         display_order: form.display_order === '' ? null : Number(form.display_order),
+        is_active: form.status === 1, 
+        is_archived: form.status === 2,
       };
       const url = initial ? `/api/admin/reports/${initial.id}` : '/api/admin/reports';
       const method = initial ? 'PUT' : 'POST';
@@ -197,20 +197,25 @@ export default function ReportForm({ initial, onCancel, onSaved }) {
           })
         });
       }
-      // If group type, update existing file titles if changed
+      // If group type, update existing file titles and status if changed
       if (form.type === 'group' && initial?.id) {
         for (const f of attachedFiles) {
           if (f.id && f.id !== 0) {
             const customTitle = fileTitles[f.file_url];
-            if (customTitle && customTitle !== f.original_name) {
+            const currentStatus = f.is_active === 2 ? 'archived' : (f.is_active === 0 ? 'deleted' : 'active');
+            
+            // Check if title changed
+            const titleChanged = customTitle && customTitle !== f.original_name;
+            
+            if (titleChanged) {
               try {
                 await fetch(`/api/admin/reports/${initial.id}/files/${f.id}`, {
                   method: 'PUT',
                   headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ original_name: customTitle })
+                  body: JSON.stringify({ original_name: customTitle, status: currentStatus })
                 });
               } catch (e) {
-                console.error('Failed to update file title', e);
+                console.error('Failed to update file title/status', e);
               }
             }
           }
@@ -263,6 +268,7 @@ export default function ReportForm({ initial, onCancel, onSaved }) {
           file_url: x.file_path,
           file_type: x.file_type,
           file_size: x.file_size,
+          is_active: 1,
         }));
         setAttachedFiles(prev => [...prev, ...newFiles]);
         // Initialize file titles with original filename as default
@@ -274,7 +280,19 @@ export default function ReportForm({ initial, onCancel, onSaved }) {
         });
         setFileTitles(prev => ({ ...prev, ...newTitles }));
       } else {
-        // For single report, set the first file URL
+        // For single report, delete old file before setting new one
+        if (up[0]?.file_path && form.file_url && initial?.id) {
+          try {
+            await fetch(`/api/admin/reports/${initial.id}/delete-file`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ file_url: form.file_url })
+            });
+          } catch (e) {
+            console.error('Failed to delete old file:', e);
+          }
+        }
+        // Set the new file URL
         if (up[0]?.file_path) setForm(p => ({ ...p, file_url: up[0].file_path }));
       }
       setSelectedFiles([]);
@@ -286,8 +304,35 @@ export default function ReportForm({ initial, onCancel, onSaved }) {
     }
   };
 
+  const updateFileStatus = async (file, newStatus) => {
+    if (!file.id || file.id === 0 || !initial?.id) return;
+    
+    try {
+      const res = await fetch(
+        `/api/admin/reports/${initial.id}/files/${file.id}`,
+        {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status: newStatus })
+        }
+      );
+      
+      if (res.ok) {
+        setAttachedFiles(prev => prev.map(f => 
+          f.id === file.id 
+            ? { ...f, is_active: newStatus === 'archived' ? 2 : (newStatus === 'deleted' ? 0 : 1) }
+            : f
+        ));
+      } else {
+        alert('Failed to update file status');
+      }
+    } catch (e) {
+      console.error('Failed to update file status', e);
+      alert('Failed to update file status');
+    }
+  };
+
   const removeAttachedFile = async (file, index) => {
-    console.log('Removing file:', { file, index, fileId: file.id, initialId: initial?.id });
     
     // First remove from UI
     setAttachedFiles(prev => prev.filter((_, i) => i !== index));
@@ -303,7 +348,6 @@ export default function ReportForm({ initial, onCancel, onSaved }) {
     
     // Then delete from database if it's an existing file
     if (file.id && file.id !== 0 && initial?.id) {
-      console.log('Deleting file from database:', file.id);
       try {
         const res = await fetch(
           `/api/admin/reports/${initial.id}/files`,
@@ -313,8 +357,6 @@ export default function ReportForm({ initial, onCancel, onSaved }) {
             body: JSON.stringify({ fileId: file.id })
           }
         );
-        
-        console.log('Delete response status:', res.status);
         
         if (!res.ok) {
           const errorData = await res.json().catch(() => ({}));
@@ -328,8 +370,6 @@ export default function ReportForm({ initial, onCancel, onSaved }) {
           }
         } else {
           const responseData = await res.json().catch(() => ({}));
-          console.log('File deleted successfully from database');
-          console.log('Server response:', responseData);
           
           if (!responseData.physicalFileDeleted) {
             console.warn('Physical file was not deleted from server');
@@ -485,6 +525,20 @@ export default function ReportForm({ initial, onCancel, onSaved }) {
                       <div className="mt-1 text-xs text-gray-500">
                         Size: {f.file_size || 'Unknown'} | Type: {f.file_type || 'Unknown'}
                       </div>
+                      {form.type === 'group' && (
+                        <div className="mt-2">
+                          <label className="block text-xs font-medium text-gray-600 mb-1">File Status</label>
+                          <select
+                            value={f.is_active === 2 ? 'archived' : (f.is_active === 0 ? 'deleted' : 'active')}
+                            onChange={(e) => updateFileStatus(f, e.target.value)}
+                            className="w-full border rounded px-2 py-1 text-sm"
+                          >
+                            <option value="active">Active</option>
+                            <option value="archived">Archived</option>
+                            <option value="deleted">Deleted</option>
+                          </select>
+                        </div>
+                      )}
                     </div>
                   </li>
                 ))}
@@ -497,13 +551,17 @@ export default function ReportForm({ initial, onCancel, onSaved }) {
           <label className="block text-sm font-medium text-gray-700">Display Order</label>
           <input type="number" value={form.display_order} onChange={(e) => update('display_order', e.target.value)} className="mt-1 w-full border rounded px-3 py-2" />
         </div>
-        <div className="flex items-center gap-2">
-          <input id="is_active" type="checkbox" checked={form.is_active} onChange={(e) => update('is_active', e.target.checked)} />
-          <label htmlFor="is_active" className="text-sm text-gray-700">Active</label>
-        </div>
-        <div className="flex items-center gap-2">
-          <input id="is_archived" type="checkbox" checked={form.is_archived} onChange={(e) => update('is_archived', e.target.checked)} />
-          <label htmlFor="is_archived" className="text-sm text-gray-700">Archived</label>
+        <div>
+          <label className="block text-sm font-medium text-gray-700">Status</label>
+          <select
+            value={form.status}
+            onChange={(e) => update('status', Number(e.target.value))}
+            className="mt-1 w-full border rounded px-3 py-2"
+          >
+            <option value={1}>Active</option>
+            <option value={2}>Archived</option>
+            <option value={0}>Deleted (Soft Delete)</option>
+          </select>
         </div>
       </div>
       <div className="flex justify-end gap-2">

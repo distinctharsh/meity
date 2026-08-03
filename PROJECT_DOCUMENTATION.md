@@ -300,6 +300,10 @@ CREATE TABLE `reports` (
 - `group`: Multiple files (uses `report_files` table)
 - `link`: External URL
 
+**Status System:**
+- `is_active`: Status field with values: 1 (Active), 2 (Archived), 0 (Deleted/Soft Delete)
+- Simplified single column status system instead of separate is_active + is_archived
+
 #### 4. `report_files` Table (Individual Documents)
 ```sql
 CREATE TABLE `report_files` (

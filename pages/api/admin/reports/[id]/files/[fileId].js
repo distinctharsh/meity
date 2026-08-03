@@ -13,16 +13,37 @@ export default async function handler(req, res) {
 
   if (req.method === 'PUT') {
     try {
-      const { original_name } = req.body || {};
+      const { original_name, status } = req.body || {};
       
-      if (!original_name) {
-        return res.status(400).json({ message: 'File name is required' });
+      if (!original_name && !status) {
+        return res.status(400).json({ message: 'File name or status is required' });
       }
 
-      // Update file name
+      // Build update query dynamically based on provided fields
+      const fields = [];
+      const values = [];
+      
+      if (original_name) {
+        fields.push('original_name = ?');
+        values.push(original_name);
+      }
+      
+      if (status !== undefined) {
+        // Convert status to is_active value: 1 = Active, 2 = Archived, 0 = Deleted
+        const statusValue = status === 'archived' ? 2 : (status === 'deleted' ? 0 : 1);
+        fields.push('is_active = ?');
+        values.push(statusValue);
+      }
+      
+      if (fields.length === 0) {
+        return res.status(400).json({ message: 'No valid fields to update' });
+      }
+      
+      values.push(fileId, id);
+      
       await pool.query(
-        'UPDATE report_files SET original_name = ? WHERE id = ? AND report_id = ?',
-        [original_name, fileId, id]
+        `UPDATE report_files SET ${fields.join(', ')} WHERE id = ? AND report_id = ?`,
+        values
       );
 
       return res.status(200).json({ message: 'File updated successfully' });

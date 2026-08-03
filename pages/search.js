@@ -29,7 +29,6 @@ export default function SearchPage() {
         `/api/search?q=${encodeURIComponent(searchTerm)}`
       );
       const data = await response.json();
-        console.log("SEARCH RESPONSE =>", data);
       setResults(data || []);
     } catch (err) {
       console.log(err);

@@ -55,9 +55,9 @@ export default function Archives() {
           const nav = '/documents/photos';
           qs.push('nav=' + encodeURIComponent(nav));
         } else if (pageType === 'reports') {
-          // Default reports handling
-          const nav = router.query?.nav || '/documents/reports';
-          qs.push('nav=' + encodeURIComponent(String(nav)));
+          // Default reports handling - don't add nav parameter to get all archived reports
+          // const nav = router.query?.nav || '/documents/reports';
+          // qs.push('nav=' + encodeURIComponent(String(nav)));
         } else {
           // Default case - try to match by page name (handle council-of-ministers-portfolio-allocations etc)
           const nav = '/documents/' + String(pageType);

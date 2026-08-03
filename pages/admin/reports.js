@@ -210,29 +210,27 @@ export default function AdminReportsPage() {
             <table id="reports-table" className="min-w-full divide-y divide-slate-200 table-fixed">
             <thead className="bg-slate-50 sticky top-0 z-10">
               <tr>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider w-24">Title</th>
                 <th className="px-4 py-3 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider w-20">Type</th>
                 <th className="px-4 py-3 text-center text-xs font-semibold text-slate-700 uppercase tracking-wider w-20">Year</th>
-                <th className="px-4 py-3 text-center text-xs font-semibold text-slate-700 uppercase tracking-wider w-24">Size</th>
-                <th className="px-4 py-3 text-center text-xs font-semibold text-slate-700 uppercase tracking-wider w-24">Title</th>
                 <th className="px-4 py-3 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider w-48">Nav Name</th>
                 <th className="px-4 py-3 text-center text-xs font-semibold text-slate-700 uppercase tracking-wider w-20">Nav ID</th>
                 <th className="px-4 py-3 text-center text-xs font-semibold text-slate-700 uppercase tracking-wider w-20">Order</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider w-20">Archived</th>
                 <th className="px-4 py-3 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider w-20">Status</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider w-20">Actions</th>
                 <th className="px-4 py-3 w-28"></th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-slate-200">
               {items.map((r) => (
                 <tr key={r.id} className="odd:bg-slate-50/40 hover:bg-slate-50 transition-colors">
+                  <td className="px-4 py-3 text-sm text-slate-800 text-left whitespace-nowrap">{r.title || '-'}</td>
                   <td className="px-4 py-3 text-sm text-slate-800 whitespace-nowrap">
                     <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-700 capitalize border border-slate-200">
                       {r.type}
                     </span>
                   </td>
                   <td className="px-4 py-3 text-sm text-slate-800 text-center whitespace-nowrap">{r.year || '-'}</td>
-                  <td className="px-4 py-3 text-sm text-slate-800 text-center whitespace-nowrap">{r.size || '-'}</td>
-                  <td className="px-4 py-3 text-sm text-slate-800 text-center whitespace-nowrap">{r.title || '-'}</td>
                   <td
                     className="px-4 py-3 text-sm text-slate-800 max-w-[20rem] whitespace-normal break-words"
                     title={(r.nav_name || r.nav_link || '-') || ''}
@@ -242,13 +240,14 @@ export default function AdminReportsPage() {
                   <td className="px-4 py-3 text-sm text-slate-800 text-center whitespace-nowrap">{(typeof r.nav_item_id !== 'undefined' && r.nav_item_id !== null) ? r.nav_item_id : '-'}</td>
                   <td className="px-4 py-3 text-sm text-slate-800 text-center whitespace-nowrap">{(typeof r.display_order !== 'undefined' && r.display_order !== null) ? r.display_order : '-'}</td>
                   <td className="px-4 py-3 text-sm text-slate-800 whitespace-nowrap">
-                    <span className={r.is_archived ? "inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-amber-50 text-amber-800 border border-amber-200" : "inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-50 text-emerald-800 border border-emerald-200"}>
-                      {r.is_archived ? 'Archived' : 'Live'}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3 text-sm text-slate-800 whitespace-nowrap">
-                    <span className={r.is_active ? "inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-600 text-white" : "inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-slate-200 text-slate-700"}>
-                      {r.is_active ? 'Active' : 'Inactive'}
+                    <span className={
+                      r.is_active === 1
+                        ? "inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-600 text-white"
+                        : r.is_active === 2
+                        ? "inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-amber-600 text-white"
+                        : "inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-slate-200 text-slate-700"
+                    }>
+                      {r.is_active === 1 ? 'Active' : r.is_active === 2 ? 'Archived' : 'Deleted'}
                     </span>
                   </td>
                   <td className="px-4 py-2 text-right space-x-2 w-28 whitespace-nowrap">

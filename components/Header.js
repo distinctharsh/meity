@@ -198,9 +198,6 @@ export default function Header() {
                               onClick={() => {
                                 setSelectedLang(lang);
                                 setLangOpen(false);
-
-                                // language switch logic here
-                                console.log("Selected:", lang);
                               }}
                               className={`px-4 py-2 text-[18px] cursor-pointer hover:bg-[#f3f4f6] ${
                                 selectedLang === lang

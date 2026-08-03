@@ -22,7 +22,7 @@ export default async function handler(req, res) {
         selectCols.push('r.nav_link');
         selectCols.push('(SELECT name FROM navigation_items WHERE link = r.nav_link LIMIT 1) AS nav_name');
       }
-      // include archived flag if present
+      // include archived flag if present (for backward compatibility)
       const [colsArchived] = await pool.query('SHOW COLUMNS FROM reports LIKE ?', ['is_archived']);
       const hasArchived = Array.isArray(colsArchived) && colsArchived.length > 0;
       if (hasArchived) selectCols.push('r.is_archived');
@@ -36,7 +36,8 @@ export default async function handler(req, res) {
     }
   } else if (req.method === 'POST') {
     try {
-      const { title, type, year, size = null, file_url = null, nav_item_id = null, nav_link = null, item_count = null, is_active = true, is_archived = false } = req.body || {};
+      const body = req.body || {};
+      const { title, type, year, size = null, file_url = null, nav_item_id = null, nav_link = null, item_count = null, is_active, is_archived, status } = body; 
       if (!title) return res.status(400).json({ message: 'title is required' });
       // Defaults: type -> 'pdf'; year -> current year if not provided
       const nowYear = new Date().getFullYear();
@@ -53,11 +54,7 @@ export default async function handler(req, res) {
       let finalSize = size;
       try {
         if (!finalSize && typeof file_url === 'string' && file_url) {
-          // Support paths like /report_document/..., /uploads/..., or absolute public paths
-          // On Windows, path.join ignores previous segments if rel startswith '/'
-          // so ensure rel has no leading slash
           let rel = file_url.startsWith('/') ? file_url.slice(1) : file_url;
-          // next.js serves from projectRoot/public
           const projectRoot = process.cwd();
           const localPath = path.join(projectRoot, 'public', rel);
           if (fs.existsSync(localPath)) {
@@ -93,13 +90,29 @@ export default async function handler(req, res) {
         insertCols.push('is_archived');
         insertVals.push(!!is_archived);
       }
+      
+      let statusValue = 1;
+      if (typeof status !== 'undefined' && status !== null && status !== '') {
+        statusValue = Number(status);
+      }
+      else if (is_archived === true || is_archived === 'true') {
+        statusValue = 2;
+      }
+      else if (typeof is_active === 'number') {
+        statusValue = is_active;
+      } else if (is_active === false || is_active === 'false') {
+        statusValue = 0;
+      } else if (is_active === true || is_active === 'true') {
+        statusValue = 1;
+      }
+      
       insertCols.push('item_count', 'display_order', 'is_active');
-      insertVals.push(item_count, nextOrder, !!is_active);
+      insertVals.push(item_count || 0, nextOrder, statusValue);
 
       const placeholders = insertCols.map(() => '?').join(', ');
       const sql = `INSERT INTO reports (${insertCols.join(', ')}) VALUES (${placeholders})`;
       const [result] = await pool.query(sql, insertVals);
-      return res.status(201).json({ id: result.insertId, message: 'Report created' });
+      return res.status(201).json({ id: result.insertId, message: 'Report created successfully' });
     } catch (e) {
       console.error('Create report error', e);
       return res.status(500).json({ message: 'Internal server error' });

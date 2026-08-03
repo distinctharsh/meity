@@ -14,19 +14,14 @@ async function cleanupOrphanFiles() {
   });
 
   try {
-    console.log('Starting orphan file cleanup...');
-
     // Get all file URLs from database
     const [files] = await connection.query('SELECT file_url FROM report_files');
     const dbFileUrls = new Set(files.map(f => f.file_url));
-
-    console.log(`Found ${dbFileUrls.size} files in database`);
 
     // Scan report_document folder
     const reportDocPath = path.join(__dirname, '..', 'public', 'report_document');
     
     if (!fs.existsSync(reportDocPath)) {
-      console.log('report_document folder not found');
       return;
     }
 
@@ -48,7 +43,6 @@ async function cleanupOrphanFiles() {
     };
 
     const allPhysicalFiles = getAllFiles(reportDocPath);
-    console.log(`Found ${allPhysicalFiles.length} physical files in report_document`);
 
     let deletedCount = 0;
     let keptCount = 0;
@@ -62,7 +56,6 @@ async function cleanupOrphanFiles() {
       if (!dbFileUrls.has(fileUrl)) {
         try {
           fs.unlinkSync(physicalFile);
-          console.log(`Deleted orphan file: ${fileUrl}`);
           deletedCount++;
         } catch (e) {
           console.error(`Failed to delete ${fileUrl}:`, e.message);
@@ -71,10 +64,6 @@ async function cleanupOrphanFiles() {
         keptCount++;
       }
     }
-
-    console.log(`\nCleanup complete:`);
-    console.log(`- Deleted ${deletedCount} orphan files`);
-    console.log(`- Kept ${keptCount} referenced files`);
 
   } catch (error) {
     console.error('Error during cleanup:', error);

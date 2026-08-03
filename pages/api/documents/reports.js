@@ -10,7 +10,7 @@ export default async function handler(req, res) {
     const navItemParam = req.query.nav_item ? String(req.query.nav_item).trim() : null;
 
     // Optional flags controlling archived behavior:
-    // - `archived_only=1` => return only archived reports (requires `is_archived` column)
+    // - `archived_only=1` => return only archived reports (is_active = 2)
     // - `include_archived=1` => include archived reports (do not filter them out)
     const archivedOnly = req.query.archived_only === '1' || String(req.query.archived_only) === 'true';
     const includeArchived = req.query.include_archived === '1' || String(req.query.include_archived) === 'true';
@@ -20,30 +20,16 @@ export default async function handler(req, res) {
     const [cols] = await pool.query('SHOW COLUMNS FROM reports LIKE ?', ['nav_item_id']);
     const hasNavItem = Array.isArray(cols) && cols.length > 0;
 
-    // Detect whether `is_archived` column exists so we can hide archived items from public API
-    const [colsArchived] = await pool.query('SHOW COLUMNS FROM reports LIKE ?', ['is_archived']);
-    const hasArchived = Array.isArray(colsArchived) && colsArchived.length > 0;
-
-    // Detect whether `is_archived` column exists in report_files table
-    const [colsFilesArchived] = await pool.query('SHOW COLUMNS FROM report_files LIKE ?', ['is_archived']);
-    const hasFilesArchived = Array.isArray(colsFilesArchived) && colsFilesArchived.length > 0;
-
     let params = [];
     let whereClause = '';
     if (archivedOnly) {
-      // Only show reports that have archived files
-      if (hasFilesArchived) {
-        whereClause = 'WHERE EXISTS (SELECT 1 FROM report_files rf WHERE rf.report_id = r.id AND rf.is_archived = TRUE)';
-      } else {
-        // No is_archived in report_files; nothing to return for archived-only requests
-        whereClause = 'WHERE 0';
-      }
+      // New status system: is_active = 2 means archived
+      // Show reports that are archived OR have archived files
+      whereClause = 'WHERE (r.is_active = 2 OR EXISTS (SELECT 1 FROM report_files rf WHERE rf.report_id = r.id AND rf.is_active = 2))';
     } else {
-      // Default public behaviour: only show active items; unless includeArchived is requested
-      whereClause = 'WHERE r.is_active = TRUE';
-      if (hasArchived && !includeArchived) {
-        whereClause += ' AND r.is_archived = FALSE';
-      }
+      // Default public behaviour: only show active items (is_active = 1)
+      // But exclude reports that only have archived files (no active files)
+      whereClause = 'WHERE r.is_active = 1 AND (NOT EXISTS (SELECT 1 FROM report_files rf WHERE rf.report_id = r.id) OR EXISTS (SELECT 1 FROM report_files rf WHERE rf.report_id = r.id AND rf.is_active = 1))';
     }
     if (navItemParam) {
       const parsed = parseInt(navItemParam, 10);
@@ -79,17 +65,18 @@ export default async function handler(req, res) {
       }
     }
 
-    // Build subquery conditions for report_files based on is_archived
-    // When archived_only is true, show archived files; otherwise show non-archived files
-    const archivedFileFilter = archivedOnly ? 'TRUE' : 'FALSE';
-    const filesWhereClause = hasFilesArchived ? `WHERE rf.report_id = r.id AND rf.is_archived = ${archivedFileFilter}` : 'WHERE rf.report_id = r.id';
-    const firstFileWhereClause = hasFilesArchived ? `WHERE rf2.report_id = r.id AND rf2.is_archived = ${archivedFileFilter}` : 'WHERE rf2.report_id = r.id';
+    // Build subquery conditions for report_files based on new status system
+    // When archived_only is true, count archived files (is_active = 2); otherwise count active files (is_active = 1)
+    const archivedFileFilter = archivedOnly ? '2' : '1';
+    const filesWhereClause = `WHERE rf.report_id = r.id AND rf.is_active = ${archivedFileFilter}`;
+    const firstFileWhereClause = `WHERE rf2.report_id = r.id AND rf2.is_active = ${archivedFileFilter}`;
 
     const [rows] = await pool.query(
       `SELECT r.id, r.title, r.type, r.year, r.size, r.file_url,
               r.item_count,
               (SELECT COUNT(1) FROM report_files rf ${filesWhereClause}) AS files_count,
-              (SELECT rf2.file_url FROM report_files rf2 ${firstFileWhereClause} ORDER BY rf2.id ASC LIMIT 1) AS first_file_url
+              (SELECT rf2.file_url FROM report_files rf2 ${firstFileWhereClause} ORDER BY rf2.id ASC LIMIT 1) AS first_file_url,
+              (SELECT COUNT(1) FROM report_files rf3 WHERE rf3.report_id = r.id AND rf3.is_active = 2) AS archived_files_count
        FROM reports r
        ${whereClause}
        ORDER BY r.year DESC, r.display_order ASC, r.created_at DESC`,
