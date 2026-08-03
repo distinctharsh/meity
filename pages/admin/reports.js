@@ -135,7 +135,7 @@ export default function AdminReportsPage() {
     <AdminLayout>
       <div className="flex items-start justify-between mb-6 pb-4 border-b border-slate-200">
         <div>
-          <h1 className="text-xl font-semibold text-slate-900">Reports</h1>
+          <h1 className="text-xl font-semibold text-slate-900">Documents</h1>
           <p className="text-sm text-slate-600 mt-1">Total: <span className="font-semibold text-slate-800">{items.length}</span></p>
         </div>
         <button
@@ -253,7 +253,15 @@ export default function AdminReportsPage() {
                   </td>
                   <td className="px-4 py-2 text-right space-x-2 w-28 whitespace-nowrap">
                     <button
-                      onClick={() => { setEditing(r); setCreating(false); }}
+                      onClick={() => {
+                        // Validate ID before allowing edit
+                        if (!r.id || r.id === null || r.id === undefined || isNaN(r.id)) {
+                          alert('Invalid report ID. This report cannot be edited.');
+                          return;
+                        }
+                        setEditing(r);
+                        setCreating(false);
+                      }}
                       className="inline-flex items-center justify-center w-9 h-9 rounded-md border border-blue-200 text-blue-600  cursor-pointer"
                       aria-label="Edit report"
                       title="Edit report"
@@ -261,7 +269,14 @@ export default function AdminReportsPage() {
                       <span aria-hidden="true" className="material-symbols-outlined">edit</span>
                     </button>
                     <button
-                      onClick={() => onDelete(r.id)}
+                      onClick={() => {
+                        // Validate ID before allowing delete
+                        if (!r.id || r.id === null || r.id === undefined || isNaN(r.id)) {
+                          alert('Invalid report ID. This report cannot be deleted.');
+                          return;
+                        }
+                        onDelete(r.id);
+                      }}
                       className="inline-flex items-center justify-center w-9 h-9 rounded-md border border-red-200 text-red-700 hover:bg-red-50 cursor-pointer"
                       aria-label="Delete report"
                       title="Delete report"

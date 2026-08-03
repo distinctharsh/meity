@@ -15,6 +15,7 @@ export default function ReportForm({ initial, onCancel, onSaved }) {
   const [navOptions, setNavOptions] = useState([]);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [loadingFiles, setLoadingFiles] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [attachedFiles, setAttachedFiles] = useState([]); // for group
   const [pendingAttach, setPendingAttach] = useState([]); // buffer uploaded files before save
@@ -22,6 +23,14 @@ export default function ReportForm({ initial, onCancel, onSaved }) {
 
   useEffect(() => {
     if (initial) {
+      // Validate ID before proceeding
+      if (!initial.id || initial.id === null || initial.id === undefined || isNaN(initial.id)) {
+        console.error('Invalid report ID:', initial.id);
+        alert('Invalid report ID. Please refresh the page and try again.');
+        onCancel();
+        return;
+      }
+
       setForm({
         title: initial.title || '',
         type: initial.type || 'pdf',
@@ -37,8 +46,14 @@ export default function ReportForm({ initial, onCancel, onSaved }) {
       if (initial.type === 'group') {
         (async () => {
           try {
+            setLoadingFiles(true);
             const res = await fetch(`/api/admin/reports/${initial.id}/files`);
-            const data = res.ok ? await res.json() : [];
+            if (!res.ok) {
+              console.error('Failed to load files:', res.status);
+              setAttachedFiles([]);
+              return;
+            }
+            const data = await res.json();
             setAttachedFiles(data || []);
             // Initialize file titles with existing original_name values
             const titles = {};
@@ -48,14 +63,19 @@ export default function ReportForm({ initial, onCancel, onSaved }) {
               }
             });
             setFileTitles(titles);
-          } catch { }
+          } catch (e) {
+            console.error('Failed to load files:', e);
+            setAttachedFiles([]);
+          } finally {
+            setLoadingFiles(false);
+          }
         })();
       }
     } else {
       const y = new Date().getFullYear();
       setForm((p) => ({ ...p, year: String(y) }));
     }
-  }, [initial]);
+  }, [initial, onCancel]);
 
   // Load navigation options for nav_link selector
   useEffect(() => {
@@ -267,6 +287,9 @@ export default function ReportForm({ initial, onCancel, onSaved }) {
   };
 
   const removeAttachedFile = async (file, index) => {
+    console.log('Removing file:', { file, index, fileId: file.id, initialId: initial?.id });
+    
+    // First remove from UI
     setAttachedFiles(prev => prev.filter((_, i) => i !== index));
     setPendingAttach(prev =>
       prev.filter(p => p.file_path !== file.file_url)
@@ -277,15 +300,58 @@ export default function ReportForm({ initial, onCancel, onSaved }) {
       delete next[file.file_url];
       return next;
     });
+    
+    // Then delete from database if it's an existing file
     if (file.id && file.id !== 0 && initial?.id) {
+      console.log('Deleting file from database:', file.id);
       try {
-        await fetch(
-          `/api/admin/reports/${initial.id}/files/${file.id}`,
-          { method: 'DELETE' }
+        const res = await fetch(
+          `/api/admin/reports/${initial.id}/files`,
+          { 
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ fileId: file.id })
+          }
         );
+        
+        console.log('Delete response status:', res.status);
+        
+        if (!res.ok) {
+          const errorData = await res.json().catch(() => ({}));
+          console.error('Failed to delete file from server:', errorData);
+          alert(`Failed to delete file: ${errorData.message || 'Unknown error'}`);
+          // Reload files to restore the file in UI if deletion failed
+          const reloadRes = await fetch(`/api/admin/reports/${initial.id}/files`);
+          if (reloadRes.ok) {
+            const reloadedData = await reloadRes.json();
+            setAttachedFiles(reloadedData || []);
+          }
+        } else {
+          const responseData = await res.json().catch(() => ({}));
+          console.log('File deleted successfully from database');
+          console.log('Server response:', responseData);
+          
+          if (!responseData.physicalFileDeleted) {
+            console.warn('Physical file was not deleted from server');
+            alert('File deleted from database but physical file could not be deleted. Please contact administrator.');
+          }
+        }
       } catch (e) {
         console.error('Failed to delete file', e);
+        alert('Failed to delete file. Please try again.');
+        // Reload files to restore the file in UI if deletion failed
+        try {
+          const reloadRes = await fetch(`/api/admin/reports/${initial.id}/files`);
+          if (reloadRes.ok) {
+            const reloadedData = await reloadRes.json();
+            setAttachedFiles(reloadedData || []);
+          }
+        } catch (reloadError) {
+          console.error('Failed to reload files:', reloadError);
+        }
       }
+    } else {
+      console.log('File ID is invalid or initial ID is missing, skipping database deletion');
     }
   };
 
@@ -373,13 +439,15 @@ export default function ReportForm({ initial, onCancel, onSaved }) {
         {form.type === 'group' && (
           <div className="md:col-span-2">
             <label className="block text-sm font-medium text-gray-700 mb-2">Attached Files</label>
-            {attachedFiles.length === 0 ? (
+            {loadingFiles ? (
+              <div className="text-sm text-gray-500">Loading files...</div>
+            ) : attachedFiles.length === 0 ? (
               <div className="text-sm text-gray-500">No files attached yet. Upload files above.</div>
             ) : (
               <ul className="text-sm text-gray-700 space-y-2">
                 {attachedFiles.map((f, idx) => (
                   <li
-                    key={idx}
+                    key={f.id || idx}
                     className="border rounded px-3 py-2"
                   >
                     <div className="flex items-center justify-between mb-2">
@@ -414,6 +482,9 @@ export default function ReportForm({ initial, onCancel, onSaved }) {
                         className="w-full border rounded px-2 py-1 text-sm"
                         placeholder="Enter custom file title"
                       />
+                      <div className="mt-1 text-xs text-gray-500">
+                        Size: {f.file_size || 'Unknown'} | Type: {f.file_type || 'Unknown'}
+                      </div>
                     </div>
                   </li>
                 ))}

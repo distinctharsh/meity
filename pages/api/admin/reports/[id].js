@@ -2,7 +2,11 @@ import pool from '@/lib/db';
 
 export default async function handler(req, res) {
   const { id } = req.query;
-  if (!id || isNaN(id)) return res.status(400).json({ message: 'Invalid report ID' });
+  // More robust ID validation
+  if (!id || id === null || id === undefined || id === '' || isNaN(Number(id))) {
+    console.error('Invalid report ID received:', id);
+    return res.status(400).json({ message: 'Invalid report ID' });
+  }
 
   if (req.method === 'GET') {
     try {

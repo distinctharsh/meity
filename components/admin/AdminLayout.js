@@ -84,7 +84,7 @@ const AdminLayout = ({ children }) => {
         { name: 'Our Team', href: '/admin/our-team', icon: '👥', description: 'Manage ministry team' },
         { name: 'Directory', href: '/admin/directory', icon: '📇', description: 'Manage directory' },
         { name: 'Photo Galleries', href: '/admin/photos', icon: '📷', description: 'Manage photo galleries' },
-        { name: 'Reports', href: '/admin/reports', icon: '📑', description: 'Manage Documents > Reports' },
+        { name: 'Documents', href: '/admin/reports', icon: '📑', description: 'Manage Documents > Reports' },
         { name: 'RTI Page', href: '/admin/rti', icon: '📋', description: 'Manage RTI content & sections' }
       ]
     },

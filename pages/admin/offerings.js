@@ -29,40 +29,33 @@ export default function OfferingsManagement() {
     }
   };
 
-  const handleAdd = () => {
-    setEditingOffering(null);
-    setShowForm(true);
-  };
-
-
   const formatDateForInput = (dateString) => {
-  if (!dateString) return '';
-  try {
-    const date = new Date(dateString);
-    // Local timezone mein convert karke YYYY-MM-DD format mein return karta hai
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-  } catch (e) {
-    console.error("Invalid date:", dateString);
-    return '';
-  }
-};
-
-
-const handleEdit = (offering) => {
-  // Date format convert kar rahe hain taaki <input type="date"> support kare
-  const formattedOffering = {
-    ...offering,
-    published_date: offering.published_date ? formatDateForInput(offering.published_date) : '',
-    due_date: offering.due_date ? formatDateForInput(offering.due_date) : ''
+    if (!dateString) return '';
+    try {
+      const date = new Date(dateString);
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    } catch (e) {
+      console.error("Invalid date:", dateString);
+      return '';
+    }
   };
 
-  setEditingOffering(formattedOffering);
-  setShowForm(true);
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-};
+
+  const handleEdit = (offering) => {
+  // Date format convert kar rahe hain taaki <input type="date"> support kare
+    const formattedOffering = {
+      ...offering,
+      published_date: offering.published_date ? formatDateForInput(offering.published_date) : '',
+      due_date: offering.due_date ? formatDateForInput(offering.due_date) : ''
+    };
+
+    setEditingOffering(formattedOffering);
+    setShowForm(true);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   const handleDelete = async (id) => {
     const itemType = activeTab === 'vacancies' ? 'vacancy' : 'tender';
@@ -72,7 +65,9 @@ const handleEdit = (offering) => {
       let apiUrl = activeTab === 'vacancies' ? `/api/admin/vacancies/${id}` : `/api/admin/tenders/${id}`;
       
       const response = await fetch(apiUrl, {
-        method: 'DELETE'
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ is_active: 0 })
       });
 
       if (response.ok) {
@@ -116,49 +111,25 @@ const handleEdit = (offering) => {
     }
   };
 
-  const toggleActive = async (id, isActive) => {
+  // Central status update logic (0, 1, 2 handler)
+  const updateStatus = async (id, targetStatus) => {
     try {
       let apiUrl = activeTab === 'vacancies' ? `/api/admin/vacancies/${id}` : `/api/admin/tenders/${id}`;
       
       const response = await fetch(apiUrl, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ is_active: !isActive }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ is_active: targetStatus }),
       });
 
       if (response.ok) {
         fetchOfferings();
       } else {
-        alert('Failed to update item status');
+        alert('Failed to update status');
       }
     } catch (error) {
-      console.error('Toggle error:', error);
-      alert('Failed to update item status');
-    }
-  };
-
-  const toggleArchive = async (id, isArchived) => {
-    try {
-      let apiUrl = activeTab === 'vacancies' ? `/api/admin/vacancies/${id}` : `/api/admin/tenders/${id}`;
-      
-      const response = await fetch(apiUrl, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ is_archived: !isArchived }),
-      });
-
-      if (response.ok) {
-        fetchOfferings();
-      } else {
-        alert('Failed to update archive status');
-      }
-    } catch (error) {
-      console.error('Archive toggle error:', error);
-      alert('Failed to update archive status');
+      console.error('Status update error:', error);
+      alert('Failed to update status');
     }
   };
 
@@ -196,7 +167,7 @@ const handleEdit = (offering) => {
           </button>
         </div>
 
-        {/* Tabs */}
+        {/* Tab Links */}
         <div className="border-b border-gray-200 mb-6">
           <nav className="-mb-px flex space-x-8">
             <button
@@ -261,106 +232,101 @@ const handleEdit = (offering) => {
             <tbody className="bg-white divide-y divide-gray-200">
               {offerings.length === 0 ? (
                 <tr>
-                  <td colSpan={3} className="px-6 py-4 text-center text-sm text-gray-500">
+                  <td colSpan={4} className="px-6 py-4 text-center text-sm text-gray-500">
                     {activeTab === 'vacancies' ? 'No vacancies found. Click the "+" button to add a new vacancy.' :
                      'No tenders found. Click the "+" button to add a new tender.'}
                   </td>
                 </tr>
               ) : (
-                offerings.map((item) => (
-                  <tr key={item.id}>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center">
-                        {item.icon && (
-                          <span className="text-xl mr-2">{item.icon}</span>
-                        )}
-                        <div>
-                          <div className="text-sm font-medium text-gray-900">{item.title}</div>
-                          {item.description && (
-                            <div className="text-xs text-gray-500 mt-1 line-clamp-1">
-                              {item.description}
-                            </div>
-                          )}
+                offerings.map((item) => {
+                  const statusNum = Number(item.is_active);
+                  return (
+                    <tr key={item.id}>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center">
+                          {item.icon && <span className="text-xl mr-2">{item.icon}</span>}
+                          <div>
+                            <div className="text-sm font-medium text-gray-900">{item.title}</div>
+                            {item.description && (
+                              <div className="text-xs text-gray-500 mt-1 line-clamp-1">{item.description}</div>
+                            )}
+                          </div>
                         </div>
-                      </div>
-                    </td>
-                    {(activeTab === 'vacancies' || activeTab === 'tenders') && (
-                       <td className="p-2 text-sm">
-                          {activeTab === 'vacancies' && (
-                            item.published_date
-                              ? new Date(item.published_date).toLocaleDateString('en-IN')
-                              : 'No date'
-                          )}
+                      </td>
+                      {(activeTab === 'vacancies' || activeTab === 'tenders') && (
+                         <td className="p-2 text-sm">
+                            {activeTab === 'vacancies' && (
+                              item.published_date
+                                ? new Date(item.published_date).toLocaleDateString('en-IN')
+                                : 'No date'
+                            )}
 
-                          {activeTab === 'tenders' && (
-                            <>
-                              {item.published_date && (
-                                <div>
-                                  Published:{' '}
-                                  {new Date(item.published_date).toLocaleDateString('en-IN')}
-                                </div>
-                              )}
-                              {item.due_date && (
-                                <div>
-                                  Due:{' '}
-                                  {new Date(item.due_date).toLocaleDateString('en-IN')}
-                                </div>
-                              )}
-                            </>
-                          )}
-                        </td>
-                    )}
-                    <td className="px-6 py-4 text-center">
-                      <span
-                        className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                          item.is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                        }`}
-                      >
-                        {item.is_active ? 'Active' : 'Inactive'}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 text-right">
-                      <div className="flex justify-end space-x-2">
-                        <button
-                          onClick={() => toggleActive(item.id, item.is_active)}
-                          className="inline-flex items-center justify-center w-8 h-8 rounded-full border hover:bg-gray-50"
-                          aria-label={item.is_active ? 'Deactivate' : 'Activate'}
-                          title={item.is_active ? 'Deactivate' : 'Activate'}
+                            {activeTab === 'tenders' && (
+                              <>
+                                {item.published_date && (
+                                  <div>Published: {new Date(item.published_date).toLocaleDateString('en-IN')}</div>
+                                )}
+                                {item.due_date && (
+                                  <div>Due: {new Date(item.due_date).toLocaleDateString('en-IN')}</div>
+                                )}
+                              </>
+                            )}
+                          </td>
+                      )}
+                      <td className="px-6 py-4 text-center">
+                        <span
+                          className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                            statusNum === 1 ? 'bg-green-100 text-green-800' : 
+                            statusNum === 2 ? 'bg-amber-100 text-amber-800' : 'bg-red-100 text-red-800'
+                          }`}
                         >
-                          <span className="material-symbols-outlined text-sm">
-                            {item.is_active ? 'toggle_off' : 'toggle_on'}
-                          </span>
-                        </button>
-                        <button
-                          onClick={() => toggleArchive(item.id, item.is_archived)}
-                          className="inline-flex items-center justify-center w-8 h-8 rounded-full border hover:bg-yellow-50"
-                          aria-label={item.is_archived ? 'Unarchive' : 'Archive'}
-                          title={item.is_archived ? 'Move to Active' : 'Move to Archive'}
-                        >
-                          <span className={`material-symbols-outlined text-sm ${item.is_archived ? 'text-yellow-600' : 'text-gray-400'}`}>
-                            {item.is_archived ? 'unarchive' : 'archive'}
-                          </span>
-                        </button>
-                        <button
-                          onClick={() => handleEdit(item)}
-                          className="inline-flex items-center justify-center w-8 h-8 rounded-full border hover:bg-blue-50"
-                          aria-label="Edit"
-                          title="Edit"
-                        >
-                          <span className="material-symbols-outlined text-blue-600 text-sm">edit</span>
-                        </button>
-                        <button
-                          onClick={() => handleDelete(item.id)}
-                          className="inline-flex items-center justify-center w-8 h-8 rounded-full border text-red-600 hover:bg-red-50"
-                          aria-label="Delete"
-                          title="Delete"
-                        >
-                          <span className="material-symbols-outlined text-sm">delete</span>
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))
+                          {statusNum === 1 ? 'Active' : statusNum === 2 ? 'Archived' : 'Inactive'}
+                        </span>
+                      </td>
+                      
+                      <td className="px-6 py-4 text-right">
+                        <div className="flex justify-end space-x-2">
+                          <button
+                            onClick={() => updateStatus(item.id, statusNum === 1 ? 0 : 1)}
+                            className="inline-flex items-center justify-center w-8 h-8 rounded-full border hover:bg-gray-50"
+                            aria-label={statusNum === 1 ? 'Deactivate' : 'Activate'}
+                            title={statusNum === 1 ? 'Deactivate' : 'Activate'}
+                          >
+                            <span className="material-symbols-outlined text-sm">
+                              {statusNum === 1 ? 'toggle_off' : 'toggle_on'}
+                            </span>
+                          </button>
+                          <button
+                            onClick={() => updateStatus(item.id, statusNum === 2 ? 1 : 2)}
+                            className="inline-flex items-center justify-center w-8 h-8 rounded-full border hover:bg-yellow-50"
+                            aria-label={statusNum === 2 ? 'Unarchive' : 'Archive'}
+                            title={statusNum === 2 ? 'Move to Active' : 'Move to Archive'}
+                          >
+                            <span className={`material-symbols-outlined text-sm ${statusNum === 2 ? 'text-yellow-600' : 'text-gray-400'}`}>
+                              {statusNum === 2 ? 'unarchive' : 'archive'}
+                            </span>
+                          </button>
+                          <button
+                            onClick={() => handleEdit(item)}
+                            className="inline-flex items-center justify-center w-8 h-8 rounded-full border hover:bg-blue-50"
+                            aria-label="Edit"
+                            title="Edit"
+                          >
+                            <span className="material-symbols-outlined text-blue-600 text-sm">edit</span>
+                          </button>
+                          <button
+                            onClick={() => handleDelete(item.id)}
+                            className="inline-flex items-center justify-center w-8 h-8 rounded-full border text-red-600 hover:bg-red-50"
+                            aria-label="Delete"
+                            title="Delete"
+                          >
+                            <span className="material-symbols-outlined text-sm">delete</span>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })
               )}
             </tbody>
           </table>
