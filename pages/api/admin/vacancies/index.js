@@ -15,7 +15,6 @@ export default async function handler(req, res) {
           file_name,
           file_size,
           is_active,
-          is_archived,
           created_at,
           updated_at
         FROM vacancies_tenders 

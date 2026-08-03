@@ -17,7 +17,6 @@ export default async function handler(req, res) {
           file_name,
           file_size,
           is_active,
-          is_archived,
           created_at,
           updated_at
         FROM vacancies_tenders 
@@ -35,7 +34,7 @@ export default async function handler(req, res) {
     }
   } else if (req.method === 'PUT') {
     try {
-      const { title, description, published_date, file_name, file_size, is_active, is_archived } = req.body;
+      const { title, description, published_date, file_name, file_size, is_active } = req.body;
 
       const [result] = await pool.query(`
         UPDATE vacancies_tenders 
@@ -45,10 +44,9 @@ export default async function handler(req, res) {
             file_name = COALESCE(?, file_name),
             file_size = COALESCE(?, file_size),
             is_active = COALESCE(?, is_active),
-            is_archived = COALESCE(?, is_archived),
             updated_at = NOW()
         WHERE id = ? AND type = 'vacancy'
-      `, [title, description, published_date, file_name, file_size, is_active, is_archived, id]);
+      `, [title, description, published_date, file_name, file_size, is_active, id]);
 
       if (result.affectedRows === 0) {
         return res.status(404).json({ message: 'Vacancy not found' });

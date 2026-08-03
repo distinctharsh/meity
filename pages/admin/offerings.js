@@ -59,15 +59,13 @@ export default function OfferingsManagement() {
 
   const handleDelete = async (id) => {
     const itemType = activeTab === 'vacancies' ? 'vacancy' : 'tender';
-    if (!confirm(`Are you sure you want to delete this ${itemType}?`)) return;
+    if (!confirm(`Are you sure you want to permanently delete this ${itemType}?`)) return;
 
     try {
       let apiUrl = activeTab === 'vacancies' ? `/api/admin/vacancies/${id}` : `/api/admin/tenders/${id}`;
       
       const response = await fetch(apiUrl, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ is_active: 0 })
+        method: 'DELETE'
       });
 
       if (response.ok) {
@@ -280,30 +278,30 @@ export default function OfferingsManagement() {
                             statusNum === 2 ? 'bg-amber-100 text-amber-800' : 'bg-red-100 text-red-800'
                           }`}
                         >
-                          {statusNum === 1 ? 'Active' : statusNum === 2 ? 'Archived' : 'Inactive'}
+                          {statusNum === 1 ? 'Active' : statusNum === 2 ? 'Archived' : 'Deleted'}
                         </span>
                       </td>
                       
                       <td className="px-6 py-4 text-right">
                         <div className="flex justify-end space-x-2">
                           <button
-                            onClick={() => updateStatus(item.id, statusNum === 1 ? 0 : 1)}
-                            className="inline-flex items-center justify-center w-8 h-8 rounded-full border hover:bg-gray-50"
-                            aria-label={statusNum === 1 ? 'Deactivate' : 'Activate'}
-                            title={statusNum === 1 ? 'Deactivate' : 'Activate'}
+                            onClick={() => updateStatus(item.id, statusNum === 1 ? 2 : 1)}
+                            className="inline-flex items-center justify-center w-8 h-8 rounded-full border hover:bg-yellow-50"
+                            aria-label={statusNum === 1 ? 'Archive' : 'Unarchive'}
+                            title={statusNum === 1 ? 'Move to Archive' : 'Move to Active'}
                           >
                             <span className="material-symbols-outlined text-sm">
-                              {statusNum === 1 ? 'toggle_off' : 'toggle_on'}
+                              {statusNum === 1 ? 'archive' : 'unarchive'}
                             </span>
                           </button>
                           <button
-                            onClick={() => updateStatus(item.id, statusNum === 2 ? 1 : 2)}
-                            className="inline-flex items-center justify-center w-8 h-8 rounded-full border hover:bg-yellow-50"
-                            aria-label={statusNum === 2 ? 'Unarchive' : 'Archive'}
-                            title={statusNum === 2 ? 'Move to Active' : 'Move to Archive'}
+                            onClick={() => updateStatus(item.id, statusNum === 0 ? 1 : 0)}
+                            className="inline-flex items-center justify-center w-8 h-8 rounded-full border hover:bg-red-50"
+                            aria-label={statusNum === 0 ? 'Restore' : 'Delete'}
+                            title={statusNum === 0 ? 'Restore' : 'Soft Delete'}
                           >
-                            <span className={`material-symbols-outlined text-sm ${statusNum === 2 ? 'text-yellow-600' : 'text-gray-400'}`}>
-                              {statusNum === 2 ? 'unarchive' : 'archive'}
+                            <span className="material-symbols-outlined text-sm">
+                              {statusNum === 0 ? 'restore' : 'delete'}
                             </span>
                           </button>
                           <button
@@ -313,14 +311,6 @@ export default function OfferingsManagement() {
                             title="Edit"
                           >
                             <span className="material-symbols-outlined text-blue-600 text-sm">edit</span>
-                          </button>
-                          <button
-                            onClick={() => handleDelete(item.id)}
-                            className="inline-flex items-center justify-center w-8 h-8 rounded-full border text-red-600 hover:bg-red-50"
-                            aria-label="Delete"
-                            title="Delete"
-                          >
-                            <span className="material-symbols-outlined text-sm">delete</span>
                           </button>
                         </div>
                       </td>

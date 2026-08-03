@@ -13,6 +13,8 @@ export default async function handler(req, res) {
     const { archived } = req.query;
     const showArchived = archived === 'true';
 
+   const targetStatus = showArchived ? 2 : 1;
+
    let query = `
   SELECT
     id,
@@ -24,22 +26,16 @@ export default async function handler(req, res) {
     file_name,
     file_size AS size,
     due_date AS closing_date,
-    is_archived,
+    is_active,
     created_at,
     updated_at
   FROM vacancies_tenders
   WHERE type = 'tender'
+    AND is_active = ?
+  ORDER BY published_date DESC, created_at DESC
 `;
 
-if (showArchived) {
-  query += ` AND is_archived = 1`;
-} else {
-  query += ` AND is_active = 1 AND is_archived = 0`;
-}
-
-query += ` ORDER BY published_date DESC, created_at DESC`;
-
-const [rows] = await pool.query(query);
+const [rows] = await pool.query(query, [targetStatus]);
 
     res.status(200).json(rows);
   } catch (error) {
@@ -62,8 +58,7 @@ async function ensureTable() {
         closing_date DATE NULL,
         file_name VARCHAR(255) NULL,
         file_size VARCHAR(50) NULL,
-        is_active BOOLEAN DEFAULT 1,
-        is_archived BOOLEAN DEFAULT 0,
+        is_active INT DEFAULT 1,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
@@ -80,7 +75,7 @@ async function ensureTable() {
     try {
       await pool.query('CREATE INDEX idx_vacancies_tenders_type ON vacancies_tenders(type)');
       await pool.query('CREATE INDEX idx_vacancies_tenders_published ON vacancies_tenders(published_date)');
-      await pool.query('CREATE INDEX idx_vacancies_tenders_active ON vacancies_tenders(is_active, is_archived)');
+      await pool.query('CREATE INDEX idx_vacancies_tenders_active ON vacancies_tenders(is_active)');
     } catch (e) {
       // Index might already exist, ignore error
     }

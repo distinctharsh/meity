@@ -2,7 +2,6 @@ import Footer from "@/components/Footer";
 import { useEffect, useState, useRef } from "react";
 import { useRouter } from 'next/router';
 import PageHeader from "@/components/PageHeader";
-import SubNavTabs from "@/components/SubNavTabs";
 
 export default function ReportDetail() {
   const router = useRouter();
@@ -21,28 +20,6 @@ export default function ReportDetail() {
   const dataTableRef = useRef(null);
   const [breadcrumb, setBreadcrumb] = useState([]);
   const [reportTitle, setReportTitle] = useState("");
-
-  const formatFileSize = (bytes) => {
-    if (!bytes || isNaN(bytes)) return '';
-
-    const kb = bytes / 1024;
-
-    if (kb < 1024) {
-      return `${kb.toFixed(1)} KB`;
-    }
-
-    return `${(kb / 1024).toFixed(1)} MB`;
-  };
-
-  const formatDate = (date) => {
-    if (!date) return '';
-
-    return new Date(date).toLocaleDateString('en-IN', {
-      day: '2-digit',
-      month: 'short',
-      year: 'numeric',
-    });
-  };
 
   useEffect(() => {
     let mounted = true;
@@ -65,7 +42,6 @@ export default function ReportDetail() {
     return () => { mounted = false; };
   }, [id, archived]);
 
-  // Fetch breadcrumb data from API
   useEffect(() => {
     let mounted = true;
     async function loadBreadcrumb() {
@@ -91,7 +67,6 @@ export default function ReportDetail() {
     return () => { mounted = false; };
   }, [id]);
 
-  // Initialize DataTable
   useEffect(() => {
     if (loading || error) return;
     if (!tableHostRef.current) return;
@@ -125,12 +100,11 @@ export default function ReportDetail() {
           const tbl = document.createElement('table');
           tbl.className = 'w-full';
           tbl.innerHTML = `
-            <thead class="hidden">
+            <thead class="sr-only">
               <tr>
-                <th>File Name</th>
-                <th>Date</th>
-                <th>Year</th>
-                <th>Type + Size</th>
+                <th>Title</th>
+                <th>Published Date</th>
+                <th>Type/Size</th>
                 <th>Action</th>
               </tr>
             </thead>
@@ -158,7 +132,6 @@ export default function ReportDetail() {
             data: null,
             render: (data) => {
               const year = new Date(data.publish_date || data.created_at).getFullYear();
-
               return `
                 <div class="text-center">
                   <span style="display:none">${year}</span>
@@ -175,7 +148,7 @@ export default function ReportDetail() {
             render: (data) => `
               <div class="flex items-center justify-center gap-2">
                 <span class="material-symbols-outlined text-[#1d3f91] text-[20px]">draft</span>
-                <small className="text-[#1d3f91] font-semibold">${data.file_size || '-'}</small>
+                <small class="text-[#1d3f91] font-semibold">${data.file_size || '-'}</small>
               </div>
             `
           },
@@ -188,9 +161,9 @@ export default function ReportDetail() {
                   href="${data.file_url || '#'}"
                   target="${data.file_url ? '_blank' : undefined}"
                   rel="${data.file_url ? 'noreferrer' : undefined}"
-                  class="inline-flex items-center gap-2 uppercase px-4 py-2 rounded bg-[#dfe8ff] text-[#163d8f] hover:bg-[#cfdbff] font-semibold text-sm"
+                  class="inline-flex items-center gap-2 uppercase px-4 py-1.5 rounded bg-[#dfe8ff] text-[#163d8f] hover:bg-[#cfdbff] font-semibold text-sm"
                 >
-                  <span aria-hidden="true" class="material-symbols-outlined">visibility</span>
+                  <span aria-hidden="true" class="material-symbols-outlined text-base">visibility</span>
                   VIEW
                 </a>
               </div>
@@ -204,7 +177,7 @@ export default function ReportDetail() {
         pageLength: perPage,
         ordering: true,
         order: sort === 'Oldest' ? [[1, 'asc']] : [[1, 'desc']],
-        dom: 'rtip',
+        dom: 't',
         autoWidth: false,
         drawCallback: function () {
           const info = this.api().page.info();
@@ -212,7 +185,7 @@ export default function ReportDetail() {
           setCurrentPage((info.page || 0) + 1);
         },
         createdRow: function (row) {
-          row.className = 'items-center px-6 py-4 bg-white border border-[#dbe4ff] rounded-[8px] mb-3 shadow-sm';
+          row.className = 'items-center px-6 py-3 bg-white border-b border-gray-200';
           try {
             row.style.display = 'grid';
             row.style.gridTemplateColumns = '5fr 1fr 1fr 1fr';
@@ -263,7 +236,6 @@ export default function ReportDetail() {
     };
   }, [loading, error, files]);
 
-  // Apply year filter
   useEffect(() => {
     const dt = dataTableRef.current;
     if (!dt) return;
@@ -274,39 +246,39 @@ export default function ReportDetail() {
     }
   }, [yearFilter]);
 
-  // Handle search query changes
   useEffect(() => {
     const dt = dataTableRef.current;
     if (!dt) return;
     dt.search(query || '').draw();
-    // Reset to first page when search changes
     if (query) {
       dt.page(0).draw(false);
       setCurrentPage(1);
     }
   }, [query]);
 
-  // Handle sort changes
   useEffect(() => {
     const dt = dataTableRef.current;
     if (!dt) return;
     dt.order(sort === 'Oldest' ? [1, 'asc'] : [1, 'desc']).draw();
-    // Reset to first page when sorting changes
     dt.page(0).draw(false);
     setCurrentPage(1);
   }, [sort]);
 
-  // Handle per page changes
   useEffect(() => {
     const dt = dataTableRef.current;
     if (!dt) return;
     dt.page.len(perPage);
-    // Reset to first page when per page changes
     dt.page(0).draw(false);
     setCurrentPage(1);
   }, [perPage]);
 
-  // Extract unique years from files
+  // Page switch handler
+  const handlePageChange = (pageNumber) => {
+    if (dataTableRef.current && pageNumber >= 1 && pageNumber <= totalPages) {
+      dataTableRef.current.page(pageNumber - 1).draw('page');
+    }
+  };
+
   const years = files ? Array.from(new Set(files.map(f => new Date(f.publish_date || f.created_at).getFullYear()))).sort((a, b) => b - a) : [];
 
   return (
@@ -316,7 +288,6 @@ export default function ReportDetail() {
           fallbackHeading={reportTitle}
           breadcrumbPath={breadcrumb}
         />
-        {/* <SubNavTabs /> */}
 
         <section className="mt-10 py-10" style={{ borderRadius: '20px' }}>
           <div className="gi-container">
@@ -332,7 +303,6 @@ export default function ReportDetail() {
                 </div>
               </div>
               <div className="flex flex-wrap items-center justify-end gap-2">
-                {/* Year Filter */}
                 {years.length > 0 && (
                   <div className="flex items-stretch rounded-md overflow-hidden border border-gray-300 bg-white">
                     <span className="flex items-center px-2 border-r border-gray-300 text-gray-600">
@@ -351,7 +321,6 @@ export default function ReportDetail() {
                     </select>
                   </div>
                 )}
-                {/* Sort Dropdown */}
                 <div className="flex items-stretch rounded-md overflow-hidden border border-gray-300 bg-white">
                   <span className="flex items-center px-2 border-r border-gray-300 text-gray-600">
                     <span aria-hidden="true" className="material-symbols-outlined">sort</span>
@@ -361,7 +330,6 @@ export default function ReportDetail() {
                     <option value="Oldest">Oldest</option>
                   </select>
                 </div>
-                {/* Items per page */}
                 <div className="flex items-stretch rounded-md overflow-hidden border border-gray-300 bg-white" role="combobox">
                   <label htmlFor="pageLimitSelect" className="sr-only">Items per page</label>
                   <span className="flex items-center px-2 border-r border-gray-300 text-gray-600">
@@ -378,8 +346,8 @@ export default function ReportDetail() {
               </div>
             </div>
 
-            {/* DataTable */}
-            <div className="">
+            {/* DataTable Container with Header */}
+            <div className="divide-y border rounded-md bg-white overflow-hidden">
               {loading ? (
                 <div className="px-4 py-6 text-center text-gray-500">Loading files...</div>
               ) : error ? (
@@ -387,9 +355,72 @@ export default function ReportDetail() {
               ) : files.length === 0 ? (
                 <div className="px-4 py-6 text-center text-gray-500">No files found for this report.</div>
               ) : (
-                <div ref={tableHostRef} />
+                <>
+                  <div className="grid grid-cols-[5fr_1fr_1fr_1fr] bg-blue-200 text-blue-900 font-semibold px-6 py-2.5 text-xs border-b border-blue-300">
+                    <div className="pl-5">Title</div>
+                    <div className="text-center">Published Date</div>
+                    <div className="text-center">Type/Size</div>
+                    <div className="text-center">Action</div>
+                  </div>
+                  <div ref={tableHostRef} />
+                </>
               )}
             </div>
+
+            {/* Clean & Aligned Pagination */}
+            {!loading && !error && files.length > 0 && (
+              <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mt-6">
+                {/* Page info */}
+                <div className="text-sm font-medium text-gray-700 whitespace-nowrap flex-shrink-0">
+                  Page <span className="font-semibold">{currentPage}</span> of <span className="font-semibold">{totalPages}</span>
+                </div>
+
+                {/* Page Buttons with Ellipsis (...) */}
+                <div className="flex flex-wrap items-center justify-center gap-1.5">
+                  <button
+                    type="button"
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
+                    className="px-3 py-1 border border-gray-300 rounded bg-white text-sm font-medium disabled:opacity-40 hover:bg-gray-50 transition-colors"
+                  >
+                    Previous
+                  </button>
+
+                  {Array.from({ length: totalPages }, (_, i) => i + 1)
+                    .filter((p) => p === 1 || p === totalPages || Math.abs(p - currentPage) <= 1)
+                    .map((p, idx, array) => {
+                      const prevPage = array[idx - 1];
+                      const showDots = prevPage && p - prevPage > 1;
+
+                      return (
+                        <div key={p} className="flex items-center gap-1.5">
+                          {showDots && <span className="text-gray-400 px-1 text-xs">...</span>}
+                          <button
+                            type="button"
+                            onClick={() => handlePageChange(p)}
+                            className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-colors ${
+                              p === currentPage
+                                ? "bg-[#c7d7ff] text-[#123a6b] font-bold shadow-sm"
+                                : "text-[#123a6b] hover:bg-[#e8efff]"
+                            }`}
+                          >
+                            {p}
+                          </button>
+                        </div>
+                      );
+                    })}
+
+                  <button
+                    type="button"
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                    className="px-3 py-1 border border-gray-300 rounded bg-white text-sm font-medium disabled:opacity-40 hover:bg-gray-50 transition-colors"
+                  >
+                    Next
+                  </button>
+                </div>
+              </div>
+            )}
 
           </div>
         </section>

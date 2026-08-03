@@ -93,7 +93,7 @@ const OfferingForm = ({ offering, onSubmit, onCancel, tabType = 'schemes' }) => 
     const { name, value, type, checked } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: type === 'checkbox' ? (checked ? 1 : 0) : value
+      [name]: type === 'checkbox' ? (checked ? 1 : 0) : (name === 'is_active' ? Number(value) : value)
     }));
   };
 
@@ -305,18 +305,21 @@ const OfferingForm = ({ offering, onSubmit, onCancel, tabType = 'schemes' }) => 
           </div>
         )}
 
-        <div className="flex items-center sm:col-span-2">
-          <input
-            type="checkbox"
-            id="is_active"
-            name="is_active"
-            checked={Number(formData.is_active) === 1}
-            onChange={handleChange}
-            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-          />
-          <label htmlFor="is_active" className="ml-2 block text-sm text-gray-700">
-            Make this {tabType === 'vacancies' ? 'vacancy' : tabType === 'tenders' ? 'tender' : 'offering'} visible on the website
+        <div className="sm:col-span-2">
+          <label htmlFor="status" className="block text-sm font-medium text-gray-700">
+            Status
           </label>
+          <select
+            id="status"
+            name="is_active"
+            value={formData.is_active}
+            onChange={handleChange}
+            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+          >
+            <option value={1}>Active</option>
+            <option value={2}>Archived</option>
+            <option value={0}>Deleted (Soft Delete)</option>
+          </select>
         </div>
       </div>
 
