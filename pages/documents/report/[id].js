@@ -2,6 +2,7 @@ import Footer from "@/components/Footer";
 import { useEffect, useState, useRef } from "react";
 import { useRouter } from 'next/router';
 import PageHeader from "@/components/PageHeader";
+import SubNavTabs from "@/components/SubNavTabs";
 
 export default function ReportDetail() {
   const router = useRouter();
@@ -288,6 +289,7 @@ export default function ReportDetail() {
           fallbackHeading={reportTitle}
           breadcrumbPath={breadcrumb}
         />
+              {/* <SubNavTabs /> */}
 
         <section className="mt-10 py-10" style={{ borderRadius: '20px' }}>
           <div className="gi-container">

@@ -14,6 +14,22 @@ export default function NewNavbar() {
   const [mounted, setMounted] = useState(false);
   const router = useRouter();
 
+  // 1. Auto-close dropdown & mobile menu when route changes
+  useEffect(() => {
+    const handleRouteChange = () => {
+      setActiveDropdown(null);
+      setMobileMenuOpen(false);
+      if (typeof document !== 'undefined' && document.activeElement instanceof HTMLElement) {
+        document.activeElement.blur();
+      }
+    };
+
+    router.events?.on('routeChangeStart', handleRouteChange);
+    return () => {
+      router.events?.off('routeChangeStart', handleRouteChange);
+    };
+  }, [router]);
+
   // Listen for header-dispatched toggle for mobile navbar
   useEffect(() => {
     const handler = () => setMobileMenuOpen((prev) => !prev);
@@ -107,6 +123,14 @@ export default function NewNavbar() {
     setActiveDropdown(activeDropdown === index ? null : index);
   };
 
+  const closeDropdown = () => {
+    setActiveDropdown(null);
+    setMobileMenuOpen(false);
+    if (typeof document !== 'undefined' && document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
+  };
+
   // Determine if a nav item should be marked active for current route
   const isActive = (href) => {
     if (!href || href === '#') return false;
@@ -142,74 +166,61 @@ export default function NewNavbar() {
   };
 
   return (
-    <nav className="hidden md:block bg-white shadow-[0_2px_4px_rgba(0,0,0,0.1)]  sticky z-[299]" style={{ borderBottom: '2px solid #162f6a', top: stickyTop }}>
+    <nav className="hidden md:block bg-white shadow-[0_2px_4px_rgba(0,0,0,0.1)] sticky z-[299]" style={{ borderBottom: '2px solid #162f6a', top: stickyTop }}>
       <div className="px-[2%]">
         {/* Bar container */}
         <div className="flex justify-between h-13">
-          {/* Listen for header-triggered toggle on mobile */}
-          {typeof window !== 'undefined' && (
-            // eslint-disable-next-line react-hooks/rules-of-hooks
-            (function () { })()
-          )}
-
           {/* Desktop links */}
-          <div
-            className={`flex-1 hidden md:flex`}
-          >
+          <div className="flex-1 hidden md:flex">
             <ul className="flex flex-row md:items-center h-full m-0 p-0">
               {(loading ? [] : navItems).map((item, index) => {
                 const itemActive = (isActive(item.href) || (item.items && item.items.some((si) => isActive(si.href))));
                 return (
-                        <li
-                          key={index}
-                    className={`group relative md:w-auto w-full hover:bg-[#d2dfff] md:min-w-[140px] lg:min-w-[180px] xl:min-w-[220px] 2xl:min-w-[240px] h-full`}
-                    tabIndex={0}
-                        >
-                                                    <Link
-                          href={item.href}
-                          className={`flex h-full items-center justify-between md:justify-center no-underline px-4 py-3 transition-colors duration-200 relative
-                            ${itemActive
-  ? 'text-[24px] font-[700] text-[#162f6a] bg-[#d2dfff]'
-  : 'text-[20px] font-[600] text-[#1b1b1b]'
-}
-
-group-hover:bg-[#d2dfff]
-group-hover:text-[#162f6a]
-                            ${item.text !== 'Home'
+                  <li
+                    key={index}
+                    className="group relative md:w-auto w-full hover:bg-[#d2dfff] md:min-w-[140px] lg:min-w-[180px] xl:min-w-[220px] 2xl:min-w-[240px] h-full"
+                  >
+                    <Link
+                      href={item.href}
+                      className={`flex h-full items-center justify-between md:justify-center no-underline px-4 py-3 transition-colors duration-200 relative
+                        ${itemActive
+                          ? 'text-[24px] font-[700] text-[#162f6a] bg-[#d2dfff]'
+                          : 'text-[20px] font-[600] text-[#1b1b1b]'
+                        }
+                        group-hover:bg-[#d2dfff]
+                        group-hover:text-[#162f6a]
+                        ${item.text !== 'Home'
                           ? itemActive
                             ? 'bg-[#fff]'
                             : 'hover:bg-[#d2dfff]'
                           : ''
                         }
-
-                         ${item.text == 'Home'
+                        ${item.text === 'Home'
                           ? itemActive
                             ? 'bg-[#fff]'
                             : 'hover:bg-[#d2dfff]'
                           : ''
                         }
-
-                        
-                          `}
-
-
-                          onClick={(e) => {
-                            if (
-                              item.dropdown &&
-                              typeof window !== "undefined" &&
-                              window.innerWidth < 769
-                            ) {
-                              e.preventDefault();
-                              toggleDropdown(index);
-                            }
-                          }}
-                          onKeyDown={(e) => {
-                            if (e.key === "Enter" && item.dropdown) {
-                              e.preventDefault();
-                              toggleDropdown(index);
-                            }
-                          }}
-                        >
+                      `}
+                      onClick={(e) => {
+                        if (
+                          item.dropdown &&
+                          typeof window !== "undefined" &&
+                          window.innerWidth < 769
+                        ) {
+                          e.preventDefault();
+                          toggleDropdown(index);
+                        } else {
+                          closeDropdown();
+                        }
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" && item.dropdown) {
+                          e.preventDefault();
+                          toggleDropdown(index);
+                        }
+                      }}
+                    >
                       <span className="flex items-center">
                         <span className="leading-none relative inline-block">
                           {item.text}
@@ -237,7 +248,7 @@ group-hover:text-[#162f6a]
 
                     {/* Dropdown */}
                     {item.dropdown && item.items && (
-                        <div
+                      <div
                         className={`md:absolute md:left-0 md:min-w-[240px]
                         md:rounded-b-[8px]
                         md:bg-[rgba(0,0,0,0.72)]
@@ -253,19 +264,16 @@ group-hover:text-[#162f6a]
                         md:group-hover:visible
                         md:group-hover:translate-y-0
 
-                        md:group-focus-within:opacity-100
-                        md:group-focus-within:visible
-                        md:group-focus-within:translate-y-0
-
                         ${activeDropdown === index ? 'block' : 'hidden'}
                         md:block`}
-                        >
+                      >
                         <ul className="list-none m-0 p-0 md:bg-transparent bg-[#f9f9f9] md:shadow-none md:pl-0 pl-6">
                           {item.items.map((subItem, subIndex) => (
                             <li key={subIndex} className="p-0">
                               <Link
                                 href={subItem.href}
-                                className="block no-underline text-[14.5px] font-medium text-center text-white md:text-white py-3 px-5 hover:bg-[#d2dfff] hover:text-[#000] "
+                                className="block no-underline text-[14.5px] font-medium text-center text-white md:text-white py-3 px-5 hover:bg-[#d2dfff] hover:text-[#000]"
+                                onClick={closeDropdown}
                               >
                                 {subItem.text}
                               </Link>
@@ -280,24 +288,12 @@ group-hover:text-[#162f6a]
             </ul>
           </div>
 
-          {/* Right: Mobile toggle is controlled from Header; keep hidden here */}
-          <button
-            className="hidden md:hidden"
-            onClick={toggleMobileMenu}
-            aria-expanded={mobileMenuOpen}
-            aria-label="Toggle navigation"
-          >
-            <span className="material-symbols-outlined">
-              {mobileMenuOpen ? 'close' : 'menu'}
-            </span>
-          </button>
-
           {/* Right spacer on desktop */}
           <div className="hidden md:block w-6" />
         </div>
       </div>
 
-      {/* Mobile drawer and backdrop via Portal (escapes nav stacking context) */}
+      {/* Mobile drawer and backdrop via Portal */}
       {mounted && createPortal(
         <>
           {/* Backdrop */}
@@ -322,18 +318,18 @@ group-hover:text-[#162f6a]
               {(loading ? [] : navItems).map((item, index) => {
                 const itemActive = isActive(item.href) || (item.items && item.items.some((si) => isActive(si.href)));
                 return (
-                  <li key={index} className="">
-                      <Link
+                  <li key={index}>
+                    <Link
                       href={item.href}
                       className={`flex items-center justify-between md:justify-start no-underline px-4 py-3 relative
                       ${itemActive
-                      ? '!text-[24px] !font-[700] !text-[rgb(22,47,106)]'
-                      : '!text-[20px] !font-[600] !text-[rgb(21,2,2)]'
+                        ? '!text-[24px] !font-[700] !text-[rgb(22,47,106)]'
+                        : '!text-[20px] !font-[600] !text-[rgb(21,2,2)]'
                       }
                       transition-colors duration-200 
                       ${itemActive
-                      ? `${item.text !== 'Home' ? 'bg-[#fff]' : ''}`
-                      : `${item.text !== 'Home' ? 'hover:bg-[#d2dfff]' : ''}`
+                        ? `${item.text !== 'Home' ? 'bg-[#fff]' : ''}`
+                        : `${item.text !== 'Home' ? 'hover:bg-[#d2dfff]' : ''}`
                       }`}
 
                       onClick={(e) => {
@@ -341,7 +337,7 @@ group-hover:text-[#162f6a]
                           e.preventDefault();
                           setActiveDropdown(activeDropdown === index ? null : index);
                         } else {
-                          setMobileMenuOpen(false);
+                          closeDropdown();
                         }
                       }}
                     >
@@ -379,7 +375,7 @@ group-hover:text-[#162f6a]
                               <Link
                                 href={subItem.href}
                                 className="block no-underline text-[15px] text-[#162f6a] py-2"
-                                onClick={() => setMobileMenuOpen(false)}
+                                onClick={closeDropdown}
                               >
                                 {subItem.text}
                               </Link>
