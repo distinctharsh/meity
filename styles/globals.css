@@ -622,7 +622,6 @@ body {
   font-size: 16px;
   font-weight: 600;
 
-  padding: 4px 6px 6px 12px;
   gap: 8px;
   background: #fff;
   border: 1px solid #162f6a;
@@ -644,7 +643,6 @@ body {
   font-size: 12px;
   font-weight: 600;
 
-  padding: 4px 6px 6px 12px;
   gap: 8px;
 
   border-radius: 4px;

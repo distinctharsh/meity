@@ -1,96 +1,73 @@
 import Footer from "@/components/Footer";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { useRouter } from 'next/router';
+import { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/router";
 import SubNavTabs from "@/components/SubNavTabs";
 import PageHeader from "@/components/PageHeader";
-import { t } from '@/lib/translations';
+import { t } from "@/lib/translations";
 
 export default function Archives() {
   const router = useRouter();
   const [query, setQuery] = useState("");
-  const [category, setCategory] = useState("");
   const [sort, setSort] = useState("Newest");
   const [perPage, setPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
-  const [yearFilter, setYearFilter] = useState("");
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const tableHostRef = useRef(null);
-  const tableElRef = useRef(null);
-  const dataTableRef = useRef(null);
-  const filterFnRef = useRef(null);
-  const categoryRef = useRef("");
-  const [totalPages, setTotalPages] = useState(1);
-
-  useEffect(() => {
-    categoryRef.current = category;
-  }, [category]);
 
   // Get page type from URL query
-  const pageType = router.query?.page || 'reports';
+  const pageType = router.query?.page || "reports";
 
   useEffect(() => {
     let mounted = true;
     async function load() {
       try {
         setLoading(true);
-        // Build API URL to request archived data based on page type
-        const qs = [];
-        qs.push('archived_only=1');
-        
-        // Map page types to API endpoints
-        let apiEndpoint = '/api/documents/reports';
-        
-        // Handle different page types
-        if (pageType === 'vacancies') {
-          // For vacancies, use offerings API
-          apiEndpoint = '/api/offerings/vacancies';
-          qs.push('archived=true');
-        } else if (pageType === 'tenders') {
-          // For tenders, use offerings API
-          apiEndpoint = '/api/offerings/tenders';
-          qs.push('archived=true');
-        } else if (pageType === 'photos') {
-          // For photos, use correct nav path
-          const nav = '/documents/photos';
-          qs.push('nav=' + encodeURIComponent(nav));
-        } else if (pageType === 'reports') {
-          // Default reports handling - don't add nav parameter to get all archived reports
-          // const nav = router.query?.nav || '/documents/reports';
-          // qs.push('nav=' + encodeURIComponent(String(nav)));
+        setError("");
+
+        const qs = ["archived_only=1"];
+        let apiEndpoint = "/api/documents/reports";
+
+        if (pageType === "vacancies") {
+          apiEndpoint = "/api/offerings/vacancies";
+          qs.push("archived=true");
+        } else if (pageType === "tenders") {
+          apiEndpoint = "/api/offerings/tenders";
+          qs.push("archived=true");
+        } else if (pageType === "photos") {
+          const nav = "/documents/photos";
+          qs.push("nav=" + encodeURIComponent(nav));
+        } else if (pageType === "reports") {
+          // Default reports
         } else {
-          // Default case - try to match by page name (handle council-of-ministers-portfolio-allocations etc)
-          const nav = '/documents/' + String(pageType);
-          qs.push('nav=' + encodeURIComponent(nav));
+          const nav = "/documents/" + String(pageType);
+          qs.push("nav=" + encodeURIComponent(nav));
         }
 
-        const res = await fetch(apiEndpoint + '?' + qs.join('&'));
-        if (!res.ok) throw new Error('Failed to load archived ' + pageType);
+        const res = await fetch(apiEndpoint + "?" + qs.join("&"));
+        if (!res.ok) throw new Error("Failed to load archived " + pageType);
         const data = await res.json();
-        
+
         let mapped = [];
-        
-        // Handle different data structures based on page type
-        if (pageType === 'vacancies') {
-          mapped = (data || []).map(r => ({
+
+        if (pageType === "vacancies") {
+          mapped = (data || []).map((r) => ({
             id: r.id,
             title: r.title || "",
-            type: 'vacancy',
-            year: r.year || "",
+            type: "vacancy",
+            year: r.year || (r.published_date ? new Date(r.published_date).getFullYear() : "-"),
             size: r.file_size || r.size || "-",
             description: r.description || "",
             published_date: r.published_date || "",
-            start_date: r.start_date || "",
             due_date: r.due_date || "",
             file_url: r.file_name ? `/uploads/vacancies/${r.file_name}` : null,
           }));
-        } else if (pageType === 'tenders') {
-          mapped = (data || []).map(r => ({
+        } else if (pageType === "tenders") {
+          mapped = (data || []).map((r) => ({
             id: r.id,
             title: r.title || "",
-            type: 'tender',
-            year: new Date(r.published_date).getFullYear() || "",
+            type: "tender",
+            year: r.published_date ? new Date(r.published_date).getFullYear() : "-",
             size: r.file_size || r.size || "-",
             description: r.description || "",
             published_date: r.published_date || "",
@@ -99,396 +76,299 @@ export default function Archives() {
             file_url: r.file_name ? `/uploads/tenders/${r.file_name}` : null,
           }));
         } else {
-          // Default documents structure
-          mapped = (data || []).map(r => ({
+          mapped = (data || []).map((r) => ({
             id: r.id,
-            title: r.title,
-            type: r.type || 'pdf',
-            year: r.year || null,
-            size: r.size || '',
-            count: (typeof r.files_count === 'number' ? r.files_count : (r.item_count || null)),
+            title: r.title || "",
+            type: r.type || "pdf",
+            year: r.year || (r.published_date ? new Date(r.published_date).getFullYear() : "-"),
+            size: r.size || r.file_size || "-",
+            count: typeof r.files_count === "number" ? r.files_count : r.item_count || null,
             file_url: r.file_url || null,
             first_file_url: r.first_file_url || null,
           }));
         }
+
         if (mounted) setItems(mapped);
       } catch (e) {
-        if (mounted) setError(e.message || 'Failed to load archived ' + pageType);
+        if (mounted) setError(e.message || "Failed to load archived " + pageType);
       } finally {
         if (mounted) setLoading(false);
       }
     }
-    load();
-    return () => { mounted = false; }
-  }, [router?.asPath, router?.query?.page, pageType]);
 
-  useEffect(() => {
-    if (loading || error) return;
-    if (!tableHostRef.current) return;
-    if (typeof window === 'undefined') return;
-    let cancelled = false;
-    let attemptTimer;
-
-    const tryInit = () => {
-      if (cancelled) {
-        return;
-      }
-      const $ = window.jQuery;
-      if (!$ || !$.fn || !$.fn.DataTable) {
-        attemptTimer = setTimeout(tryInit, 50);
-        return;
-      }
-
-
-      if (dataTableRef.current) {
-        try {
-          dataTableRef.current.clear();
-          dataTableRef.current.rows.add(items);
-          dataTableRef.current.draw(false);
-        } catch (err) {
-          console.error('DataTable update error:', err);
-        }
-        return;
-      }
-
-      if (!tableElRef.current) {
-        try {
-          const tbl = document.createElement('table');
-          tbl.className = 'w-full';
-          tbl.innerHTML = `
-            <thead class="hidden">
-              <tr>
-                <th>Title</th>
-                <th>Published Year</th>
-                <th>Type/Size</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          `;
-          tableHostRef.current.innerHTML = '';
-          tableHostRef.current.appendChild(tbl);
-          tableElRef.current = tbl;
-        } catch {
-          return;
-        }
-      }
-
-      
-      const dt = $(tableElRef.current).DataTable({
-        data: items,
-        columns: [
-          {
-            data: null,
-            orderable: false,
-            render: (data, type, row) => {
-              const icon = row.type === 'group' ? 'file_copy' : 'draft';
-              const count = row.count ? `<span class="ml-1 inline-flex justify-center items-center w-6 h-6 text-[11px] rounded bg-blue-100 text-blue-700">${row.count}</span>` : '';
-              return `
-                <div class="flex items-center gap-2">
-                  <span class="material-symbols-outlined text-gray-700">${icon}</span>
-                  <p class="mb-0 font-16-400">${row.title ?? ''}</p>
-                  ${count}
-                </div>
-              `;
-            }
-          },
-          {
-            data: 'year',
-            render: (data) => `<div class="text-center ">${data || '-'}</div>`
-          },
-          {
-            data: null,
-            orderable: false,
-            render: (data, type, row) => {
-              const isGroup = row.type === 'group';
-              const fileUrl = row.file_url || '#';
-              const target = row.file_url ? ' target="_blank" rel="noreferrer"' : '';
-              const typeSize = !isGroup
-                ? `
-                  <div class="flex items-center gap-2 mx-auto">
-                    <span class="text-[10px] px-1.5 py-0.5 rounded bg-gray-100">PDF</span>
-                    <small class="text-gray-700">${row.size || ''}</small>
-                  </div>
-                `
-                : '<span></span>';
-              const viewHref = isGroup ? `/documents/report/${row.id}?archived=1` : fileUrl;
-              const viewAttrs = isGroup ? '' : target;
-              const viewText = isGroup ? 'View All' : 'View';
-              return `
-                <div class="flex items-center gap-2 justify-between w-full">
-                  ${typeSize}
-                  <a href="${viewHref}"${viewAttrs} class="inline-flex items-center gap-2 uppercase text-sm px-3 py-1.5 rounded bg-blue-100 text-blue-800 hover:bg-blue-200">
-                    <span aria-hidden="true" class="material-symbols-outlined">visibility</span>
-                    ${viewText}
-                  </a>
-                </div>
-              `;
-            }
-          }
-        ],
-        searching: true,
-        paging: true,
-        info: false,
-        lengthChange: false,
-        pageLength: perPage,
-        ordering: true,
-        order: sort === 'Oldest' ? [[1, 'asc']] : [[1, 'desc']],
-        dom: 't',
-        autoWidth: false,
-        drawCallback: function () {
-          const info = this.api().page.info();
-          setTotalPages(Math.max(1, info.pages || 1));
-          setCurrentPage((info.page || 0) + 1);
-        },
-        createdRow: function (row) {
-          row.className = 'items-center px-4 py-3 bg-white';
-          try {
-            row.style.display = 'grid';
-            row.style.gridTemplateColumns = '7fr 2fr 3fr';
-            row.style.alignItems = 'center';
-          } catch {
-          }
-          try {
-            const $cells = $('td', row);
-            $cells.eq(1).addClass('text-center');
-          } catch {
-          }
-        },
-        language: {
-          emptyTable: `${t('no_files_attached')}`
-        }
-      });
-
-      try {
-        $(tableElRef.current).find('tbody').addClass('divide-y');
-      } catch {
-      }
-
-      dataTableRef.current = dt;
-
-      filterFnRef.current = function (settings, data, dataIndex) {
-        const api = new $.fn.dataTable.Api(settings);
-        const rowData = api.row(dataIndex).data();
-        if (!rowData) return true;
-        const cat = categoryRef.current;
-        if (cat) {
-          if (cat === 'Group') return rowData.type === 'group';
-          return rowData.type !== 'group';
-        }
-        return true;
-      };
-      $.fn.dataTable.ext.search.push(filterFnRef.current);
-
-      return () => {
-        try {
-          if (filterFnRef.current) {
-            $.fn.dataTable.ext.search = $.fn.dataTable.ext.search.filter((fn) => fn !== filterFnRef.current);
-          }
-          dt.destroy(false);
-          try {
-            $(tableElRef.current).find('tbody').empty();
-          } catch {
-          }
-          try {
-            if (tableElRef.current && tableElRef.current.parentNode) {
-              tableElRef.current.parentNode.removeChild(tableElRef.current);
-            }
-          } catch {
-          } finally {
-            tableElRef.current = null;
-          }
-        } catch {
-        } finally {
-          dataTableRef.current = null;
-          filterFnRef.current = null;
-        }
-      };
-    };
-
-    const cleanup = tryInit();
-    
+    if (router.isReady) {
+      load();
+    }
     return () => {
-      cancelled = true;
-      if (attemptTimer) clearTimeout(attemptTimer);
-      if (typeof cleanup === 'function') cleanup();
+      mounted = false;
     };
-  }, [loading, error, items]);
+  }, [router.isReady, router?.query?.page, pageType]);
 
+  // Search filter
+  const filtered = useMemo(() => {
+    return items.filter((i) =>
+      i.title.toLowerCase().includes(query.toLowerCase())
+    );
+  }, [items, query]);
+
+  // Sort logic
+  const sorted = useMemo(() => {
+    return [...filtered].sort((a, b) => {
+      const valA = a.published_date || a.year || 0;
+      const valB = b.published_date || b.year || 0;
+      const dateA = new Date(valA);
+      const dateB = new Date(valB);
+
+      if (sort === "Oldest") return dateA - dateB;
+      return dateB - dateA;
+    });
+  }, [filtered, sort]);
+
+  // Reset page to 1 when filters change
   useEffect(() => {
-    const dt = dataTableRef.current;
-    if (!dt) return;
-    dt.search(query || '').draw();
-  }, [query]);
+    setCurrentPage(1);
+  }, [query, sort, perPage]);
 
-  useEffect(() => {
-    const dt = dataTableRef.current;
-    if (!dt) return;
-    dt.page.len(perPage);
-    dt.draw(false);
-  }, [perPage]);
-
-  useEffect(() => {
-    const dt = dataTableRef.current;
-    if (!dt) return;
-    dt.order(sort === 'Oldest' ? [1, 'asc'] : [1, 'desc']).draw();
-  }, [sort]);
-
-  useEffect(() => {
-    const dt = dataTableRef.current;
-    if (!dt) return;
-    dt.draw();
-  }, [category]);
-
-  const currentSafePage = Math.min(currentPage, totalPages);
-
-  const years = useMemo(() => {
-    const set = new Set();
-    items.forEach((i) => { if (i.year) set.add(i.year); });
-    return Array.from(set).sort((a, b) => b - a);
-  }, [items]);
+  // Pagination calculation
+  const effectivePerPage = perPage === -1 ? sorted.length || 1 : perPage;
+  const totalPages = Math.ceil(sorted.length / effectivePerPage) || 1;
+  const paginated = sorted.slice(
+    (currentPage - 1) * effectivePerPage,
+    currentPage * effectivePerPage
+  );
 
   return (
     <>
       <main id="main">
         <PageHeader
           pagePath={
-            pageType === 'vacancies'
-              ? '/vacancies'
-              : pageType === 'tenders'
-              ? '/tenders'
-              : '/documents/' + String(pageType)
+            pageType === "vacancies"
+              ? "/vacancies"
+              : pageType === "tenders"
+              ? "/tenders"
+              : "/documents/" + String(pageType)
           }
         />
         <SubNavTabs pagePath="/archives/all" />
-        <section className="mt-10 py-10" style={{ borderRadius: '20px' }}>
+
+        <section className="mt-10 py-10" style={{ borderRadius: "20px" }}>
           <div className="gi-container">
-            <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-3 mb-4">
-              <div className="w-full">
+            {/* SEARCH + FILTERS TOOLBAR */}
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 mb-4">
+              {/* Search Bar */}
+              <div className="w-full lg:w-[320px]">
                 <div className="flex items-stretch rounded-md overflow-hidden border border-gray-300 bg-white">
                   <span className="flex items-center px-2 border-r border-gray-300 text-gray-600">
-                    <span aria-hidden="true" className="material-symbols-outlined">search</span>
+                    <span aria-hidden="true" className="material-symbols-outlined">
+                      search
+                    </span>
                   </span>
-                  <input type="search" placeholder="Search..." className="flex-1 px-3 py-2 outline-none" value={query} onChange={(e) => setQuery(e.target.value)} />
-                  <span className="flex items-center px-2 border-l border-gray-300 text-gray-600 lg:hidden">
-                    <span aria-hidden="true" className="material-symbols-outlined">filter_alt</span>
-                  </span>
+                  <input
+                    type="search"
+                    placeholder={t("search_tenders") || "Search..."}
+                    className="flex-1 px-3 py-2 outline-none text-sm"
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                  />
                 </div>
               </div>
-              <div className="hidden lg:flex items-center justify-end flex-wrap gap-2">
+
+              {/* Sort & Limit Dropdowns */}
+              <div className="flex flex-wrap items-center justify-end gap-2">
                 <div className="flex items-stretch rounded-md overflow-hidden border border-gray-300 bg-white">
                   <span className="flex items-center px-2 border-r border-gray-300 text-gray-600">
-                    <span aria-hidden="true" className="material-symbols-outlined">sort</span>
+                    <span aria-hidden="true" className="material-symbols-outlined">
+                      sort
+                    </span>
                   </span>
-                  <select className="px-3 py-2 bg-white outline-none" role="listbox" aria-label="select" value={sort} onChange={(e) => setSort(e.target.value)}>
-                    <option value="Newest">Latest</option>
-                    <option value="Oldest">Oldest</option>
+                  <select
+                    value={sort}
+                    onChange={(e) => setSort(e.target.value)}
+                    className="px-3 py-2 bg-white outline-none text-sm cursor-pointer"
+                  >
+                    <option value="Newest">{t("latest") || "Latest"}</option>
+                    <option value="Oldest">{t("oldest") || "Oldest"}</option>
                   </select>
                 </div>
-                {/* <div className="flex items-stretch rounded-md overflow-hidden border border-gray-300 bg-white" role="combobox">
-                  <label htmlFor="categorySelect" className="sr-only">Filter by Category</label>
-                  <span className="flex items-center px-2 border-r border-gray-300 text-gray-600">
-                    <span aria-hidden="true" className="material-symbols-outlined">sort</span>
-                  </span>
-                  <select id="categorySelect" className="px-3 py-2 bg-white outline-none" role="combobox" aria-label="Filter by Category" value={category} onChange={(e) => setCategory(e.target.value)}>
-                    <option value="">Category</option>
-                    <option value="General">General</option>
-                    <option value="Group">Group</option>
-                    <option value="Single">Single</option>
-                  </select>
-                </div> */}
-                <div className="flex items-stretch rounded-md overflow-hidden border border-gray-300 bg-white" role="combobox">
-                  <label htmlFor="pageLimitSelect" className="sr-only">Items per page</label>
+
+                <div className="flex items-stretch rounded-md overflow-hidden border border-gray-300 bg-white">
                   <span className="flex items-center px-2 border-r border-gray-300 text-gray-600">
                     <span className="material-symbols-outlined">list_alt</span>
                   </span>
-                  <select id="pageLimitSelect" className="px-3 py-2 bg-white outline-none" role="combobox" aria-label="pages" value={perPage} onChange={(e) => setPerPage(parseInt(e.target.value, 10))}>
-                    <option value="5">5</option>
-                    <option value="10">10</option>
-                    <option value="25">25</option>
-                    <option value="50">50</option>
-                    <option value="-1">All</option>
+                  <select
+                    value={perPage}
+                    onChange={(e) => setPerPage(Number(e.target.value))}
+                    className="px-3 py-2 bg-white outline-none text-sm cursor-pointer"
+                  >
+                    <option value={5}>5</option>
+                    <option value={10}>10</option>
+                    <option value={25}>25</option>
+                    <option value={50}>50</option>
+                    <option value={-1}>All</option>
                   </select>
                 </div>
               </div>
             </div>
 
-            <div className="grid grid-cols-[7fr_2fr_3fr] bg-blue-200 text-blue-900 font-semibold rounded-t-md px-4 py-2 text-xs">
-              <div>Title</div>
-              <div className="text-center">Published Year</div>
-              <div className="text-center">Type/Size</div>
+            {/* TABLE HEADER - EXACT TENDER STYLE */}
+            <div className="hidden lg:grid grid-cols-[7fr_2fr_3fr] bg-[#a3bbf3] text-[#162f6a] rounded-[8px] px-6 py-4 mb-3 uppercase text-[12px] font-semibold tracking-[1px]">
+              <div>{t("title_label") || "Title"}</div>
+              <div className="text-center">{t("published_year") || "Published Year"}</div>
+              <div className="text-center">{t("size") || "Type/Size"}</div>
             </div>
 
-            <div className="divide-y border border-t-0 rounded-b-md bg-white">
+            {/* TABLE BODY (Card-Style List) */}
+            <div className="space-y-3">
               {loading ? (
-                <div className="px-4 py-6 text-center text-gray-500">Loading archive...</div>
+                <div className="p-8 text-center bg-white rounded-[8px] border border-[#dbe4ff] text-gray-500 font-medium">
+                  {t("loading_text") || "Loading archive..."}
+                </div>
               ) : error ? (
-                <div className="px-4 py-6 text-center text-red-600">{error}</div>
+                <div className="p-8 text-center bg-white rounded-[8px] border border-[#dbe4ff] text-red-600 font-medium">
+                  {error}
+                </div>
+              ) : paginated.length === 0 ? (
+                <div className="p-8 text-center bg-white rounded-[8px] border border-[#dbe4ff] text-gray-500 font-medium">
+                  {t("no_files_attached") || "No archived items found."}
+                </div>
               ) : (
-                <div ref={tableHostRef} />
+                paginated.map((item) => {
+                  const isGroup = item.type === "group";
+                  const viewHref = isGroup
+                    ? `/documents/report/${item.id}?archived=1`
+                    : item.file_url || "#";
+                  const viewAttrs = isGroup
+                    ? {}
+                    : { target: item.file_url ? "_blank" : undefined, rel: item.file_url ? "noreferrer" : undefined };
+                  const viewText = isGroup ? "View All" : t("view") || "View";
+                  const icon = isGroup ? "file_copy" : "draft";
+
+                  return (
+                    <div
+                      key={item.id}
+                      className="grid grid-cols-1 lg:grid-cols-[7fr_2fr_3fr] items-center bg-white rounded-[8px] border border-[#dbe4ff] px-6 py-4 shadow-sm hover:shadow-md transition-shadow gap-3 lg:gap-0"
+                    >
+                      {/* Title Column */}
+                      <div className="text-sm pr-2">
+                        <span className="lg:hidden text-xs text-gray-400 block uppercase font-normal">
+                          {t("title_label") || "Title"}
+                        </span>
+                        <div className="flex items-center gap-2">
+                          <span className="material-symbols-outlined text-[#1d3f91]">
+                            {icon}
+                          </span>
+                          <span className="font-semibold text-[#1d3f91]">
+                            {item.title}
+                          </span>
+                          {item.count && (
+                            <span className="ml-1 inline-flex justify-center items-center w-6 h-6 text-[11px] rounded bg-blue-100 text-blue-700 font-medium">
+                              {item.count}
+                            </span>
+                          )}
+                        </div>
+                        {item.description && (
+                          <div className="text-xs text-gray-500 mt-1 line-clamp-2 pl-8">
+                            {item.description}
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Published Year Column */}
+                      <div className="lg:text-center text-sm">
+                        <span className="lg:hidden text-xs text-gray-400 block uppercase font-normal">
+                          {t("published_year") || "Published Year"}
+                        </span>
+                        <span className="font-medium text-[#2c3e66]">
+                          {item.year || "-"}
+                        </span>
+                      </div>
+
+                      {/* Type/Size + Action Column */}
+                      <div className="flex items-center justify-between lg:justify-end gap-4 w-full">
+                        <span className="lg:hidden text-xs text-gray-400 block uppercase font-normal">
+                          {t("action") || "Action"}
+                        </span>
+                        {!isGroup && (
+                          <div className="inline-flex items-center gap-1.5 text-sm font-medium text-[#1d3f91]">
+                            <span className="material-symbols-outlined text-[18px]">
+                              draft
+                            </span>
+                            <span>{item.size || "-"}</span>
+                          </div>
+                        )}
+                        <a
+                          href={viewHref}
+                          {...viewAttrs}
+                          className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase px-3 py-1.5 rounded bg-blue-100 text-blue-800 hover:bg-blue-200 transition-colors view-btn-all"
+                        >
+                          <span
+                            aria-hidden="true"
+                            className="material-symbols-outlined text-[16px]"
+                          >
+                            visibility
+                          </span>
+                          {viewText}
+                        </a>
+                      </div>
+                    </div>
+                  );
+                })
               )}
             </div>
 
-            <div className="row items-center mt-8 grid grid-cols-1 md:grid-cols-2">
-              <div className="flex justify-end">
-                <nav aria-label="Page navigation">
-                  <ul className="flex items-center gap-3">
-                    <li>
-                      <button
-                        className="w-8 h-8 inline-flex items-center justify-center rounded-full border text-[#123a6b] disabled:opacity-40"
-                        onClick={() => {
-                          const dt = dataTableRef.current;
-                          if (dt) dt.page('previous').draw('page');
-                          else setCurrentPage((p) => Math.max(1, p - 1));
-                        }}
-                        disabled={currentSafePage === 1}
-                        aria-label="Previous page"
-                      >
-                        <span className="material-symbols-outlined text-[18px]">chevron_left</span>
-                      </button>
-                    </li>
-                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
-                      <li key={p}>
+            {/* PAGINATION SECTION - EXACT TENDER STYLE */}
+            {!loading && sorted.length > 0 && (
+              <div className="row items-center mt-8 grid grid-cols-1 md:grid-cols-2">
+                <div className="flex justify-start md:justify-center md:col-span-2">
+                  <nav aria-label="Page navigation">
+                    <ul className="flex items-center gap-3">
+                      <li>
                         <button
-                          onClick={() => {
-                            const dt = dataTableRef.current;
-                            if (dt) dt.page(p - 1).draw('page');
-                            else setCurrentPage(p);
-                          }}
-                          className={
-                            p === currentSafePage
-                              ? "w-8 h-8 rounded-full bg-[#c7d7ff] text-[#123a6b] font-semibold"
-                              : "w-8 h-8 rounded-full text-[#123a6b] hover:bg-[#e8efff]"
-                          }
-                          aria-current={p === currentSafePage ? "page" : undefined}
+                          type="button"
+                          className="w-8 h-8 inline-flex items-center justify-center rounded-full border border-gray-300 text-[#123a6b] disabled:opacity-40 hover:bg-gray-50 transition-colors"
+                          onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                          disabled={currentPage === 1}
+                          aria-label="Previous page"
                         >
-                          {p}
+                          <span className="material-symbols-outlined text-[18px]">
+                            chevron_left
+                          </span>
                         </button>
                       </li>
-                    ))}
-                    <li>
-                      <button
-                        className="w-8 h-8 inline-flex items-center justify-center rounded-full border text-[#123a6b] disabled:opacity-40"
-                        onClick={() => {
-                          const dt = dataTableRef.current;
-                          if (dt) dt.page('next').draw('page');
-                          else setCurrentPage((p) => Math.min(totalPages, p + 1));
-                        }}
-                        disabled={currentSafePage === totalPages}
-                        aria-label="Next page"
-                      >
-                        <span className="material-symbols-outlined text-[18px]">chevron_right</span>
-                      </button>
-                    </li>
-                  </ul>
-                </nav>
+                      {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+                        <li key={p}>
+                          <button
+                            type="button"
+                            onClick={() => setCurrentPage(p)}
+                            className={
+                              p === currentPage
+                                ? "w-8 h-8 rounded-full bg-[#c7d7ff] text-[#123a6b] font-bold shadow-sm"
+                                : "w-8 h-8 rounded-full text-[#123a6b] hover:bg-[#e8efff] transition-colors"
+                            }
+                            aria-current={p === currentPage ? "page" : undefined}
+                          >
+                            {p}
+                          </button>
+                        </li>
+                      ))}
+                      <li>
+                        <button
+                          type="button"
+                          className="w-8 h-8 inline-flex items-center justify-center rounded-full border border-gray-300 text-[#123a6b] disabled:opacity-40 hover:bg-gray-50 transition-colors"
+                          onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                          disabled={currentPage === totalPages}
+                          aria-label="Next page"
+                        >
+                          <span className="material-symbols-outlined text-[18px]">
+                            chevron_right
+                          </span>
+                        </button>
+                      </li>
+                    </ul>
+                  </nav>
+                </div>
               </div>
-              {/* <div className="flex justify-end">
-                <a className="inline-flex items-center gap-2 px-3 py-1.5 rounded border text-blue-800 border-blue-300 hover:bg-blue-50" href="/documents/reports">
-                  <span aria-hidden="true" className="material-symbols-outlined">arrow_back</span>
-                  Back to Reports
-                </a>
-              </div> */}
-            </div>
+            )}
           </div>
         </section>
 

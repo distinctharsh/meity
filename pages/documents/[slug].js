@@ -1,5 +1,5 @@
 import Footer from "@/components/Footer";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from 'next/router';
 import SubNavTabs from "@/components/SubNavTabs";
 import PageHeader from "@/components/PageHeader";
@@ -7,8 +7,8 @@ import PageHeader from "@/components/PageHeader";
 export default function DocumentsSlug() {
   const router = useRouter();
   const { slug } = router.query;
-  // derive an effective path from the slug so PageHeader/SubNavTabs can
-  // pick the correct navigation section (e.g. '/documents/rules-of-business')
+
+  // derive an effective path from the slug so PageHeader/SubNavTabs can pick the correct navigation
   const effectivePath = slug
     ? '/documents/' + (Array.isArray(slug) ? slug.join('/') : String(slug))
     : '/documents';
@@ -20,32 +20,22 @@ export default function DocumentsSlug() {
       : 'reports';
     return `/archives?page=${encodeURIComponent(pageName)}`;
   };
+
   const [query, setQuery] = useState("");
-  const [category, setCategory] = useState("");
-  const [sort, setSort] = useState("Latest");
+  const [sort, setSort] = useState("Newest");
   const [perPage, setPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
-  const [yearFilter, setYearFilter] = useState("");
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const tableHostRef = useRef(null);
-  const tableElRef = useRef(null);
-  const dataTableRef = useRef(null);
-  const filterFnRef = useRef(null);
-  const categoryRef = useRef("");
-  const [totalPages, setTotalPages] = useState(1);
-
-  useEffect(() => {
-    categoryRef.current = category;
-  }, [category]);
 
   useEffect(() => {
     let mounted = true;
     async function load() {
       try {
         setLoading(true);
-        // Build API url: prefer explicit nav query if present, else map slug back to nav path
+        setError("");
+
         let apiUrl = '/api/documents/reports';
         const navQuery = router.query?.nav;
         const navItem = router.query?.nav_item;
@@ -61,7 +51,6 @@ export default function DocumentsSlug() {
         } else if (navItem) {
           qs.push('nav_item=' + encodeURIComponent(String(navItem)));
         } else if (slug) {
-          // slug like 'reports' -> map back to '/documents/reports'
           const raw = Array.isArray(slug) ? slug.join('/') : String(slug);
           const decoded = decodeURIComponent(raw);
           const navPath = '/documents/' + decoded.replace(/^\//, '');
@@ -83,7 +72,7 @@ export default function DocumentsSlug() {
           title: r.title,
           type: r.type || 'pdf',
           year: r.year || null,
-          size: r.size || '',
+          size: r.size || r.file_size || '-',
           count: (typeof r.files_count === 'number' ? r.files_count : (r.item_count || null)),
           file_url: r.file_url || null,
           first_file_url: r.first_file_url || null,
@@ -95,256 +84,42 @@ export default function DocumentsSlug() {
         if (mounted) setLoading(false);
       }
     }
-    load();
-    return () => { mounted = false; }
-  }, [router?.asPath, router?.query?.nav_item, router?.query?.nav, router?.query?.archived_only, slug]);
 
-  useEffect(() => {
-    if (loading || error) return;
-    if (!tableHostRef.current) return;
-    if (typeof window === 'undefined') return;
-    let cancelled = false;
-    let attemptTimer;
-
-    const tryInit = () => {
-      if (cancelled) return;
-      const $ = window.jQuery;
-      if (!$ || !$.fn || !$.fn.DataTable) {
-        attemptTimer = setTimeout(tryInit, 50);
-        return;
-      }
-
-      if (dataTableRef.current) {
-        try {
-          dataTableRef.current.clear();
-          dataTableRef.current.rows.add(items);
-          dataTableRef.current.draw(false);
-        } catch {
-        }
-        return;
-      }
-
-      if (!tableElRef.current) {
-        try {
-          const tbl = document.createElement('table');
-          tbl.className = 'w-full';
-          tbl.innerHTML = `
-            <thead class="hidden">
-              <tr>
-                <th>Title</th>
-                <th>Published Year</th>
-                <th>Type/Size</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          `;
-          tableHostRef.current.innerHTML = '';
-          tableHostRef.current.appendChild(tbl);
-          tableElRef.current = tbl;
-        } catch {
-          return;
-        }
-      }
-
-      const dt = $(tableElRef.current).DataTable({
-        data: items,
-        columns: [
-          {
-            data: null,
-            orderable: false,
-            render: (data, type, row) => {
-              const icon = row.type === 'group' ? 'file_copy' : 'draft';
-              const count = row.count ? `<span class="ml-1 inline-flex justify-center items-center w-6 h-6 text-[11px] rounded bg-blue-100 text-blue-700">${row.count}</span>` : '';
-              return `
-              <div class="flex items-center gap-2">
-                <span class="material-symbols-outlined text-gray-700">${icon}</span>
-                <p class="mb-0 font-16-400">${row.title ?? ''}</p>
-                ${count}
-              </div>
-            `;
-            }
-          },
-          {
-            data: 'year',
-            render: (data) => `<div class="text-center font-12-600">${data || '-'}</div>`
-          },
-          {
-            data: null,
-            orderable: false,
-            render: (data, type, row) => {
-              const isGroup = row.type === 'group';
-              const fileUrl = row.file_url || '#';
-              const target = row.file_url ? ' target="_blank" rel="noreferrer"' : '';
-              const typeSize = !isGroup
-                ? `
-                <div class="flex items-center gap-2 mx-auto">
-                  <span class="text-[10px] px-1.5 py-0.5 rounded bg-gray-100">PDF</span>
-                  <small class="text-gray-700">${row.size || ''}</small>
-                </div>
-              `
-                : '<span></span>';
-              const viewHref = isGroup ? `/documents/report/${row.id}` : fileUrl;
-              const viewAttrs = isGroup ? '' : target;
-              const viewText = isGroup ? 'View All' : 'View';
-              return `
-              <div class="flex items-center gap-2 justify-between w-full">
-                ${typeSize}
-                <a href="${viewHref}"${viewAttrs} class="inline-flex items-center gap-2 uppercase  px-3 py-1.5 rounded bg-blue-100 text-blue-800 hover:bg-blue-200 view-btn-all">
-                  <span aria-hidden="true" class="material-symbols-outlined">visibility</span>
-                  ${viewText}
-                </a>
-              </div>
-            `;
-            }
-          }
-        ],
-        searching: true,
-        paging: true,
-        info: false,
-        lengthChange: false,
-        pageLength: perPage,
-        ordering: true,
-        order: sort === 'Oldest' ? [[1, 'asc']] : [[1, 'desc']],
-        dom: 't',
-        autoWidth: false,
-        drawCallback: function () {
-          const info = this.api().page.info();
-          setTotalPages(Math.max(1, info.pages || 1));
-          setCurrentPage((info.page || 0) + 1);
-        },
-        createdRow: function (row) {
-          row.className = 'items-center bg-white rounded-[8px] border border-[#dbe4ff] px-6  mb-3 shadow-sm';
-          try {
-            row.style.display = 'grid';
-            row.style.gridTemplateColumns = '2fr 2fr 2fr';
-            row.style.alignItems = 'center';
-          } catch {
-          }
-          try {
-            const $cells = $('td', row);
-
-            $cells.css({
-              width: '100%',
-              padding: '16px 12px',
-              display: 'flex',
-              alignItems: 'center'
-            });
-
-            $cells.eq(0).css({
-              justifyContent: 'flex-start'
-            });
-
-            $cells.eq(1).css({
-              justifyContent: 'center'
-            });
-
-            $cells.eq(2).css({
-              justifyContent: 'center'
-            });
-          } catch {
-          }
-        },
-        language: {
-          emptyTable: 'No reports found.'
-        }
-      });
-
-      try {
-        $(tableElRef.current).find('tbody').addClass('divide-y');
-      } catch {
-      }
-
-      dataTableRef.current = dt;
-
-      filterFnRef.current = function (settings, data, dataIndex) {
-        const api = new $.fn.dataTable.Api(settings);
-        const rowData = api.row(dataIndex).data();
-        if (!rowData) return true;
-        const cat = categoryRef.current;
-        if (cat) {
-          if (cat === 'Group') return rowData.type === 'group';
-          return rowData.type !== 'group';
-        }
-        return true;
-      };
-      $.fn.dataTable.ext.search.push(filterFnRef.current);
-
-      return () => {
-        try {
-          if (filterFnRef.current) {
-            $.fn.dataTable.ext.search = $.fn.dataTable.ext.search.filter((fn) => fn !== filterFnRef.current);
-          }
-          dt.destroy(false);
-          try {
-            $(tableElRef.current).find('tbody').empty();
-          } catch {
-          }
-          try {
-            if (tableElRef.current && tableElRef.current.parentNode) {
-              tableElRef.current.parentNode.removeChild(tableElRef.current);
-            }
-          } catch {
-          } finally {
-            tableElRef.current = null;
-          }
-        } catch {
-        } finally {
-          dataTableRef.current = null;
-          filterFnRef.current = null;
-        }
-      };
-    };
-
-    const cleanup = tryInit();
-    return () => {
-      cancelled = true;
-      if (attemptTimer) clearTimeout(attemptTimer);
-      if (typeof cleanup === 'function') cleanup();
-    };
-  }, [loading, error, items]);
-
-  useEffect(() => {
-    const dt = dataTableRef.current;
-    if (!dt) return;
-    dt.search(query || '').draw();
-    // Reset to first page when search changes
-    if (query) {
-      dt.page(0).draw(false);
-      setCurrentPage(1);
+    if (router.isReady) {
+      load();
     }
-  }, [query]);
+    return () => { mounted = false; }
+  }, [router.isReady, router?.asPath, router?.query?.nav_item, router?.query?.nav, router?.query?.archived_only, slug]);
 
+  // Search filter
+  const filtered = useMemo(() => {
+    return items.filter((i) =>
+      (i.title || "").toLowerCase().includes(query.toLowerCase())
+    );
+  }, [items, query]);
+
+  // Sorting
+  const sorted = useMemo(() => {
+    return [...filtered].sort((a, b) => {
+      const yearA = Number(a.year) || 0;
+      const yearB = Number(b.year) || 0;
+      if (sort === "Oldest") return yearA - yearB;
+      return yearB - yearA;
+    });
+  }, [filtered, sort]);
+
+  // Reset page number on filter changes
   useEffect(() => {
-    const dt = dataTableRef.current;
-    if (!dt) return;
-    dt.page.len(perPage);
-    // Reset to first page when per page changes
-    dt.page(0).draw(false);
     setCurrentPage(1);
-  }, [perPage]);
+  }, [query, sort, perPage]);
 
-  useEffect(() => {
-    const dt = dataTableRef.current;
-    if (!dt) return;
-    dt.order(sort === 'Oldest' ? [1, 'asc'] : [1, 'desc']).draw();
-    // Reset to first page when sorting changes
-    dt.page(0).draw(false);
-    setCurrentPage(1);
-  }, [sort]);
-
-  useEffect(() => {
-    const dt = dataTableRef.current;
-    if (!dt) return;
-    dt.draw();
-  }, [category]);
-
-  const currentSafePage = Math.min(currentPage, totalPages);
-
-  const years = useMemo(() => {
-    const set = new Set();
-    items.forEach((i) => { if (i.year) set.add(i.year); });
-    return Array.from(set).sort((a, b) => b - a);
-  }, [items]);
+  // Pagination logic
+  const effectivePerPage = perPage === -1 ? sorted.length || 1 : perPage;
+  const totalPages = Math.ceil(sorted.length / effectivePerPage) || 1;
+  const paginated = sorted.slice(
+    (currentPage - 1) * effectivePerPage,
+    currentPage * effectivePerPage
+  );
 
   return (
     <>
@@ -354,93 +129,148 @@ export default function DocumentsSlug() {
 
         <section className="mt-10 py-10" style={{ borderRadius: '20px' }}>
           <div className="gi-container">
-            {/* Toolbar & filters (same UI as reports) */}
+            {/* SEARCH & FILTERS TOOLBAR */}
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 mb-4">
               <div className="w-full lg:w-[320px]">
                 <div className="flex items-stretch rounded-md overflow-hidden border border-gray-300 bg-white">
                   <span className="flex items-center px-2 border-r border-gray-300 text-gray-600">
                     <span aria-hidden="true" className="material-symbols-outlined">search</span>
                   </span>
-                  <input type="search" placeholder="Search..." className="flex-1 px-3 py-2 outline-none" value={query} onChange={(e) => setQuery(e.target.value)} />
-                  <span className="flex items-center px-2 border-l border-gray-300 text-gray-600 lg:hidden">
-                    <span aria-hidden="true" className="material-symbols-outlined">filter_alt</span>
-                  </span>
+                  <input
+                    type="search"
+                    placeholder="Search..."
+                    className="flex-1 px-3 py-2 outline-none text-sm"
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                  />
                 </div>
               </div>
-              <div className="hidden lg:flex items-center justify-end flex-wrap gap-2">
+
+              <div className="flex flex-wrap items-center justify-end gap-2">
                 <div className="flex items-stretch rounded-md overflow-hidden border border-gray-300 bg-white">
                   <span className="flex items-center px-2 border-r border-gray-300 text-gray-600">
                     <span aria-hidden="true" className="material-symbols-outlined">sort</span>
                   </span>
-                  <select className="px-3 py-2 bg-white outline-none" role="listbox" aria-label="select" value={sort} onChange={(e) => setSort(e.target.value)}>
+                  <select
+                    className="px-3 py-2 bg-white outline-none text-sm cursor-pointer"
+                    value={sort}
+                    onChange={(e) => setSort(e.target.value)}
+                  >
                     <option value="Newest">Latest</option>
                     <option value="Oldest">Oldest</option>
                   </select>
                 </div>
-                {/* <div className="flex items-stretch rounded-md overflow-hidden border border-gray-300 bg-white" role="combobox">
-                  <label htmlFor="categorySelect" className="sr-only">Filter by Category</label>
-                  <span className="flex items-center px-2 border-r border-gray-300 text-gray-600">
-                    <span aria-hidden="true" className="material-symbols-outlined">sort</span>
-                  </span>
-                  <select id="categorySelect" className="px-3 py-2 bg-white outline-none" role="combobox" aria-label="Filter by Category" value={category} onChange={(e) => setCategory(e.target.value)}>
-                    <option value="">Category</option>
-                    <option value="General">General</option>
-                    <option value="Group">Group</option>
-                    <option value="Single">Single</option>
-                  </select>
-                </div> */}
-                <div className="flex items-stretch rounded-md overflow-hidden border border-gray-300 bg-white" role="combobox">
-                  <label htmlFor="pageLimitSelect" className="sr-only">Items per page</label>
+
+                <div className="flex items-stretch rounded-md overflow-hidden border border-gray-300 bg-white">
                   <span className="flex items-center px-2 border-r border-gray-300 text-gray-600">
                     <span className="material-symbols-outlined">list_alt</span>
                   </span>
-                  <select id="pageLimitSelect" className="px-3 py-2 bg-white outline-none" role="combobox" aria-label="pages" value={perPage} onChange={(e) => setPerPage(parseInt(e.target.value, 10))}>
-                    <option value="5">5</option>
-                    <option value="10">10</option>
-                    <option value="25">25</option>
-                    <option value="50">50</option>
-                    <option value="-1">All</option>
+                  <select
+                    className="px-3 py-2 bg-white outline-none text-sm cursor-pointer"
+                    value={perPage}
+                    onChange={(e) => setPerPage(parseInt(e.target.value, 10))}
+                  >
+                    <option value={5}>5</option>
+                    <option value={10}>10</option>
+                    <option value={25}>25</option>
+                    <option value={50}>50</option>
+                    <option value={-1}>All</option>
                   </select>
                 </div>
               </div>
             </div>
 
+            {/* TABLE HEADER - EXACT TENDER STYLE */}
             <div
-              className="hidden lg:grid grid-cols-[2fr_2fr_2fr] bg-blue-200 text-blue-900 font-semibold rounded-t-md px-4 py-2 mb-3 text-xs"
+              className="hidden lg:grid grid-cols-[7fr_2fr_3fr] bg-[#a3bbf3] text-[#162f6a] rounded-[8px] px-6 py-4 mb-3 uppercase text-[12px] font-semibold tracking-[1px]"
             >
               <div>Title</div>
               <div className="text-center">Published Year</div>
               <div className="text-center">Type/Size</div>
             </div>
-            {/* <div className="grid grid-cols-[7fr_2fr_3fr] bg-blue-200 text-blue-900 font-semibold rounded-t-md px-4 py-2 text-xs">
-              <div>Title</div>
-              <div className="text-center">Published Year</div>
-              <div className="text-center">Type/Size</div>
-            </div> */}
 
-            <div className="divide-y">
+            {/* TABLE BODY (Card-Style List) */}
+            <div className="space-y-3">
               {loading ? (
-                <div className="px-4 py-6 text-center text-gray-500">Loading reports...</div>
+                <div className="p-8 text-center bg-white rounded-[8px] border border-[#dbe4ff] text-gray-500 font-medium">
+                  Loading reports...
+                </div>
               ) : error ? (
-                <div className="px-4 py-6 text-center text-red-600">{error}</div>
+                <div className="p-8 text-center bg-white rounded-[8px] border border-[#dbe4ff] text-red-600 font-medium">
+                  {error}
+                </div>
+              ) : paginated.length === 0 ? (
+                <div className="p-8 text-center bg-white rounded-[8px] border border-[#dbe4ff] text-gray-500 font-medium">
+                  No reports found.
+                </div>
               ) : (
-                <div ref={tableHostRef} />
+                paginated.map((item) => {
+                  const isGroup = item.type === 'group';
+                  const viewHref = isGroup ? `/documents/report/${item.id}` : (item.file_url || '#');
+                  const viewAttrs = isGroup ? {} : { target: item.file_url ? '_blank' : undefined, rel: item.file_url ? 'noreferrer' : undefined };
+                  const viewText = isGroup ? 'View All' : 'View';
+                  const icon = isGroup ? 'file_copy' : 'draft';
+
+                  return (
+                    <div
+                      key={item.id}
+                      className="grid grid-cols-1 lg:grid-cols-[7fr_2fr_3fr] items-center bg-white rounded-[8px] border border-[#dbe4ff] px-6 py-4 shadow-sm hover:shadow-md transition-shadow gap-3 lg:gap-0"
+                    >
+                      {/* Title Column */}
+                      <div className="text-sm pr-2">
+                        <span className="lg:hidden text-xs text-gray-400 block uppercase font-normal">Title</span>
+                        <div className="flex items-center gap-2">
+                          <span className="material-symbols-outlined text-[#1d3f91]">{icon}</span>
+                          <span className="font-semibold text-[#1d3f91]">{item.title}</span>
+                          {item.count && (
+                            <span className="ml-1 inline-flex justify-center items-center w-6 h-6 text-[11px] rounded bg-blue-100 text-blue-700 font-medium">
+                              {item.count}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Published Year Column */}
+                      <div className="lg:text-center text-sm">
+                        <span className="lg:hidden text-xs text-gray-400 block uppercase font-normal">Published Year</span>
+                        <span className="font-medium text-[#2c3e66]">{item.year || '-'}</span>
+                      </div>
+
+                      {/* Type/Size + Action Column */}
+                      <div className="flex items-center justify-between lg:justify-end gap-4 w-full">
+                        <span className="lg:hidden text-xs text-gray-400 block uppercase font-normal">Action</span>
+                        {!isGroup && (
+                          <div className="inline-flex items-center gap-1.5 text-sm font-medium text-[#1d3f91]">
+                            <span className="material-symbols-outlined text-[18px]">draft</span>
+                            <span>{item.size || '-'}</span>
+                          </div>
+                        )}
+                        <a
+                          href={viewHref}
+                          {...viewAttrs}
+                          className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase px-3 py-1.5 rounded bg-blue-100 text-blue-800 hover:bg-blue-200 transition-colors view-btn-all"
+                        >
+                          <span aria-hidden="true" className="material-symbols-outlined text-[16px]">visibility</span>
+                          {viewText}
+                        </a>
+                      </div>
+                    </div>
+                  );
+                })
               )}
             </div>
 
+            {/* PAGINATION & ARCHIVE SECTION */}
             <div className="row items-center mt-8 grid grid-cols-1 md:grid-cols-2">
-              <div className="flex justify-end">
+              <div className="flex justify-start md:justify-end">
                 <nav aria-label="Page navigation">
                   <ul className="flex items-center gap-3">
                     <li>
                       <button
-                        className="w-8 h-8 inline-flex items-center justify-center rounded-full border text-[#123a6b] disabled:opacity-40"
-                        onClick={() => {
-                          const dt = dataTableRef.current;
-                          if (dt) dt.page('previous').draw('page');
-                          else setCurrentPage((p) => Math.max(1, p - 1));
-                        }}
-                        disabled={currentSafePage === 1}
+                        type="button"
+                        className="w-8 h-8 inline-flex items-center justify-center rounded-full border border-gray-300 text-[#123a6b] disabled:opacity-40 hover:bg-gray-50 transition-colors"
+                        onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                        disabled={currentPage === 1}
                         aria-label="Previous page"
                       >
                         <span className="material-symbols-outlined text-[18px]">chevron_left</span>
@@ -449,17 +279,14 @@ export default function DocumentsSlug() {
                     {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
                       <li key={p}>
                         <button
-                          onClick={() => {
-                            const dt = dataTableRef.current;
-                            if (dt) dt.page(p - 1).draw('page');
-                            else setCurrentPage(p);
-                          }}
+                          type="button"
+                          onClick={() => setCurrentPage(p)}
                           className={
-                            p === currentSafePage
-                              ? "w-8 h-8 rounded-full bg-[#c7d7ff] text-[#123a6b] font-semibold"
-                              : "w-8 h-8 rounded-full text-[#123a6b] hover:bg-[#e8efff]"
+                            p === currentPage
+                              ? "w-8 h-8 rounded-full bg-[#c7d7ff] text-[#123a6b] font-bold shadow-sm"
+                              : "w-8 h-8 rounded-full text-[#123a6b] hover:bg-[#e8efff] transition-colors"
                           }
-                          aria-current={p === currentSafePage ? "page" : undefined}
+                          aria-current={p === currentPage ? "page" : undefined}
                         >
                           {p}
                         </button>
@@ -467,13 +294,10 @@ export default function DocumentsSlug() {
                     ))}
                     <li>
                       <button
-                        className="w-8 h-8 inline-flex items-center justify-center rounded-full border text-[#123a6b] disabled:opacity-40"
-                        onClick={() => {
-                          const dt = dataTableRef.current;
-                          if (dt) dt.page('next').draw('page');
-                          else setCurrentPage((p) => Math.min(totalPages, p + 1));
-                        }}
-                        disabled={currentSafePage === totalPages}
+                        type="button"
+                        className="w-8 h-8 inline-flex items-center justify-center rounded-full border border-gray-300 text-[#123a6b] disabled:opacity-40 hover:bg-gray-50 transition-colors"
+                        onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                        disabled={currentPage === totalPages}
                         aria-label="Next page"
                       >
                         <span className="material-symbols-outlined text-[18px]">chevron_right</span>
@@ -482,8 +306,12 @@ export default function DocumentsSlug() {
                   </ul>
                 </nav>
               </div>
-              <div className="flex justify-end">
-                <a className="inline-flex items-center gap-2 px-3 py-1.5 rounded border text-blue-800 border-blue-300 hover:bg-blue-50 view-btn-all" href={getArchiveUrl()}>
+
+              <div className="flex justify-end mt-4 md:mt-0">
+                <a
+                  className="inline-flex items-center gap-2 px-3 py-1.5 rounded border text-blue-800 border-blue-300 hover:bg-blue-50 view-btn-all text-sm font-medium"
+                  href={getArchiveUrl()}
+                >
                   <span aria-hidden="true" className="material-symbols-outlined">archive</span>
                   View Archive
                 </a>
