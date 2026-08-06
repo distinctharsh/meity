@@ -7,6 +7,7 @@ const CookieBanner = dynamic(() => import('@/components/CookieBanner'), { ssr: f
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import Script from 'next/script';
+import Head from 'next/head';
 
 export default function App({ Component, pageProps }) {
   const router = useRouter();
@@ -16,6 +17,11 @@ export default function App({ Component, pageProps }) {
 
   return (
     <>
+      <Head>
+        <title>Cabinet Secretariat | Government of India</title>
+        <link rel="icon" type="image/svg+xml" href="/images/emblem.svg" />
+      </Head>
+
       {!isAdminPage && (router.pathname.startsWith('/documents') || router.pathname.startsWith('/archives')) ? (
         <>
           {/* <Script 
