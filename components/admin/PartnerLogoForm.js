@@ -3,6 +3,7 @@ import { useState } from 'react';
 export default function PartnerLogoForm({ logo, onSubmit, onCancel }) {
   const [formData, setFormData] = useState({
     title: logo?.title || '',
+    external_link: logo?.external_link || '',
     image_url: logo?.image_url || '',
     alt_text: logo?.alt_text || '',
     display_order: logo?.display_order || 0,
@@ -23,13 +24,11 @@ export default function PartnerLogoForm({ logo, onSubmit, onCancel }) {
     const file = e.target.files[0];
     if (!file) return;
 
-    // Validate file type
     if (!file.type.startsWith('image/')) {
       setUploadError('Please select an image file');
       return;
     }
 
-    // Validate file size (5MB max)
     if (file.size > 5 * 1024 * 1024) {
       setUploadError('Image size should be less than 5MB');
       return;
@@ -42,7 +41,6 @@ export default function PartnerLogoForm({ logo, onSubmit, onCancel }) {
       const uploadFormData = new FormData();
       uploadFormData.append('file', file);
 
-      // If editing, pass old image path for cleanup
       if (logo?.image_url) {
         uploadFormData.append('old_path', logo.image_url.startsWith('/') ? logo.image_url.slice(1) : logo.image_url);
       }
@@ -57,7 +55,7 @@ export default function PartnerLogoForm({ logo, onSubmit, onCancel }) {
         setFormData(prev => ({
           ...prev,
           image_url: data.url,
-          alt_text: prev.alt_text || file.name.split('.')[0] // Use filename as default alt text
+          alt_text: prev.alt_text || file.name.split('.')[0]
         }));
       } else {
         const error = await response.json();
@@ -118,6 +116,22 @@ export default function PartnerLogoForm({ logo, onSubmit, onCancel }) {
         </div>
       </div>
 
+      {/* External Link Field (New) */}
+      <div>
+        <label htmlFor="external_link" className="block text-sm font-medium text-gray-700 mb-1">
+          External Link (URL)
+        </label>
+        <input
+          type="url"
+          id="external_link"
+          name="external_link"
+          value={formData.external_link}
+          onChange={handleInputChange}
+          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          placeholder="https://example.com"
+        />
+      </div>
+
       {/* Alt Text */}
       <div>
         <label htmlFor="alt_text" className="block text-sm font-medium text-gray-700 mb-1">
@@ -169,7 +183,7 @@ export default function PartnerLogoForm({ logo, onSubmit, onCancel }) {
               className="h-20 object-contain mx-auto"
               onError={(e) => {
                 e.target.onerror = null;
-                e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0yMCAzMkMxMi4yNjggMzIgNiAyNS43MzIgNiAyMEM2IDE0LjI2OCAxMi4yNjggOCAyMCA4QzI3LjczMiA4IDM0IDE0LjI2OCAzNCAyMEMzNCAyNS43MzIgMjcuNzMyIDMyIDIwIDMyWiIgZmlsbD0iIzlDQTNBRiIvPgo8cGF0aCBkPSJNMjAgMTZDMTguMDY3IDE2IDE2LjUgMTcuNTY3IDE2LjUgMTlDMTYuNSAyMC40MzMgMTguMDY3IDIyIDIwIDIyQzIxLjkzMyAyMiAyMy41IDIwLjQzMyAyMy41IDE5QzIzLjUgMTcuNTY3IDIxLjkzMyAxNiAyMCAxNloiIGZpbGw9IndoaXRlIi8+Cjwvc3ZnPgo=';
+                e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0yMCAzMkMxMi4yNjggMzIgNiAyNS43MzIgNiAyMEM2IDE0LjI2OCAxMi4yNjggOCAyMCA4QzI3LjczMiA4IDM0IDE0LjI2OCAzNCAyMEMzNCAyNS43MzIgMjcuNzMyIDMyIDIwIDIwIjoicGF0aCIgZmlsbD0iIzlDQTNBRiIvPgo8cGF0aCBkPSJNMjAgMTZDMTguMDY3IDE2 IDE2LjUgMTcuNTY3 IDE2LjUgMTlDMTYuNSAyMC40MzMgMTguMDY3IDIyIDIwIDIyQzIxLjkzMyAyMiAyMy41IDIwLjQzMyAyMy41IDE5QzIzLjUgMTcuNTY3IDIxLjkzMyAyMC40MzMgMTYgMTZaIiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4=';
               }}
             />
             <div className="mt-2 text-xs text-gray-500 text-center">

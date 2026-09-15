@@ -39,15 +39,15 @@ async function handleGet(req, res) {
 
 async function handlePost(req, res) {
   try {
-    const { title, image_url, alt_text, display_order = 0, is_active = 1 } = req.body;
+    const { title, image_url, alt_text, external_link, display_order = 0, is_active = 1 } = req.body;
 
     if (!image_url) {
       return res.status(400).json({ message: 'Image URL is required' });
     }
 
     const [result] = await pool.query(
-      'INSERT INTO partner_logos (title, image_url, alt_text, display_order, is_active) VALUES (?, ?, ?, ?, ?)',
-      [title, image_url, alt_text, display_order, is_active]
+      'INSERT INTO partner_logos (title, image_url, alt_text, external_link, display_order, is_active) VALUES (?, ?, ?, ?, ?, ?)',
+      [title || null, image_url, alt_text || null, external_link || null, display_order, is_active]
     );
 
     return res.status(201).json({ 
@@ -62,13 +62,13 @@ async function handlePost(req, res) {
 
 async function handlePut(req, res) {
   try {
-    const { id, title, image_url, alt_text, display_order, is_active } = req.body;
+    const { id, title, image_url, alt_text, external_link, display_order, is_active } = req.body;
 
     if (!id) {
       return res.status(400).json({ message: 'Logo ID is required' });
     }
 
-    // Build dynamic update query
+    // Dynamic update query
     const updates = [];
     const values = [];
 
@@ -83,6 +83,10 @@ async function handlePut(req, res) {
     if (alt_text !== undefined) {
       updates.push('alt_text = ?');
       values.push(alt_text);
+    }
+    if (external_link !== undefined) {
+      updates.push('external_link = ?');
+      values.push(external_link);
     }
     if (display_order !== undefined) {
       updates.push('display_order = ?');

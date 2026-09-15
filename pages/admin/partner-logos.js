@@ -58,10 +58,7 @@ export default function PartnerLogosManagement() {
 
   const handleFormSubmit = async (formData) => {
     try {
-      const apiUrl = editingLogo 
-        ? `/api/admin/partner-logos` 
-        : '/api/admin/partner-logos';
-      
+      const apiUrl = '/api/admin/partner-logos';
       const method = editingLogo ? 'PUT' : 'POST';
       const payload = editingLogo 
         ? { ...formData, id: editingLogo.id }
@@ -128,7 +125,6 @@ export default function PartnerLogosManagement() {
     const targetLogo = logos[newIndex];
 
     try {
-      // Swap display orders
       await fetch('/api/admin/partner-logos', {
         method: 'PUT',
         headers: {
@@ -220,6 +216,9 @@ export default function PartnerLogosManagement() {
                     Title
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    External Link
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Alt Text
                   </th>
                   <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-24">
@@ -233,25 +232,44 @@ export default function PartnerLogosManagement() {
               <tbody className="bg-white divide-y divide-gray-200">
                 {logos.length === 0 ? (
                   <tr>
-                    <td colSpan={5} className="px-6 py-4 text-center text-sm text-gray-500">
+                    <td colSpan={6} className="px-6 py-4 text-center text-sm text-gray-500">
                       No partner logos found. Click the "+" button to add a new logo.
                     </td>
                   </tr>
                 ) : (
-                  logos.map((logo, index) => (
+                  logos.map((logo) => (
                     <tr key={logo.id}>
                       <td className="px-6 py-4">
                         <div className="flex items-center">
                           <div className="h-12 w-20 flex-shrink-0 bg-gray-100 rounded flex items-center justify-center p-1">
-                            <img
-                              src={logo.image_url}
-                              alt={logo.alt_text || 'Partner logo'}
-                              className="h-full object-contain"
-                              onError={(e) => {
-                                e.target.onerror = null;
-                                e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0yMCAzMkMxMi4yNjggMzIgNiAyNS43MzIgNiAyMEM2IDE0LjI2OCAxMi4yNjggOCAyMCA4QzI3LjczMiA4IDM0IDE0LjI2OCAzNCAyMEMzNCAyNS43MzIgMjcuNzMyIDMyIDIwIDMyWiIgZmlsbD0iIzlDQTNBRiIvPgo8cGF0aCBkPSJNMjAgMTZDMTguMDY3IDE2IDE2LjUgMTcuNTY3IDE2LjUgMTlDMTYuNSAyMC40MzMgMTguMDY3IDIyIDIwIDIyQzIxLjkzMyAyMiAyMy41IDIwLjQzMyAyMy41IDE5QzIzLjUgMTcuNTY3IDIxLjkzMyAxNiAyMCAxNloiIGZpbGw9IndoaXRlIi8+Cjwvc3ZnPgo=';
-                              }}
-                            />
+                            {logo.external_link ? (
+                              <a
+                                href={logo.external_link}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                title="Open link in new tab"
+                              >
+                                <img
+                                  src={logo.image_url}
+                                  alt={logo.alt_text || 'Partner logo'}
+                                  className="h-full object-contain cursor-pointer hover:opacity-80"
+                                  onError={(e) => {
+                                    e.target.onerror = null;
+                                    e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0yMCAzMkMxMi4yNjggMzIgNiAyNS43MzIgNiAyMEM2IDE0LjI2OCAxMi4yNjggOCAyMCA4QzI3LjczMiA4IDM0IDE0LjI2OCAzNCAyMEMzNCAyNS43MzIgMjcuNzMyIDMyIDIwIDIwIjoicGF0aCIgZmlsbD0iIzlDQTNBRiIvPgo8cGF0aCBkPSJNMjAgMTZDMTguMDY3IDE2 IDE2LjUgMTcuNTY3IDE2LjUgMTlDMTYuNSAyMC40MzMgMTguMDY3IDIyIDIwIDIyQzIxLjkzMyAyMiAyMy41IDIwLjQzMyAyMy41IDE5QzIzLjUgMTcuNTY3IDIxLjkzMyAyMC40MzMgMTYgMTZaIiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4=';
+                                  }}
+                                />
+                              </a>
+                            ) : (
+                              <img
+                                src={logo.image_url}
+                                alt={logo.alt_text || 'Partner logo'}
+                                className="h-full object-contain"
+                                onError={(e) => {
+                                  e.target.onerror = null;
+                                  e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0yMCAzMkMxMi4yNjggMzIgNiAyNS43MzIgNiAyMEM2IDE0LjI2OCAxMi4yNjggOCAyMCA4QzI3LjczMiA4IDM0IDE0LjI2OCAzNCAyMEMzNCAyNS43MzIgMjcuNzMyIDMyIDIwIDIwIjoicGF0aCIgZmlsbD0iIzlDQTNBRiIvPgo8cGF0aCBkPSJNMjAgMTZDMTguMDY3IDE2 IDE2LjUgMTcuNTY3IDE2LjUgMTlDMTYuNSAyMC40MzMgMTguMDY3IDIyIDIwIDIyQzIxLjkzMyAyMiAyMy41IDIwLjQzMyAyMy41IDE5QzIzLjUgMTcuNTY3IDIxLjkzMyAyMC40MzMgMTYgMTZaIiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4=';
+                                }}
+                              />
+                            )}
                           </div>
                         </div>
                       </td>
@@ -262,6 +280,21 @@ export default function PartnerLogosManagement() {
                         <div className="text-xs text-gray-500">
                           Order: {logo.display_order}
                         </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        {logo.external_link ? (
+                          <a
+                            href={logo.external_link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-sm text-blue-600 hover:underline truncate inline-block max-w-xs"
+                            title={logo.external_link}
+                          >
+                            {logo.external_link}
+                          </a>
+                        ) : (
+                          <span className="text-sm text-gray-400">No link</span>
+                        )}
                       </td>
                       <td className="px-6 py-4">
                         <div className="text-sm text-gray-900 truncate max-w-xs" title={logo.alt_text}>
