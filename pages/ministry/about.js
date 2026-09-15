@@ -226,7 +226,7 @@ export default function AboutUs() {
 
 
                 <div className="mt-10">
-                  <h2 className=" text-[#123a6b] mb-2 font-24-700">In June, 1970 three departments namely:</h2>
+                  <h2 className=" text-[#123a6b] mb-2 font-24-700">In June, 1970 three departments namely</h2>
                   {loading ? (
                     <SkeletonText lines={3} />
                   ) : (

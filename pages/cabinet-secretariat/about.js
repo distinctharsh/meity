@@ -230,7 +230,7 @@ export default function AboutUs() {
 
 
               <div className="mt-10">
-                <h2 className=" text-[#123a6b] mb-2 font-24-700"> {t('june_1970_departments')}:</h2>
+                <h2 className=" text-[#123a6b] mb-2 font-24-700"> {t('june_1970_departments')}</h2>
                 {loading ? (
                   <SkeletonText lines={3} />
                 ) : (

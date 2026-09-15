@@ -8,7 +8,17 @@ export default function DirectoryPage() {
   const [alpha, setAlpha] = useState("");
   const [perPage, setPerPage] = useState(10);
   const [page, setPage] = useState(1);
-  const ALPHAS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+
+  const isHindi = process.env.NEXT_PUBLIC_LANGUAGE === "2";
+  const ALPHAS_EN = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+  const ALPHAS_HI = [
+    "अ", "आ", "इ", "ई", "उ", "ऊ", "ऋ", "ए", "ऐ", "ओ", "औ",
+    "क", "ख", "ग", "घ", "च", "छ", "ज", "झ", "ट", "ठ", "ड", "ढ",
+    "त", "थ", "द", "ध", "न", "प", "फ", "ब", "भ", "म",
+    "य", "र", "ल", "व", "श", "ष", "स", "ह"
+  ];
+
+  const ALPHAS = isHindi ? ALPHAS_HI : ALPHAS_EN;
 
   const [data, setData] = useState([]);
   useEffect(() => {
@@ -47,8 +57,18 @@ export default function DirectoryPage() {
 
   const filteredByAlpha = useMemo(() => {
     if (!alpha) return results;
-    return results.filter((r) => String(r.name || "").trim().toUpperCase().startsWith(alpha));
-  }, [results, alpha]);
+    return results.filter((r) => {
+      let name = String(r.name || "").trim();
+      
+      if (isHindi) {
+        name = name.replace(/^(श्री|श्रीमती|डॉ\.|डाॉ\.)\s*/, "");
+        return name.startsWith(alpha);
+      }
+      
+      name = name.replace(/^(Mr\.|Mrs\.|Ms\.|Dr\.)\s*/i, "");
+      return name.toUpperCase().startsWith(alpha);
+    });
+  }, [results, alpha, isHindi]);
 
   const totalPages = Math.max(1, Math.ceil(filteredByAlpha.length / perPage));
   const pageItems = useMemo(() => {
@@ -67,8 +87,6 @@ export default function DirectoryPage() {
         <SubNavTabs />
 
         <section className="gi-container mt-12 py-10">
-
-
           <div className=" mt-0 flex items-center justify-between gap-4 px-0">
             <div className="relative w-full max-w-md">
               <svg className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-500" viewBox="0 0 24 24" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 5 1.5-1.5-5-5zM4 9.5C4 6.46 6.46 4 9.5 4S15 6.46 15 9.5 12.54 15 9.5 15 4 12.54 4 9.5z" /></svg>
@@ -76,7 +94,7 @@ export default function DirectoryPage() {
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search..."
+                placeholder={isHindi ? "खोजें..." : "Search..."}
                 className="w-full border rounded-md pl-10 pr-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
               />
             </div>
@@ -87,7 +105,9 @@ export default function DirectoryPage() {
                 onChange={(e) => setPerPage(Number(e.target.value))}
               >
                 {[10, 20, 50].map(n => (
-                  <option key={n} value={n}>{n} per page</option>
+                  <option key={n} value={n}>
+                    {n} {isHindi ? "प्रति पृष्ठ" : "per page"}
+                  </option>
                 ))}
               </select>
             </div>
@@ -95,7 +115,7 @@ export default function DirectoryPage() {
 
           <div className=" mt-4 px-0">
             <div className="w-full bg-gray-200 rounded-md overflow-x-auto">
-              <div className="flex items-center justify-center gap-2 px-3 py-2">
+              <div className="flex items-center justify-start md:justify-center gap-2 px-3 py-2 whitespace-nowrap">
                 {ALPHAS.map((ch) => {
                   const active = alpha === ch;
                   return (
@@ -103,8 +123,8 @@ export default function DirectoryPage() {
                       key={ch}
                       type="button"
                       onClick={() => setAlpha(a => a === ch ? "" : ch)}
-                      className={`px-2 py-1 rounded text-[20px] text-[rgb(22,47,106)] font-["Noto_Sans",sans-serif]
-  ${active ? "font-[700]" : "font-[400]"} 
+                      className={`px-2 py-1 rounded text-[18px] text-[rgb(22,47,106)] font-["Noto_Sans",sans-serif]
+  ${active ? "font-[700] bg-white shadow-sm" : "font-[400]"} 
   hover:bg-white`}
                     >
                       {ch}
@@ -120,7 +140,6 @@ export default function DirectoryPage() {
               {pageItems.map((row, idx) => (
                 <div key={idx} className="pb-6 border-b-2" style={{ borderColor: '#b6c9ff' }}>
                   <div className="grid grid-cols-1 md:grid-cols-[2fr_2fr_3fr] gap-4">
-                    {/* Left: role, name, chips */}
                     <div>
                       <p className="tracking-wide uppercase font-12-600 text-[rgb(22, 47, 106)]">{row.role || " "}</p>
                       <p className="font-16-400 text-[rgb(21, 2, 2)]">{row.name}</p>
@@ -135,7 +154,6 @@ export default function DirectoryPage() {
                       )}
                     </div>
 
-                    {/* Middle: phone(s) then email(s) */}
                     <div className="space-y-2 text-sm text-gray-800">
                       <div className="flex items-start gap-2">
                         <svg className="h-5 w-5 text-gray-700 mt-0.5" viewBox="0 0 24 24" fill="currentColor"><path d="M2.003 5.884c-.09-1.04.71-1.93 1.75-2.02l2.51-.22c.87-.08 1.66.46 1.9 1.3l.57 2.07c.2.74-.04 1.53-.62 2.05l-1.12.98a14.99 14.99 0 007.58 7.58l.98-1.12c.52-.58 1.31-.82 2.05-.62l2.07.57c.84.24 1.38 1.03 1.3 1.9l-.22 2.51c-.09 1.04-.98 1.84-2.02 1.75-9.9-.85-17.8-8.74-18.66-18.64z" /></svg>
@@ -143,7 +161,7 @@ export default function DirectoryPage() {
                           {(row.phones || [row.phone]).filter(Boolean).map((p, i) => (
                             <a key={i} className="hover:underline" href={`tel:${String(p).replace(/[^+\\d]/g, "")}`}>{p}{i < (row.phones?.length || 1) - 1 ? ',' : ''}</a>
                           ))}
-                          {row.fax && <span>, {row.fax}(Fax)</span>}
+                          {row.fax && <span>, {row.fax}({isHindi ? "फ़ैक्स" : "Fax"})</span>}
                         </div>
                       </div>
                       {(row.emails?.length || row.email) && (
@@ -158,7 +176,6 @@ export default function DirectoryPage() {
                       )}
                     </div>
 
-                    {/* Right: address */}
                     {row.address && (
                       <div className="text-sm text-gray-800 flex items-start gap-2">
                         <svg className="h-5 w-5 text-gray-700 mt-0.5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a7 7 0 00-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 00-7-7zm0 9.5A2.5 2.5 0 119.5 9 2.5 2.5 0 0112 11.5z" /></svg>
@@ -170,7 +187,9 @@ export default function DirectoryPage() {
               ))}
 
               {filteredByAlpha.length === 0 && (
-                <div className="px-4 py-8 text-center text-gray-600 text-sm">No results found.</div>
+                <div className="px-4 py-8 text-center text-gray-600 text-sm">
+                  {isHindi ? "कोई परिणाम नहीं मिला।" : "No results found."}
+                </div>
               )}
             </div>
           </div>

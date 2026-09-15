@@ -4,6 +4,7 @@ import Image from "next/image";
 import SubNavTabs from "@/components/SubNavTabs";
 import PageHeader from "@/components/PageHeader";
 import { useRouter } from "next/router";
+import { t } from "@/lib/translations";
 
 export default function Photos() {
   const router = useRouter();
@@ -114,9 +115,9 @@ export default function Photos() {
                     <span aria-hidden="true" className="material-symbols-outlined" style={{ color: '#5279d7' }}>sort</span>
                   </span>
                   <select className="px-3 py-2 bg-white outline-none" role="listbox" aria-label="select" value={sort} onChange={(e) => setSort(e.target.value)}>
-                    <option value="Latest">Latest</option>
-                    <option value="Sort by">Sort by</option>
-                    <option value="Oldest">Oldest</option>
+                    <option value="Latest">{t("latest")}</option>
+                    <option value="Sort by">{t("sort_by")}</option>
+                    <option value="Oldest">{t("oldest")}</option>
                   </select>
                 </div>
               </div>
