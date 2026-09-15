@@ -54,9 +54,9 @@ export default function EventQuote() {
 
   return (
     <div className="w-full bg-[#ebeaea]">
-      <div className="gi-container flex flex-wrap rounded-[8px] overflow-hidden">
+      <div className="flex flex-wrap rounded-[8px] overflow-hidden px-[350px]">
         {/* Left Column - Image */}
-        <div className="flex-[0_0_300px] p-[30px] flex justify-center items-center w-full md:w-auto">
+        <div className="flex-[0_0_300px] p-[40px] flex justify-center items-center w-full md:w-auto">
           <div className="relative w-[260px] h-[260px] rounded-full overflow-hidden bg-white shadow-[0_2px_4px_rgba(35,35,47,0.06),_0_6px_12px_rgba(35,35,47,0.08)]">
             <img
               src={quote?.image_url || "./images/pm/pm-modi.jpg"}

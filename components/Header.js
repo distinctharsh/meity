@@ -19,8 +19,8 @@ export default function Header() {
   const dropdownRef = useRef(null);
 
   const languages =
-  process.env.NEXT_PUBLIC_LANGUAGE === "2"
-    ? ["Hindi (हिन्दी)"]
+  process.env.NEXT_PUBLIC_LANGUAGE === "1"
+    ? ["हिन्दी"]
     : ["English"];
 
   useEffect(() => {
@@ -190,7 +190,7 @@ export default function Header() {
                     </button>
 
                     {langOpen && (
-                      <div className="absolute top-[38px] right-0 w-[180px] bg-white border border-[#d1d5db] shadow-lg z-[9999]">
+                      <div className="absolute top-[38px] right-0 w-[100px] bg-white border border-[#d1d5db] shadow-lg z-[9999]">
                         <div className="max-h-[120px] overflow-y-auto custom-scrollbar">
                           {languages.map((lang) => (
                             <div

@@ -233,13 +233,14 @@ const Footer = () => {
             </div> */}
 
             {/* Logos */}
-            <div className="flex space-x-8 mt-5">
-              <div className="bg-white p-3 rounded-lg">
+            <div className="flex space-x-8">
+              <a href="https://www.mygov.in/" target="_blank" rel="noopener noreferrer" className="bg-white p-3 rounded-lg block">
                 <img src="/images/footer/mygovmerisarkar.jpg" alt="MyGov" width={140} height={60} style={{ width: '140px', height: 'auto', objectFit: 'contain' }} />
-              </div>
-              <div className="bg-white p-3 rounded-lg">
+              </a>
+
+              <a href="https://www.india.gov.in/" target="_blank" rel="noopener noreferrer" className="bg-white p-3 rounded-lg block">
                 <img src="/images/footer/indiaportal.svg" alt="India Portal" width={140} height={60} style={{ width: '140px', height: 'auto', objectFit: 'contain' }} />
-              </div>
+              </a>
             </div>
 
             {/* Last Updated */}
