@@ -11,16 +11,16 @@ export default function SearchPage() {
   const [sort, setSort] = useState("Newest");
   const [perPage, setPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
- useEffect(() => {
-  if (!router.isReady) return;
-  const searchTerm = (q || "").toString().trim();
-  if (!searchTerm) {
-    setResults([]);
-    setLoading(false);
-    return;
-  }
-  loadData(searchTerm);
-}, [router.isReady, q]);
+  useEffect(() => {
+    if (!router.isReady) return;
+    const searchTerm = (q || "").toString().trim();
+    if (!searchTerm) {
+      setResults([]);
+      setLoading(false);
+      return;
+    }
+    loadData(searchTerm);
+  }, [router.isReady, q]);
 
   async function loadData(searchTerm) {
     try {
@@ -29,55 +29,53 @@ export default function SearchPage() {
         `/api/search?q=${encodeURIComponent(searchTerm)}`
       );
       const data = await response.json();
-      setResults(data || []);
+
+      if (response.ok && Array.isArray(data)) {
+        setResults(data);
+      } else {
+        setResults([]);
+      }
     } catch (err) {
-      console.log(err);
+      console.error("Fetch error:", err);
+      setResults([]);
     } finally {
       setLoading(false);
     }
   }
-  const filtered = useMemo(() => {
-  return results.filter((item) => {
-    const searchText = (
-      item.matched_file_name ||
-      item.title ||
-      ""
-    ).toLowerCase();
 
-    return searchText.includes(
-      query.toLowerCase()
-    );
-  });
-}, [results, query]);
+  const filtered = useMemo(() => {
+    if (!Array.isArray(results)) return [];
+    return results.filter((item) => {
+      const searchText = (
+        item.matched_file_name ||
+        item.title ||
+        ""
+      ).toLowerCase();
+
+      return searchText.includes(query.toLowerCase());
+    });
+  }, [results, query]);
   const sorted = useMemo(() => {
     const arr = [...filtered];
     if (sort === "Newest") {
       arr.sort((a, b) =>
-        String(b.year || "").localeCompare(
-          String(a.year || "")
-        )
+        String(b.year || "").localeCompare(String(a.year || ""))
       );
     } else {
       arr.sort((a, b) =>
-        String(a.year || "").localeCompare(
-          String(b.year || "")
-        )
+        String(a.year || "").localeCompare(String(b.year || ""))
       );
     }
     return arr;
   }, [filtered, sort]);
-  const totalPages = Math.ceil(
-    sorted.length / perPage
-  );
+  const totalPages = Math.ceil(sorted.length / perPage);
   const paginated = sorted.slice(
     (currentPage - 1) * perPage,
     currentPage * perPage
   );
   return (
     <main id="main">
-      <PageHeader
-        pageTitle={`Search Results : ${q || ""}`}
-      />
+      <PageHeader pageTitle={`Search Results : ${q || ""}`} />
       <section className="mt-10 py-10">
         <div className="gi-container">
           {/* TOOLBAR */}
@@ -85,9 +83,7 @@ export default function SearchPage() {
             <div className="w-full lg:w-[320px]">
               <div className="flex items-stretch rounded-md overflow-hidden border border-gray-300 bg-white">
                 <span className="flex items-center px-3 border-r border-gray-300 text-gray-600">
-                  <span className="material-symbols-outlined">
-                    search
-                  </span>
+                  <span className="material-symbols-outlined">search</span>
                 </span>
                 <input
                   type="search"
@@ -107,62 +103,36 @@ export default function SearchPage() {
                 onChange={(e) => setSort(e.target.value)}
                 className="border border-gray-300 rounded-md px-4 py-2"
               >
-                <option value="Newest">
-                  Latest
-                </option>
-                <option value="Oldest">
-                  Oldest
-                </option>
+                <option value="Newest">Latest</option>
+                <option value="Oldest">Oldest</option>
               </select>
               <select
                 value={perPage}
-                onChange={(e) =>
-                  setPerPage(Number(e.target.value))
-                }
+                onChange={(e) => setPerPage(Number(e.target.value))}
                 className="border border-gray-300 rounded-md px-4 py-2"
               >
-                <option value={10}>
-                  10 per page
-                </option>
-                <option value={20}>
-                  20 per page
-                </option>
-                <option value={50}>
-                  50 per page
-                </option>
+                <option value={10}>10 per page</option>
+                <option value={20}>20 per page</option>
+                <option value={50}>50 per page</option>
               </select>
             </div>
           </div>
 
           {/* HEADER */}
           <div className="grid grid-cols-12 bg-[#a3bbf3] text-[#123a6b] font-semibold text-[13px] uppercase tracking-[1px] px-6 py-4 rounded-[12px]">
-            <div className="col-span-6">
-              Title
-            </div>
-            <div className="col-span-3 text-center">
-              Published Year
-            </div>
-            <div className="col-span-3 text-right">
-              View
-            </div>
+            <div className="col-span-6">Title</div>
+            <div className="col-span-3 text-center">Published Year</div>
+            <div className="col-span-3 text-right">View</div>
           </div>
 
           {/* LOADING */}
-          {loading && (
-            <div className="text-center py-10">
-              Loading...
-            </div>
-          )}
+          {loading && <div className="text-center py-10">Loading...</div>}
 
           {/* NO DATA */}
-          {!loading &&
-            paginated.length === 0 && (
-              <div className="text-center py-10">
-                No Record Found
-              </div>
-            )}
+          {!loading && paginated.length === 0 && (
+            <div className="text-center py-10">No Record Found</div>
+          )}
 
-         
           {/* DATA */}
           {!loading &&
             paginated.map((item) => (
@@ -178,9 +148,7 @@ export default function SearchPage() {
 
                   <div>
                     <div className="text-[16px] font-medium flex items-center gap-2 flex-wrap">
-                      <span>
-                        {item.matched_file_name || item.title}
-                      </span>
+                      <span>{item.matched_file_name || item.title}</span>
 
                       {item.source === "report_group" &&
                         item.files_count > 0 && (
@@ -189,16 +157,15 @@ export default function SearchPage() {
                           </span>
                         )}
 
-                        {item.is_archived === 1 ? (
-                          <span className="ml-2 px-2 py-1 text-[11px] font-semibold bg-red-100 text-red-700 rounded-md">
-                            ARCHIVED
-                          </span>
-                        ) : (
-                          <span className="ml-2 px-2 py-1 text-[11px] font-semibold bg-green-100 text-green-700 rounded-md">
-                            ACTIVE
-                          </span>
-                        )}
-                        
+                      {item.is_active === 2 ? (
+                        <span className="ml-2 px-2 py-1 text-[11px] font-semibold bg-red-100 text-red-700 rounded-md">
+                          ARCHIVED
+                        </span>
+                      ) : item.is_active === 1 ? (
+                        <span className="ml-2 px-2 py-1 text-[11px] font-semibold bg-green-100 text-green-700 rounded-md">
+                          ACTIVE
+                        </span>
+                      ) : null}
                     </div>
                   </div>
                 </div>
@@ -216,7 +183,7 @@ export default function SearchPage() {
                         ? item.file_url
                         : item.type === "group"
                         ? `/documents/report/${item.id}`
-                        : `/uploads/${item.type}/${item.file_url.replace(/^\/+/, "")}`
+                        : `/uploads/${item.type}/${(item.file_url || "").replace(/^\/+/, "")}`
                     }
                     target={
                       item.source === "report_file"
@@ -235,7 +202,6 @@ export default function SearchPage() {
                     {item.source === "report_file" ? "VIEW FILE" : "VIEW ALL"}
                   </a>
                 </div>
-
               </div>
             ))}
 
@@ -244,11 +210,7 @@ export default function SearchPage() {
             <div className="flex justify-center gap-3 mt-8">
               <button
                 disabled={currentPage === 1}
-                onClick={() =>
-                  setCurrentPage(
-                    currentPage - 1
-                  )
-                }
+                onClick={() => setCurrentPage(currentPage - 1)}
                 className="px-4 py-2 border rounded"
               >
                 Prev
@@ -257,14 +219,8 @@ export default function SearchPage() {
                 {currentPage} / {totalPages}
               </span>
               <button
-                disabled={
-                  currentPage === totalPages
-                }
-                onClick={() =>
-                  setCurrentPage(
-                    currentPage + 1
-                  )
-                }
+                disabled={currentPage === totalPages}
+                onClick={() => setCurrentPage(currentPage + 1)}
                 className="px-4 py-2 border rounded"
               >
                 Next
@@ -276,5 +232,4 @@ export default function SearchPage() {
       <Footer />
     </main>
   );
-
 }
