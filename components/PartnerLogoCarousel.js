@@ -54,8 +54,9 @@ const PartnerLogoCarousel = () => {
     const items = Array.from(container.children);
     if (items.length === 0) return;
     
-    const itemWidth = 160;
-    const gap = 16;
+    // Updated width to match new card size (220px width + 24px gap)
+    const itemWidth = 220;
+    const gap = 24;
     const stepSize = itemWidth + gap;
     
     const currentScroll = container.scrollLeft;
@@ -115,10 +116,10 @@ const PartnerLogoCarousel = () => {
     return (
       <div className="w-full bg-gray-100 py-6 sm:py-8">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
-          <div className="flex justify-center items-center h-20">
+          <div className="flex justify-center items-center h-24">
             <div className="animate-pulse flex space-x-4">
-              {[...Array(6)].map((_, i) => (
-                <div key={i} className="h-12 w-20 bg-gray-300 rounded-lg"></div>
+              {[...Array(5)].map((_, i) => (
+                <div key={i} className="h-20 w-36 bg-gray-300 rounded-lg"></div>
               ))}
             </div>
           </div>
@@ -129,12 +130,12 @@ const PartnerLogoCarousel = () => {
 
   return (
     <div className="w-full bg-gray-100 py-6 sm:py-8">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="relative group">
           {/* Scroll Container */}
           <div
             ref={containerRef}
-            className="flex overflow-x-auto px-4 sm:px-6 lg:px-8 gap-2 sm:gap-4 md:gap-6 snap-x snap-mandatory scrollbar-hide"
+            className="flex overflow-x-auto px-4 sm:px-6 lg:px-8 gap-4 sm:gap-6 md:gap-6 snap-x snap-mandatory scrollbar-hide py-2"
             role="region"
             aria-label="Partner logos"
             onMouseEnter={() => setIsInteracting(true)}
@@ -153,11 +154,12 @@ const PartnerLogoCarousel = () => {
                 href={logo.external_link}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex-shrink-0 bg-white rounded-xl shadow-lg border border-gray-200 flex items-center justify-center relative snap-start hover:shadow-xl transition-shadow duration-200"
+                className="flex-shrink-0 bg-white rounded-xl shadow-md border border-gray-200 flex items-center justify-center relative snap-start hover:shadow-xl transition-all duration-200"
+                /* Increased size: Width 220px, Height 110px */
                 style={{ 
-                  width: '160px', 
-                  height: '80px',
-                  minWidth: '160px'
+                  width: '220px', 
+                  height: '110px',
+                  minWidth: '220px'
                 }}
               >
                 <Image
@@ -165,8 +167,8 @@ const PartnerLogoCarousel = () => {
                   alt={`Partner logo ${index + 1}`}
                   fill
                   style={{ objectFit: "contain" }}
-                  className="object-contain p-2"
-                  sizes="160px"
+                  className="object-contain p-3"
+                  sizes="220px"
                 />
               </a>
             ))}
@@ -175,19 +177,19 @@ const PartnerLogoCarousel = () => {
           {/* Left Arrow */}
           <button
             onClick={() => handleManualScroll("left")}
-            className="hidden md:flex items-center justify-center absolute -left-3 lg:-left-6 top-1/2 -translate-y-1/2 w-8 h-8 lg:w-10 lg:h-10 rounded-full bg-white/80 shadow text-black cursor-pointer backdrop-blur hover:bg-white"
+            className="hidden md:flex items-center justify-center absolute -left-3 lg:-left-6 top-1/2 -translate-y-1/2 w-10 h-10 lg:w-12 lg:h-12 rounded-full bg-white/90 shadow-md text-black cursor-pointer backdrop-blur hover:bg-white z-10"
             aria-label="Previous logos"
           >
-            <span className="material-symbols-outlined text-base lg:text-xl">chevron_left</span>
+            <span className="material-symbols-outlined text-lg lg:text-2xl">chevron_left</span>
           </button>
 
           {/* Right Arrow */}
           <button
             onClick={() => handleManualScroll("right")}
-            className="hidden md:flex items-center justify-center absolute -right-3 lg:-right-6 top-1/2 -translate-y-1/2 w-8 h-8 lg:w-10 lg:h-10 rounded-full bg-white/80 shadow text-black cursor-pointer backdrop-blur hover:bg-white"
+            className="hidden md:flex items-center justify-center absolute -right-3 lg:-right-6 top-1/2 -translate-y-1/2 w-10 h-10 lg:w-12 lg:h-12 rounded-full bg-white/90 shadow-md text-black cursor-pointer backdrop-blur hover:bg-white z-10"
             aria-label="Next logos"
           >
-            <span className="material-symbols-outlined text-base lg:text-xl">chevron_right</span>
+            <span className="material-symbols-outlined text-lg lg:text-2xl">chevron_right</span>
           </button>
         </div>
       </div>

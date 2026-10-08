@@ -2,6 +2,14 @@ import { useEffect, useRef, useState, useMemo } from 'react';
 import AdminLayout from '@/components/admin/AdminLayout';
 
 import dynamic from 'next/dynamic';
+import { loader } from '@monaco-editor/react';
+
+// Next.js static asset serve karega local public folder se
+loader.config({
+  paths: {
+    vs: '/monaco-editor/min/vs',
+  },
+});
 
 const MonacoEditor = dynamic(() => import('@monaco-editor/react'), { ssr: false });
 

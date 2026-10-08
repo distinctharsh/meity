@@ -100,7 +100,7 @@ const Footer = () => {
             </div>
 
             {/* Last Updated */}
-            <p className="text-sm text-gray-300 md:whitespace-nowrap">{t('last_update_on')}12.09.2025</p>
+            <p className="text-sm text-gray-300 md:whitespace-nowrap">{t('last_update_on')}10.08.2026</p>
 
           </div>
         </div>
