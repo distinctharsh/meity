@@ -185,8 +185,8 @@ export default function DocumentsSlug() {
               className="hidden lg:grid grid-cols-[7fr_2fr_3fr] bg-[#a3bbf3] text-[#162f6a] rounded-[8px] px-6 py-4 mb-3 uppercase text-[12px] font-semibold tracking-[1px]"
             >
               <div>Title</div>
-              <div className="text-center">Published Year</div>
-              <div className="text-center">Type/Size</div>
+              <div className="text-center"></div>
+              <div className="text-right mr-5">Type/Size</div>
             </div>
 
             {/* TABLE BODY (Card-Style List) */}
@@ -232,8 +232,8 @@ export default function DocumentsSlug() {
 
                       {/* Published Year Column */}
                       <div className="lg:text-center text-sm">
-                        <span className="lg:hidden text-xs text-gray-400 block uppercase font-normal">Published Year</span>
-                        <span className="font-medium text-[#2c3e66]">{item.year || '-'}</span>
+                        <span className="lg:hidden text-xs text-gray-400 block uppercase font-normal"></span>
+                        {/* <span className="font-medium text-[#2c3e66]">{item.year || '-'}</span> */}
                       </div>
 
                       {/* Type/Size + Action Column */}
