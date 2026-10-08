@@ -9,7 +9,6 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 
 export default function Header() {
-  
   const router = useRouter();
   const [searchText, setSearchText] = useState("");
 
@@ -18,10 +17,10 @@ export default function Header() {
 
   const dropdownRef = useRef(null);
 
-  const languages =
-  process.env.NEXT_PUBLIC_LANGUAGE === "1"
-    ? ["हिन्दी"]
-    : ["English"];
+    const languages =
+    process.env.NEXT_PUBLIC_LANGUAGE === "1"
+      ? [{ name: "हिन्दी", url: "http://localhost:81" }]
+      : [{ name: "English", url: "http://localhost:8081" }];
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -36,22 +35,26 @@ export default function Header() {
     document.addEventListener("mousedown", handleClickOutside);
 
     return () => {
-      document.removeEventListener(
-        "mousedown",
-        handleClickOutside
-      );
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
- const handleSearch = () => {
-  if (!searchText.trim()) return;
+  const handleLanguageSelect = (langObj) => {
+    setSelectedLang(langObj.name);
+    setLangOpen(false);
 
-  router.push(
-    `/search?q=${encodeURIComponent(searchText)}`
-  );
+    if (langObj.url) {
+      window.location.href = langObj.url;
+    }
+  };
 
-  setSearchText(""); // textbox clear
-};
+  const handleSearch = () => {
+    if (!searchText.trim()) return;
+
+    router.push(`/search?q=${encodeURIComponent(searchText)}`);
+
+    setSearchText(""); // textbox clear
+  };
 
   return (
     <>
@@ -174,44 +177,41 @@ export default function Header() {
                   </div>
                 </div> */}
 
-                  <div
-                    className="relative border-x border-[#162f6a] px-[6px] flex items-center"
-                    ref={dropdownRef}
+                <div
+                  className="relative border-x border-[#162f6a] px-[6px] flex items-center"
+                  ref={dropdownRef}
+                >
+                  <button
+                    onClick={() => setLangOpen(!langOpen)}
+                    className="flex items-center justify-center bg-transparent border-0 cursor-pointer"
                   >
-                    <button
-                      onClick={() => setLangOpen(!langOpen)}
-                      className="flex items-center justify-center bg-transparent border-0 cursor-pointer"
-                    >
-                      <img
-                        src="/images/icons/bhashini.svg"
-                        alt="Language"
-                        className="w-[28px] h-[28px]"
-                      />
-                    </button>
+                    <img
+                      src="/images/icons/bhashini.svg"
+                      alt="Language"
+                      className="w-[28px] h-[28px]"
+                    />
+                  </button>
 
-                    {langOpen && (
-                      <div className="absolute top-[38px] right-0 w-[100px] bg-white border border-[#d1d5db] shadow-lg z-[9999]">
-                        <div className="max-h-[120px] overflow-y-auto custom-scrollbar">
-                          {languages.map((lang) => (
-                            <div
-                              key={lang}
-                              onClick={() => {
-                                setSelectedLang(lang);
-                                setLangOpen(false);
-                              }}
-                              className={`px-4 py-2 text-[18px] cursor-pointer hover:bg-[#f3f4f6] ${
-                                selectedLang === lang
-                                  ? "bg-[#f3f4f6] font-medium"
-                                  : ""
-                              }`}
-                            >
-                              {lang}
-                            </div>
-                          ))}
-                        </div>
+                  {langOpen && (
+                    <div className="absolute top-[38px] right-0 w-[110px] bg-white border border-[#d1d5db] shadow-lg z-[9999]">
+                      <div className="max-h-[120px] overflow-y-auto custom-scrollbar">
+                        {languages.map((lang) => (
+                          <div
+                            key={lang.name}
+                            onClick={() => handleLanguageSelect(lang)}
+                            className={`px-4 py-2 text-[16px] cursor-pointer hover:bg-[#f3f4f6] ${
+                              selectedLang === lang.name
+                                ? "bg-[#f3f4f6] font-medium"
+                                : ""
+                            }`}
+                          >
+                            {lang.name}
+                          </div>
+                        ))}
                       </div>
-                    )}
-                  </div>
+                    </div>
+                  )}
+                </div>
                 <AccessibilityBar />
               </div>
             </div>

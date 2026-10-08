@@ -95,13 +95,13 @@ export default function Offerings() {
               >
                 {t('vacancies')}
               </button>
-              <button
+              {/* <button
                 className={`${activeTab === "tenders" ? 'text-white bg-[#222e4c] font-semibold' : 'text-[#222e4c] bg-white font-normal'} flex-1 text-center py-3 border-0 cursor-pointer select-none text-[1.2rem]`}
                 onClick={() => handleTabClick("tenders")}
                 aria-selected={activeTab === "tenders"}
               >
                 {t('tenders')}
-              </button>
+              </button> */}
             </div>
 
             <div className="bg-white rounded-b-[6px] p-0 shadow-[0_1px_0_rgba(0,0,0,0.04)] border-t-0 max-h-[230px] overflow-y-auto [scrollbar-width:thin] [scrollbar-color:#123a6b_#f1f1f1]">
