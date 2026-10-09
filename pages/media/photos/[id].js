@@ -138,7 +138,7 @@ export default function PhotoGalleryDetail() {
 
   return (
     <>
-      {/* Hide Scrollbar Style */}
+      {/* Hide Scrollbar CSS */}
       <style>{`
         .no-scrollbar::-webkit-scrollbar {
           display: none;
@@ -173,11 +173,6 @@ export default function PhotoGalleryDetail() {
                       })
                     : ""}
                 </p>
-              </div>
-              <div className="text-right">
-                <span className="rounded-full bg-blue-50 px-4 py-2 text-sm font-semibold text-blue-700">
-                  {gallery.images?.length || 0} Photos
-                </span>
               </div>
             </div>
 
@@ -237,22 +232,32 @@ export default function PhotoGalleryDetail() {
         <Footer />
       </main>
 
-      {/* Responsive Image Lightbox Modal */}
+      {/* Standard Fixed Size Lightbox Modal */}
       {selectedImage && (
         <div
-          className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/70 p-3 sm:p-4 overflow-hidden"
+          className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/75 p-3 sm:p-4 overflow-hidden"
           onClick={closeImage}
           role="dialog"
           aria-modal="true"
           aria-label="Photo gallery viewer"
         >
-          {/* Modal Container */}
+          {/* Modal Box Container */}
           <div
-            className="relative flex flex-col w-full max-w-[720px] max-h-[85vh] overflow-hidden rounded-md shadow-2xl bg-black"
+            className="relative flex flex-col w-full max-w-[680px] max-h-[80vh] overflow-hidden rounded-md shadow-2xl bg-black"
             onClick={(event) => event.stopPropagation()}
           >
-            {/* Main Image Area with Hidden Scrollbar */}
-            <div className="relative flex-1 bg-black overflow-y-auto no-scrollbar min-h-[200px]">
+            {/* Top Right Floating Close Button */}
+            <button
+              type="button"
+              onClick={closeImage}
+              aria-label="Close image viewer"
+              className="absolute top-3 right-3 z-30 flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-black/70 text-2xl font-light leading-none text-white transition hover:bg-black hover:scale-105 shadow-md border border-white/20"
+            >
+              {"×"}
+            </button>
+
+            {/* Main Image Scrollable Area */}
+            <div className="relative flex-1 bg-black overflow-y-auto no-scrollbar min-h-[220px]">
               <div className="flex min-h-full items-center justify-center p-2">
                 <img
                   src={selectedImage}
@@ -260,16 +265,6 @@ export default function PhotoGalleryDetail() {
                   className="max-w-full w-auto h-auto object-contain mx-auto block"
                 />
               </div>
-
-              {/* Close Button */}
-              <button
-                type="button"
-                onClick={closeImage}
-                aria-label="Close image viewer"
-                className="sticky top-2 left-full -ml-11 z-20 flex h-9 w-9 cursor-pointer items-center justify-center rounded bg-black/80 text-2xl leading-none text-white transition hover:bg-black"
-              >
-                {"×"}
-              </button>
             </div>
 
             {/* Bottom Caption Bar */}
