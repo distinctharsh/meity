@@ -159,7 +159,7 @@ export default function DirectoryPage() {
                         <svg className="h-5 w-5 text-gray-700 mt-0.5" viewBox="0 0 24 24" fill="currentColor"><path d="M2.003 5.884c-.09-1.04.71-1.93 1.75-2.02l2.51-.22c.87-.08 1.66.46 1.9 1.3l.57 2.07c.2.74-.04 1.53-.62 2.05l-1.12.98a14.99 14.99 0 007.58 7.58l.98-1.12c.52-.58 1.31-.82 2.05-.62l2.07.57c.84.24 1.38 1.03 1.3 1.9l-.22 2.51c-.09 1.04-.98 1.84-2.02 1.75-9.9-.85-17.8-8.74-18.66-18.64z" /></svg>
                         <div className="flex flex-wrap gap-x-2 gap-y-1">
                           {(row.phones || [row.phone]).filter(Boolean).map((p, i) => (
-                            <a key={i} className="hover:underline" href={`tel:${String(p).replace(/[^+\\d]/g, "")}`}>{p}{i < (row.phones?.length || 1) - 1 ? ',' : ''}</a>
+                            <a key={i} className="hover:underline" >{p}{i < (row.phones?.length || 1) - 1 ? ',' : ''}</a>
                           ))}
                           {row.fax && <span>, {row.fax}({isHindi ? "फ़ैक्स" : "Fax"})</span>}
                         </div>

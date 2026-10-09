@@ -253,7 +253,7 @@ export default function OurTeam() {
                   {selectedMember.phone_secondary && (
                     <div className="flex items-center justify-center gap-2">
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-700" viewBox="0 0 24 24" fill="currentColor"><path d="M2.003 5.884c-.09-1.04.71-1.93 1.75-2.02l2.51-.22c.87-.08 1.66.46 1.9 1.3l.57 2.07c.2.74-.04 1.53-.62 2.05l-1.12.98a14.99 14.99 0 007.58 7.58l.98-1.12c.52-.58 1.31-.82 2.05-.62l2.07.57c.84.24 1.38 1.03 1.3 1.9l-.22 2.51c-.09 1.04-.98 1.84-2.02 1.75-9.9-.85-17.8-8.74-18.66-18.64z" /></svg>
-                      <a className="hover:underline" href={`tel:${selectedMember.phone_secondary.replace(/[^+\d]/g, '')}`}>{selectedMember.phone_secondary}</a>
+                      <a className="hover:underline" >{selectedMember.phone_secondary}</a>
                     </div>
                   )}
                 </div>
@@ -277,25 +277,25 @@ export default function OurTeam() {
                       {selectedMember.office_phone1 && (
                         <p className="flex items-center gap-2">
                           <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-700" viewBox="0 0 24 24" fill="currentColor"><path d="M2.003 5.884c-.09-1.04.71-1.93 1.75-2.02l2.51-.22c.87-.08 1.66.46 1.9 1.3l.57 2.07c.2.74-.04 1.53-.62 2.05l-1.12.98a14.99 14.99 0 007.58 7.58l.98-1.12c.52-.58 1.31-.82 2.05-.62l2.07.57c.84.24 1.38 1.03 1.3 1.9l-.22 2.51c-.09 1.04-.98 1.84-2.02 1.75-9.9-.85-17.8-8.74-18.66-18.64z" /></svg>
-                          <a className="hover:underline" href={`tel:${selectedMember.office_phone1.replace(/[^+\\d]/g, '')}`}>{selectedMember.office_phone1}</a>
+                          <a className="hover:underline" >{selectedMember.office_phone1}</a>
                         </p>
                       )}
                       {selectedMember.office_phone2 && (
                         <p className="flex items-center gap-2">
                           <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-700" viewBox="0 0 24 24" fill="currentColor"><path d="M2.003 5.884c-.09-1.04.71-1.93 1.75-2.02l2.51-.22c.87-.08 1.66.46 1.9 1.3l.57 2.07c.2.74-.04 1.53-.62 2.05l-1.12.98a14.99 14.99 0 007.58 7.58l.98-1.12c.52-.58 1.31-.82 2.05-.62l2.07.57c.84.24 1.38 1.03 1.3 1.9l-.22 2.51c-.09 1.04-.98 1.84-2.02 1.75-9.9-.85-17.8-8.74-18.66-18.64z" /></svg>
-                          <a className="hover:underline" href={`tel:${selectedMember.office_phone2.replace(/[^+\\d]/g, '')}`}>{selectedMember.office_phone2}</a>
+                          <a className="hover:underline" >{selectedMember.office_phone2}</a>
                         </p>
                       )}
                       {selectedMember.office_email1 && (
                         <p className="flex items-center gap-2">
                           <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-700" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4a2 2 0 00-2 2v12a2 2 0 002 2h16a2 2 0 002-2V6a2 2 0 00-2-2zm-1.4 4.25l-6.13 4.09a1 1 0 01-1.06 0L5.28 8.25a1 1 0 111.1-1.66L12 10.3l5.62-3.7a1 1 0 111.1 1.66z" /></svg>
-                          <a className="hover:underline" href={`mailto:${selectedMember.office_email1}`}>{selectedMember.office_email1}</a>
+                          <a className="hover:underline" >{selectedMember.office_email1}</a>
                         </p>
                       )}
                       {selectedMember.office_email2 && (
                         <p className="flex items-center gap-2">
                           <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-700" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4a2 2 0 00-2 2v12a2 2 0 002 2h16a2 2 0 002-2V6a2 2 0 00-2-2zm-1.4 4.25l-6.13 4.09a1 1 0 01-1.06 0L5.28 8.25a1 1 0 111.1-1.66L12 10.3l5.62-3.7a1 1 0 111.1 1.66z" /></svg>
-                          <a className="hover:underline" href={`mailto:${selectedMember.office_email2}`}>{selectedMember.office_email2}</a>
+                          <a className="hover:underline" >{selectedMember.office_email2}</a>
                         </p>
                       )}
                       {selectedMember.office_fax && (
