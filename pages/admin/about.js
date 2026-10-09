@@ -260,14 +260,14 @@ export default function AdminAboutPage() {
             <p className="text-gray-600 mt-1">Manage About page content sections</p>
           </div>
           <div className="flex gap-2">
-            <button
+            {/* <button
               onClick={initializeDefaultContent}
               className="inline-flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
               title="Initialize default content from current About page"
             >
               <span aria-hidden="true" className="material-symbols-outlined mr-2">refresh</span>
               Initialize Default
-            </button>
+            </button> */}
             <button
               onClick={() => { setShowForm(true); setEditing(null); }}
               className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300 shadow cursor-pointer"

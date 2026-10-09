@@ -82,6 +82,13 @@ export default function EventQuote() {
               </span>
 
               {quote?.quote_text || 'PM emphasises that democracy and technology together can ensure the welfare of humanity.'}
+               <span
+                className="block text-[4.4rem] text-[#162f6a] leading-none mb-5"
+                style={{ fontSize: '4.4rem', color: '#162f6a', display: 'block', maxHeight: '40px', fontFamily: 'Material Symbols Outlined' }}
+                aria-hidden="true"
+              >
+                ”
+              </span>
             </p>
 
             <hr className="border-0 h-[1px] bg-[#0b3a82] my-5" />

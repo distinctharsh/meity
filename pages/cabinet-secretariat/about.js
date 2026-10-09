@@ -36,16 +36,29 @@ export default function AboutUs() {
     return aboutContent.find(c => c.section_key === key);
   };
 
+  // HTML and Plain Text renderer
   const renderContent = (content) => {
-    if (!content) return '';
+    if (!content) return null;
+
+    // Check if the string contains any HTML tags
+    const containsHtml = /<[a-z][\s\S]*>/i.test(content);
+
+    if (containsHtml) {
+      return (
+        <div
+          className="prose max-w-none text-justify leading-relaxed [&>p]:mb-4 [&>ul]:list-disc [&>ul]:pl-5 [&>ol]:list-decimal [&>ol]:pl-5"
+          dangerouslySetInnerHTML={{ __html: content }}
+        />
+      );
+    }
+
     return content.split('\n').map((line, index) => (
-      <p key={index} className="mb-4 text-justify">{line}</p>
+      line.trim() ? <p key={index} className="mb-4 text-justify">{line}</p> : null
     ));
   };
+
   return (
     <>
-
-
       {/* Inline CSS for the ::before dot */}
       <style>{`
         .dot-before::before {
@@ -62,21 +75,17 @@ export default function AboutUs() {
         }
       `}</style>
 
-
-
       <main id="main">
         {/* Dynamic Page Header */}
         <PageHeader pagePath="/cabinet-secretariat/about" />
 
-
         {/* Tabs (DB-driven) */}
         <SubNavTabs />
-
 
         {/* Main Content */}
         <section className="bg-white py-12">
           <div className="gi-container flex flex-col md:grid md:grid-cols-[420px_minmax(0,1fr)] gap-6 md:gap-10">
-            {/* Left Box - Vision (shrink to content height) */}
+            {/* Left Box - Vision */}
             <div
               className="bg-gray-100 p-6 rounded-lg inline-block align-top md:sticky md:top-[250px]"
               style={{ height: 'fit-content' }}
@@ -91,200 +100,32 @@ export default function AboutUs() {
                   {renderContent(getContentByKey('vision'))}
                 </div>
               )}
-              {/* <p className="uppercase text-sm text-[#3b3b3b] tracking-wide">Vision Statement</p> */}
             </div>
 
             {/* Right Content - About, Mission, Objectives */}
             <div className="text-[#333] space-y-6">
-              {/* <p>
-                The Cabinet Secretariat, under Government of India,
-                is a stand-alone ministerial agency, responsible for formulating and implementing national
-                policies and programs aimed at enabling the continuous development of the electronics and IT industry.
-                Cabinet Secretariat’s focus areas include the development, promotion, and regulation of the electronics and IT industry in India,
-                fostering digital governance, enabling innovation in emerging technologies and promoting cybersecurity
-                initiatives within the country.
-              </p> */}
-
               <div>
-                <h2 className=" text-[#123a6b] mb-2 font-24-700 text-justify"> {t('functions')}</h2>
-                {loading ? (
-                  <SkeletonText lines={3} />
-                ) : (
-                  <div>
-                    {renderContent(getContentByKey('functions'))}
-                  </div>
-                )}
+                <h2 className="text-[#123a6b] mb-2 font-24-700 text-justify">{t('functions')}</h2>
+                {loading ? <SkeletonText lines={3} /> : renderContent(getContentByKey('functions'))}
 
-
-                <div className="mt-10">
-                  <h2 className=" text-[#123a6b] mb-2 font-24-700 text-justify">{t('allocation_disposal')}</h2>
-                  {loading ? (
-                    <SkeletonText lines={3} />
-                  ) : (
-                    <div>
-                      {renderContent(getContentByKey('allocation_disposal'))}
-                    </div>
-                  )}
-                </div>
-                <div className="mt-10">
-                  <h2 className=" text-[#123a6b] mb-2 font-24-700 text-justify">{t('support_cabinet_committees')}</h2>
-                  {loading ? (
-                    <SkeletonText lines={3} />
-                  ) : (
-                    <div>
-                      {renderContent(getContentByKey('support_cabinet_committees'))}
-                    </div>
-                  )}
-                </div>
-                <div className="mt-10">
-                  <h2 className=" text-[#123a6b] mb-2 font-24-700 text-justify">{t('inter_ministerial_coordination')}</h2>
-                  {loading ? (
-                    <SkeletonText lines={3} />
-                  ) : (
-                    <div>
-                      {renderContent(getContentByKey('inter_ministerial_coordination'))}
-                    </div>
-                  )}
-                </div>
               </div>
 
               <div>
-                <h2 className=" text-[#123a6b] mb-2 font-24-700 text-justify">{t('objectives')}</h2>
-                {loading ? (
-                  <SkeletonText lines={4} />
-                ) : (
-                  <div>
-                    {renderContent(getContentByKey('objectives'))}
-                  </div>
-                )}
-
-                {/* <div className="grid md:grid-cols-3 sm:grid-cols-2 gap-4">
-                  {[
-                    {
-                      num: 1,
-                      title: "e-Government",
-                      desc: "Providing e-infrastructure for delivery of e-services",
-                    },
-                    {
-                      num: 2,
-                      title: "e-Industry",
-                      desc: "Promotion of electronics hardware manufacturing and IT-ITeS industry",
-                    },
-                    {
-                      num: 3,
-                      title: "e-Innovation / R&D",
-                      desc: "Implementation of R&D Framework: Enabling creation of Innovation/ R&D Infrastructure",
-                    },
-                    {
-                      num: 4,
-                      title: "e-Learning",
-                      desc: "Providing support for development of e-Skills and Knowledge network",
-                    },
-                    {
-                      num: 5,
-                      title: "e-Security",
-                      desc: "Securing India’s cyber space",
-                    },
-                    {
-                      num: 6,
-                      title: "e-Inclusion",
-                      desc: "Promoting the use of ICT for more inclusive growth",
-                    },
-                    {
-                      num: 7,
-                      title: "e-Diplomacy",
-                      desc: "Promoting the use of ICT in international cooperation",
-                    },
-                    {
-                      num: 8,
-                      title: "Internet Governance",
-                      desc: "Enhancing India's role in global Internet Governance",
-                    },
-                    {
-                      num: 9,
-                      title: "Human Resource Development",
-                      desc: "Development of skilled human resources in ICT",
-                    },
-                  ].map((item) => (
-                    <div key={item.num} className="bg-[#e6edff] p-4 rounded-md">
-                      <div className="text-2xl font-bold text-[#123a6b] mb-1">{item.num}</div>
-                      <div className="font-semibold text-[#123a6b] mb-1">{item.title}</div>
-                      <p className="text-sm text-gray-700">{item.desc}</p>
-                    </div>
-                  ))}
-                </div> */}
+                <h2 className="text-[#123a6b] mb-2 font-24-700 text-justify">{t('Origin')}</h2>
+                {loading ? <SkeletonText lines={4} /> : renderContent(getContentByKey('origin'))}
               </div>
-
 
               <div>
-                <h2 className=" text-[#123a6b] mb-2 font-24-700 text-justify">{t('development')}</h2>
-                {loading ? (
-                  <SkeletonText lines={3} />
-                ) : (
-                  <div>
-                    {renderContent(getContentByKey('development'))}
-                  </div>
-                )}
+                <h2 className="text-[#123a6b] mb-2 font-24-700 text-justify">{t('development')}</h2>
+                {loading ? <SkeletonText lines={3} /> : renderContent(getContentByKey('development'))}
               </div>
 
 
-
-              <div className="mt-10">
-                <h2 className=" text-[#123a6b] mb-2 font-24-700 text-justify"> {t('june_1970_departments')}</h2>
-                {loading ? (
-                  <SkeletonText lines={3} />
-                ) : (
-                  <div>
-                    {renderContent(getContentByKey('development_history'))}
-                  </div>
-                )}
-              </div>
-
-              <div className="mt-10">
-                <h2 className=" text-[#123a6b] mb-2 font-24-700 text-justify">{t('dpg')}</h2>
-                {loading ? (
-                  <SkeletonText lines={3} />
-                ) : (
-                  <div>
-                    {renderContent(getContentByKey('dpg'))}
-                  </div>
-                )}
-              </div>
-              <div className="mt-10">
-                <h2 className=" text-[#123a6b] mb-2 font-24-700 text-justify">{t('nacwc')}</h2>
-                {loading ? (
-                  <SkeletonText lines={3} />
-                ) : (
-                  <div>
-                    {renderContent(getContentByKey('nacwc'))}
-                  </div>
-                )}
-              </div>
-              <div className="mt-10">
-                <h2 className=" text-[#123a6b] mb-2 font-24-700 text-justify">{t('dbt_mission')}</h2>
-                {loading ? (
-                  <SkeletonText lines={3} />
-                ) : (
-                  <div>
-                    {renderContent(getContentByKey('dbt_mission'))}
-                  </div>
-                )}
-              </div>
-              <div className="mt-10">
-                <h2 className=" text-[#123a6b] mb-2 font-24-700 text-justify">{t('psa_office')}</h2>
-                {loading ? (
-                  <SkeletonText lines={3} />
-                ) : (
-                  <div>
-                    {renderContent(getContentByKey('psa_office'))}
-                  </div>
-                )}
-              </div>
 
               {/* Download Sections */}
               {getSectionByKey('cabinet_secretaries') && (
                 <div>
-                  <h2 className=" text-[#123a6b] mb-2 font-24-700 text-justify">{getSectionByKey('cabinet_secretaries').title}</h2>
+                  <h2 className="text-[#123a6b] mb-2 font-24-700 text-justify">{getSectionByKey('cabinet_secretaries').title}</h2>
                   <div className="flex justify-between items-center bg-gray-100 p-4 rounded-md">
                     <p className="mb-2 md:mb-0 flex items-center gap-2 text-gray-900 font-medium">
                       <span className="material-symbols-outlined text-[#0f3c82]">draft</span>
@@ -302,85 +143,64 @@ export default function AboutUs() {
                 </div>
               )}
 
-
               {getSectionByKey('work_distribution') && (
-                <div className="   ">
-                  <div>
-                    <h2 className=" text-[#123a6b] mb-2 font-24-700 text-justify">{getSectionByKey('work_distribution').title}</h2>
-                    <div className="flex justify-between items-center bg-gray-100 p-4 rounded-md">
-                      <div className="flex items-center gap-2">
-                        <p className="mb-2 md:mb-0 flex items-center gap-2 text-gray-900 font-medium">
-                          <span className="material-symbols-outlined text-[#0f3c82]">draft</span>
-                          {getSectionByKey('work_distribution').title}
-                        </p>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <Pdf />
-                        <span className="text-xs text-gray-600">{getSectionByKey('work_distribution').file_size || '0 KB'}</span>
-                        <a
-                          href={getSectionByKey('work_distribution').file_url || '#'}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="bg-blue-100 text-blue-600 px-3 pt-1 rounded hover:bg-blue-200 inline-flex items-center"
-                          style={{ textDecoration: 'none' }}
-                        >
-                          <span aria-hidden="true" className="material-symbols-outlined bhashini-skip-translation" style={{ fontSize: '17px', cursor: 'pointer' }}>visibility</span>
-                        </a>
-                      </div>
+                <div>
+                  <h2 className="text-[#123a6b] mb-2 font-24-700 text-justify">{getSectionByKey('work_distribution').title}</h2>
+                  <div className="flex justify-between items-center bg-gray-100 p-4 rounded-md">
+                    <div className="flex items-center gap-2">
+                      <p className="mb-2 md:mb-0 flex items-center gap-2 text-gray-900 font-medium">
+                        <span className="material-symbols-outlined text-[#0f3c82]">draft</span>
+                        {getSectionByKey('work_distribution').title}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <Pdf />
+                      <span className="text-xs text-gray-600">{getSectionByKey('work_distribution').file_size || '0 KB'}</span>
+                      <a
+                        href={getSectionByKey('work_distribution').file_url || '#'}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="bg-blue-100 text-blue-600 px-3 pt-1 rounded hover:bg-blue-200 inline-flex items-center"
+                        style={{ textDecoration: 'none' }}
+                      >
+                        <span aria-hidden="true" className="material-symbols-outlined bhashini-skip-translation" style={{ fontSize: '17px', cursor: 'pointer' }}>visibility</span>
+                      </a>
                     </div>
                   </div>
                 </div>
               )}
+
               {getSectionByKey('organization_chart') && (
-                <div className="   ">
-                  <div>
-                    <h2 className=" text-[#123a6b] mb-2 font-24-700 text-justify">{getSectionByKey('organization_chart').title}</h2>
-                    <div className="flex justify-between items-center bg-gray-100 p-4 rounded-md">
-                      <div className="flex items-center gap-2">
-                        <p className="mb-2 md:mb-0 flex items-center gap-2 text-gray-900 font-medium">
-                          <span className="material-symbols-outlined text-[#0f3c82]">draft</span>
-                          {getSectionByKey('organization_chart').title}
-                        </p>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <Pdf />
-                        <span className="text-xs text-gray-600">{getSectionByKey('organization_chart').file_size || '0 KB'}</span>
-                        <a
-                          href={getSectionByKey('organization_chart').file_url || '#'}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="bg-blue-100 text-blue-600 px-3 pt-1 rounded hover:bg-blue-200 inline-flex items-center"
-                          style={{ textDecoration: 'none' }}
-                        >
-                          <span aria-hidden="true" className="material-symbols-outlined bhashini-skip-translation" style={{ fontSize: '17px', cursor: 'pointer' }}>visibility</span>
-                        </a>
-                      </div>
+                <div>
+                  <h2 className="text-[#123a6b] mb-2 font-24-700 text-justify">{getSectionByKey('organization_chart').title}</h2>
+                  <div className="flex justify-between items-center bg-gray-100 p-4 rounded-md">
+                    <div className="flex items-center gap-2">
+                      <p className="mb-2 md:mb-0 flex items-center gap-2 text-gray-900 font-medium">
+                        <span className="material-symbols-outlined text-[#0f3c82]">draft</span>
+                        {getSectionByKey('organization_chart').title}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <Pdf />
+                      <span className="text-xs text-gray-600">{getSectionByKey('organization_chart').file_size || '0 KB'}</span>
+                      <a
+                        href={getSectionByKey('organization_chart').file_url || '#'}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="bg-blue-100 text-blue-600 px-3 pt-1 rounded hover:bg-blue-200 inline-flex items-center"
+                        style={{ textDecoration: 'none' }}
+                      >
+                        <span aria-hidden="true" className="material-symbols-outlined bhashini-skip-translation" style={{ fontSize: '17px', cursor: 'pointer' }}>visibility</span>
+                      </a>
                     </div>
                   </div>
                 </div>
               )}
-
-
-
-
-
-
-
-
             </div>
           </div>
         </section>
-
-
-
-
-
-
-
-
-
         <Footer />
-      </main >
+      </main>
     </>
   );
 }
