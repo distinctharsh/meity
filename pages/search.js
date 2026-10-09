@@ -157,7 +157,7 @@ export default function SearchPage() {
                           </span>
                         )}
 
-                      {item.is_active === 2 ? (
+                      {/* {item.is_active === 2 ? (
                         <span className="ml-2 px-2 py-1 text-[11px] font-semibold bg-red-100 text-red-700 rounded-md">
                           ARCHIVED
                         </span>
@@ -165,7 +165,7 @@ export default function SearchPage() {
                         <span className="ml-2 px-2 py-1 text-[11px] font-semibold bg-green-100 text-green-700 rounded-md">
                           ACTIVE
                         </span>
-                      ) : null}
+                      ) : null} */}
                     </div>
                   </div>
                 </div>

@@ -48,7 +48,6 @@ export default function PhotoGalleryDetail() {
       document.body.style.overflow = "";
     };
   }, [selectedImage]);
-  
 
   const openImage = (image, index) => {
     setSelectedIndex(index);
@@ -139,6 +138,17 @@ export default function PhotoGalleryDetail() {
 
   return (
     <>
+      {/* Hide Scrollbar Style */}
+      <style>{`
+        .no-scrollbar::-webkit-scrollbar {
+          display: none;
+        }
+        .no-scrollbar {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+      `}</style>
+
       <main id="main">
         <PageHeader pagePath="/media/photos" />
         <SubNavTabs />
@@ -227,10 +237,10 @@ export default function PhotoGalleryDetail() {
         <Footer />
       </main>
 
-      {/* Image Lightbox Modal */}
+      {/* Responsive Image Lightbox Modal */}
       {selectedImage && (
         <div
-          className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 p-3 sm:p-6"
+          className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/70 p-3 sm:p-4 overflow-hidden"
           onClick={closeImage}
           role="dialog"
           aria-modal="true"
@@ -238,41 +248,43 @@ export default function PhotoGalleryDetail() {
         >
           {/* Modal Container */}
           <div
-            className="relative w-full max-w-[740px] overflow-hidden rounded-md shadow-2xl"
+            className="relative flex flex-col w-full max-w-[720px] max-h-[85vh] overflow-hidden rounded-md shadow-2xl bg-black"
             onClick={(event) => event.stopPropagation()}
           >
-            {/* Main Image Area */}
-            <div className="relative flex h-[45vh] min-h-[240px] max-h-[500px] items-center justify-center bg-black sm:h-[55vh]">
-              <img
-                src={selectedImage}
-                alt={`${gallery.title} - Photo ${selectedIndex + 1}`}
-                className="h-full w-full object-contain"
-              />
+            {/* Main Image Area with Hidden Scrollbar */}
+            <div className="relative flex-1 bg-black overflow-y-auto no-scrollbar min-h-[200px]">
+              <div className="flex min-h-full items-center justify-center p-2">
+                <img
+                  src={selectedImage}
+                  alt={`${gallery.title} - Photo ${selectedIndex + 1}`}
+                  className="max-w-full w-auto h-auto object-contain mx-auto block"
+                />
+              </div>
 
               {/* Close Button */}
               <button
                 type="button"
                 onClick={closeImage}
                 aria-label="Close image viewer"
-                className="absolute right-2 top-2 z-20 flex h-10 w-10 cursor-pointer items-center justify-center rounded bg-black/80 text-3xl leading-none text-white transition hover:bg-black"
+                className="sticky top-2 left-full -ml-11 z-20 flex h-9 w-9 cursor-pointer items-center justify-center rounded bg-black/80 text-2xl leading-none text-white transition hover:bg-black"
               >
                 {"×"}
               </button>
             </div>
 
-            {/* Blue Caption Bar */}
-            <div className="flex min-h-[68px] items-center justify-between gap-2 border-t border-white/40 bg-[#1e3a78] px-2 py-3 text-white sm:px-4">
+            {/* Bottom Caption Bar */}
+            <div className="flex h-[56px] shrink-0 items-center justify-between gap-2 border-t border-white/20 bg-[#1e3a78] px-3 text-white">
 
               {/* Previous Button */}
               <button
                 type="button"
                 onClick={() => changeImage(-1)}
                 aria-label="Previous image"
-                className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-full text-white/80 transition hover:bg-white/10 hover:text-white"
+                className="flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-full text-white/80 transition hover:bg-white/10 hover:text-white"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="h-6 w-6"
+                  className="h-5 w-5"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -288,7 +300,7 @@ export default function PhotoGalleryDetail() {
 
               {/* Gallery Title */}
               <div className="min-w-0 flex-1 text-center">
-                <p className="text-sm font-medium leading-6 sm:text-lg">
+                <p className="text-sm font-medium leading-tight truncate sm:text-base">
                   {gallery.title}
                 </p>
               </div>
@@ -298,11 +310,11 @@ export default function PhotoGalleryDetail() {
                 type="button"
                 onClick={() => changeImage(1)}
                 aria-label="Next image"
-                className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-full text-white/80 transition hover:bg-white/10 hover:text-white"
+                className="flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-full text-white/80 transition hover:bg-white/10 hover:text-white"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="h-6 w-6"
+                  className="h-5 w-5"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
