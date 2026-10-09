@@ -1,5 +1,5 @@
 "use client";
-import { FaUsers, FaThLarge, FaChartBar } from "react-icons/fa";
+import { FaUsers, FaThLarge } from "react-icons/fa";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { t } from '@/lib/translations';
@@ -67,11 +67,12 @@ export default function AboutSection() {
     // Get items after About Us (skip About Us itself)
     const itemsAfterAbout = cabinetSecretariat.children.slice(aboutUsIndex + 1);
 
-    // Return top 3 items
+    // Return top 3 items (Pehle 2 me Icon, 3rd me Image)
     return itemsAfterAbout.slice(0, 3).map((item, index) => ({
       title: item.text,
       href: item.href,
-      icon: index === 0 ? <FaUsers /> : index === 1 ? <FaThLarge /> : <FaChartBar />,
+      icon: index === 0 ? <FaUsers /> : index === 1 ? <FaThLarge /> : null,
+      imageSrc: index === 2 ? "/images/council_ministry.svg" : null,
       section_key: `nav_card_${index}`
     }));
   };
@@ -92,7 +93,7 @@ export default function AboutSection() {
     },
     {
       title: t("our_performance"),
-      icon: <FaChartBar />,
+      imageSrc: "/images/council_ministry.svg",
       section_key: "our_performance"
     }
   ];
@@ -140,13 +141,23 @@ export default function AboutSection() {
                   className="group flex-1 border border-[#1e3a8a] rounded-md py-6 px-4 text-center cursor-pointer 
                 transition-all duration-300 hover:bg-[#1e3a8a] hover:shadow-lg no-underline"
                 >
-                  {/* Icon */}
+                  {/* Icon / Image Container */}
                   <div className="flex justify-center mb-3 text-[#1e3a8a] text-2xl transition-all duration-300 group-hover:text-white">
-                    {card.icon}
+                    {card.imageSrc ? (
+                      <Image
+                        src={card.imageSrc}
+                        alt={title}
+                        width={30}
+                        height={30}
+                        className="w-7 h-7 object-contain transition-all duration-300 group-hover:brightness-0 group-hover:invert"
+                      />
+                    ) : (
+                      card.icon
+                    )}
                   </div>
 
                   {/* Title */}
-                  <span className=" font-semibold text-gray-800 transition-all duration-300 group-hover:text-white about-cards font-20-600">
+                  <span className="font-semibold text-gray-800 transition-all duration-300 group-hover:text-white about-cards font-20-600">
                     {title}
                   </span>
                 </a>

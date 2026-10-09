@@ -17,7 +17,7 @@ export default function Header() {
 
   const dropdownRef = useRef(null);
 
-    const languages =
+  const languages =
     process.env.NEXT_PUBLIC_LANGUAGE === "1"
       ? [{ name: "हिन्दी", url: "http://localhost:81" }]
       : [{ name: "English", url: "http://localhost:8081" }];
@@ -44,7 +44,7 @@ export default function Header() {
     setLangOpen(false);
 
     if (langObj.url) {
-      window.location.href = langObj.url;
+      window.open(langObj.url, "_blank", "noopener,noreferrer");
     }
   };
 
