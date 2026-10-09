@@ -137,7 +137,7 @@ export default function AboutUs() {
                       rel="noopener noreferrer"
                       style={{ background: '#a3bbf3', color: '#162f6a', padding: '4px 8px', cursor: 'pointer', textDecoration: 'none' }}
                     >
-                      <span aria-hidden="true" className="material-symbols-outlined bhashini-skip-translation" style={{ fontSize: '15px' }}>arrow_right_alt</span>
+                      <span aria-hidden="true" className="material-symbols-outlined  " style={{ fontSize: '15px' }}>arrow_right_alt</span>
                     </a>
                   </div>
                 </div>
@@ -163,7 +163,7 @@ export default function AboutUs() {
                         className="bg-blue-100 text-blue-600 px-3 pt-1 rounded hover:bg-blue-200 inline-flex items-center"
                         style={{ textDecoration: 'none' }}
                       >
-                        <span aria-hidden="true" className="material-symbols-outlined bhashini-skip-translation" style={{ fontSize: '17px', cursor: 'pointer' }}>visibility</span>
+                        <span aria-hidden="true" className="material-symbols-outlined  " style={{ fontSize: '17px', cursor: 'pointer' }}>visibility</span>
                       </a>
                     </div>
                   </div>
@@ -190,7 +190,7 @@ export default function AboutUs() {
                         className="bg-blue-100 text-blue-600 px-3 pt-1 rounded hover:bg-blue-200 inline-flex items-center"
                         style={{ textDecoration: 'none' }}
                       >
-                        <span aria-hidden="true" className="material-symbols-outlined bhashini-skip-translation" style={{ fontSize: '17px', cursor: 'pointer' }}>visibility</span>
+                        <span aria-hidden="true" className="material-symbols-outlined  " style={{ fontSize: '17px', cursor: 'pointer' }}>visibility</span>
                       </a>
                     </div>
                   </div>

@@ -168,15 +168,6 @@ export default function Header() {
                     alt={t("skip_to_main_content_label")}
                   />
                 </a>
-                {/* <div className="border-x border-[#162f6a] p-[2px] flex items-center">
-                  <div className="bhashini-plugin-container">
-                    <img
-                      src="/images/icons/bhashini.svg"
-                      alt="Bhashini"
-                    />
-                  </div>
-                </div> */}
-
                 <div
                   className="relative border-x border-[#162f6a] px-[6px] flex items-center"
                   ref={dropdownRef}

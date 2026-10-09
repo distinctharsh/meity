@@ -45,22 +45,22 @@ const Footer = () => {
             <div>
               <h4 className="font-20-600 mb-3">{t('useful_links')}</h4>
               <ul className="space-y-2 text-base">
-                <li><a href="#" className="font-20-400"><span aria-hidden="true" className="material-symbols-outlined bhashini-skip-translation mr-2">chevron_right</span>{t('archives')}</a></li>
-                <li><a href="/sitemap" className="font-20-400"><span aria-hidden="true" className="material-symbols-outlined bhashini-skip-translation mr-2">chevron_right</span>{t('sitemap')}</a></li>
+                <li><a href="#" className="font-20-400"><span aria-hidden="true" className="material-symbols-outlined mr-2">chevron_right</span>{t('archives')}</a></li>
+                <li><a href="/sitemap" className="font-20-400"><span aria-hidden="true" className="material-symbols-outlined mr-2">chevron_right</span>{t('sitemap')}</a></li>
               </ul>
             </div>
             <div>
               <h4 className="font-20-600 mb-3">{t('website_policies')}</h4>
               <ul className="space-y-2 text-base">
-                <li><a href="#" className="font-20-400"><span aria-hidden="true" className="material-symbols-outlined bhashini-skip-translation mr-2">chevron_right</span>{t('website_policies')}</a></li>
-                <li><a href="#" className="font-20-400"><span aria-hidden="true" className="material-symbols-outlined bhashini-skip-translation mr-2">chevron_right</span>{t('help')}</a></li>
+                <li><a href="#" className="font-20-400"><span aria-hidden="true" className="material-symbols-outlined mr-2">chevron_right</span>{t('website_policies')}</a></li>
+                <li><a href="#" className="font-20-400"><span aria-hidden="true" className="material-symbols-outlined mr-2">chevron_right</span>{t('help')}</a></li>
               </ul>
             </div>
             <div>
               <h4 className="font-20-600 mb-3">{t('related_links')}</h4>
               <ul className="space-y-2 text-base">
-                <li><a href="#" className="font-20-400"><span aria-hidden="true" className="material-symbols-outlined bhashini-skip-translation mr-2">chevron_right</span>{t('related_links')}</a></li>
-                <li><a href="#" className="font-20-400"><span aria-hidden="true" className="material-symbols-outlined bhashini-skip-translation mr-2">chevron_right</span>{t('contact_us')}</a></li>
+                <li><a href="#" className="font-20-400"><span aria-hidden="true" className="material-symbols-outlined mr-2">chevron_right</span>{t('related_links')}</a></li>
+                <li><a href="#" className="font-20-400"><span aria-hidden="true" className="material-symbols-outlined mr-2">chevron_right</span>{t('contact_us')}</a></li>
               </ul>
             </div>
 
@@ -160,13 +160,13 @@ const Footer = () => {
               <ul className="space-y-2 text-base">
                 <li>
                   <a href={s1Links[0]?.url || "#"} className="font-20-400">
-                    <span aria-hidden="true" className="material-symbols-outlined bhashini-skip-translation mr-2">chevron_right</span>
+                    <span aria-hidden="true" className="material-symbols-outlined mr-2">chevron_right</span>
                     {s1Links[0]?.label || "Archives"}
                   </a>
                 </li>
                 <li>
                   <a href="/sitemap" className="font-20-400">
-                    <span aria-hidden="true" className="material-symbols-outlined bhashini-skip-translation mr-2">chevron_right</span>
+                    <span aria-hidden="true" className="material-symbols-outlined mr-2">chevron_right</span>
                     {s1Links[1]?.label || "Sitemap"}
                   </a>
                 </li>
@@ -177,13 +177,13 @@ const Footer = () => {
               <ul className="space-y-2 text-base mt-[34px]">
                 <li>
                   <a href={s2Links[0]?.url || "#"} className="font-20-400">
-                    <span aria-hidden="true" className="material-symbols-outlined bhashini-skip-translation mr-2">chevron_right</span>
+                    <span aria-hidden="true" className="material-symbols-outlined mr-2">chevron_right</span>
                     {s2Links[0]?.label || "Website Policies"}
                   </a>
                 </li>
                 <li>
                   <a href={s2Links[1]?.url || "#"} className="font-20-400">
-                    <span aria-hidden="true" className="material-symbols-outlined bhashini-skip-translation mr-2">chevron_right</span>
+                    <span aria-hidden="true" className="material-symbols-outlined mr-2">chevron_right</span>
                     {s2Links[1]?.label || "Help"}
                   </a>
                 </li>
@@ -194,13 +194,13 @@ const Footer = () => {
               <ul className="space-y-2 text-base mt-[34px]">
                 <li>
                   <a href={s3Links[0]?.url || "#"} className="font-20-400">
-                    <span aria-hidden="true" className="material-symbols-outlined bhashini-skip-translation mr-2">chevron_right</span>
+                    <span aria-hidden="true" className="material-symbols-outlined mr-2">chevron_right</span>
                     {s3Links[0]?.label || "Related Links"}
                   </a>
                 </li>
                 <li>
                   <a href={s3Links[1]?.url || "#"} className="font-20-400">
-                    <span aria-hidden="true" className="material-symbols-outlined bhashini-skip-translation mr-2">chevron_right</span>
+                    <span aria-hidden="true" className="material-symbols-outlined mr-2">chevron_right</span>
                     {s3Links[1]?.label || "Contact Us"}
                   </a>
                 </li>

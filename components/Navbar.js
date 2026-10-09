@@ -222,8 +222,8 @@ export default function NewNavbar() {
                       }}
                     >
                       <span className="flex items-center">
-                        {/* <span className="leading-none relative inline-block whitespace-nowrap text-2xl"> */}
-                        <span className="leading-none relative inline-block">
+                        <span className="leading-none relative inline-block whitespace-nowrap text-2xl">
+                        {/* <span className="leading-none relative inline-block"> */}
                           {item.text}
 
                           {itemActive && (

@@ -37,7 +37,7 @@ export default function GoToTop() {
           title="Go to top"
           aria-label="Go to top"
         >
-          <span aria-hidden="true" className="material-symbols-outlined bhashini-skip-translation text-2xl group-hover:scale-110 transition-transform duration-200">
+          <span aria-hidden="true" className="material-symbols-outlined text-2xl group-hover:scale-110 transition-transform duration-200">
             arrow_upward
           </span>
         </button>
