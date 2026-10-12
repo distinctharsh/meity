@@ -18,10 +18,12 @@ const personas = [
   {
     img: "/images/user-personas/media.jpg",
     label: t("for_media"),
+    url: "/persona/media",
   },
   {
     img: "/images/user-personas/researcher.jpg",
     label: t("for_researcher"),
+    url: "/persona/researcher",
   },
 ];
 
@@ -53,6 +55,13 @@ const RecentDocs = () => {
   const prevPersona = () => {
     const prevIndex = (currentPersonaIndex - 1 + personas.length) % personas.length;
     changePersona(prevIndex);
+  };
+
+  const handlePersonaClick = () => {
+    const targetUrl = personas[currentPersonaIndex]?.url;
+    if (targetUrl) {
+      window.open(targetUrl, '_blank', 'noopener,noreferrer');
+    }
   };
 
   useEffect(() => {
@@ -286,14 +295,13 @@ const RecentDocs = () => {
               </div>
             </div>
 
-            {/* Explore User Personas (Slider with SVG Icon & Transition) */}
+            {/* Explore User Personas (Slider with New Tab Open on Click) */}
             <div className="flex flex-col items-start w-full md:flex-[1] min-w-0">
               <div className="flex items-center mb-4">
                 <img
                   src="/images/user-personas/user.svg"
                   alt="User Personas"
                   className="w-10 h-10 mr-2"
-                  
                 />
                 <h3 className="main-heading">Explore User Personas</h3>
               </div>
@@ -301,8 +309,9 @@ const RecentDocs = () => {
               {/* Slider Container */}
               <div className="flex flex-col items-center justify-between bg-white rounded-[6px] p-6 w-full">
                 
-                {/* Active Persona Item with Smooth Transition */}
+                {/* Active Persona Item with New Tab Redirect */}
                 <div 
+                  onClick={handlePersonaClick}
                   className={`flex flex-col items-center justify-center cursor-pointer transition-all duration-300 transform w-full pt-2 ${
                     isAnimating ? "opacity-0 scale-95 translate-y-2" : "opacity-100 scale-100 translate-y-0"
                   }`}
@@ -331,7 +340,10 @@ const RecentDocs = () => {
                 {/* Bottom Navigation Controls */}
                 <div className="flex items-center justify-between w-full pt-6 mt-2">
                   <button
-                    onClick={prevPersona}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      prevPersona();
+                    }}
                     className="text-[#0a2e60] hover:text-[#0b3a82] p-1 transition-colors"
                     aria-label="Previous Persona"
                   >
@@ -342,7 +354,10 @@ const RecentDocs = () => {
                     {personas.map((_, index) => (
                       <button
                         key={index}
-                        onClick={() => changePersona(index)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          changePersona(index);
+                        }}
                         className={`h-2 rounded-full transition-all ${
                           currentPersonaIndex === index
                             ? "w-4 bg-[#0a2e60]"
@@ -354,7 +369,10 @@ const RecentDocs = () => {
                   </div>
 
                   <button
-                    onClick={nextPersona}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      nextPersona();
+                    }}
                     className="text-[#0a2e60] hover:text-[#0b3a82] p-1 transition-colors"
                     aria-label="Next Persona"
                   >
@@ -371,6 +389,7 @@ const RecentDocs = () => {
                 <img
                   src="/images/icons/important-link.svg"
                   alt="Important Link"
+                  className="w-10 h-10 mr-2"
                   style={{
                     filter:
                       "invert(9%) sepia(33%) saturate(1659%) hue-rotate(191deg) brightness(92%) contrast(97%)",

@@ -175,6 +175,8 @@ export default function NewNavbar() {
             <ul className="flex flex-row md:items-center h-full m-0 p-0">
               {(loading ? [] : navItems).map((item, index) => {
                 const itemActive = (isActive(item.href) || (item.items && item.items.some((si) => isActive(si.href))));
+                const showUnderline = router.pathname !== '/' && itemActive;
+
                 return (
                   <li
                     key={index}
@@ -223,10 +225,9 @@ export default function NewNavbar() {
                     >
                       <span className="flex items-center">
                         <span className="leading-none relative inline-block whitespace-nowrap text-2xl">
-                        {/* <span className="leading-none relative inline-block"> */}
                           {item.text}
 
-                          {itemActive && (
+                          {showUnderline && (
                             <span className="absolute left-0 -bottom-[14px] w-full h-[7px] bg-[#162f6a]" />
                           )}
                         </span>
@@ -318,6 +319,8 @@ export default function NewNavbar() {
             <ul className="m-0 p-2">
               {(loading ? [] : navItems).map((item, index) => {
                 const itemActive = isActive(item.href) || (item.items && item.items.some((si) => isActive(si.href)));
+                const showUnderline = router.pathname !== '/' && itemActive;
+
                 return (
                   <li key={index}>
                     <Link
@@ -344,7 +347,7 @@ export default function NewNavbar() {
                     >
                       <span className="flex items-center justify-between w-full">
                         <span className="relative">{item.text}
-                          {itemActive && (
+                          {showUnderline && (
                             <span
                               className="absolute bottom-0 left-0 right-0 h-2 bg-[rgb(22,47,106)]"
                               style={{ transform: 'translateY(4px)' }}
