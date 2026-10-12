@@ -5,15 +5,24 @@ import WhatsNew from "../components/icons/whats-new";
 import { showConfirmationPopup } from './common/ConfirmationPopup';
 import { t } from '@/lib/translations';
 
-// Toggle flag: true rakhne par dummy 4 key documents dikhenge, false rakhne par dynamic vacancies/tenders aayenge
 const USE_DUMMY_DATA = true;
 
-const dummyKeyDocuments = [
+const dummyKeyDocumentsEn = [
   { title: "AOB (Allocation of Business Rules)", url: "#" },
   { title: "TOB (Transaction of Business Rules)", url: "#" },
-  { title: "Guidelines on Cabinet Notes and Procedures", url: "#" },
-  { title: "Secretariat Instructions and Office Manual", url: "#" }
+  { title: "Handbook on Cabinet Notes", url: "#" },
+  { title: "Monitoring of inter-ministerial consultation process through the IMC module of e-SamikSha portal for implementing timelines for finalization of Cabinet/CCEA Notes- reg.", url: "#" }
 ];
+
+const dummyKeyDocumentsHi = [
+  { title: "कार्य आवंटन नियम (AOB)", url: "#" },
+  { title: "व्यवहार और लेनदेन के नियम (TOB)", url: "#" },
+  { title: "मंत्रिमंडल नोट और प्रक्रियाओं पर दिशा-निर्देश", url: "#" },
+  { title: "सचिवालय निर्देश और कार्यालय नियमावली", url: "#" }
+];
+
+const currentLang = process.env.NEXT_PUBLIC_LANGUAGE;
+const dummyKeyDocuments = currentLang === '2' ? dummyKeyDocumentsHi : dummyKeyDocumentsEn;
 
 export default function Offerings() {
   const [activeTab, setActiveTab] = useState("vacancies");
@@ -101,7 +110,7 @@ export default function Offerings() {
                 <Offering />
               </div>
               <h3 className="main-heading">
-                {USE_DUMMY_DATA ? "Our Key Documents" : t('our_offerings')}
+                {USE_DUMMY_DATA ? t('our_key_offerings') : t('our_offerings')}
               </h3>
             </div>
 
@@ -117,7 +126,7 @@ export default function Offerings() {
               </div>
             )}
 
-            <div className={`bg-white ${USE_DUMMY_DATA ? 'rounded-[6px] border border-[#162f6a]' : 'rounded-b-[6px] border-t-0'} p-0 shadow-[0_1px_0_rgba(0,0,0,0.04)] h-[230px] overflow-y-auto [scrollbar-width:thin] [scrollbar-color:#123a6b_#f1f1f1]`}>
+            <div className={`bg-white ${USE_DUMMY_DATA ? 'rounded-[6px] border border-[#162f6a]' : 'rounded-b-[6px] border-t-0'} p-0 shadow-[0_1px_0_rgba(0,0,0,0.04)] h-[260px] overflow-y-auto [scrollbar-width:thin] [scrollbar-color:#123a6b_#f1f1f1]`}>
               <ul className="list-none m-0 py-2">
                 {displayList.map((item, index) => {
                   const isObj = item && typeof item === 'object';
@@ -163,7 +172,7 @@ export default function Offerings() {
               <h3 className="main-heading">{t('whats_new')}</h3>
             </div>
 
-            <div className="bg-[#162f6a] text-white rounded-[6px] p-0 shadow-[0_1px_0_rgba(0,0,0,0.04)] h-[230px] overflow-y-auto [scrollbar-width:thin] [scrollbar-color:#e6ecff_#162f6a]">
+            <div className="bg-[#162f6a] text-white rounded-[6px] p-0 shadow-[0_1px_0_rgba(0,0,0,0.04)] h-[260px] overflow-y-auto [scrollbar-width:thin] [scrollbar-color:#e6ecff_#162f6a]">
               {whatsNewLoading ? (
                 <div className="flex justify-center items-center h-32">
                   <div className="animate-pulse flex flex-col space-y-2 w-full px-6">

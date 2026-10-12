@@ -76,27 +76,27 @@ const PromoSection = () => {
 
                 {/* Carousel Section */}
                 <div className="relative w-full bg-white rounded-lg overflow-hidden md:h-full md:flex-1 aspect-[16/9] md:aspect-auto">
-                    <button
+                    {/* <button
                         onClick={handlePrev}
                         className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-gray-200 rounded-full p-2 hover:bg-gray-300 z-10"
                     >
                         <span className="material-symbols-outlined">chevron_left</span>
-                    </button>
-                    <button
+                    </button> */}
+                    {/* <button
                         onClick={handleNext}
                         className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-gray-200 rounded-full p-2 hover:bg-gray-300 z-10"
                     >
                         <span className="material-symbols-outlined">chevron_right</span>
-                    </button>
+                    </button> */}
 
-                    <button
+                    {/* <button
                         onClick={togglePlayPause}
                         className="absolute bottom-4 right-4 bg-gray-200 rounded-full p-2 hover:bg-gray-300 z-10"
                     >
                         <span className="material-symbols-outlined">
                             {isPlaying ? "pause" : "play_arrow"}
                         </span>
-                    </button>
+                    </button> */}
 
                     <div className="w-full h-full relative">
                         {banners.map((banner) => (

@@ -16,20 +16,12 @@ const fallbackRecent = [
 
 const personas = [
   {
-    img: "/images/user-personas/it-professional.jpg",
-    label: t("for_it_professional"),
-  },
-  {
-    img: "/images/user-personas/researcher.jpg",
-    label: t("for_researcher"),
-  },
-  {
     img: "/images/user-personas/media.jpg",
     label: t("for_media"),
   },
   {
-    img: "/images/user-personas/business-owner.jpg",
-    label: t("for_business_owner"),
+    img: "/images/user-personas/researcher.jpg",
+    label: t("for_researcher"),
   },
 ];
 
