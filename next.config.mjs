@@ -8,6 +8,9 @@ const nextConfig = {
     // Avoid hostname configuration issues in dev/varied environments
     unoptimized: true,
   },
+  // Dev indicators ko disable karne ke liye ye add karein
+  devIndicators: false,
+
   // Disable caching for API routes to ensure real-time updates
   async headers() {
     return [
