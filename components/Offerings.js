@@ -219,10 +219,10 @@ export default function Offerings() {
             </div>
 
             <div className="p-3 px-0 flex justify-end rounded-b-[6px] max-w-full mt-auto">
-              <button className="view-btn">
+              {/* <button className="view-btn">
                 {t('view_more')}
                 <FiChevronRight />
-              </button>
+              </button> */}
             </div>
           </aside>
 
