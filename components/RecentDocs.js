@@ -303,7 +303,7 @@ const RecentDocs = () => {
                   alt="User Personas"
                   className="w-10 h-10 mr-2"
                 />
-                <h3 className="main-heading">Explore User Personas</h3>
+                <h3 className="main-heading">{t("explore_user_personas")}</h3>
               </div>
 
               {/* Slider Container */}

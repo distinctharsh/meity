@@ -102,7 +102,13 @@ export default function Photos() {
                   <span className="flex items-center px-2  border-gray-300 ">
                     <span aria-hidden="true" className="material-symbols-outlined" style={{ color: '#5279d7' }}>search</span>
                   </span>
-                  <input type="search" placeholder="Search..." className="flex-1 px-3 py-2 outline-none" value={query} onChange={(e) => setQuery(e.target.value)} />
+                  <input 
+                    type="search" 
+                    placeholder={t("search")} 
+                    className="flex-1 px-3 py-2 outline-none" 
+                    value={query} 
+                    onChange={(e) => setQuery(e.target.value)} 
+                  />
                   <span className="flex items-center px-2 border-l border-gray-300 text-gray-600 lg:hidden">
                     <span aria-hidden="true" className="material-symbols-outlined">filter_alt</span>
                   </span>

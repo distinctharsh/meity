@@ -13,16 +13,8 @@ export default function AboutSection() {
     let mounted = true;
     (async () => {
       try {
-        // Fetch both about content and navigation
-        const [aboutRes, navRes] = await Promise.all([
-          fetch('/api/admin/about'),
-          fetch('/api/navigation')
-        ]);
-
-        if (aboutRes.ok) {
-          const aboutData = await aboutRes.json();
-          if (mounted) setAboutContent(Array.isArray(aboutData) ? aboutData : []);
-        }
+        // Fetch navigation
+        const navRes = await fetch('/api/navigation');
 
         if (navRes.ok) {
           const navData = await navRes.json();
@@ -37,15 +29,19 @@ export default function AboutSection() {
     return () => { mounted = false; };
   }, []);
 
-  const getContentByKey = (key) => {
-    const item = aboutContent.find(c => c.section_key === key);
-    return item ? item.content : '';
-  };
+  // const getContentByKey = (key) => {
+  //   const item = aboutContent.find(c => c.section_key === key);
+  //   return item ? item.content : '';
+  // };
 
-  // Default content fallback
-  const defaultAboutText = "The Cabinet Secretariat functions directly under the Prime Minister. The administrative head of the Secretariat is the Cabinet Secretary who is also the ex-officio Chairman of the Civil Services Board. The business allocated to Cabinet Secretariat under the Government of India (Allocation of Business) Rules, 1961 includes (i) Secretarial assistance to the Cabinet and Cabinet Committees; and (ii) Rules of Business.";
+  // Manual text based on NEXT_PUBLIC_LANGUAGE (1 for English, 2 for Hindi)
+  const lang = process.env.NEXT_PUBLIC_LANGUAGE;
 
-  const aboutText = getContentByKey('vision') || defaultAboutText;
+  const englishAboutText = "The Cabinet Secretariat functions directly under the Prime Minister. The administrative head of the Secretariat is the Cabinet Secretary who is also the ex-officio Chairman of the Civil Services Board. The business allocated to Cabinet Secretariat under the Government of India (Allocation of Business) Rules, 1961 includes (i) Secretarial assistance to the Cabinet and Cabinet Committees; and (ii) Rules of Business.";
+  
+  const hindiAboutText = "मंत्रिमंडल सचिवालय सीधे प्रधानमंत्री के अधीन कार्य करता है। सचिवालय का प्रशासनिक प्रमुख मंत्रिमंडल सचिव होता है जो सिविल सेवा बोर्ड का पदेन अध्यक्ष भी होता है। भारत सरकार (कार्य आबंटन) नियम, 1961 के तहत मंत्रिमंडल सचिवालय को आवंटित कार्य में (i) मंत्रिमंडल और मंत्रिमंडल समितियों को सचिवीय सहायता; और (ii) कार्य के नियम शामिल हैं।";
+
+  const aboutText = lang === '2' ? hindiAboutText : englishAboutText;
 
   // Get navigation items after About Us
   const getTopNavItemsAfterAbout = () => {
