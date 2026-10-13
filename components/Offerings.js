@@ -8,17 +8,17 @@ import { t } from '@/lib/translations';
 const USE_DUMMY_DATA = true;
 
 const dummyKeyDocumentsEn = [
-  { title: "AOB (Allocation of Business Rules)", url: "#" },
-  { title: "TOB (Transaction of Business Rules)", url: "#" },
-  { title: "Handbook on Cabinet Notes", url: "#" },
-  { title: "Monitoring of inter-ministerial consultation process through the IMC module of e-SamikSha portal for implementing timelines for finalization of Cabinet/CCEA Notes- reg.", url: "#" }
+  { title: "Allocation of Business Rules (AOB)", url: "/report_document/allocationbusinessrule/completeaobrules/english/1_Upload_4265.pdf" },
+  { title: "Transaction of Business Rules (TOB)", url: "/report_document/transactionofbusinessrulescomplete/completeaobrules/english/1_Upload_3983.pdf" },
+  { title: "Handbook on Cabinet Notes", url: "/report_document/handbook/english/1_Upload_3722.pdf" },
+  { title: "CABINET COMMITTEES", url: "/report_document/cabinetcommittees/english/1_Upload_4263.pdf" }
 ];
 
 const dummyKeyDocumentsHi = [
-  { title: "कार्य आवंटन नियम (AOB)", url: "#" },
-  { title: "व्यवहार और लेनदेन के नियम (TOB)", url: "#" },
-  { title: "मंत्रिमंडल नोट और प्रक्रियाओं पर दिशा-निर्देश", url: "#" },
-  { title: "सचिवालय निर्देश और कार्यालय नियमावली", url: "#" }
+  { title: "कार्य आबंटन नियम (AOB)", url: "/report_document/allocationbusinessrule/completeaobrules/english/1_Upload_4265.pdf" },
+  { title: "कार्यकरण नियम(TOB)", url: "/report_document/transactionofbusinessrulescomplete/completeaobrules/english/1_Upload_3983.pdf" },
+  { title: "मंत्रिमंडल नोट संबंधी नियमपर पुस्तिका", url: "/report_document/handbook/hindi/1_Upload_1158.pdf" },
+  { title: "मंत्रिमंडल समितियां", url: "/report_document/cabinetcommittees/hindi/1_Upload_4264.pdf" }
 ];
 
 const currentLang = process.env.NEXT_PUBLIC_LANGUAGE;
@@ -154,7 +154,7 @@ export default function Offerings() {
 
             <div className="p-3 px-0 flex justify-end rounded-b-[6px] max-w-full mt-auto">
               <a
-                href="/documents/council-of-ministers-portfolio-allocations"
+                href={USE_DUMMY_DATA ? "/documents" : (activeTab === "vacancies" ? "/offerings/vacancies" : "/offerings/tenders")}
                 className="view-btn"
               >
                  {t('view_more')}
