@@ -78,8 +78,12 @@ export default function NewNavbar() {
         const data = await res.json();
 
         // Transform API tree into component's expected shape
-        const transform = (items) =>
-          items.map((it) => {
+        const transform = (items) => {
+          if (!items || !Array.isArray(items)) {
+            return [];
+          }
+
+          return items.map((it) => {
             const rawHref = it.href || '#';
             let href = rawHref;
             if (typeof rawHref === 'string' && rawHref.startsWith('/documents')) {
@@ -100,6 +104,7 @@ export default function NewNavbar() {
               items: it.children ? transform(it.children) : [],
             };
           });
+        };
 
         const prepared = transform(data);
         if (isMounted) setNavItems(prepared);

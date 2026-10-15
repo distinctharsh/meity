@@ -5,32 +5,68 @@ import mysql from 'mysql2/promise';
 const dbConfig = {
   host: process.env.DB_HOST || 'localhost',
   user: process.env.DB_USER || 'root',
-  password: process.env.DB_PASSWORD || '',
-  database: process.env.DB_NAME || 'cabinet_db',
+  password: process.env.DB_PASSWORD || '123456',
+  database: process.env.DB_NAME || 'cabsec_cms',
 };
 
+  function buildTree(items, parentId = null) {
+    return items
+      .filter((item) => {
+        if (parentId === null) {
+          return item.parent_id === null && item.is_active === 1 && item.is_show === 1;
+        }
+        return item.parent_id === parentId && item.is_active === 1 && item.is_show === 1;
+      })
+      .sort((a, b) => (a.display_order ?? 0) - (b.display_order ?? 0))
+      .map((item) => {
+        const childItems = buildTree(items, item.id);
+        return {
+          id: item.id,
+          text: item.name,
+          href: item.link || '#',
+          dropdown: childItems.length > 0,
+          display_order: item.display_order ?? 0,
+          items: childItems,
+          children: childItems
+        };
+      });
+  }
+
 export default async function handler(req, res) {
+  if (req.method !== 'GET' && req.method !== 'POST') {
+    return res.status(405).json({ success: false, message: "Method not allowed" });
+  }
+
   let connection;
   try {
     connection = await mysql.createConnection(dbConfig);
     
-    // Database se saare active/show links fetch karein
-    const [rows] = await connection.execute(
+    // 1. Saare active links fetch karein
+    const [linkRows] = await connection.execute(
       'SELECT link FROM navigation_items WHERE link IS NOT NULL AND link != "" AND is_active = 1'
     );
+    const uniqueLinks = [...new Set(linkRows.map(row => row.link))];
+    const routesJsonPath = path.join(process.cwd(), 'lib', 'routes.json');
+    fs.writeFileSync(routesJsonPath, JSON.stringify(uniqueLinks, null, 2), 'utf8');
 
-    // Links ki ek clean array banayein (aur duplicate hata dein)
-    const links = [...new Set(rows.map(row => row.link))];
+    const [treeRows] = await connection.execute(
+      'SELECT * FROM navigation_items WHERE is_active = 1 ORDER BY display_order ASC'
+    );
 
-    // File path set karein (lib/routes.json)
-    const filePath = path.join(process.cwd(), 'lib', 'routes.json');
+    let tree = buildTree(treeRows, null);
 
-    // JSON file ko update/write kar dein
-    fs.writeFileSync(filePath, JSON.stringify(links, null, 2), 'utf8');
+    const homeIndex = tree.findIndex((n) => n.text?.toLowerCase() === 'home');
+    if (homeIndex > 0) {
+      const [home] = tree.splice(homeIndex, 1);
+      tree.unshift(home);
+    }
+
+    const navTreeJsonPath = path.join(process.cwd(), 'lib', 'nav-tree.json');
+    fs.writeFileSync(navTreeJsonPath, JSON.stringify(tree, null, 2), 'utf8');
 
     return res.status(200).json({ 
       success: true, 
-      message: `Successfully synced ${links.length} routes to lib/routes.json!` 
+      message: "Successfully synced routes.json and nav-tree.json!" 
     });
 
   } catch (error) {

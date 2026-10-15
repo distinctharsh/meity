@@ -1,0 +1,408 @@
+[
+  {
+    "id": 1,
+    "text": "Home",
+    "href": "/",
+    "dropdown": false,
+    "display_order": 1,
+    "items": [],
+    "children": []
+  },
+  {
+    "id": 2,
+    "text": "About Us",
+    "href": "/about-us",
+    "dropdown": true,
+    "display_order": 2,
+    "items": [
+      {
+        "id": 7,
+        "text": "Functions",
+        "href": "/about-us/functions",
+        "dropdown": false,
+        "display_order": 0,
+        "items": [],
+        "children": []
+      },
+      {
+        "id": 32,
+        "text": "Our Organization",
+        "href": "/about-us/our-organization",
+        "dropdown": false,
+        "display_order": 1,
+        "items": [],
+        "children": []
+      },
+      {
+        "id": 36,
+        "text": "Our Team",
+        "href": "/about-us/our-team",
+        "dropdown": false,
+        "display_order": 2,
+        "items": [],
+        "children": []
+      },
+      {
+        "id": 56,
+        "text": "Council of Ministers",
+        "href": "/about-us/council-of-ministers",
+        "dropdown": false,
+        "display_order": 3,
+        "items": [],
+        "children": []
+      },
+      {
+        "id": 57,
+        "text": "Cabinet Committees",
+        "href": "/about-us/cabinet-committees",
+        "dropdown": false,
+        "display_order": 4,
+        "items": [],
+        "children": []
+      }
+    ],
+    "children": [
+      {
+        "id": 7,
+        "text": "Functions",
+        "href": "/about-us/functions",
+        "dropdown": false,
+        "display_order": 0,
+        "items": [],
+        "children": []
+      },
+      {
+        "id": 32,
+        "text": "Our Organization",
+        "href": "/about-us/our-organization",
+        "dropdown": false,
+        "display_order": 1,
+        "items": [],
+        "children": []
+      },
+      {
+        "id": 36,
+        "text": "Our Team",
+        "href": "/about-us/our-team",
+        "dropdown": false,
+        "display_order": 2,
+        "items": [],
+        "children": []
+      },
+      {
+        "id": 56,
+        "text": "Council of Ministers",
+        "href": "/about-us/council-of-ministers",
+        "dropdown": false,
+        "display_order": 3,
+        "items": [],
+        "children": []
+      },
+      {
+        "id": 57,
+        "text": "Cabinet Committees",
+        "href": "/about-us/cabinet-committees",
+        "dropdown": false,
+        "display_order": 4,
+        "items": [],
+        "children": []
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "text": "Documents",
+    "href": "#",
+    "dropdown": true,
+    "display_order": 3,
+    "items": [
+      {
+        "id": 48,
+        "text": "Council of Ministers - Portfolio Allocations",
+        "href": "/documents/council-of-ministers-portfolio-allocations",
+        "dropdown": false,
+        "display_order": 0,
+        "items": [],
+        "children": []
+      },
+      {
+        "id": 49,
+        "text": "Cabinet Committees - Compositions",
+        "href": "/documents/cabinet-committees-compositions",
+        "dropdown": false,
+        "display_order": 1,
+        "items": [],
+        "children": []
+      },
+      {
+        "id": 50,
+        "text": "Rules of Business",
+        "href": "/documents/rules-of-business",
+        "dropdown": false,
+        "display_order": 2,
+        "items": [],
+        "children": []
+      },
+      {
+        "id": 51,
+        "text": "Instructions on Cabinet Notes",
+        "href": "/documents/instructions-on-cabinet-notes",
+        "dropdown": false,
+        "display_order": 3,
+        "items": [],
+        "children": []
+      },
+      {
+        "id": 52,
+        "text": "Other Instructions and Guidelines",
+        "href": "/documents/other-instructions-and-guidelines",
+        "dropdown": false,
+        "display_order": 4,
+        "items": [],
+        "children": []
+      },
+      {
+        "id": 79,
+        "text": "Guides For Civil Servants",
+        "href": "/documents/guides-for-civil-servants",
+        "dropdown": false,
+        "display_order": 4,
+        "items": [],
+        "children": []
+      }
+    ],
+    "children": [
+      {
+        "id": 48,
+        "text": "Council of Ministers - Portfolio Allocations",
+        "href": "/documents/council-of-ministers-portfolio-allocations",
+        "dropdown": false,
+        "display_order": 0,
+        "items": [],
+        "children": []
+      },
+      {
+        "id": 49,
+        "text": "Cabinet Committees - Compositions",
+        "href": "/documents/cabinet-committees-compositions",
+        "dropdown": false,
+        "display_order": 1,
+        "items": [],
+        "children": []
+      },
+      {
+        "id": 50,
+        "text": "Rules of Business",
+        "href": "/documents/rules-of-business",
+        "dropdown": false,
+        "display_order": 2,
+        "items": [],
+        "children": []
+      },
+      {
+        "id": 51,
+        "text": "Instructions on Cabinet Notes",
+        "href": "/documents/instructions-on-cabinet-notes",
+        "dropdown": false,
+        "display_order": 3,
+        "items": [],
+        "children": []
+      },
+      {
+        "id": 52,
+        "text": "Other Instructions and Guidelines",
+        "href": "/documents/other-instructions-and-guidelines",
+        "dropdown": false,
+        "display_order": 4,
+        "items": [],
+        "children": []
+      },
+      {
+        "id": 79,
+        "text": "Guides For Civil Servants",
+        "href": "/documents/guides-for-civil-servants",
+        "dropdown": false,
+        "display_order": 4,
+        "items": [],
+        "children": []
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "text": "Gallery",
+    "href": "/gallery",
+    "dropdown": true,
+    "display_order": 4,
+    "items": [
+      {
+        "id": 16,
+        "text": "Photos",
+        "href": "/gallery/photos",
+        "dropdown": false,
+        "display_order": 2,
+        "items": [],
+        "children": []
+      }
+    ],
+    "children": [
+      {
+        "id": 16,
+        "text": "Photos",
+        "href": "/gallery/photos",
+        "dropdown": false,
+        "display_order": 2,
+        "items": [],
+        "children": []
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "text": "Notices",
+    "href": "/",
+    "dropdown": true,
+    "display_order": 5,
+    "items": [
+      {
+        "id": 10,
+        "text": "Vacancies",
+        "href": "/notices/vacancies",
+        "dropdown": false,
+        "display_order": 1,
+        "items": [],
+        "children": []
+      },
+      {
+        "id": 69,
+        "text": "Tenders",
+        "href": "/notices/tenders",
+        "dropdown": false,
+        "display_order": 2,
+        "items": [],
+        "children": []
+      }
+    ],
+    "children": [
+      {
+        "id": 10,
+        "text": "Vacancies",
+        "href": "/notices/vacancies",
+        "dropdown": false,
+        "display_order": 1,
+        "items": [],
+        "children": []
+      },
+      {
+        "id": 69,
+        "text": "Tenders",
+        "href": "/notices/tenders",
+        "dropdown": false,
+        "display_order": 2,
+        "items": [],
+        "children": []
+      }
+    ]
+  },
+  {
+    "id": 22,
+    "text": "Connect",
+    "href": "#",
+    "dropdown": true,
+    "display_order": 6,
+    "items": [
+      {
+        "id": 60,
+        "text": "Contact Us",
+        "href": "/connect/contact-us",
+        "dropdown": false,
+        "display_order": 0,
+        "items": [],
+        "children": []
+      },
+      {
+        "id": 72,
+        "text": "RTI",
+        "href": "/connect/rti",
+        "dropdown": false,
+        "display_order": 1,
+        "items": [],
+        "children": []
+      },
+      {
+        "id": 59,
+        "text": "Parliament Questions",
+        "href": "/connect/parliament-questions",
+        "dropdown": false,
+        "display_order": 2,
+        "items": [],
+        "children": []
+      },
+      {
+        "id": 58,
+        "text": "Meeting The Cabinet Secretary",
+        "href": "/connect/meeting-the-cabinet-secretary",
+        "dropdown": false,
+        "display_order": 3,
+        "items": [],
+        "children": []
+      },
+      {
+        "id": 37,
+        "text": "Directory",
+        "href": "/connect/directory",
+        "dropdown": false,
+        "display_order": 4,
+        "items": [],
+        "children": []
+      }
+    ],
+    "children": [
+      {
+        "id": 60,
+        "text": "Contact Us",
+        "href": "/connect/contact-us",
+        "dropdown": false,
+        "display_order": 0,
+        "items": [],
+        "children": []
+      },
+      {
+        "id": 72,
+        "text": "RTI",
+        "href": "/connect/rti",
+        "dropdown": false,
+        "display_order": 1,
+        "items": [],
+        "children": []
+      },
+      {
+        "id": 59,
+        "text": "Parliament Questions",
+        "href": "/connect/parliament-questions",
+        "dropdown": false,
+        "display_order": 2,
+        "items": [],
+        "children": []
+      },
+      {
+        "id": 58,
+        "text": "Meeting The Cabinet Secretary",
+        "href": "/connect/meeting-the-cabinet-secretary",
+        "dropdown": false,
+        "display_order": 3,
+        "items": [],
+        "children": []
+      },
+      {
+        "id": 37,
+        "text": "Directory",
+        "href": "/connect/directory",
+        "dropdown": false,
+        "display_order": 4,
+        "items": [],
+        "children": []
+      }
+    ]
+  }
+]
