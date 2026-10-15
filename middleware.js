@@ -1,43 +1,53 @@
 import { NextResponse } from 'next/server';
 import routesData from '@/lib/routes.json';
 
+const validRoutesSet = new Set(routesData);
+
 const IGNORE_PREFIXES = [
-  '/api', 
-  '/_next', 
-  '/static', 
-  '/images', 
-  '/vendor', 
-  '/uploads', 
-  '/media', 
-  '/favicon.ico', 
-  '/robots.txt', 
-  '/sitemap.xml', 
-  '/404', 
-  '/_error'
+  '/api',
+  '/_next',
+  '/static',
+  '/images',
+  '/vendor',
+  '/uploads',
+  '/media',
+  '/favicon.ico',
+  '/robots.txt',
+  '/sitemap.xml',
+  '/404',
+  '/_error',
+  '/report_document',
 ];
 
-export async function middleware(req) {
-  const { nextUrl } = req;
-  const pathname = nextUrl.pathname;
+const IGNORE_EXTENSIONS =
+  /\.(?:ico|jpg|jpeg|png|svg|css|js|woff2?|ttf|mp4)$/i;
 
-  if (req.method !== 'GET') return NextResponse.next();
-  
-  const isIgnored = IGNORE_PREFIXES.some((p) => pathname.startsWith(p)) || 
-                    pathname.match(/\.(ico|jpg|jpeg|png|svg|css|js|woff|woff2|ttf|mp4)$/);
+export function middleware(req) {
+  const { pathname } = req.nextUrl;
 
-  if (isIgnored) return NextResponse.next();
+  if (req.method !== 'GET') {
+    return NextResponse.next();
+  }
 
-  // Safe check for header
-  const skipCmsHeader = req.headers.get('x-skip-cms');
-  if (skipCmsHeader === '1') return NextResponse.next();
+  if (
+    IGNORE_PREFIXES.some(
+      (prefix) =>
+        pathname === prefix || pathname.startsWith(prefix + '/')
+    ) ||
+    IGNORE_EXTENSIONS.test(pathname)
+  ) {
+    return NextResponse.next();
+  }
 
-  if (pathname === '/') return NextResponse.next();
+  if (req.headers.get('x-skip-cms') === '1') {
+    return NextResponse.next();
+  }
 
-  // Route check from JSON
-  const isAllowedRoute = routesData.includes(pathname);
+  if (pathname === '/') {
+    return NextResponse.next();
+  }
 
-  if (!isAllowedRoute) {
-    // Agar route JSON mein nahi hai, toh seedha 404 page par bhej dein
+  if (!validRoutesSet.has(pathname)) {
     return NextResponse.rewrite(new URL('/404', req.url));
   }
 
