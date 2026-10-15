@@ -1,29 +1,49 @@
 import { NextResponse } from 'next/server';
+import routesData from '@/lib/routes.json';
 
-// Paths to ignore from middleware processing
-const IGNORE_PREFIXES = ['/api', '/_next', '/static', '/favicon.ico', '/robots.txt', '/sitemap.xml'];
+const IGNORE_PREFIXES = [
+  '/api', 
+  '/_next', 
+  '/static', 
+  '/images', 
+  '/vendor', 
+  '/uploads', 
+  '/media', 
+  '/favicon.ico', 
+  '/robots.txt', 
+  '/sitemap.xml', 
+  '/404', 
+  '/_error'
+];
 
 export async function middleware(req) {
   const { nextUrl } = req;
   const pathname = nextUrl.pathname;
 
-  // Skip non-GET and ignored paths
   if (req.method !== 'GET') return NextResponse.next();
-  if (IGNORE_PREFIXES.some((p) => pathname.startsWith(p))) return NextResponse.next();
+  
+  const isIgnored = IGNORE_PREFIXES.some((p) => pathname.startsWith(p)) || 
+                    pathname.match(/\.(ico|jpg|jpeg|png|svg|css|js|woff|woff2|ttf|mp4)$/);
 
-  // Allow admin/tools to bypass CMS rewrite for route existence checks
-  const skipCms = req.headers.get('x-skip-cms');
-  if (skipCms === '1') return NextResponse.next();
+  if (isIgnored) return NextResponse.next();
 
-  // Root path handled by existing index page
+  // Safe check for header
+  const skipCmsHeader = req.headers.get('x-skip-cms');
+  if (skipCmsHeader === '1') return NextResponse.next();
+
   if (pathname === '/') return NextResponse.next();
 
-  // No rewrite needed anymore. We now render CMS pages directly via pages/[...slug].js
-  // Static pages keep highest priority; dynamic catch-all will handle CMS if exists.
+  // Route check from JSON
+  const isAllowedRoute = routesData.includes(pathname);
+
+  if (!isAllowedRoute) {
+    // Agar route JSON mein nahi hai, toh seedha 404 page par bhej dein
+    return NextResponse.rewrite(new URL('/404', req.url));
+  }
+
   return NextResponse.next();
 }
 
 export const config = {
-  // Apply to all paths
   matcher: '/:path*',
 };
