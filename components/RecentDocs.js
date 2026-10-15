@@ -296,7 +296,7 @@ const RecentDocs = () => {
             </div>
 
             {/* Explore User Personas (Slider with New Tab Open on Click) */}
-            <div className="flex flex-col items-start w-full md:flex-[1] min-w-0">
+            {/* <div className="flex flex-col items-start w-full md:flex-[1] min-w-0">
               <div className="flex items-center mb-4">
                 <img
                   src="/images/user-personas/user.svg"
@@ -306,10 +306,8 @@ const RecentDocs = () => {
                 <h3 className="main-heading">{t("explore_user_personas")}</h3>
               </div>
 
-              {/* Slider Container */}
               <div className="flex flex-col items-center justify-between bg-white rounded-[6px] p-6 w-full">
                 
-                {/* Active Persona Item with New Tab Redirect */}
                 <div 
                   onClick={handlePersonaClick}
                   className={`flex flex-col items-center justify-center cursor-pointer transition-all duration-300 transform w-full pt-2 ${
@@ -337,7 +335,6 @@ const RecentDocs = () => {
                   </span>
                 </div>
 
-                {/* Bottom Navigation Controls */}
                 <div className="flex items-center justify-between w-full pt-6 mt-2">
                   <button
                     onClick={(e) => {
@@ -381,7 +378,7 @@ const RecentDocs = () => {
                 </div>
 
               </div>
-            </div>
+            </div> */}
 
             {/* Important Links */}
             <div className="flex flex-col items-start w-full md:flex-[1] min-w-0">

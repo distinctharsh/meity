@@ -154,7 +154,7 @@ export default function Offerings() {
 
             <div className="p-3 px-0 flex justify-end rounded-b-[6px] max-w-full mt-auto">
               <a
-                href={USE_DUMMY_DATA ? "/documents" : (activeTab === "vacancies" ? "/offerings/vacancies" : "/offerings/tenders")}
+                href="/documents/council-of-ministers-portfolio-allocations"
                 className="view-btn"
               >
                  {t('view_more')}
