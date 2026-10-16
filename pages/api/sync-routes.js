@@ -3,38 +3,46 @@ import path from 'path';
 import mysql from 'mysql2/promise';
 
 const dbConfig = {
-  host: process.env.DB_HOST || 'localhost',
-  user: process.env.DB_USER || 'root',
-  password: process.env.DB_PASSWORD || '123456',
-  database: process.env.DB_NAME || 'cabsec_cms',
+  host: process.env.DB_HOST,
+  user: process.env.DB_USERNAME, 
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_DATABASE, 
+  port: Number(process.env.DB_PORT) || 3306
 };
 
-  function buildTree(items, parentId = null) {
-    return items
-      .filter((item) => {
-        if (parentId === null) {
-          return item.parent_id === null && item.is_active === 1 && item.is_show === 1;
-        }
-        return item.parent_id === parentId && item.is_active === 1 && item.is_show === 1;
-      })
-      .sort((a, b) => (a.display_order ?? 0) - (b.display_order ?? 0))
-      .map((item) => {
-        const childItems = buildTree(items, item.id);
-        return {
-          id: item.id,
-          text: item.name,
-          href: item.link || '#',
-          dropdown: childItems.length > 0,
-          display_order: item.display_order ?? 0,
-          items: childItems,
-          children: childItems
-        };
-      });
-  }
+function buildTree(items, parentId = null) {
+  return items
+    .filter((item) => {
+      if (parentId === null) {
+        return item.parent_id === null && item.is_active === 1 && item.is_show === 1;
+      }
+      return item.parent_id === parentId && item.is_active === 1 && item.is_show === 1;
+    })
+    .sort((a, b) => (a.display_order ?? 0) - (b.display_order ?? 0))
+    .map((item) => {
+      const childItems = buildTree(items, item.id);
+      return {
+        id: item.id,
+        text: item.name,
+        href: item.link || '#',
+        dropdown: childItems.length > 0,
+        display_order: item.display_order ?? 0,
+        items: childItems,
+        children: childItems
+      };
+    });
+}
 
 export default async function handler(req, res) {
   if (req.method !== 'GET' && req.method !== 'POST') {
     return res.status(405).json({ success: false, message: "Method not allowed" });
+  }
+
+  if (!process.env.DB_HOST || !process.env.DB_USERNAME || !process.env.DB_DATABASE) {
+    return res.status(500).json({ 
+      success: false, 
+      message: "Database environment variables are missing in .env file!" 
+    });
   }
 
   let connection;
