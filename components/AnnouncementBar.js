@@ -5,13 +5,18 @@ import { parseBoolean } from "@/utils/debug";
 import Announcement from "./icons/Announcement";
 import { t } from '@/lib/translations';
 
-export default function AnnouncementBar() {
+export default function AnnouncementBar({ announcements: initialAnnouncements = [] }) {
   const [isPaused, setIsPaused] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
-  const [announcements, setAnnouncements] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [announcements, setAnnouncements] = useState(initialAnnouncements);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    if (initialAnnouncements.length > 0) {
+      setAnnouncements(initialAnnouncements);
+      return;
+    }
+
     fetchAnnouncementsData();
 
     // Auto-refresh every 30 seconds to get latest updates
@@ -20,7 +25,7 @@ export default function AnnouncementBar() {
     }, 30000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [initialAnnouncements]);
 
   const fetchAnnouncementsData = async () => {
     try {

@@ -27,7 +27,7 @@ const personas = [
   },
 ];
 
-const RecentDocs = () => {
+const RecentDocs = ({ docs: initialDocs = [] }) => {
   const [docs, setDocs] = useState(fallbackRecent);
   const [navLinks, setNavLinks] = useState(null);
   const [recentDocs, setRecentDocs] = useState([]);
@@ -154,6 +154,11 @@ const RecentDocs = () => {
   }, []);
 
   useEffect(() => {
+    if (initialDocs.length > 0) {
+      setRecentDocs(initialDocs);
+      return;
+    }
+
     const fetchRecentDocs = async () => {
       try {
         const response = await fetch("/api/recent-reports");

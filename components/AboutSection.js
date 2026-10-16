@@ -4,12 +4,18 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { t } from '@/lib/translations';
 
-export default function AboutSection() {
+export default function AboutSection({ data: initialData = null }) {
   const [aboutContent, setAboutContent] = useState([]);
   const [navigation, setNavigation] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (initialData) {
+      setAboutContent([initialData]);
+      setLoading(false);
+      return;
+    }
+
     let mounted = true;
     (async () => {
       try {

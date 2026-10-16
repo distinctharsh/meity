@@ -3,9 +3,9 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { t } from '@/lib/translations';
 
-export default function EventQuote() {
-  const [quote, setQuote] = useState(null);
-  const [loading, setLoading] = useState(true);
+export default function EventQuote({ quotes: initialQuotes = [] }) {
+  const [quote, setQuote] = useState(initialQuotes.length > 0 ? initialQuotes[0] : null);
+  const [loading, setLoading] = useState(false);
 
   const formatDDMMYYYY = (val) => {
     if (!val) return '';
@@ -36,6 +36,11 @@ export default function EventQuote() {
   };
 
   useEffect(() => {
+    if (initialQuotes.length > 0) {
+      setQuote(initialQuotes[0]);
+      return;
+    }
+
     let mounted = true;
     (async () => {
       try {
@@ -50,7 +55,7 @@ export default function EventQuote() {
       }
     })();
     return () => { mounted = false; };
-  }, []);
+  }, [initialQuotes]);
 
   return (
     <div className="w-full bg-[#ebeaea]">

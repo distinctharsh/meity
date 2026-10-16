@@ -24,7 +24,7 @@ const dummyKeyDocumentsHi = [
 const currentLang = process.env.NEXT_PUBLIC_LANGUAGE;
 const dummyKeyDocuments = currentLang === '2' ? dummyKeyDocumentsHi : dummyKeyDocumentsEn;
 
-export default function Offerings() {
+export default function Offerings({ offerings: initialOfferings = [] }) {
   const [activeTab, setActiveTab] = useState("vacancies");
   const [vacanciesList, setVacanciesList] = useState([]);
   const [tendersList, setTendersList] = useState([]);
@@ -32,6 +32,14 @@ export default function Offerings() {
   const [whatsNewLoading, setWhatsNewLoading] = useState(true);
 
   useEffect(() => {
+    if (initialOfferings.length > 0) {
+      // Use offerings data from SSR - map activities to internal state
+      const activities = initialOfferings;
+      setVacanciesList(activities.filter(a => a.type === 'vacancy').slice(0, 5));
+      setTendersList(activities.filter(a => a.type === 'tender').slice(0, 5));
+      return;
+    }
+
     let mounted = true;
     (async () => {
       try {
@@ -88,7 +96,7 @@ export default function Offerings() {
       } catch { }
     })();
     return () => { mounted = false; };
-  }, []);
+  }, [initialOfferings]);
 
   const handleTabClick = (tab) => {
     setActiveTab(tab);

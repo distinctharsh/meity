@@ -3,12 +3,12 @@
 import { useRef, useState, useEffect } from "react";
 import Image from "next/image";
 
-const PartnerLogoCarousel = () => {
+const PartnerLogoCarousel = ({ logos: initialLogos = [] }) => {
   const containerRef = useRef(null);
   const autoRotateRef = useRef(null);
   const [isInteracting, setIsInteracting] = useState(false);
   const [logos, setLogos] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const defaultLogos = [
     { image_url: "/images/partner/president.jpg", external_link: "#" },
@@ -20,8 +20,12 @@ const PartnerLogoCarousel = () => {
   ];
 
   useEffect(() => {
+    if (initialLogos.length > 0) {
+      setLogos(initialLogos);
+      return;
+    }
     fetchPartnerLogos();
-  }, []);
+  }, [initialLogos]);
 
   const fetchPartnerLogos = async () => {
     try {

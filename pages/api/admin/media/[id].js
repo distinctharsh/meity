@@ -18,7 +18,7 @@ export default async function handler(req, res) {
       );
 
       if (rows.length === 0) {
-        return res.status(404).json({ message: 'Media file not found' });
+        return res.status(404).json({ message: 'Gallery file not found' });
       }
 
       const fileInfo = rows[0];
@@ -41,10 +41,10 @@ export default async function handler(req, res) {
       );
 
       if (result.affectedRows === 0) {
-        return res.status(404).json({ message: 'Media file not found' });
+        return res.status(404).json({ message: 'Gallery file not found' });
       }
 
-      res.status(200).json({ message: 'Media file deleted successfully' });
+      res.status(200).json({ message: 'Gallery file deleted successfully' });
     } catch (error) {
       console.error('Error deleting media file:', error);
       res.status(500).json({ message: 'Internal server error' });
