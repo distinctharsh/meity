@@ -553,37 +553,86 @@ export default function AdminRTIPage() {
                       />
                     </div>
                     <div className="md:col-span-2">
-                      <label className="block text-sm font-medium text-gray-700 mb-1">File Upload</label>
-                      {itemForm.file_url ? (
-                        <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
-                          <svg className="w-5 h-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                          </svg>
-                          <div className="flex-1 min-w-0">
-                            <p className="text-sm text-gray-800 truncate">{itemForm.file_url}</p>
-                            <p className="text-xs text-gray-500">{itemForm.file_size} {itemForm.file_type && `· ${itemForm.file_type}`}</p>
-                          </div>
-                          <button
-                            type="button"
-                            onClick={removeItemFile}
-                            className="text-red-600 hover:text-red-800 text-sm font-medium"
-                          >
-                            Remove
-                          </button>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Item Type</label>
+                      <div className="flex gap-6 mb-3">
+                        <label className="flex items-center gap-2 text-sm cursor-pointer">
+                          <input
+                            type="radio"
+                            name="file_type_selector"
+                            checked={itemForm.file_type !== 'INTERNAL' && itemForm.file_type !== 'EXTERNAL'}
+                            onChange={() => setItemForm(p => ({ ...p, file_type: 'PDF', file_size: '100 KB', file_url: '' }))}
+                          />
+                          Document File
+                        </label>
+                        <label className="flex items-center gap-2 text-sm cursor-pointer">
+                          <input
+                            type="radio"
+                            name="file_type_selector"
+                            checked={itemForm.file_type === 'INTERNAL'}
+                            onChange={() => setItemForm(p => ({ ...p, file_type: 'INTERNAL', file_size: '', file_url: '' }))}
+                          />
+                          Internal Link
+                        </label>
+                        <label className="flex items-center gap-2 text-sm cursor-pointer">
+                          <input
+                            type="radio"
+                            name="file_type_selector"
+                            checked={itemForm.file_type === 'EXTERNAL'}
+                            onChange={() => setItemForm(p => ({ ...p, file_type: 'EXTERNAL', file_size: '', file_url: '' }))}
+                          />
+                          External Link
+                        </label>
+                      </div>
+
+                      {itemForm.file_type === 'INTERNAL' || itemForm.file_type === 'EXTERNAL' ? (
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                            {itemForm.file_type === 'INTERNAL' ? 'Internal Link URL (e.g. /connect/Rti/categories-of-documents)' : 'External Link URL (e.g. https://www.abc.gov.in)'}
+                          </label>
+                          <input
+                            type="text"
+                            value={itemForm.file_url}
+                            onChange={e => setItemForm(p => ({ ...p, file_url: e.target.value }))}
+                            placeholder={itemForm.file_type === 'INTERNAL' ? '/route-path' : 'https://example.com'}
+                            required
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg outline-none text-sm"
+                          />
                         </div>
                       ) : (
                         <div>
-                          <input
-                            type="file"
-                            onChange={handleItemFileUpload}
-                            disabled={itemUploading}
-                            className="block w-full text-sm text-gray-600 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 file:font-medium cursor-pointer"
-                          />
-                          {itemUploading && (
-                            <p className="mt-1.5 text-xs text-gray-500 flex items-center gap-1">
-                              <span className="inline-block w-3 h-3 border-2 border-gray-300 border-t-blue-600 rounded-full animate-spin"></span>
-                              Uploading...
-                            </p>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">File Upload</label>
+                          {itemForm.file_url ? (
+                            <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                              <svg className="w-5 h-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                              </svg>
+                              <div className="flex-1 min-w-0">
+                                <p className="text-sm text-gray-800 truncate">{itemForm.file_url}</p>
+                                <p className="text-xs text-gray-500">{itemForm.file_size} {itemForm.file_type && `· ${itemForm.file_type}`}</p>
+                              </div>
+                              <button
+                                type="button"
+                                onClick={removeItemFile}
+                                className="text-red-600 hover:text-red-800 text-sm font-medium"
+                              >
+                                Remove
+                              </button>
+                            </div>
+                          ) : (
+                            <div>
+                              <input
+                                type="file"
+                                onChange={handleItemFileUpload}
+                                disabled={itemUploading}
+                                className="block w-full text-sm text-gray-600 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 file:font-medium cursor-pointer"
+                              />
+                              {itemUploading && (
+                                <p className="mt-1.5 text-xs text-gray-500 flex items-center gap-1">
+                                  <span className="inline-block w-3 h-3 border-2 border-gray-300 border-t-blue-600 rounded-full animate-spin"></span>
+                                  Uploading...
+                                </p>
+                              )}
+                            </div>
                           )}
                         </div>
                       )}
