@@ -1,4 +1,46 @@
 import pool from '@/lib/db';
+import fs from 'fs';
+import path from 'path';
+
+async function syncPagesContent() {
+  try {
+    const [pageRows] = await pool.query(
+      `SELECT id, title, slug, content_json, hero_title, hero_subtitle, hero_image_url, is_active
+       FROM pages
+       WHERE is_active = 1
+       ORDER BY display_order ASC, created_at DESC`
+    );
+
+    const pagesContent = {};
+
+    for (const page of pageRows) {
+      let contentObj = {};
+
+      try {
+        contentObj = page.content_json ? JSON.parse(page.content_json) : {};
+      } catch (e) {
+        console.error(`Error parsing content_json for page ${page.id}:`, e);
+        contentObj = { html: '', css: '', js: '' };
+      }
+
+      pagesContent[page.slug] = {
+        id: page.id,
+        title: page.title,
+        slug: page.slug,
+        hero_title: page.hero_title,
+        hero_subtitle: page.hero_subtitle,
+        hero_image_url: page.hero_image_url,
+        content: contentObj,
+        is_active: page.is_active
+      };
+    }
+
+    const pagesContentJsonPath = path.join(process.cwd(), 'lib', 'pages-content.json');
+    fs.writeFileSync(pagesContentJsonPath, JSON.stringify(pagesContent, null, 2), 'utf8');
+  } catch (error) {
+    console.error('Sync pages content error:', error);
+  }
+}
 
 export default async function handler(req, res) {
 
@@ -161,6 +203,8 @@ export default async function handler(req, res) {
       );
 
       await conn.commit();
+
+      await syncPagesContent();
 
       return res.status(201).json({
         id: pageResult.insertId,
