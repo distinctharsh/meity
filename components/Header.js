@@ -19,8 +19,8 @@ export default function Header() {
 
   const languages =
     process.env.NEXT_PUBLIC_LANGUAGE === "1"
-      ? [{ name: "हिन्दी", url: "http://localhost:3001" }]
-      : [{ name: "English", url: "http://localhost:3000" }];
+      ? [{ name: "हिन्दी", url: "https://www.cabsec.nic.in" }]
+      : [{ name: "English", url: "https://cabsec.nic.in" }];
 
   useEffect(() => {
     const handleClickOutside = (event) => {

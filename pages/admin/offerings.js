@@ -15,7 +15,7 @@ export default function OfferingsManagement() {
 
   const fetchOfferings = async () => {
     try {
-      let apiUrl = activeTab === 'vacancies' ? '/api/admin/vacancies' : '/api/admin/tenders';
+      let apiUrl = activeTab === 'vacancies' ? '/api/adm/vacancies' : '/api/adm/tenders';
       
       const response = await fetch(apiUrl);
       if (response.ok) {
@@ -62,7 +62,7 @@ export default function OfferingsManagement() {
     if (!confirm(`Are you sure you want to permanently delete this ${itemType}?`)) return;
 
     try {
-      let apiUrl = activeTab === 'vacancies' ? `/api/admin/vacancies/${id}` : `/api/admin/tenders/${id}`;
+      let apiUrl = activeTab === 'vacancies' ? `/api/adm/vacancies/${id}` : `/api/adm/tenders/${id}`;
       
       const response = await fetch(apiUrl, {
         method: 'DELETE'
@@ -82,8 +82,8 @@ export default function OfferingsManagement() {
   const handleFormSubmit = async (formData) => {
     try {
       let apiUrl = activeTab === 'vacancies' 
-        ? (editingOffering ? `/api/admin/vacancies/${editingOffering.id}` : '/api/admin/vacancies')
-        : (editingOffering ? `/api/admin/tenders/${editingOffering.id}` : '/api/admin/tenders');
+        ? (editingOffering ? `/api/adm/vacancies/${editingOffering.id}` : '/api/adm/vacancies')
+        : (editingOffering ? `/api/adm/tenders/${editingOffering.id}` : '/api/adm/tenders');
       
       const method = editingOffering ? 'PUT' : 'POST';
 
@@ -112,7 +112,7 @@ export default function OfferingsManagement() {
   // Central status update logic (0, 1, 2 handler)
   const updateStatus = async (id, targetStatus) => {
     try {
-      let apiUrl = activeTab === 'vacancies' ? `/api/admin/vacancies/${id}` : `/api/admin/tenders/${id}`;
+      let apiUrl = activeTab === 'vacancies' ? `/api/adm/vacancies/${id}` : `/api/adm/tenders/${id}`;
       
       const response = await fetch(apiUrl, {
         method: 'PUT',

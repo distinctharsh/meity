@@ -20,7 +20,7 @@ export default function AdminSignup() {
     setSuccess('');
 
     try {
-      const response = await fetch('/api/admin/auth/signup', {
+      const response = await fetch('/api/adm/auth/signup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

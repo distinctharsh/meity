@@ -15,7 +15,7 @@ export default function Videos() {
 
   const fetchVideos = async () => {
     try {
-      const response = await fetch('/api/admin/videos');
+      const response = await fetch('/api/adm/videos');
       if (response.ok) {
         const data = await response.json();
         setVideos(data);

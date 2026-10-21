@@ -14,7 +14,7 @@ export default function HeroSliderManagement() {
 
   const fetchSlides = async () => {
     try {
-      const response = await fetch('/api/admin/slider');
+      const response = await fetch('/api/adm/slider');
       if (response.ok) {
         const data = await response.json();
         setSlides(data);
@@ -40,7 +40,7 @@ export default function HeroSliderManagement() {
     if (!confirm('Are you sure you want to delete this slide?')) return;
 
     try {
-      const response = await fetch(`/api/admin/slider/${id}`, {
+      const response = await fetch(`/api/adm/slider/${id}`, {
         method: 'DELETE'
       });
 
@@ -57,7 +57,7 @@ export default function HeroSliderManagement() {
 
   const handleFormSubmit = async (formData) => {
     try {
-      const url = editingSlide ? `/api/admin/slider/${editingSlide.id}` : '/api/admin/slider';
+      const url = editingSlide ? `/api/adm/slider/${editingSlide.id}` : '/api/adm/slider';
       const method = editingSlide ? 'PUT' : 'POST';
 
       const response = await fetch(url, {
@@ -91,7 +91,7 @@ export default function HeroSliderManagement() {
 
     // Update display_order in database
     try {
-      await fetch('/api/admin/slider/reorder', {
+      await fetch('/api/adm/slider/reorder', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

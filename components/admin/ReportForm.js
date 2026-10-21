@@ -45,7 +45,7 @@ export default function ReportForm({ initial, onCancel, onSaved }) {
         (async () => {
           try {
             setLoadingFiles(true);
-            const res = await fetch(`/api/admin/reports/${initial.id}/files`);
+            const res = await fetch(`/api/adm/reports/${initial.id}/files`);
             if (!res.ok) {
               console.error('Failed to load files:', res.status);
               setAttachedFiles([]);
@@ -80,7 +80,7 @@ export default function ReportForm({ initial, onCancel, onSaved }) {
     let mounted = true;
     (async () => {
       try {
-        const res = await fetch('/api/admin/navigation');
+        const res = await fetch('/api/adm/navigation');
         if (!res.ok) return;
         const items = await res.json();
 
@@ -168,7 +168,7 @@ export default function ReportForm({ initial, onCancel, onSaved }) {
         is_active: form.status === 1, 
         is_archived: form.status === 2,
       };
-      const url = initial ? `/api/admin/reports/${initial.id}` : '/api/admin/reports';
+      const url = initial ? `/api/adm/reports/${initial.id}` : '/api/adm/reports';
       const method = initial ? 'PUT' : 'POST';
       const res = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
       if (!res.ok) {
@@ -184,7 +184,7 @@ export default function ReportForm({ initial, onCancel, onSaved }) {
       }
       // If group type and we have freshly uploaded files buffered, attach them
       if (form.type === 'group' && pendingAttach.length) {
-        await fetch(`/api/admin/reports/${reportId}/files`, {
+        await fetch(`/api/adm/reports/${reportId}/files`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -209,7 +209,7 @@ export default function ReportForm({ initial, onCancel, onSaved }) {
             
             if (titleChanged) {
               try {
-                await fetch(`/api/admin/reports/${initial.id}/files/${f.id}`, {
+                await fetch(`/api/adm/reports/${initial.id}/files/${f.id}`, {
                   method: 'PUT',
                   headers: { 'Content-Type': 'application/json' },
                   body: JSON.stringify({ original_name: customTitle, status: currentStatus })
@@ -252,7 +252,7 @@ export default function ReportForm({ initial, onCancel, onSaved }) {
     try {
       const fd = new FormData();
       toUpload.forEach(f => fd.append('files', f));
-      const resp = await fetch('/api/admin/media/upload', { method: 'POST', body: fd });
+      const resp = await fetch('/api/adm/media/upload', { method: 'POST', body: fd });
       if (!resp.ok) {
         const j = await resp.json().catch(() => ({}));
         alert(j.message || 'Upload failed');
@@ -283,7 +283,7 @@ export default function ReportForm({ initial, onCancel, onSaved }) {
         // For single report, delete old file before setting new one
         if (up[0]?.file_path && form.file_url && initial?.id) {
           try {
-            await fetch(`/api/admin/reports/${initial.id}/delete-file`, {
+            await fetch(`/api/adm/reports/${initial.id}/delete-file`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ file_url: form.file_url })
@@ -309,7 +309,7 @@ export default function ReportForm({ initial, onCancel, onSaved }) {
     
     try {
       const res = await fetch(
-        `/api/admin/reports/${initial.id}/files/${file.id}`,
+        `/api/adm/reports/${initial.id}/files/${file.id}`,
         {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
@@ -350,7 +350,7 @@ export default function ReportForm({ initial, onCancel, onSaved }) {
     if (file.id && file.id !== 0 && initial?.id) {
       try {
         const res = await fetch(
-          `/api/admin/reports/${initial.id}/files`,
+          `/api/adm/reports/${initial.id}/files`,
           { 
             method: 'DELETE',
             headers: { 'Content-Type': 'application/json' },
@@ -363,7 +363,7 @@ export default function ReportForm({ initial, onCancel, onSaved }) {
           console.error('Failed to delete file from server:', errorData);
           alert(`Failed to delete file: ${errorData.message || 'Unknown error'}`);
           // Reload files to restore the file in UI if deletion failed
-          const reloadRes = await fetch(`/api/admin/reports/${initial.id}/files`);
+          const reloadRes = await fetch(`/api/adm/reports/${initial.id}/files`);
           if (reloadRes.ok) {
             const reloadedData = await reloadRes.json();
             setAttachedFiles(reloadedData || []);
@@ -381,7 +381,7 @@ export default function ReportForm({ initial, onCancel, onSaved }) {
         alert('Failed to delete file. Please try again.');
         // Reload files to restore the file in UI if deletion failed
         try {
-          const reloadRes = await fetch(`/api/admin/reports/${initial.id}/files`);
+          const reloadRes = await fetch(`/api/adm/reports/${initial.id}/files`);
           if (reloadRes.ok) {
             const reloadedData = await reloadRes.json();
             setAttachedFiles(reloadedData || []);
@@ -406,7 +406,7 @@ export default function ReportForm({ initial, onCancel, onSaved }) {
     // If editing an existing report, update the report record to clear file_url
     if (initial?.id) {
       try {
-        await fetch(`/api/admin/reports/${initial.id}`, {
+        await fetch(`/api/adm/reports/${initial.id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ file_url: null })

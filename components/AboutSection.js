@@ -86,17 +86,20 @@ export default function AboutSection({ data: initialData = null }) {
     {
       title: t("our_team"),
       icon: <FaUsers />,
-      section_key: "our_team"
+      section_key: "our_team",
+      href: "/about-us/our-team"
     },
     {
       title: t("our_organisations"),
       icon: <FaThLarge />,
-      section_key: "our_organisations"
+      section_key: "our_organisations",
+      href: "/about-us/our-organization"
     },
     {
       title: t("our_performance"),
       imageSrc: "/images/council_ministry.svg",
-      section_key: "our_performance"
+      section_key: "our_performance",
+      href: "/about-us/council-of-ministers"
     }
   ];
 
@@ -175,7 +178,7 @@ export default function AboutSection({ data: initialData = null }) {
             {/* Minister 1 */}
             <div className="flex flex-col items-center">
               <div className="flex justify-center">
-                <a href="/cabinet-secretariat/cabinet-secretary">
+                <a href="/about-us/cabinet-secretary">
                   <Image
                     src="/images/about/cs.jpg"
                     alt="Dr. T. V. Somanathan"

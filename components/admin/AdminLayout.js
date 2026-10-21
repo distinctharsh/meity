@@ -118,7 +118,7 @@ const AdminLayout = ({ children }) => {
 
   const handleLogout = async () => {
     try {
-      const response = await fetch('/api/admin/auth/logout', { method: 'POST' });
+      const response = await fetch('/api/adm/auth/logout', { method: 'POST' });
 
       if (response.ok) {
         localStorage.removeItem('admin_token');

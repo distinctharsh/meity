@@ -33,7 +33,7 @@ export default function Home({ homeData }) {
 
 export async function getServerSideProps() {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:3000';
     const res = await fetch(`${baseUrl}/api/home`);
     if (!res.ok) {
       throw new Error('Failed to fetch home data');

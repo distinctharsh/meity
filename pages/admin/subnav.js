@@ -14,7 +14,7 @@ export default function SubnavAdmin() {
     setLoading(true);
     try {
       const qs = (path ?? filterPath) ? `?page_path=${encodeURIComponent(path ?? filterPath)}` : '';
-      const res = await fetch(`/api/admin/subnav${qs}`);
+      const res = await fetch(`/api/adm/subnav${qs}`);
       const data = res.ok ? await res.json() : [];
       setItems(data);
     } catch (e) {
@@ -29,7 +29,7 @@ export default function SubnavAdmin() {
   const handleDelete = async (id) => {
     if (!confirm('Delete this tab?')) return;
     try {
-      const res = await fetch(`/api/admin/subnav/${id}`, { method: 'DELETE' });
+      const res = await fetch(`/api/adm/subnav/${id}`, { method: 'DELETE' });
       if (res.ok) await refresh(); else alert('Delete failed');
     } catch (e) { console.error(e); alert('Delete failed'); }
   };
@@ -124,7 +124,7 @@ function SubnavForm({ editing, onClose, onSaved }) {
     e.preventDefault();
     setSaving(true);
     try {
-      const url = editing ? `/api/admin/subnav/${editing.id}` : '/api/admin/subnav';
+      const url = editing ? `/api/adm/subnav/${editing.id}` : '/api/adm/subnav';
       const method = editing ? 'PUT' : 'POST';
       const res = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(form) });
       if (res.ok) await onSaved(); else {

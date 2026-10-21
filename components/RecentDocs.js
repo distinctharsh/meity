@@ -95,7 +95,7 @@ const RecentDocs = ({ docs: initialDocs = [] }) => {
       // Fetch important links
       try {
         const importantLinksRes = await fetch(
-          "/api/admin/important-links"
+          "/api/adm/important-links"
         );
 
         if (importantLinksRes.ok) {

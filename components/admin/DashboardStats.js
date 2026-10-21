@@ -15,7 +15,7 @@ const DashboardStats = () => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const data = await authenticatedFetch('/api/admin/stats');
+        const data = await authenticatedFetch('/api/adm/stats');
         if (data) {
           setStats(data);
         }

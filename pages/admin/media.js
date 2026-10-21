@@ -14,7 +14,7 @@ export default function MediaLibrary() {
 
   const fetchMedia = async () => {
     try {
-      const response = await fetch('/api/admin/media');
+      const response = await fetch('/api/adm/media');
       if (response.ok) {
         const data = await response.json();
         setMedia(data);
@@ -43,7 +43,7 @@ export default function MediaLibrary() {
     });
 
     try {
-      const response = await fetch('/api/admin/media/upload', {
+      const response = await fetch('/api/adm/media/upload', {
         method: 'POST',
         body: formData,
       });
@@ -69,7 +69,7 @@ export default function MediaLibrary() {
     if (!confirm('Are you sure you want to delete this media file?')) return;
 
     try {
-      const response = await fetch(`/api/admin/media/${id}`, {
+      const response = await fetch(`/api/adm/media/${id}`, {
         method: 'DELETE'
       });
 

@@ -26,7 +26,7 @@ export default function PagesManagement() {
   const refresh = async () => {
     setLoading(true);
     try {
-      const pRes = await fetch('/api/admin/pages');
+      const pRes = await fetch('/api/adm/pages');
       const p = pRes.ok ? await pRes.json() : [];
       setPages(Array.isArray(p) ? p : []);
     } catch (e) {
@@ -51,7 +51,7 @@ export default function PagesManagement() {
   const handleDelete = async (id) => {
     if (!confirm('Delete this page?')) return;
     try {
-      const res = await fetch(`/api/admin/pages/${id}`, { method: 'DELETE' });
+      const res = await fetch(`/api/adm/pages/${id}`, { method: 'DELETE' });
       if (res.ok) {
         await refresh();
       } else {
@@ -66,7 +66,7 @@ export default function PagesManagement() {
 
   const toggleActive = async (pg) => {
     try {
-      const res = await fetch(`/api/admin/pages/${pg.id}`, {
+      const res = await fetch(`/api/adm/pages/${pg.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -246,7 +246,7 @@ function PageForm({ onClose, onSaved, editing }) {
     async function loadNav() {
       setNavLoading(true);
       try {
-        const res = await fetch('/api/admin/navigation');
+        const res = await fetch('/api/adm/navigation');
         const items = res.ok ? (await res.json()) : [];
         // Build label with hierarchy e.g., Parent / Child
         const byId = new Map(items.map(i => [i.id, i]));
@@ -268,7 +268,7 @@ function PageForm({ onClose, onSaved, editing }) {
         // Bulk check for conflicts on each option and disable those with conflicts
         try {
           // Load all existing CMS pages once and build a set of their slugs
-          const pagesRes = await fetch('/api/admin/pages');
+          const pagesRes = await fetch('/api/adm/pages');
           const pagesData = pagesRes.ok ? await pagesRes.json() : [];
           const cmsSlugs = new Set(
             (Array.isArray(pagesData) ? pagesData : [])
@@ -476,7 +476,7 @@ function PageForm({ onClose, onSaved, editing }) {
       delete payload.content_html;
       delete payload.content_css;
       delete payload.content_js;
-      const url = editing ? `/api/admin/pages/${editing.id}` : '/api/admin/pages';
+      const url = editing ? `/api/adm/pages/${editing.id}` : '/api/adm/pages';
       const method = editing ? 'PUT' : 'POST';
       const res = await fetch(url, {
         method,

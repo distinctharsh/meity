@@ -14,7 +14,7 @@ export default function PartnerLogosManagement() {
 
   const fetchLogos = async () => {
     try {
-      const response = await fetch('/api/admin/partner-logos');
+      const response = await fetch('/api/adm/partner-logos');
       if (response.ok) {
         const data = await response.json();
         setLogos(data);
@@ -41,7 +41,7 @@ export default function PartnerLogosManagement() {
     if (!confirm('Are you sure you want to delete this partner logo?')) return;
 
     try {
-      const response = await fetch(`/api/admin/partner-logos?id=${id}`, {
+      const response = await fetch(`/api/adm/partner-logos?id=${id}`, {
         method: 'DELETE'
       });
 
@@ -58,7 +58,7 @@ export default function PartnerLogosManagement() {
 
   const handleFormSubmit = async (formData) => {
     try {
-      const apiUrl = '/api/admin/partner-logos';
+      const apiUrl = '/api/adm/partner-logos';
       const method = editingLogo ? 'PUT' : 'POST';
       const payload = editingLogo 
         ? { ...formData, id: editingLogo.id }
@@ -88,7 +88,7 @@ export default function PartnerLogosManagement() {
 
   const toggleActive = async (id, isActive) => {
     try {
-      const response = await fetch('/api/admin/partner-logos', {
+      const response = await fetch('/api/adm/partner-logos', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -125,7 +125,7 @@ export default function PartnerLogosManagement() {
     const targetLogo = logos[newIndex];
 
     try {
-      await fetch('/api/admin/partner-logos', {
+      await fetch('/api/adm/partner-logos', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -136,7 +136,7 @@ export default function PartnerLogosManagement() {
         }),
       });
 
-      await fetch('/api/admin/partner-logos', {
+      await fetch('/api/adm/partner-logos', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

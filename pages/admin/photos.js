@@ -19,7 +19,7 @@ export default function PhotosAdmin() {
 
   const fetchGalleries = async () => {
     try {
-      const response = await fetch('/api/admin/photos');
+      const response = await fetch('/api/adm/photos');
       if (response.ok) {
         const data = await response.json();
         setGalleries(data);
@@ -44,7 +44,7 @@ export default function PhotosAdmin() {
       alt_text: formData.alt_text
     };
     
-    const url = editingGallery ? `/api/admin/photos/${editingGallery.id}` : '/api/admin/photos';
+    const url = editingGallery ? `/api/adm/photos/${editingGallery.id}` : '/api/adm/photos';
     const method = editingGallery ? 'PUT' : 'POST';
 
     try {
@@ -76,7 +76,7 @@ export default function PhotosAdmin() {
     if (!confirm('Are you sure you want to delete this gallery?')) return;
 
     try {
-      const response = await fetch(`/api/admin/photos/${id}`, {
+      const response = await fetch(`/api/adm/photos/${id}`, {
         method: 'DELETE'
       });
 
@@ -152,7 +152,7 @@ const handleEdit = (gallery) => {
         formData.append('file', image.file);
         
         try {
-          const response = await fetch('/api/admin/upload', {
+          const response = await fetch('/api/adm/upload', {
             method: 'POST',
             body: formData
           });

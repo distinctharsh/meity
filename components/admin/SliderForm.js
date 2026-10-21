@@ -83,7 +83,7 @@ const SliderForm = ({ slide, onSubmit, onCancel }) => {
                       if (formData.image_url && formData.image_url.startsWith('/uploads/slider/')) {
                         fd.append('old_path', `public${formData.image_url}`);
                       }
-                      const res = await fetch('/api/admin/upload', { method: 'POST', body: fd });
+                      const res = await fetch('/api/adm/upload', { method: 'POST', body: fd });
                       if (!res.ok) {
                         const err = await res.json().catch(() => ({}));
                         throw new Error(err.message || 'Upload failed');

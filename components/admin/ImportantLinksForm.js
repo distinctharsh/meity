@@ -55,7 +55,7 @@ export default function ImportantLinksForm({ link, onSubmit, onCancel }) {
       const formData = new FormData();
       formData.append('file', file);
 
-      const response = await fetch('/api/admin/upload-file', {
+      const response = await fetch('/api/adm/upload-file', {
         method: 'POST',
         body: formData,
       });

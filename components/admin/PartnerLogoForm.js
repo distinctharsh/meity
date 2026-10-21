@@ -45,7 +45,7 @@ export default function PartnerLogoForm({ logo, onSubmit, onCancel }) {
         uploadFormData.append('old_path', logo.image_url.startsWith('/') ? logo.image_url.slice(1) : logo.image_url);
       }
 
-      const response = await fetch('/api/admin/upload', {
+      const response = await fetch('/api/adm/upload', {
         method: 'POST',
         body: uploadFormData,
       });

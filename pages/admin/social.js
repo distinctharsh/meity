@@ -13,7 +13,7 @@ export default function AdminSocialPage() {
   const load = async () => {
     try {
       setLoading(true);
-      const res = await fetch('/api/admin/social-posts');
+      const res = await fetch('/api/adm/social-posts');
       if (!res.ok) throw new Error('Failed to load');
       const data = await res.json();
       setPosts(data);
@@ -57,7 +57,7 @@ export default function AdminSocialPage() {
 
   const onDelete = async (id) => {
     if (!confirm('Delete this post?')) return;
-    const res = await fetch(`/api/admin/social-posts/${id}`, { method: 'DELETE' });
+    const res = await fetch(`/api/adm/social-posts/${id}`, { method: 'DELETE' });
     if (!res.ok) {
       alert('Delete failed');
     } else {

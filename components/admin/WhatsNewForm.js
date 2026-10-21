@@ -47,7 +47,7 @@ export default function WhatsNewForm({ item, onSubmit, onCancel }) {
         uploadFormData.append('old_path', item.file_url.startsWith('/') ? item.file_url.slice(1) : item.file_url);
       }
 
-      const response = await fetch('/api/admin/upload', {
+      const response = await fetch('/api/adm/upload', {
         method: 'POST',
         body: uploadFormData,
       });

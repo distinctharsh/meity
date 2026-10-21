@@ -13,9 +13,8 @@ export default async function handler(req, res) {
     const full = normalizePath(Array.isArray(slug) ? slug : [slug]);
 
     const [rows] = await pool.query(
-      `SELECT p.*, t.name as template_name, t.template_key
+      `SELECT p.*
        FROM pages p
-       LEFT JOIN page_templates t ON t.id = p.template_id
        WHERE p.slug = ? AND p.is_active = TRUE
        LIMIT 1`,
       [full]

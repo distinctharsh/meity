@@ -54,7 +54,7 @@ export default function SocialPostForm({ initial, onCancel, onSaved }) {
     setSaving(true);
     try {
       const method = initial ? 'PUT' : 'POST';
-      const url = initial ? `/api/admin/social-posts/${initial.id}` : '/api/admin/social-posts';
+      const url = initial ? `/api/adm/social-posts/${initial.id}` : '/api/adm/social-posts';
       // Prepare payload with possible normalization for Twitter
       const payload = {
         ...form,

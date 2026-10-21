@@ -25,7 +25,7 @@ export default function DirectoryPage() {
     let mounted = true;
     (async () => {
       try {
-        const r = await fetch('/api/admin/directory');
+        const r = await fetch('/api/adm/directory');
         const rows = r.ok ? await r.json() : [];
         if (!mounted) return;
         const clean = Array.isArray(rows) ? rows.filter(x => x && x.is_active) : [];

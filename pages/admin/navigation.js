@@ -13,7 +13,7 @@ export default function NavigationManagement() {
 
   const fetchNavigation = async () => {
     try {
-      const response = await fetch('/api/admin/navigation');
+      const response = await fetch('/api/adm/navigation');
       if (response.ok) {
         const data = await response.json();
         setNavigationItems(data);
@@ -39,7 +39,7 @@ export default function NavigationManagement() {
     if (!confirm('Are you sure you want to delete this navigation item?')) return;
 
     try {
-      const response = await fetch(`/api/admin/navigation/${id}`, {
+      const response = await fetch(`/api/adm/navigation/${id}`, {
         method: 'DELETE'
       });
 
@@ -56,7 +56,7 @@ export default function NavigationManagement() {
 
   const handleFormSubmit = async (formData) => {
     try {
-      const url = editingItem ? `/api/admin/navigation/${editingItem.id}` : '/api/admin/navigation';
+      const url = editingItem ? `/api/adm/navigation/${editingItem.id}` : '/api/adm/navigation';
       const method = editingItem ? 'PUT' : 'POST';
 
       const response = await fetch(url, {
@@ -83,7 +83,7 @@ export default function NavigationManagement() {
 
   const toggleActive = async (id, isActive) => {
     try {
-      const response = await fetch(`/api/admin/navigation/${id}`, {
+      const response = await fetch(`/api/adm/navigation/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

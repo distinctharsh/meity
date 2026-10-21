@@ -14,7 +14,7 @@ export default function OurTeam() {
     let mounted = true;
     (async () => {
       try {
-        const res = await fetch('/api/admin/our-team');
+        const res = await fetch('/api/adm/our-team');
         if (!res.ok) return;
         const rows = await res.json();
         if (mounted) setTeam(Array.isArray(rows) ? rows.filter(r => r && r.is_active) : []);
@@ -54,9 +54,9 @@ export default function OurTeam() {
     (async () => {
       try {
         const [s, p, c] = await Promise.all([
-          fetch('/api/admin/our-team/sections'),
-          fetch('/api/admin/our-team/people'),
-          fetch('/api/admin/our-team/contacts'),
+          fetch('/api/adm/our-team/sections'),
+          fetch('/api/adm/our-team/people'),
+          fetch('/api/adm/our-team/contacts'),
         ]);
         const [sv, pv, cv] = await Promise.all([
           s.ok ? s.json() : [],

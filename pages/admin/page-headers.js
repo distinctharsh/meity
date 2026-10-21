@@ -15,7 +15,7 @@ export default function PageHeadersAdmin() {
     setLoading(true);
     try {
       const qs = (path ?? filterPath) ? `?page_path=${encodeURIComponent(path ?? filterPath)}` : '';
-      const res = await fetch(`/api/admin/page-header${qs}`);
+      const res = await fetch(`/api/adm/page-header${qs}`);
       const data = res.ok ? await res.json() : [];
       setItems(Array.isArray(data) ? data : (data ? [data] : []));
     } catch (e) {
@@ -26,7 +26,7 @@ export default function PageHeadersAdmin() {
 
   async function loadPages() {
     try {
-      const res = await fetch('/api/admin/pages');
+      const res = await fetch('/api/adm/pages');
       if (!res.ok) return setPageOptions([]);
       const rows = await res.json();
       const opts = (rows || [])
@@ -45,7 +45,7 @@ export default function PageHeadersAdmin() {
   const handleDelete = async (id) => {
     if (!confirm('Delete this header?')) return;
     try {
-      const res = await fetch(`/api/admin/page-header/${id}`, { method: 'DELETE' });
+      const res = await fetch(`/api/adm/page-header/${id}`, { method: 'DELETE' });
       if (res.ok) await refresh(); else alert('Delete failed');
     } catch (e) { console.error(e); alert('Delete failed'); }
   };
@@ -156,7 +156,7 @@ function HeaderForm({ editing, onClose, onSaved, pageOptions }) {
     e.preventDefault();
     setSaving(true);
     try {
-      const url = editing ? `/api/admin/page-header/${editing.id}` : '/api/admin/page-header';
+      const url = editing ? `/api/adm/page-header/${editing.id}` : '/api/adm/page-header';
       const method = editing ? 'PUT' : 'POST';
       const res = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(form) });
       if (res.ok) await onSaved(); else {

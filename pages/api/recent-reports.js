@@ -8,21 +8,22 @@ export default async function handler(req, res) {
 
   try {
     const query = `
-      SELECT 
-        r.id,
-        r.title,
-        r.file_url,
-        n.name as nav_name,
-        n.link as nav_link
-      FROM 
-        reports r
-      LEFT JOIN 
-        navigation_items n ON r.nav_item_id = n.id
-      WHERE 
-        r.is_active = 1
-      ORDER BY 
-        r.created_at DESC
-      LIMIT 4
+      SELECT
+    r.id,
+    rf.original_name AS title,
+    r.file_url,
+    n.name AS nav_name,
+    n.link AS nav_link
+FROM report_files rf
+INNER JOIN reports r
+    ON r.id = rf.report_id
+LEFT JOIN navigation_items n
+    ON n.id = r.nav_item_id
+WHERE r.is_active = 1
+  AND rf.publish_date >= MAKEDATE(YEAR(CURDATE()) - 1, 1)
+  AND rf.publish_date <  MAKEDATE(YEAR(CURDATE()) + 1, 1)
+ORDER BY rf.created_at DESC
+LIMIT 4;
     `;
 
     const [rows] = await pool.query(query);

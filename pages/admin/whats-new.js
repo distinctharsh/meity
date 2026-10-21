@@ -14,7 +14,7 @@ export default function WhatsNewManagement() {
 
   const fetchItems = async () => {
     try {
-      const response = await fetch('/api/admin/whats-new');
+      const response = await fetch('/api/adm/whats-new');
       if (response.ok) {
         const data = await response.json();
         setItems(data);
@@ -41,7 +41,7 @@ export default function WhatsNewManagement() {
     if (!confirm('Are you sure you want to delete this what\'s new item?')) return;
 
     try {
-      const response = await fetch(`/api/admin/whats-new?id=${id}`, {
+      const response = await fetch(`/api/adm/whats-new?id=${id}`, {
         method: 'DELETE'
       });
 
@@ -59,8 +59,8 @@ export default function WhatsNewManagement() {
   const handleFormSubmit = async (formData) => {
     try {
       const apiUrl = editingItem 
-        ? '/api/admin/whats-new' 
-        : '/api/admin/whats-new';
+        ? '/api/adm/whats-new' 
+        : '/api/adm/whats-new';
       
       const method = editingItem ? 'PUT' : 'POST';
       const payload = editingItem 
@@ -91,7 +91,7 @@ export default function WhatsNewManagement() {
 
   const toggleActive = async (id, isActive) => {
     try {
-      const response = await fetch('/api/admin/whats-new', {
+      const response = await fetch('/api/adm/whats-new', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

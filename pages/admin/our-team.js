@@ -17,7 +17,7 @@ export default function AdminOurTeamPage() {
   const load = async () => {
     try {
       setLoading(true);
-      const res = await fetch('/api/admin/our-team');
+      const res = await fetch('/api/adm/our-team');
       if (!res.ok) throw new Error('Failed to load');
       const data = await res.json();
       setItems(data);
@@ -34,9 +34,9 @@ export default function AdminOurTeamPage() {
     try {
       setLoadingStruct(true);
       const [s, p, c] = await Promise.all([
-        fetch('/api/admin/our-team/sections'),
-        fetch('/api/admin/our-team/people'),
-        fetch('/api/admin/our-team/contacts'),
+        fetch('/api/adm/our-team/sections'),
+        fetch('/api/adm/our-team/people'),
+        fetch('/api/adm/our-team/contacts'),
       ]);
       const [sv, pv, cv] = await Promise.all([s.ok ? s.json() : [], p.ok ? p.json() : [], c.ok ? c.json() : []]);
       setSections(Array.isArray(sv) ? sv : []);
@@ -116,7 +116,7 @@ export default function AdminOurTeamPage() {
 
   const onDelete = async (id) => {
     if (!confirm('Delete this member?')) return;
-    const res = await fetch(`/api/admin/our-team/${id}`, { method: 'DELETE' });
+    const res = await fetch(`/api/adm/our-team/${id}`, { method: 'DELETE' });
     if (!res.ok) {
       alert('Delete failed');
     } else {
@@ -262,7 +262,7 @@ function OurTeamForm({ initial, onCancel, onSaved }) {
     e.preventDefault();
     try {
       setSaving(true);
-      const url = initial ? `/api/admin/our-team/${initial.id}` : '/api/admin/our-team';
+      const url = initial ? `/api/adm/our-team/${initial.id}` : '/api/adm/our-team';
       const method = initial ? 'PUT' : 'POST';
       const res = await fetch(url, {
         method,
@@ -399,7 +399,7 @@ function SectionsManager({ sections, reload }) {
   const save = async (e) => {
     e.preventDefault();
     const body = { title: form.title, display_order: form.display_order === '' ? undefined : Number(form.display_order), is_active: form.is_active };
-    const url = form.id ? `/api/admin/our-team/sections/${form.id}` : '/api/admin/our-team/sections';
+    const url = form.id ? `/api/adm/our-team/sections/${form.id}` : '/api/adm/our-team/sections';
     const method = form.id ? 'PUT' : 'POST';
     const res = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
     if (!res.ok) return alert('Save failed');
@@ -408,7 +408,7 @@ function SectionsManager({ sections, reload }) {
   };
   const remove = async (id) => {
     if (!confirm('Delete this section? All its people will be deleted.')) return;
-    const res = await fetch(`/api/admin/our-team/sections/${id}`, { method: 'DELETE' });
+    const res = await fetch(`/api/adm/our-team/sections/${id}`, { method: 'DELETE' });
     if (!res.ok) return alert('Delete failed');
     await reload();
   };
@@ -520,21 +520,21 @@ function PeopleManager({ sections, people, contacts, reload }) {
     try {
       const base = { section_id: Number(form.section_id), name: form.name, designation: form.designation, address: form.address, display_order: form.display_order === '' ? undefined : Number(form.display_order), is_active: form.is_active };
       if (!editing) {
-        const r = await fetch('/api/admin/our-team/people', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(base) });
+        const r = await fetch('/api/adm/our-team/people', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(base) });
         if (!r.ok) throw new Error('Save failed');
         const { id } = await r.json();
         for (const ct of form.contacts) {
           if (!ct.type || !ct.value) continue;
-          await fetch('/api/admin/our-team/contacts', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ person_id: id, type: ct.type, value: ct.value }) });
+          await fetch('/api/adm/our-team/contacts', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ person_id: id, type: ct.type, value: ct.value }) });
         }
       } else {
-        const r = await fetch(`/api/admin/our-team/people/${editing.id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(base) });
+        const r = await fetch(`/api/adm/our-team/people/${editing.id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(base) });
         if (!r.ok) throw new Error('Update failed');
         const existing = contacts.filter(ct => ct.person_id === editing.id);
-        for (const ex of existing) { await fetch(`/api/admin/our-team/contacts/${ex.id}`, { method: 'DELETE' }); }
+        for (const ex of existing) { await fetch(`/api/adm/our-team/contacts/${ex.id}`, { method: 'DELETE' }); }
         for (const ct of form.contacts) {
           if (!ct.type || !ct.value) continue;
-          await fetch('/api/admin/our-team/contacts', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ person_id: editing.id, type: ct.type, value: ct.value }) });
+          await fetch('/api/adm/our-team/contacts', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ person_id: editing.id, type: ct.type, value: ct.value }) });
         }
       }
       setShow(false);
@@ -547,7 +547,7 @@ function PeopleManager({ sections, people, contacts, reload }) {
 
   const remove = async (id) => {
     if (!confirm('Delete this person?')) return;
-    const r = await fetch(`/api/admin/our-team/people/${id}`, { method: 'DELETE' });
+    const r = await fetch(`/api/adm/our-team/people/${id}`, { method: 'DELETE' });
     if (!r.ok) return alert('Delete failed');
     await reload();
   };

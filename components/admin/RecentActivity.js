@@ -7,7 +7,7 @@ const RecentActivity = () => {
   useEffect(() => {
     const fetchActivities = async () => {
       try {
-        const response = await fetch('/api/admin/activities');
+        const response = await fetch('/api/adm/activities');
 
         if (response.ok) {
           const data = await response.json();

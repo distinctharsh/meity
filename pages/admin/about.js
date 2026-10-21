@@ -12,7 +12,7 @@ export default function AdminAboutPage() {
   const load = async () => {
     try {
       setLoading(true);
-      const res = await fetch('/api/admin/about');
+      const res = await fetch('/api/adm/about');
       if (!res.ok) throw new Error('Failed to load');
       const data = await res.json();
       setItems(data);
@@ -104,7 +104,7 @@ export default function AdminAboutPage() {
 
   const onDelete = async (id) => {
     if (!confirm('Delete this content section?')) return;
-    const res = await fetch(`/api/admin/about/${id}`, { method: 'DELETE' });
+    const res = await fetch(`/api/adm/about/${id}`, { method: 'DELETE' });
     if (!res.ok) {
       alert('Delete failed');
     } else {
@@ -237,7 +237,7 @@ export default function AdminAboutPage() {
 
     try {
       for (const item of defaultContent) {
-        await fetch('/api/admin/about', {
+        await fetch('/api/adm/about', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(item)
@@ -387,7 +387,7 @@ function AboutContentForm({ initial, onCancel, onSaved }) {
     e.preventDefault();
     try {
       setSaving(true);
-      const url = initial ? `/api/admin/about/${initial.id}` : '/api/admin/about';
+      const url = initial ? `/api/adm/about/${initial.id}` : '/api/adm/about';
       const method = initial ? 'PUT' : 'POST';
       
       // Use FormData for file upload

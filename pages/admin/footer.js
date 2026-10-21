@@ -37,7 +37,7 @@ export default function FooterAdminPage() {
 
   const fetchFooter = async () => {
     try {
-      const response = await fetch('/api/admin/footer');
+      const response = await fetch('/api/adm/footer');
       if (response.ok) {
         const data = await response.json();
         if (data) {
@@ -117,7 +117,7 @@ export default function FooterAdminPage() {
         instagram: instagramUrl,
       };
 
-      const response = await fetch('/api/admin/footer', {
+      const response = await fetch('/api/adm/footer', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

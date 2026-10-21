@@ -12,7 +12,7 @@ export default function TemplatesManagement() {
   async function refresh() {
     setLoading(true);
     try {
-      const res = await fetch('/api/admin/page-templates');
+      const res = await fetch('/api/adm/page-templates');
       const data = res.ok ? await res.json() : [];
       setTemplates(data);
     } catch (e) {
@@ -26,14 +26,14 @@ export default function TemplatesManagement() {
   async function handleDelete(id) {
     if (!confirm('Delete this template? Pages using it will need updating.')) return;
     try {
-      const res = await fetch(`/api/admin/page-templates/${id}`, { method: 'DELETE' });
+      const res = await fetch(`/api/adm/page-templates/${id}`, { method: 'DELETE' });
       if (res.ok) await refresh(); else alert('Delete failed');
     } catch (e) { console.error(e); alert('Delete failed'); }
   }
 
   async function toggleActive(tpl) {
     try {
-      const res = await fetch(`/api/admin/page-templates/${tpl.id}`, {
+      const res = await fetch(`/api/adm/page-templates/${tpl.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -146,7 +146,7 @@ function TemplateForm({ onClose, onSaved, editing }) {
         schema_json: form.schema_json ? JSON.parse(form.schema_json) : null,
         is_active: !!form.is_active,
       };
-      const url = editing ? `/api/admin/page-templates/${editing.id}` : '/api/admin/page-templates';
+      const url = editing ? `/api/adm/page-templates/${editing.id}` : '/api/adm/page-templates';
       const method = editing ? 'PUT' : 'POST';
       const res = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
       if (res.ok) await onSaved(); else {

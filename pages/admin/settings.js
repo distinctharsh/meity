@@ -12,7 +12,7 @@ export default function Settings() {
 
   const fetchSettings = async () => {
     try {
-      const response = await fetch('/api/admin/settings');
+      const response = await fetch('/api/adm/settings');
       if (response.ok) {
         const data = await response.json();
         const settingsObj = {};
@@ -33,7 +33,7 @@ export default function Settings() {
     setSaving(true);
 
     try {
-      const response = await fetch('/api/admin/settings', {
+      const response = await fetch('/api/adm/settings', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

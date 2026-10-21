@@ -14,7 +14,7 @@ export default function ImportantLinksManagement() {
 
   const fetchLinks = async () => {
     try {
-      const response = await fetch('/api/admin/important-links');
+      const response = await fetch('/api/adm/important-links');
       if (response.ok) {
         const data = await response.json();
         setLinks(data);
@@ -41,7 +41,7 @@ export default function ImportantLinksManagement() {
     if (!confirm('Are you sure you want to delete this important link?')) return;
 
     try {
-      const response = await fetch(`/api/admin/important-links?id=${id}`, {
+      const response = await fetch(`/api/adm/important-links?id=${id}`, {
         method: 'DELETE'
       });
 
@@ -59,8 +59,8 @@ export default function ImportantLinksManagement() {
   const handleFormSubmit = async (formData) => {
     try {
       const apiUrl = editingLink 
-        ? '/api/admin/important-links' 
-        : '/api/admin/important-links';
+        ? '/api/adm/important-links' 
+        : '/api/adm/important-links';
       
       const method = editingLink ? 'PUT' : 'POST';
       const payload = editingLink 
@@ -91,7 +91,7 @@ export default function ImportantLinksManagement() {
 
   const toggleActive = async (id, isActive) => {
     try {
-      const response = await fetch('/api/admin/important-links', {
+      const response = await fetch('/api/adm/important-links', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

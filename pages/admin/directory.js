@@ -15,7 +15,7 @@ export default function AdminDirectoryPage() {
   const load = async () => {
     setLoading(true);
     try {
-      const r = await fetch("/api/admin/directory");
+      const r = await fetch("/api/adm/directory");
       const data = r.ok ? await r.json() : [];
       setItems(Array.isArray(data) ? data : []);
     } finally {
@@ -110,7 +110,7 @@ export default function AdminDirectoryPage() {
 
   const onDelete = async (id) => {
     if (!confirm("Delete this entry?")) return;
-    const r = await fetch(`/api/admin/directory/${id}`, { method: "DELETE" });
+    const r = await fetch(`/api/adm/directory/${id}`, { method: "DELETE" });
     if (r.ok) await load();
   };
   const onSaved = async () => { setShowForm(false); setEditing(null); await load(); };
@@ -320,7 +320,7 @@ function DirectoryForm({ initial, onSaved, onCancel }) {
         display_order: form.display_order === "" ? undefined : Number(form.display_order),
         is_active: !!form.is_active,
       };
-      const url = initial ? `/api/admin/directory/${initial.id}` : "/api/admin/directory";
+      const url = initial ? `/api/adm/directory/${initial.id}` : "/api/adm/directory";
       const method = initial ? "PUT" : "POST";
       const r = await fetch(url, { method, headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
       if (!r.ok) throw new Error("Save failed");

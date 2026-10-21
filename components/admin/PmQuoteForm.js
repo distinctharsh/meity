@@ -57,7 +57,7 @@ export default function PmQuoteForm() {
   };
 
   const load = async () => {
-    const res = await fetch('/api/admin/pm-quotes');
+    const res = await fetch('/api/adm/pm-quotes');
     if (res.ok) {
       const data = await res.json();
       if (data) {
@@ -75,7 +75,7 @@ export default function PmQuoteForm() {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await fetch('/api/admin/pm-quotes', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(form) });
+      const res = await fetch('/api/adm/pm-quotes', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(form) });
       if (res.ok) await load();
     } finally {
       setLoading(false);

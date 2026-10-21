@@ -19,7 +19,7 @@ export default function AnnouncementsManagement() {
 
   const fetchAnnouncements = async () => {
     try {
-      const response = await fetch('/api/admin/announcements');
+      const response = await fetch('/api/adm/announcements');
       
       if (response.ok) {
         const data = await response.json();
@@ -66,7 +66,7 @@ export default function AnnouncementsManagement() {
     if (!confirm('Are you sure you want to delete this announcement?')) return;
 
     try {
-      const response = await fetch(`/api/admin/announcements/${id}`, {
+      const response = await fetch(`/api/adm/announcements/${id}`, {
         method: 'DELETE'
       });
 
@@ -99,7 +99,7 @@ export default function AnnouncementsManagement() {
 
   const handleFormSubmit = async (formData) => {
     try {
-      const url = editingAnnouncement ? `/api/admin/announcements/${editingAnnouncement.id}` : '/api/admin/announcements';
+      const url = editingAnnouncement ? `/api/adm/announcements/${editingAnnouncement.id}` : '/api/adm/announcements';
       const method = editingAnnouncement ? 'PUT' : 'POST';
 
       const response = await fetch(url, {
@@ -169,7 +169,7 @@ export default function AnnouncementsManagement() {
 
   const toggleActive = async (id, isActive) => {
     try {
-      const response = await fetch('/api/admin/announcements/toggle-status', {
+      const response = await fetch('/api/adm/announcements/toggle-status', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

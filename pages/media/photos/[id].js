@@ -18,7 +18,7 @@ export default function PhotoGalleryDetail() {
     const fetchGallery = async () => {
       setLoading(true);
       try {
-        const response = await fetch(`/api/admin/photos/${id}`);
+        const response = await fetch(`/api/adm/photos/${id}`);
         if (response.ok) {
           const data = await response.json();
           setGallery(data);

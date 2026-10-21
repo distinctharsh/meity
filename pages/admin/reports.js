@@ -15,7 +15,7 @@ export default function AdminReportsPage() {
   const load = async () => {
     try {
       setLoading(true);
-      const res = await fetch('/api/admin/reports');
+      const res = await fetch('/api/adm/reports');
       if (!res.ok) throw new Error('Failed to load');
       const data = await res.json();
       setItems(data);
@@ -61,7 +61,7 @@ export default function AdminReportsPage() {
 
   const onDelete = async (id) => {
     if (!confirm('Delete this report?')) return;
-    const res = await fetch(`/api/admin/reports/${id}`, { method: 'DELETE' });
+    const res = await fetch(`/api/adm/reports/${id}`, { method: 'DELETE' });
     if (!res.ok) {
       alert('Delete failed');
     } else {

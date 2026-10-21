@@ -33,9 +33,9 @@ export default function AdminRTIPage() {
     try {
       setLoading(true);
       const [contentRes, sectionsRes, itemsRes] = await Promise.all([
-        fetch('/api/admin/rti/content'),
-        fetch('/api/admin/rti/sections'),
-        fetch('/api/admin/rti/items')
+        fetch('/api/adm/rti/content'),
+        fetch('/api/adm/rti/sections'),
+        fetch('/api/adm/rti/items')
       ]);
       const contentData = await contentRes.json();
       const sectionsData = await sectionsRes.json();
@@ -93,7 +93,7 @@ export default function AdminRTIPage() {
   const saveContent = async () => {
     setSaving(true);
     try {
-      const res = await fetch('/api/admin/rti/content', {
+      const res = await fetch('/api/adm/rti/content', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -123,7 +123,7 @@ export default function AdminRTIPage() {
     };
     setSaving(true);
     try {
-      const url = editingSection ? `/api/admin/rti/sections/${editingSection.id}` : '/api/admin/rti/sections';
+      const url = editingSection ? `/api/adm/rti/sections/${editingSection.id}` : '/api/adm/rti/sections';
       const method = editingSection ? 'PUT' : 'POST';
       const res = await fetch(url, {
         method,
@@ -148,7 +148,7 @@ export default function AdminRTIPage() {
   const deleteSection = async (id) => {
     if (!confirm('Delete this section and all its items?')) return;
     try {
-      const res = await fetch(`/api/admin/rti/sections/${id}`, { method: 'DELETE' });
+      const res = await fetch(`/api/adm/rti/sections/${id}`, { method: 'DELETE' });
       if (res.ok) {
         showMsg('Section deleted');
         loadAll();
@@ -162,7 +162,7 @@ export default function AdminRTIPage() {
 
   const toggleSectionActive = async (sec) => {
     try {
-      const res = await fetch(`/api/admin/rti/sections/${sec.id}`, {
+      const res = await fetch(`/api/adm/rti/sections/${sec.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ is_active: !sec.is_active })
@@ -195,7 +195,7 @@ export default function AdminRTIPage() {
     }
     setSaving(true);
     try {
-      const url = editingItem ? `/api/admin/rti/items/${editingItem.id}` : '/api/admin/rti/items';
+      const url = editingItem ? `/api/adm/rti/items/${editingItem.id}` : '/api/adm/rti/items';
       const method = editingItem ? 'PUT' : 'POST';
       const res = await fetch(url, {
         method,
@@ -220,7 +220,7 @@ export default function AdminRTIPage() {
   const deleteItem = async (id) => {
     if (!confirm('Delete this item?')) return;
     try {
-      const res = await fetch(`/api/admin/rti/items/${id}`, { method: 'DELETE' });
+      const res = await fetch(`/api/adm/rti/items/${id}`, { method: 'DELETE' });
       if (res.ok) {
         showMsg('Item deleted');
         loadAll();
@@ -232,7 +232,7 @@ export default function AdminRTIPage() {
 
   const toggleItemActive = async (item) => {
     try {
-      const res = await fetch(`/api/admin/rti/items/${item.id}`, {
+      const res = await fetch(`/api/adm/rti/items/${item.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ is_active: !item.is_active })
@@ -265,7 +265,7 @@ export default function AdminRTIPage() {
     try {
       const fd = new FormData();
       fd.append('file', file);
-      const res = await fetch('/api/admin/media/upload', { method: 'POST', body: fd });
+      const res = await fetch('/api/adm/media/upload', { method: 'POST', body: fd });
       if (!res.ok) throw new Error('Upload failed');
       const data = await res.json();
       const up = data.files?.[0];

@@ -16,7 +16,10 @@ const IGNORE_PREFIXES = [
   '/sitemap.xml',
   '/404',
   '/_error',
+  '/search',
+  '/documents',
   '/report_document',
+  '/admin',
 ];
 
 const IGNORE_EXTENSIONS =

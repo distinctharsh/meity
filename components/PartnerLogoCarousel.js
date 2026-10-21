@@ -29,7 +29,7 @@ const PartnerLogoCarousel = ({ logos: initialLogos = [] }) => {
 
   const fetchPartnerLogos = async () => {
     try {
-      const response = await fetch('/api/admin/partner-logos');
+      const response = await fetch('/api/adm/partner-logos');
       if (response.ok) {
         const data = await response.json();
         const activeLogos = data
