@@ -260,7 +260,7 @@
   {
     "id": 3,
     "text": "Notices",
-    "href": "/",
+    "href": "/notices",
     "dropdown": true,
     "display_order": 5,
     "items": [

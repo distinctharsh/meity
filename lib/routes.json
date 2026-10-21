@@ -1,6 +1,7 @@
 [
   "/",
   "/about-us",
+  "/notices",
   "/gallery",
   "/about-us/functions",
   "/notices/vacancies",
@@ -33,7 +34,7 @@
   "/persona/media",
   "/documents/guides-for-civil-servants",
   "/about/cabinet-secretaries",
-  "/admin",
+  "/adm",
   "/help",
   "/archives",
   "/sitemap",
