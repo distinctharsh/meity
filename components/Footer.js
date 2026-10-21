@@ -41,7 +41,7 @@ const Footer = () => {
         <div className="flex flex-col md:flex-row md:justify-between gap-12">
 
           {/* Left Links Section */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-8 gap-y-5 md:gap-y-8">
             <div>
               <h4 className="font-20-600 mb-3">{t('useful_links')}</h4>
               <ul className="space-y-2 text-base">
@@ -154,7 +154,7 @@ const Footer = () => {
         <div className="flex flex-col md:flex-row md:justify-between gap-12">
 
           {/* Left Links Section */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             <div>
               <h4 className="font-20-600 mb-3">{t("useful_links")}</h4>
               <ul className="space-y-2 text-base">
@@ -174,7 +174,7 @@ const Footer = () => {
             </div>
             <div>
               {/* <h4 className="font-20-600 mb-3">{s2.title || "Website Policies"}</h4> */}
-              <ul className="space-y-2 text-base mt-[34px]">
+              <ul className="space-y-2 text-base mt-0 md:mt-[34px]">
                 <li>
                   <a href={s2Links[0]?.url || "#"} className="font-20-400">
                     <span aria-hidden="true" className="material-symbols-outlined mr-2">chevron_right</span>
@@ -191,7 +191,7 @@ const Footer = () => {
             </div>
             <div>
               {/* <h4 className="font-20-600 mb-3">{s3.title || "Related Links"}</h4> */}
-              <ul className="space-y-2 text-base mt-[34px]">
+              <ul className="space-y-2 text-base mt-0 md:mt-[34px]">
                 <li>
                   <a href={s3Links[0]?.url || "#"} className="font-20-400">
                     <span aria-hidden="true" className="material-symbols-outlined mr-2">chevron_right</span>
@@ -208,12 +208,12 @@ const Footer = () => {
             </div>
 
             {/* Footer Bottom Text */}
-            <div className="text-left text-gray-300 text-base md:whitespace-nowrap">
+            <div className="text-left text-gray-300 text-base mt-0 md:mt-0 md:whitespace-nowrap">
               {copyrightText}
             </div>
           </div>
 
-          <div className="flex flex-col items-center md:items-end space-y-4 mt-5">
+          <div className="flex flex-col items-center md:items-end space-y-4 mt-0 md:mt-5">
             {/* <h4 className="text-lg font-semibold md:whitespace-nowrap">SUBSCRIBE FOR UPDATES</h4> */}
 
             {/* Social Icons */}
@@ -234,8 +234,8 @@ const Footer = () => {
 
             {/* Logos */}
             <div className="flex space-x-8">
-              <a href="https://www.mygov.in/" target="_blank" rel="noopener noreferrer" className="bg-white p-3 rounded-lg block">
-                <img src="/images/footer/mygovmerisarkar.jpg" alt="MyGov" width={140} height={60} style={{ width: '140px', height: 'auto', objectFit: 'contain' }} />
+              <a href="https://www.mygov.in/" target="_blank" rel="noopener noreferrer" className=" p-3 rounded-lg block">
+                <img src="/images/footer/nic.png" alt="MyGov" width={140} height={60} style={{ width: '140px', height: 'auto', objectFit: 'contain' }} />
               </a>
 
               <a href="https://www.india.gov.in/" target="_blank" rel="noopener noreferrer" className="bg-white p-3 rounded-lg block">

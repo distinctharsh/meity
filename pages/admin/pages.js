@@ -421,7 +421,7 @@ function PageForm({ onClose, onSaved, editing }) {
         try {
           const res = await fetch(slug, { headers: { 'x-skip-cms': '1' }, cache: 'no-store' });
           const isCms = res.headers?.get?.('x-cms-page') === '1';
-          staticExists = res.ok && !isCms; // only true for real static routes
+          staticExists = res.ok && !isCms && slug !== ensureLeadingSlash(editing?.slug || '');
         } catch {}
 
         // 2) Check if a CMS page already exists for the slug

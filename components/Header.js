@@ -70,12 +70,12 @@ export default function Header() {
 
               {/* Logo */}
               <Link href="/" className="block">
-                <div className="flex items-end gap-3 cursor-pointer">
+                <div className="flex flex-row items-center justify-center gap-3 cursor-pointer text-left">
                   <div className="flex items-center flex-none">
                     <Emblem />
                   </div>
 
-                  <div className="flex flex-col leading-[1.2] min-w-0 md:flex-1 font-20-400">
+                  <div className="flex flex-col leading-[1.2] min-w-0 font-20-400">
                     <div
                       style={{
                         color: "#000",
@@ -89,7 +89,7 @@ export default function Header() {
                     <h2
                       style={{
                         color: "#000",
-                        letterSpacing: "0",
+                        letterSpacing: "#0",
                         marginBottom: 6,
                       }}
                       className="leading-[1.3] font-24-700"
@@ -157,7 +157,7 @@ export default function Header() {
             </div>
 
             {/* Right Column */}
-            <div className="flex justify-end md:justify-end gap-[18px] mb-0 md:mb-[10px] order-1 md:order-none">
+            <div className="flex justify-center md:justify-end gap-[18px] mb-0 md:mb-[10px] order-1 md:order-none w-full">
               <div className="flex gap-3 items-center">
                 <a
                   href="#main-content"
