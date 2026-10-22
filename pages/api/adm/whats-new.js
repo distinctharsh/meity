@@ -44,7 +44,8 @@ async function handlePost(req, res) {
       type = 'link', 
       file_url, 
       external_url, 
-      is_active = 1 
+      is_active = 1,
+      is_key_document = 0
     } = req.body;
 
     if (!title) {
@@ -65,8 +66,8 @@ async function handlePost(req, res) {
     const newDisplayOrder = maxOrder + 1;
 
     const [result] = await pool.query(
-      'INSERT INTO whats_new (title, type, file_url, external_url, display_order, is_active) VALUES (?, ?, ?, ?, ?, ?)',
-      [title, type, file_url, external_url, newDisplayOrder, is_active]
+      'INSERT INTO whats_new (title, type, file_url, external_url, display_order, is_active, is_key_document) VALUES (?, ?, ?, ?, ?, ?, ?)',
+      [title, type, file_url, external_url, newDisplayOrder, is_active, is_key_document]
     );
 
     return res.status(201).json({ 
@@ -81,7 +82,7 @@ async function handlePost(req, res) {
 
 async function handlePut(req, res) {
   try {
-    const { id, title, type, file_url, external_url, is_active } = req.body;
+    const { id, title, type, file_url, external_url, is_active, is_key_document } = req.body;
 
     if (!id) {
       return res.status(400).json({ message: 'Item ID is required' });
@@ -110,6 +111,10 @@ async function handlePut(req, res) {
     if (is_active !== undefined) {
       updates.push('is_active = ?');
       values.push(is_active);
+    }
+    if (is_key_document !== undefined) {
+      updates.push('is_key_document = ?');
+      values.push(is_key_document);
     }
 
     if (updates.length === 0) {

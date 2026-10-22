@@ -7,6 +7,7 @@ export default function WhatsNewForm({ item, onSubmit, onCancel }) {
     file_url: item?.file_url || '',
     external_url: item?.external_url || '',
     is_active: item?.is_active !== undefined ? item.is_active : 1,
+    is_key_document: Number(item?.is_key_document ?? 0),
   });
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState('');
@@ -233,6 +234,23 @@ export default function WhatsNewForm({ item, onSubmit, onCancel }) {
         />
         <label htmlFor="is_active" className="ml-2 text-sm text-gray-700">
           Active (show in What's New section)
+        </label>
+      </div>
+
+      <div className="flex items-center">
+        <input
+          type="checkbox"
+          id="is_key_document"
+          name="is_key_document"
+          checked={Number(formData.is_key_document) === 1}
+          onChange={handleInputChange}
+          className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+        />
+        <label
+          htmlFor="is_key_document"
+          className="ml-2 text-sm font-medium text-gray-700"
+        >
+          Is this a key document?
         </label>
       </div>
 
