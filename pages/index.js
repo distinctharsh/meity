@@ -19,7 +19,7 @@ export default function Home({ homeData }) {
         <HeroSlider slides={homeData?.slides || []} />
         <AnnouncementBar announcements={homeData?.announcements || []} />
         <PmQuote quotes={homeData?.pmQuotes || []} />
-        <AboutSection data={homeData?.aboutSection} />
+        <AboutSection data={homeData?.homeData?.aboutSection || homeData?.aboutSection} />
         <Offerings offerings={homeData?.offerings || []} />
         <RecentDocs docs={homeData?.recentDocs || []} />
         {/* <SocialMediaFeed /> */}
@@ -34,15 +34,25 @@ export default function Home({ homeData }) {
 export async function getServerSideProps() {
   try {
     const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:3000';
-    const res = await fetch(`${baseUrl}/api/home`);
-    if (!res.ok) {
-      throw new Error('Failed to fetch home data');
+    const [homeRes, sliderRes] = await Promise.all([
+      fetch(`${baseUrl}/api/home`),
+      fetch(`${baseUrl}/api/slider`)
+    ]);
+
+    const homeData = homeRes.ok ? await homeRes.json() : {};
+    const sliderData = sliderRes.ok ? await sliderRes.json() : [];
+
+    let slides = homeData?.slides || [];
+    if (Array.isArray(sliderData) && sliderData.length > 0) {
+      slides = sliderData;
     }
-    const homeData = await res.json();
-    
+
     return {
       props: {
-        homeData
+        homeData: {
+          ...homeData,
+          slides: slides,
+        }
       }
     };
   } catch (error) {

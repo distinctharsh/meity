@@ -41,11 +41,13 @@ const HeroSlider = ({ slides: initialSlides = [] }) => {
   useEffect(() => {
     if (!slides.length) return;
     
-    slides.forEach((s) => {
+    slides.forEach((s, idx) => {
       if (!s.image_url) return;
       
-      // 1. Browser ke Image object mein preload karke cache mein dalna
       const img = new window.Image();
+      if (idx === 0) {
+        img.fetchPriority = "high";
+      }
       img.src = s.image_url;
 
       img.onload = () => {
@@ -140,8 +142,7 @@ const HeroSlider = ({ slides: initialSlides = [] }) => {
               src={s.image_url}
               alt={`Slide ${index + 1}`}
               className="w-full h-full object-cover"
-              // Pehli slide ko priority load denge taaki LCP (Largest Contentful Paint) fast ho
-              priority={index === 0 ? "true" : undefined}
+              {...(index === 0 ? { fetchPriority: "high", loading: "eager" } : { loading: "lazy" })}
             />
           );
 
