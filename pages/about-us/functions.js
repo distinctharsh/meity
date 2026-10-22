@@ -132,7 +132,7 @@ export default function AboutUs() {
                       {getSectionByKey('cabinet_secretaries').title}
                     </p>
                     <a
-                      href="/about/cabinet-secretaries"
+                      href="/about-us/cabinet-secretary"
                       target="_blank"
                       rel="noopener noreferrer"
                       style={{ background: '#a3bbf3', color: '#162f6a', padding: '4px 8px', cursor: 'pointer', textDecoration: 'none' }}
