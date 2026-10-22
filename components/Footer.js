@@ -234,7 +234,7 @@ const Footer = () => {
 
             {/* Logos */}
             <div className="flex space-x-8">
-              <a href="https://www.mygov.in/" target="_blank" rel="noopener noreferrer" className=" p-3 rounded-lg block">
+              <a href="https://www.nic.gov.in/" target="_blank" rel="noopener noreferrer" className=" p-3 rounded-lg block">
                 <img src="/images/footer/nic.png" alt="MyGov" width={140} height={60} style={{ width: '140px', height: 'auto', objectFit: 'contain' }} />
               </a>
 
