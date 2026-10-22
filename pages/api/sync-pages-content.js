@@ -1,30 +1,16 @@
 import fs from 'fs';
 import path from 'path';
-import mysql from 'mysql2/promise';
-
-const dbConfig = {
-  host: process.env.DB_HOST,
-  user: process.env.DB_USERNAME,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_DATABASE,
-  port: Number(process.env.DB_PORT) || 3306
-};
+import pool from '@/lib/db';
 
 export default async function handler(req, res) {
   if (req.method !== 'GET' && req.method !== 'POST') {
     return res.status(405).json({ success: false, message: "Method not allowed" });
   }
 
-  if (!process.env.DB_HOST || !process.env.DB_USERNAME || !process.env.DB_DATABASE) {
-    return res.status(500).json({
-      success: false,
-      message: "Database environment variables are missing in .env file!"
-    });
-  }
-
   let connection;
   try {
-    connection = await mysql.createConnection(dbConfig);
+    // Pool se connection acquire karein
+    connection = await pool.getConnection();
 
     // Fetch all active pages with their content_json
     const [pageRows] = await connection.execute(
@@ -73,6 +59,7 @@ export default async function handler(req, res) {
     console.error("Sync pages content error:", error);
     return res.status(500).json({ success: false, error: error.message });
   } finally {
-    if (connection) await connection.end();
+    // Pool connection ko wapas release karna zaroori hai
+    if (connection) connection.release();
   }
 }

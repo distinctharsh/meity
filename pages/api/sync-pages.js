@@ -1,14 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import mysql from 'mysql2/promise';
-
-const dbConfig = {
-  host: process.env.DB_HOST,
-  user: process.env.DB_USERNAME,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_DATABASE,
-  port: Number(process.env.DB_PORT) || 3306
-};
+import pool from '@/lib/db';
 
 export default async function handler(req, res) {
   if (req.method !== 'GET' && req.method !== 'POST') {
@@ -17,7 +9,7 @@ export default async function handler(req, res) {
 
   let connection;
   try {
-    connection = await mysql.createConnection(dbConfig);
+    connection = await pool.getConnection();
     
     // Database ke 'pages' table se saare active pages fetch karein
     const [rows] = await connection.execute(
@@ -46,6 +38,7 @@ export default async function handler(req, res) {
     console.error("Pages Sync error:", error);
     return res.status(500).json({ success: false, error: error.message });
   } finally {
-    if (connection) await connection.end();
+    // Pool connection ko wapas release karna zaroori hai
+    if (connection) connection.release();
   }
 }
