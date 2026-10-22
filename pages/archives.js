@@ -140,16 +140,8 @@ export default function Archives() {
   return (
     <>
       <main id="main">
-        <PageHeader
-          pagePath={
-            pageType === "vacancies"
-              ? "/vacancies"
-              : pageType === "tenders"
-              ? "/tenders"
-              : "/documents/" + String(pageType)
-          }
-        />
-        <SubNavTabs pagePath="/archives/all" />
+        <PageHeader/>
+        <SubNavTabs/>
 
         <section className="mt-10 py-10" style={{ borderRadius: "20px" }}>
           <div className="gi-container">

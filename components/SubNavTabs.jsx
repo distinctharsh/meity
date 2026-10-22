@@ -186,11 +186,9 @@ export default function SubNavTabs({ pagePath }) {
                 // Build display href
                 let displayHref = it.href || it.archiveHref || '#';
                 
-                // For archive all mode, use archiveHref
-                if (effectivePath === '/archives/all' && it.archiveHref) {
+                if ((effectivePath === '/archives' || effectivePath === '/archives/all') && it.archiveHref) {
                   displayHref = it.archiveHref;
                 }
-                // For regular document links
                 else if (it.href && String(it.href).startsWith('/documents')) {
                   const rawHref = String(it.href);
                   if (rawHref === '/documents') {
