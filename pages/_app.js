@@ -3,7 +3,7 @@ import Navbar from '../components/Navbar';
 import Header from "@/components/Header";
 import GoToTop from "@/components/GoToTop";
 import dynamic from 'next/dynamic';
-const CookieBanner = dynamic(() => import('@/components/CookieBanner'), { ssr: false });
+// const CookieBanner = dynamic(() => import('@/components/CookieBanner'), { ssr: false });
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import Script from 'next/script';
@@ -81,7 +81,7 @@ export default function App({ Component, pageProps }) {
       <main id="main-content" tabIndex={-1} className="outline-none focus:outline-none">
         <Component {...pageProps} />
       </main>
-      <CookieBanner />
+      {/* <CookieBanner /> */}
       <GoToTop />
     </>
   );
