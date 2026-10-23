@@ -11,7 +11,7 @@ export default function NewNavbar() {
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [navItems, setNavItems] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [stickyTop, setStickyTop] = useState(null);
+  const [stickyTop, setStickyTop] = useState(0);
   const [mounted, setMounted] = useState(false);
 
   const router = useRouter();
@@ -595,12 +595,10 @@ export default function NewNavbar() {
    */
   return (
     <nav
-      className="hidden md:block bg-white shadow-[0_2px_4px_rgba(0,0,0,0.1)] sticky z-[299]"
+      className="hidden md:block bg-white shadow-[0_2px_4px_rgba(0,0,0,0.1)]"
       style={{
         borderBottom:
           '2px solid #162f6a',
-        top: stickyTop !== null ? `${stickyTop}px` : '0px',
-        opacity: stickyTop !== null ? 1 : 0,
       }}
     >
       <div className="px-[2%]">

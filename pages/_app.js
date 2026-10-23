@@ -76,8 +76,12 @@ export default function App({ Component, pageProps }) {
       ) : null}
       
       <SafeEventListenerGuard />
-      {!isAdminPage && <Header />}
-      {!isAdminPage && <Navbar />}
+      {!isAdminPage && (
+        <div className="sticky top-0 z-[998] bg-white">
+          <Header />
+          <Navbar />
+        </div>
+      )}
       <main id="main-content" tabIndex={-1} className="outline-none focus:outline-none">
         <Component {...pageProps} />
       </main>
