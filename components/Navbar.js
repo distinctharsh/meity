@@ -11,7 +11,7 @@ export default function NewNavbar() {
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [navItems, setNavItems] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [stickyTop, setStickyTop] = useState(0);
+  const [stickyTop, setStickyTop] = useState(null);
   const [mounted, setMounted] = useState(false);
 
   const router = useRouter();
@@ -599,7 +599,8 @@ export default function NewNavbar() {
       style={{
         borderBottom:
           '2px solid #162f6a',
-        top: stickyTop,
+        top: stickyTop !== null ? `${stickyTop}px` : '0px',
+        opacity: stickyTop !== null ? 1 : 0,
       }}
     >
       <div className="px-[2%]">
