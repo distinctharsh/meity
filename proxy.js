@@ -25,7 +25,7 @@ const IGNORE_PREFIXES = [
 const IGNORE_EXTENSIONS =
   /\.(?:ico|jpg|jpeg|png|svg|css|js|woff2?|ttf|mp4)$/i;
 
-export function middleware(req) {
+export function proxy(req) {
   const { pathname } = req.nextUrl;
 
   if (req.method !== 'GET') {
