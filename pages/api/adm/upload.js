@@ -2,7 +2,6 @@ import fs from 'fs';
 import path from 'path';
 import { promisify } from 'util';
 import { IncomingForm } from 'formidable';
-import os from 'os';
 
 export const config = {
   api: {
@@ -60,13 +59,36 @@ export default async function handler(req, res) {
       return res.status(400).json({ message: 'No file uploaded' });
     }
 
+    const tempPath = Array.isArray(file.filepath) ? file.filepath[0] : file.filepath;
+    if (!tempPath || !fs.existsSync(tempPath)) {
+      return res.status(500).json({ message: 'Temporary file not found' });
+    }
+
     try {
       const originalName = Array.isArray(file.originalFilename) ? file.originalFilename[0] : file.originalFilename;
-      const tempPath = Array.isArray(file.filepath) ? file.filepath[0] : file.filepath;
-      if (!tempPath || !fs.existsSync(tempPath)) {
-        return res.status(500).json({ message: 'Temporary file not found' });
+      const allowedMimeTypes = [
+        'application/pdf',
+        'image/jpeg',
+        'image/jpg',
+        'image/png',
+        'image/webp'
+      ];
+      
+      const allowedExtensions = ['.pdf', '.jpg', '.jpeg', '.png', '.webp'];
+      const ext = path.extname(originalName || '').toLowerCase();
+      const mimeType = file.mimetype || '';
+
+      const isValidMime = allowedMimeTypes.includes(mimeType);
+      const isValidExt = allowedExtensions.includes(ext);
+
+      if (!isValidMime || !isValidExt) {
+        try { await unlink(tempPath); } catch (_) {}
+        
+        return res.status(400).json({ 
+          message: 'Invalid file type. Only PDF, JPG, JPEG, PNG, and WEBP files are allowed.' 
+        });
       }
-      const ext = path.extname(originalName || '').toLowerCase() || '.jpg';
+
       const baseName = `${Date.now()}_${Math.random().toString(36).slice(2, 8)}${ext}`;
       const destPath = path.join(uploadBase, baseName);
 
@@ -88,6 +110,7 @@ export default async function handler(req, res) {
       return res.status(200).json({ url: publicUrl, path: `public${publicUrl}` });
     } catch (e) {
       console.error('Upload save error:', e);
+      try { await unlink(tempPath); } catch (_) {}
       return res.status(500).json({ message: 'Failed to save file' });
     }
   });

@@ -39,20 +39,50 @@ export default async function handler(req, res) {
     }
 
     const f = Array.isArray(file) ? file[0] : file;
+    const tempPath = f.filepath || f.path;
+    const origName = f.originalFilename || f.name || 'upload';
+    
+    // ==========================================
+    // 1. FILE TYPE VALIDATION (PDF, JPG, JPEG, PNG, WEBP)
+    // ==========================================
+    const allowedMimeTypes = [
+      'application/pdf',
+      'image/jpeg',
+      'image/jpg',
+      'image/png',
+      'image/webp'
+    ];
+    
+    const allowedExtensions = ['.pdf', '.jpg', '.jpeg', '.png', '.webp'];
+    const ext = path.extname(origName).toLowerCase();
+
+    const isValidMime = f.mimetype && allowedMimeTypes.includes(f.mimetype);
+    const isValidExt = allowedExtensions.includes(ext);
+
+    if (!isValidMime || !isValidExt) {
+      // Agar file invalid hai, toh formidable ki temporary file ko delete kar dein
+      if (tempPath && fs.existsSync(tempPath)) {
+        await fs.promises.unlink(tempPath).catch(() => {});
+      }
+      return res.status(400).json({ 
+        error: 'Invalid file type. Only PDF, JPG, JPEG, PNG, and WEBP files are allowed.' 
+      });
+    }
+    // ==========================================
+
     const type = fields.type ? fields.type[0] : 'general';
 
     // Create type-specific directory
     const uploadDir = path.join(process.cwd(), 'public', 'uploads', type);
     ensureDirSync(uploadDir);
 
-    // In formidable v3, file.filepath and file.originalFilename
-    const tempPath = f.filepath || f.path;
-    const origName = f.originalFilename || f.name || 'upload';
-    const ext = path.extname(origName) || '.bin';
     const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}${ext}`;
     const destPath = path.join(uploadDir, fileName);
 
     await fs.promises.copyFile(tempPath, destPath);
+
+    // Optional: Clean up temp file after copying
+    await fs.promises.unlink(tempPath).catch(() => {});
 
     const publicUrl = `/uploads/${type}/${fileName}`;
     const fileSize = f.size || 0;
