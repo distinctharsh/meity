@@ -43,16 +43,11 @@ const readErrorPayload = async (response) => {
  */
 export const fetchAnnouncements = async () => {
   try {
-    const response = await fetchWithCacheBusting('/api/admin/announcements');
+    const response = await fetchWithCacheBusting('/api/home');
     if (response.ok) {
-      return await response.json();
+      const data = await response.json();
+      return data.announcements || [];
     }
-    const { body } = await readErrorPayload(response);
-    console.error('Announcements fetch failed', {
-      status: response.status,
-      statusText: response.statusText,
-      body
-    });
     return [];
   } catch (error) {
     console.error('Error fetching announcements:', error);
@@ -61,58 +56,11 @@ export const fetchAnnouncements = async () => {
 };
 
 /**
- * Fetch offerings with cache-busting
- * @returns {Promise<Array>}
- */
-export const fetchOfferings = async () => {
-  try {
-    const response = await fetchWithCacheBusting('/api/admin/offerings');
-    if (response.ok) {
-      return await response.json();
-    }
-    const { body } = await readErrorPayload(response);
-    console.error('Offerings fetch failed', {
-      status: response.status,
-      statusText: response.statusText,
-      body
-    });
-    return [];
-  } catch (error) {
-    console.error('Error fetching offerings:', error);
-    return [];
-  }
-};
-
-/**
- * Fetch slider data with cache-busting
- * @returns {Promise<Array>}
- */
-export const fetchSliderData = async () => {
-  try {
-    const response = await fetchWithCacheBusting('/api/admin/slider');
-    if (response.ok) {
-      return await response.json();
-    }
-    const { body } = await readErrorPayload(response);
-    console.error('Slider fetch failed', {
-      status: response.status,
-      statusText: response.statusText,
-      body
-    });
-    return [];
-  } catch (error) {
-    console.error('Error fetching slider data:', error);
-    return [];
-  }
-};
-
-/**
- * Auto-refresh hook for components
+ * Standard Data Fetch Hook (Without 30-second auto-refresh polling)
  * @param {Function} fetchFunction - Function to fetch data
- * @param {number} interval - Refresh interval in milliseconds (default: 30000)
  * @returns {Array} [data, loading, error, refetch]
  */
-export const useAutoRefresh = (fetchFunction, interval = 30000) => {
+export const useAutoRefresh = (fetchFunction) => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -132,10 +80,7 @@ export const useAutoRefresh = (fetchFunction, interval = 30000) => {
 
   useEffect(() => {
     fetchData();
-
-    const refreshInterval = setInterval(fetchData, interval);
-    return () => clearInterval(refreshInterval);
-  }, [interval]);
+  }, []);
 
   return [data, loading, error, fetchData];
 };

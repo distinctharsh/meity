@@ -18,17 +18,11 @@ export default function AnnouncementBar({ announcements: initialAnnouncements = 
     }
 
     fetchAnnouncementsData();
-
-    // Auto-refresh every 30 seconds to get latest updates
-    const interval = setInterval(() => {
-      fetchAnnouncementsData();
-    }, 30000);
-
-    return () => clearInterval(interval);
   }, [initialAnnouncements]);
 
   const fetchAnnouncementsData = async () => {
     try {
+      setLoading(true);
       const data = await fetchAnnouncements();
       // Filter only active announcements
       const activeAnnouncements = data.filter(announcement => parseBoolean(announcement.is_active));
@@ -40,8 +34,8 @@ export default function AnnouncementBar({ announcements: initialAnnouncements = 
     }
   };
 
-  // If no announcements, show default message
-  if (loading) {
+  // If loading announcements
+  if (loading && announcements.length === 0) {
     return (
       <div className="bg-[#e0e0e0]">
         <div className="gi-container flex items-center py-[6px] px-3 overflow-hidden text-[14px]">
@@ -56,22 +50,6 @@ export default function AnnouncementBar({ announcements: initialAnnouncements = 
       </div>
     );
   }
-
-  // if (announcements.length === 0) {
-  //   return (
-  //     <div className="bg-[#e0e0e0]">
-  //       <div className="gi-container flex items-center py-[6px] px-3 overflow-hidden text-[14px]">
-  //         <div className="flex items-center font-bold text-[#12306b] mr-3 gap-1">
-  //           <span className="mr-1">{t('announcements')}</span>
-  //          <Announcement />
-  //         </div>
-  //         <div className="flex-1 text-center text-[#1a1a1a]">
-  //           No announcements available
-  //         </div>
-  //       </div>
-  //     </div>
-  //   );
-  // }
 
   return (
     <div className="bg-[#c6c6c6]">
@@ -90,7 +68,7 @@ export default function AnnouncementBar({ announcements: initialAnnouncements = 
             onMouseLeave={() => setIsHovered(false)}
           >
             {announcements.map((announcement, index) => (
-              <span key={announcement.id} className="mr-[50px] text-[#1a1a1a]">
+              <span key={announcement.id || index} className="mr-[50px] text-[#1a1a1a]">
                 {announcement.title}
                 {announcement.link_url && (
                   <a
@@ -109,7 +87,7 @@ export default function AnnouncementBar({ announcements: initialAnnouncements = 
 
         {/* Right side: Play/Pause Button */}
         <button
-          className="ml-3   text-blue-600 text-[16px] font-bold w-8 h-8  cursor-pointer flex items-center justify-center transition-all duration-200 hover:scale-110 "
+          className="ml-3 text-blue-600 text-[16px] font-bold w-8 h-8 cursor-pointer flex items-center justify-center transition-all duration-200 hover:scale-110"
           onClick={() => setIsPaused(!isPaused)}
           aria-label={
             isPaused
