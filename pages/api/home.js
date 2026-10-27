@@ -46,7 +46,7 @@ export default async function handler(req, res) {
     */
 
     // Fast Load: Read data from local JSON file
-    const filePath = path.join(process.cwd(), 'public', 'data', 'homeData.json');
+    const filePath = path.join(process.cwd(), 'lib', 'homeData.json');
     
     let jsonData = {
       slides: [],

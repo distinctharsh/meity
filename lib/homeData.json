@@ -1,0 +1,356 @@
+{
+  "slides": [
+    {
+      "id": 1,
+      "image_url": "/uploads/media/1791461691412_pxx7uu.jpg",
+      "link_url": "",
+      "display_order": 0,
+      "is_active": 1,
+      "created_at": "2026-10-08T12:14:52.000Z",
+      "updated_at": "2026-10-27T10:00:54.000Z"
+    },
+    {
+      "id": 2,
+      "image_url": "/uploads/media/1791821213494_y20t6r.jpg",
+      "link_url": "",
+      "display_order": 1,
+      "is_active": 1,
+      "created_at": "2026-10-12T16:06:57.000Z",
+      "updated_at": "2026-10-27T06:36:00.000Z"
+    },
+    {
+      "id": 3,
+      "image_url": "/uploads/media/1791821229697_zndijy.jpeg",
+      "link_url": "",
+      "display_order": 2,
+      "is_active": 1,
+      "created_at": "2026-10-12T16:07:14.000Z",
+      "updated_at": "2026-10-27T06:36:01.000Z"
+    },
+    {
+      "id": 4,
+      "image_url": "/uploads/media/1791821239903_9r0qtw.jpeg",
+      "link_url": "",
+      "display_order": 3,
+      "is_active": 1,
+      "created_at": "2026-10-12T16:07:24.000Z",
+      "updated_at": "2026-10-27T10:00:55.000Z"
+    }
+  ],
+  "announcements": [],
+  "pmQuotes": [
+    {
+      "id": 1,
+      "quote_text": "भारत आज सिर्फ growth कि वजह से नहीं जाना जा रहा बल्कि governance, transparency और innovation के नए benchmarks सेट कर रहा है|\r ",
+      "author": "PM’s address on the 17th Civil Services Day",
+      "image_url": "http://localhost:3000/images/pm/pm-modi.jpg",
+      "event_url": "https://www.pmindia.gov.in/en/news_updates/pms-address-on-the-17th-civil-services-day/?comment=disable",
+      "quote_date": "2025-04-21T18:30:00.000Z",
+      "created_at": "2025-10-14T07:45:11.000Z",
+      "updated_at": "2026-10-27T09:11:55.000Z"
+    }
+  ],
+  "aboutSection": null,
+  "offerings": [
+    {
+      "id": 16,
+      "title": "Complete AOB Rules",
+      "description": "",
+      "icon": null,
+      "link_url": "https://master-cabsec.digifootprint.gov.in/static/uploads/2025/06/22034aee4a2445812bacdeb87c1ad473.pdf",
+      "category": "whats_new",
+      "display_order": 0,
+      "is_active": 1,
+      "created_at": "2026-04-23T06:14:13.000Z",
+      "updated_at": "2026-04-23T06:14:13.000Z",
+      "schemes": null,
+      "vacancies": null,
+      "whats_new": null
+    }
+  ],
+  "whatsNew": [
+    {
+      "id": 2,
+      "title": "Guide on the Art of Delegating Work",
+      "description": null,
+      "type": "link",
+      "file_url": null,
+      "external_url": "http://localhost:3000/report_document/guide_on_the_art_of_delegating_work/English/1_Upload_4248.pdf",
+      "display_order": 1,
+      "is_active": 1,
+      "created_at": "2026-10-12T15:45:41.000Z",
+      "updated_at": "2026-10-12T15:45:41.000Z",
+      "is_key_document": 0
+    },
+    {
+      "id": 3,
+      "title": "Guide on conducting Effective Meeting",
+      "description": null,
+      "type": "link",
+      "file_url": null,
+      "external_url": "http://localhost:3000/report_document/guide_on_the_art_of_delegating_work/English/1_Upload_4248.pdf",
+      "display_order": 2,
+      "is_active": 1,
+      "created_at": "2026-10-12T15:46:04.000Z",
+      "updated_at": "2026-10-12T15:46:04.000Z",
+      "is_key_document": 0
+    },
+    {
+      "id": 4,
+      "title": "Revised composition of Internal Complaints Committee (ICC) under the Sexual Harassment of Women at Workplace (Prevention, Prohibition and redressal) Act, 2013-Reg.",
+      "description": null,
+      "type": "link",
+      "file_url": null,
+      "external_url": "http://localhost:3000/report_document/circular/circulargeneral/English/1_Upload_4243.pdf",
+      "display_order": 3,
+      "is_active": 1,
+      "created_at": "2026-10-12T15:47:04.000Z",
+      "updated_at": "2026-10-12T15:47:04.000Z",
+      "is_key_document": 0
+    },
+    {
+      "id": 5,
+      "title": "Cybersaftety Awareness Programme organised in Cabinet Secretariat on 01st October,2026",
+      "description": null,
+      "type": "link",
+      "file_url": null,
+      "external_url": "http://localhost:3000/media/photos/3",
+      "display_order": 4,
+      "is_active": 1,
+      "created_at": "2026-10-12T15:47:40.000Z",
+      "updated_at": "2026-10-12T15:47:40.000Z",
+      "is_key_document": 0
+    },
+    {
+      "id": 6,
+      "title": "Hindi Pakhwada 2026 in Seva Teerth",
+      "description": null,
+      "type": "link",
+      "file_url": null,
+      "external_url": "http://localhost:3000/media/photos/4",
+      "display_order": 5,
+      "is_active": 1,
+      "created_at": "2026-10-12T15:48:20.000Z",
+      "updated_at": "2026-10-12T15:48:20.000Z",
+      "is_key_document": 0
+    },
+    {
+      "id": 7,
+      "title": "Allocation of Business Rules (AOB)",
+      "description": null,
+      "type": "link",
+      "file_url": null,
+      "external_url": "https://staging.cabsec.gov.in/report_document/allocationbusinessrule/completeaobrules/english/1_Upload_4265.pdf",
+      "display_order": 6,
+      "is_active": 1,
+      "created_at": "2026-10-22T09:48:02.000Z",
+      "updated_at": "2026-10-23T11:16:03.000Z",
+      "is_key_document": 1
+    },
+    {
+      "id": 8,
+      "title": "Transaction of Business Rules (TOB)",
+      "description": null,
+      "type": "link",
+      "file_url": null,
+      "external_url": "https://staging.cabsec.gov.in/report_document/transactionofbusinessrulescomplete/completeaobrules/english/1_Upload_3983.pdf",
+      "display_order": 7,
+      "is_active": 1,
+      "created_at": "2026-10-22T09:49:15.000Z",
+      "updated_at": "2026-10-23T11:16:09.000Z",
+      "is_key_document": 1
+    },
+    {
+      "id": 9,
+      "title": "Handbook on Cabinet Notes",
+      "description": null,
+      "type": "link",
+      "file_url": null,
+      "external_url": "https://staging.cabsec.gov.in/report_document/handbook/english/1_Upload_3722.pdf",
+      "display_order": 8,
+      "is_active": 1,
+      "created_at": "2026-10-22T09:52:16.000Z",
+      "updated_at": "2026-10-23T11:16:14.000Z",
+      "is_key_document": 1
+    },
+    {
+      "id": 10,
+      "title": "CABINET COMMITTEES",
+      "description": null,
+      "type": "link",
+      "file_url": null,
+      "external_url": "https://staging.cabsec.gov.in/report_document/cabinetcommittees/english/1_Upload_4300.pdf",
+      "display_order": 9,
+      "is_active": 1,
+      "created_at": "2026-10-22T09:54:10.000Z",
+      "updated_at": "2026-10-23T11:16:18.000Z",
+      "is_key_document": 1
+    }
+  ],
+  "importantLinks": [
+    {
+      "id": 1,
+      "title": "Secretary to GOI List",
+      "url": "https://doptcirculars.nic.in/Default.aspx?URL=6G4WVPFk5ngz",
+      "file_path": null,
+      "link_type": "url",
+      "display_order": 1,
+      "is_active": 1,
+      "created_at": "2026-05-06T12:22:38.000Z",
+      "updated_at": "2026-05-06T12:22:38.000Z"
+    },
+    {
+      "id": 2,
+      "title": "Former Cabinet Secretary List",
+      "url": "https://master-cabsec.digifootprint.gov.in/static/uploads/2025/06/39801d278cc54856899bd905a522e632.pdf",
+      "file_path": null,
+      "link_type": "url",
+      "display_order": 2,
+      "is_active": 1,
+      "created_at": "2026-05-06T12:23:10.000Z",
+      "updated_at": "2026-05-06T12:23:10.000Z"
+    },
+    {
+      "id": 6,
+      "title": "Cabinet Decisions",
+      "url": "https://www.pib.gov.in/PMContents/PMContents.aspx?menuid=6&Lang=1&RegionId=3&reg=3",
+      "file_path": null,
+      "link_type": "url",
+      "display_order": 3,
+      "is_active": 1,
+      "created_at": "2026-10-12T16:03:19.000Z",
+      "updated_at": "2026-10-12T16:03:19.000Z"
+    },
+    {
+      "id": 7,
+      "title": "CCEA Decisions",
+      "url": "https://www.pib.gov.in/PMContents/PMContents.aspx?menuid=7&Lang=1&RegionId=3&reg=3",
+      "file_path": null,
+      "link_type": "url",
+      "display_order": 4,
+      "is_active": 1,
+      "created_at": "2026-10-12T16:03:46.000Z",
+      "updated_at": "2026-10-12T16:03:46.000Z"
+    },
+    {
+      "id": 9,
+      "title": "iGot",
+      "url": "https://igotkarmayogi.gov.in",
+      "file_path": "",
+      "link_type": "url",
+      "display_order": 5,
+      "is_active": 1,
+      "created_at": "2026-10-12T16:05:30.000Z",
+      "updated_at": "2026-10-13T09:07:30.000Z"
+    },
+    {
+      "id": 10,
+      "title": "SPARROW",
+      "url": "https://sparrow.eoffice.gov.in",
+      "file_path": null,
+      "link_type": "url",
+      "display_order": 6,
+      "is_active": 1,
+      "created_at": "2026-10-12T16:05:52.000Z",
+      "updated_at": "2026-10-12T16:05:52.000Z"
+    }
+  ],
+  "recentDocs": [
+    {
+      "id": 26,
+      "title": "Filling up of two posts of Staff Car Driver (Ordinary Grade) in Cabinet Secretariat-Reg.",
+      "file_url": "/report_document/vacancies/english/1_Upload_3873.pdf",
+      "nav_name": null,
+      "nav_link": null
+    },
+    {
+      "id": 30,
+      "title": "Complete AOB Rules",
+      "file_url": "/report_document/allocationbusinessrule/completeaobrules/english/1_Upload_3980.pdf",
+      "nav_name": "Rules of Business",
+      "nav_link": "/documents/rules-of-business"
+    },
+    {
+      "id": 15,
+      "title": "Order dated 13/01/2025",
+      "file_url": "/report_document/allocationbusinessrule/amendment/english/1_Upload_3981.pdf",
+      "nav_name": "Rules of Business",
+      "nav_link": "/documents/rules-of-business"
+    },
+    {
+      "id": 18,
+      "title": "1/20/1/2024-Cab",
+      "file_url": "/report_document/transactionofbusinessrulescomplete/tobamendment/english/1_Upload_3982.pdf",
+      "nav_name": "Rules of Business",
+      "nav_link": "/documents/rules-of-business"
+    }
+  ],
+  "partnerLogos": [
+    {
+      "id": 1,
+      "title": "",
+      "image_url": "/uploads/media/1778068414059_vxjcco.jpg",
+      "alt_text": "pm",
+      "external_link": "https://www.pmindia.gov.in/en/",
+      "display_order": 0,
+      "is_active": 1,
+      "created_at": "2026-05-06T11:55:42.000Z",
+      "updated_at": "2026-10-27T09:12:54.000Z"
+    },
+    {
+      "id": 3,
+      "title": "",
+      "image_url": "/uploads/media/1778068598881_q9mnrj.jpg",
+      "alt_text": "97482eee88b8f2a19bf5d9780077830c",
+      "external_link": "https://egazette.gov.in/(S(3rodu0zcggs0nshaazsx5hjp))/default.aspx",
+      "display_order": 0,
+      "is_active": 1,
+      "created_at": "2026-05-06T11:56:39.000Z",
+      "updated_at": "2026-09-15T12:17:04.000Z"
+    },
+    {
+      "id": 2,
+      "title": "",
+      "image_url": "/uploads/media/1778068572833_41lxg2.jpg",
+      "alt_text": "Data Gov.in",
+      "external_link": "https://www.data.gov.in/",
+      "display_order": 1,
+      "is_active": 1,
+      "created_at": "2026-05-06T11:56:27.000Z",
+      "updated_at": "2026-09-15T12:16:18.000Z"
+    },
+    {
+      "id": 4,
+      "title": "",
+      "image_url": "/uploads/media/1778068611289_6grf2q.jpg",
+      "alt_text": "916e9ab3e813d51ff056b428eaedac42",
+      "external_link": "https://www.indiacode.nic.in/",
+      "display_order": 4,
+      "is_active": 1,
+      "created_at": "2026-05-06T11:56:54.000Z",
+      "updated_at": "2026-09-15T12:17:15.000Z"
+    },
+    {
+      "id": 5,
+      "title": "",
+      "image_url": "/uploads/media/1778068624420_qk6hqv.jpg",
+      "alt_text": "cebc17a8f9c8fe7643156e9ea2d1741d",
+      "external_link": "https://esamiksha.gov.in/",
+      "display_order": 5,
+      "is_active": 1,
+      "created_at": "2026-05-06T11:57:06.000Z",
+      "updated_at": "2026-09-15T12:17:27.000Z"
+    },
+    {
+      "id": 6,
+      "title": "",
+      "image_url": "/uploads/media/1778068636290_w4oql3.jpg",
+      "alt_text": "dd10418bcbdd24e8c56f2ca2ef3c85a8",
+      "external_link": "https://presidentofindia.nic.in/",
+      "display_order": 7,
+      "is_active": 1,
+      "created_at": "2026-05-06T11:57:18.000Z",
+      "updated_at": "2026-09-15T12:17:39.000Z"
+    }
+  ]
+}

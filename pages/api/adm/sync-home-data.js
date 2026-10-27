@@ -49,7 +49,6 @@ export default async function handler(req, res) {
       connection.execute('SELECT * FROM partner_logos WHERE is_active = 1 ORDER BY display_order ASC')
     ]);
 
-    // JSON structure taiyar karein jo homeData.json mein store hoga
     const homeDataPayload = {
       slides: slides || [],
       announcements: announcements || [],
@@ -62,10 +61,8 @@ export default async function handler(req, res) {
       partnerLogos: partnerLogos || []
     };
 
-    // public/data/homeData.json file ka path
-    const filePath = path.join(process.cwd(), 'public', 'data', 'homeData.json');
+    const filePath = path.join(process.cwd(), 'lib', 'homeData.json');
 
-    // File ko write/update karein
     fs.writeFileSync(filePath, JSON.stringify(homeDataPayload, null, 2), 'utf8');
 
     return res.status(200).json({
