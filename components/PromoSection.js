@@ -16,7 +16,7 @@ const PromoSection = () => {
             id: 1,
             imgSrc: "/images/promo/dbt.jpg",
             alt: "Cyber Security Challenge",
-            link: "#"
+            link: "https://dbtbharat.gov.in/"
         }
     ];
 
@@ -54,13 +54,20 @@ const PromoSection = () => {
 
                 {/* Image Section – zyada space le raha hai */}
                 <div className="relative w-full bg-gray-100 rounded-lg overflow-hidden md:h-full md:flex-[2] aspect-[16/9] md:aspect-auto">
-                    <Image
-                        src="/images/promo/digital-personal-data.jpg"
-                        alt="Digital Personal Data Protection"
-                        fill
-                        style={{ objectFit: "cover" }}
-                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 66vw, 50vw"
-                    />
+                    <a
+                        href="https://www.mygov.in/campaigns/make-in-india/?target=webview&type=campaign&nid=0"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="block w-full h-full"
+                    >
+                        <Image
+                            src="/images/promo/digital-personal-data.jpg"
+                            alt="Digital Personal Data Protection"
+                            fill
+                            style={{ objectFit: "cover" }}
+                            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 66vw, 50vw"
+                        />
+                    </a>
                 </div>
 
                 {/* Video Section with gaps */}

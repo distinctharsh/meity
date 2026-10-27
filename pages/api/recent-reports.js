@@ -11,7 +11,7 @@ export default async function handler(req, res) {
       SELECT
     r.id,
     rf.original_name AS title,
-    r.file_url,
+    rf.file_url,
     n.name AS nav_name,
     n.link AS nav_link
 FROM report_files rf

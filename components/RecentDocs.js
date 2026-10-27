@@ -1,8 +1,7 @@
 "use client";
 
-import { FiChevronRight, FiChevronLeft } from "react-icons/fi";
-import Image from "next/image";
-import { useEffect, useState } from "react";
+import { FiChevronRight } from "react-icons/fi";
+import { useState, useEffect } from "react";
 import Document from "./icons/Document";
 import { showConfirmationPopup } from "./common/ConfirmationPopup";
 import { t } from "@/lib/translations";
@@ -14,177 +13,41 @@ const fallbackRecent = [
   },
 ];
 
-const personas = [
-  {
-    img: "/images/user-personas/media.jpg",
-    label: t("for_media"),
-    url: "/persona/media",
-  },
-  {
-    img: "/images/user-personas/researcher.jpg",
-    label: t("for_researcher"),
-    url: "/persona/researcher",
-  },
-];
+const RecentDocs = ({ docs = [], importantLinks: initialImportantLinks = [] }) => {
+  const displayDocs = Array.isArray(docs) && docs.length > 0 ? docs : fallbackRecent;
+  const [importantLinks, setImportantLinks] = useState(initialImportantLinks);
 
-const RecentDocs = ({ docs: initialDocs = [] }) => {
-  const [docs, setDocs] = useState(fallbackRecent);
-  const [navLinks, setNavLinks] = useState(null);
-  const [recentDocs, setRecentDocs] = useState([]);
-  const [importantLinks, setImportantLinks] = useState([]);
-  const [importantLinksLoading, setImportantLinksLoading] = useState(true);
-
-  // Persona Slider State & Animation Trigger
-  const [currentPersonaIndex, setCurrentPersonaIndex] = useState(0);
-  const [isAnimating, setIsAnimating] = useState(false);
-
-  const changePersona = (newIndex) => {
-    if (newIndex === currentPersonaIndex) return;
-    setIsAnimating(true);
-    setTimeout(() => {
-      setCurrentPersonaIndex(newIndex);
-      setIsAnimating(false);
-    }, 200); // 200ms duration for fade out/in effect
-  };
-
-  const nextPersona = () => {
-    const nextIndex = (currentPersonaIndex + 1) % personas.length;
-    changePersona(nextIndex);
-  };
-
-  const prevPersona = () => {
-    const prevIndex = (currentPersonaIndex - 1 + personas.length) % personas.length;
-    changePersona(prevIndex);
-  };
-
-  const handlePersonaClick = () => {
-    const targetUrl = personas[currentPersonaIndex]?.url;
-    if (targetUrl) {
-      window.open(targetUrl, '_blank', 'noopener,noreferrer');
-    }
-  };
-
+  // Fallback fetch for important links if not passed via props
   useEffect(() => {
-    let mounted = true;
+    if (initialImportantLinks.length > 0) {
+      setImportantLinks(initialImportantLinks);
+      return;
+    }
 
-    (async () => {
-      try {
-        const res = await fetch("/api/recent-doc-links");
-
-        if (res.ok) {
-          const data = await res.json();
-
-          if (mounted && Array.isArray(data)) {
-            setNavLinks(data);
-          }
-        }
-      } catch (err) {
-        try {
-          const r2 = await fetch("/api/recent-docs");
-
-          if (r2.ok) {
-            const d2 = await r2.json();
-
-            if (mounted && Array.isArray(d2) && d2.length) {
-              setDocs(d2);
-            }
-          }
-        } catch {}
-      }
-
-      // Fetch important links
+    async function fetchLinks() {
       try {
         const res = await fetch("/api/home");
-
         if (res.ok) {
           const data = await res.json();
-          const importantLinksData = data.importantLinks || [];
-
-          if (mounted && Array.isArray(importantLinksData)) {
-            const activeLinks = importantLinksData
+          if (data.importantLinks && Array.isArray(data.importantLinks)) {
+            const activeLinks = data.importantLinks
               .filter((link) => Number(link.is_active) === 1)
               .sort((a, b) => Number(a.display_order || 0) - Number(b.display_order || 0));
-
             setImportantLinks(activeLinks);
           }
         }
       } catch (error) {
         console.error("Failed to fetch important links:", error);
-
-        if (mounted) {
-          setImportantLinks([
-            { 
-              title: "Secretary to GOI List",
-              link_type: "url",
-              url: "#",
-            },
-            {
-              title: "Former Cabinet Secretary List",
-              link_type: "url",
-              url: "#",
-            },
-            {
-              title: "IGoT",
-              link_type: "url",
-              url: "#",
-            },
-            {
-              title: "EHRMS",
-              link_type: "url",
-              url: "#",
-            },
-            {
-              title: "SPARROW",
-              link_type: "url",
-              url: "#",
-            },
-          ]);
-        }
-      } finally {
-        if (mounted) {
-          setImportantLinksLoading(false);
-        }
       }
-    })();
-
-    return () => {
-      mounted = false;
-    };
-  }, []);
-
-  useEffect(() => {
-    if (initialDocs.length > 0) {
-      setRecentDocs(initialDocs);
-      return;
     }
 
-    const fetchRecentDocs = async () => {
-      try {
-        const response = await fetch("/api/recent-reports");
-
-        if (response.ok) {
-          const data = await response.json();
-
-          if (Array.isArray(data) && data.length > 0) {
-            setRecentDocs(data);
-          } else {
-            setRecentDocs(fallbackRecent);
-          }
-        } else {
-          setRecentDocs(fallbackRecent);
-        }
-      } catch (error) {
-        console.error("Error fetching recent documents:", error);
-        setRecentDocs(fallbackRecent);
-      }
-    };
-
-    fetchRecentDocs();
-  }, []);
+    fetchLinks();
+  }, [initialImportantLinks]);
 
   const handleLinkClick = async (link) => {
     try {
-      if (link.link_type === "url" && link.url) {
+      const targetUrl = link.url || link.file_path;
+      if (targetUrl) {
         const confirmed = await showConfirmationPopup({
           title: t("external_website"),
           message: t("external_website_message"),
@@ -193,10 +56,8 @@ const RecentDocs = ({ docs: initialDocs = [] }) => {
         });
 
         if (confirmed) {
-          window.open(link.url, "_blank", "noopener,noreferrer");
+          window.open(targetUrl, "_blank", "noopener,noreferrer");
         }
-      } else if (link.link_type === "file" && link.file_path) {
-        window.open(link.file_path, "_blank", "noopener,noreferrer");
       }
     } catch (error) {
       console.error("Error handling link click:", error);
@@ -219,7 +80,7 @@ const RecentDocs = ({ docs: initialDocs = [] }) => {
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-4 mt-2 w-full">
-                {recentDocs.map((doc, index) => (
+                {displayDocs.map((doc, index) => (
                   <div
                     key={index}
                     className="bg-white border border-[#0a2e60] rounded-[6px] px-5 py-4 shadow-[0_1px_3px_rgba(0,0,0,0.08)]"
@@ -235,7 +96,7 @@ const RecentDocs = ({ docs: initialDocs = [] }) => {
                           {doc.nav_name}
                         </a>
                       ) : (
-                        doc.nav_name
+                        doc.nav_name || "Document"
                       )}
                     </h4>
 
@@ -364,36 +225,23 @@ const RecentDocs = ({ docs: initialDocs = [] }) => {
               </div>
 
               <div className="relative w-full">
-                {importantLinksLoading ? (
-                  <div className="flex justify-center items-center h-32 mt-2 bg-white">
-                    <div className="animate-pulse flex flex-col space-y-2 w-full px-4">
-                      {[...Array(5)].map((_, i) => (
-                        <div
-                          key={i}
-                          className="h-3 bg-gray-200 rounded"
-                        />
-                      ))}
-                    </div>
-                  </div>
-                ) : (
-                  <ul className="m-0 p-0 w-full mt-2 bg-white">
-                    {importantLinks.map((link, i) => (
-                      <li
-                        key={i}
-                        className="flex items-center justify-between border-b last:border-none border-[#e6ecff] py-3 px-4 hover:bg-[#f7f9ff] cursor-pointer transition-colors important-link-text"
-                        onClick={() => handleLinkClick(link)}
-                      >
-                        <span className="flex-1">
-                          {link.title}
-                        </span>
+                <ul className="m-0 p-0 w-full mt-2 bg-white">
+                  {importantLinks.map((link, i) => (
+                    <li
+                      key={i}
+                      className="flex items-center justify-between border-b last:border-none border-[#e6ecff] py-3 px-4 hover:bg-[#f7f9ff] cursor-pointer transition-colors important-link-text"
+                      onClick={() => handleLinkClick(link)}
+                    >
+                      <span className="flex-1">
+                        {link.title}
+                      </span>
 
-                        <span className="text-[#0b3a82]">
-                          <FiChevronRight />
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                )}
+                      <span className="text-[#0b3a82]">
+                        <FiChevronRight />
+                      </span>
+                    </li>
+                  ))}
+                </ul>
 
                 <span
                   className="absolute top-0 right-0 h-full w-[3px] bg-[#0b3a82]"

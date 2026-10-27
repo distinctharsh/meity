@@ -34,24 +34,14 @@ export default function Home({ homeData }) {
 export async function getServerSideProps() {
   try {
     const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:3000';
-    const [homeRes, sliderRes] = await Promise.all([
-      fetch(`${baseUrl}/api/home`),
-      fetch(`${baseUrl}/api/slider`)
-    ]);
-
+    const homeRes = await fetch(`${baseUrl}/api/home`);
     const homeData = homeRes.ok ? await homeRes.json() : {};
-    const sliderData = sliderRes.ok ? await sliderRes.json() : [];
-
-    let slides = homeData?.slides || [];
-    if (Array.isArray(sliderData) && sliderData.length > 0) {
-      slides = sliderData;
-    }
 
     return {
       props: {
         homeData: {
           ...homeData,
-          slides: slides,
+          slides: homeData?.slides || [],
         }
       }
     };
