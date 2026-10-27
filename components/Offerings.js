@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -17,23 +16,20 @@ export default function Offerings() {
 
     const loadData = async () => {
       try {
-        const response = await fetch('/api/adm/whats-new', {
+        const response = await fetch('/api/home', {
           method: 'GET',
           cache: 'no-store',
         });
 
         if (!response.ok) {
-          throw new Error(
-            `What's New API failed: ${response.status}`
-          );
+          throw new Error(`Home API failed: ${response.status}`);
         }
 
-        const data = await response.json();
+        const result = await response.json();
+        const data = result.whatsNew || [];
 
         if (!Array.isArray(data)) {
-          throw new Error(
-            "What's New API did not return an array"
-          );
+          throw new Error("What's New data did not return an array");
         }
 
         // Only active records

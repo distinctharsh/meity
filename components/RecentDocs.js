@@ -94,17 +94,16 @@ const RecentDocs = ({ docs: initialDocs = [] }) => {
 
       // Fetch important links
       try {
-        const importantLinksRes = await fetch(
-          "/api/adm/important-links"
-        );
+        const res = await fetch("/api/home");
 
-        if (importantLinksRes.ok) {
-          const importantLinksData = await importantLinksRes.json();
+        if (res.ok) {
+          const data = await res.json();
+          const importantLinksData = data.importantLinks || [];
 
           if (mounted && Array.isArray(importantLinksData)) {
             const activeLinks = importantLinksData
-              .filter((link) => link.is_active === 1)
-              .sort((a, b) => a.display_order - b.display_order);
+              .filter((link) => Number(link.is_active) === 1)
+              .sort((a, b) => Number(a.display_order || 0) - Number(b.display_order || 0));
 
             setImportantLinks(activeLinks);
           }
@@ -114,7 +113,7 @@ const RecentDocs = ({ docs: initialDocs = [] }) => {
 
         if (mounted) {
           setImportantLinks([
-            {
+            { 
               title: "Secretary to GOI List",
               link_type: "url",
               url: "#",
@@ -251,47 +250,8 @@ const RecentDocs = ({ docs: initialDocs = [] }) => {
               <div className="mt-6 flex justify-end w-full">
                 <button
                   className="view-btn"
-                  onClick={async () => {
-                    try {
-                      const navRes = await fetch("/api/navigation");
-
-                      if (!navRes.ok) throw new Error("nav fetch failed");
-
-                      const nav = await navRes.json();
-
-                      const findByLink = (nodes, link) => {
-                        for (const n of nodes || []) {
-                          if ((n.link || n.href) === link) return n;
-                          if (n.children) {
-                            const f = findByLink(n.children, link);
-                            if (f) return f;
-                          }
-                        }
-                        return null;
-                      };
-
-                      const section = findByLink(nav, "/documents");
-                      const children = section?.children || section?.items || [];
-                      const first = children.find((c) => c.is_active !== false) || children[0];
-
-                      let target = "/documents";
-                      if (first) {
-                        target = first.link || first.href || target;
-                      }
-
-                      if (typeof target === "string" && target.startsWith("/documents")) {
-                        if (target === "/documents") {
-                          window.location.href = "/documents";
-                        } else {
-                          const rest = target.replace(/^\/documents\//, "");
-                          window.location.href = `/documents/${encodeURIComponent(rest)}`;
-                        }
-                      } else {
-                        window.location.href = target;
-                      }
-                    } catch (e) {
-                      window.location.href = "/documents";
-                    }
+                  onClick={() => {
+                    window.location.href = "/documents/council-of-ministers-portfolio-allocations";
                   }}
                 >
                   {t("view_more")}

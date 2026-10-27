@@ -53,7 +53,7 @@ a,
 input[type="button"],
 input[type="submit"],
 .cursor-pointer,
-.hover\\:cursor-pointer:hover {
+.hover\:cursor-pointer:hover {
   cursor: pointer !important;
 }
 

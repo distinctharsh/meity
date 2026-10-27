@@ -18,7 +18,7 @@ export default function PhotoGalleryDetail() {
     const fetchGallery = async () => {
       setLoading(true);
       try {
-        const response = await fetch(`/api/adm/photos/${id}`);
+        const response = await fetch(`/api/photos/${id}`);
         if (response.ok) {
           const data = await response.json();
           setGallery(data);
@@ -95,7 +95,7 @@ export default function PhotoGalleryDetail() {
   if (loading) {
     return (
       <main id="main">
-        <PageHeader pagePath="/media/photos" />
+        <PageHeader/>
         <SubNavTabs />
         <section className="mt-10 py-10">
           <div className="gi-container">
@@ -120,7 +120,7 @@ export default function PhotoGalleryDetail() {
   if (!gallery) {
     return (
       <main id="main">
-        <PageHeader pagePath="/media/photos" />
+        <PageHeader />
         <SubNavTabs />
         <section className="mt-10 py-10">
           <div className="gi-container">
@@ -150,7 +150,7 @@ export default function PhotoGalleryDetail() {
       `}</style>
 
       <main id="main">
-        <PageHeader pagePath="/media/photos" />
+        <PageHeader pagePath="/gallery/photos" />
         <SubNavTabs />
 
         <section
@@ -243,7 +243,7 @@ export default function PhotoGalleryDetail() {
         >
           {/* Modal Box Container */}
           <div
-            className="relative flex flex-col w-full max-w-[680px] max-h-[80vh] overflow-hidden rounded-md shadow-2xl bg-black"
+            className="relative flex flex-col w-full  max-h-[90vh] overflow-hidden rounded-md shadow-2xl bg-black" style={{ maxWidth: "70vw" }}
             onClick={(event) => event.stopPropagation()}
           >
             {/* Top Right Floating Close Button */}

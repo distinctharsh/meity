@@ -50,6 +50,10 @@ export function proxy(req) {
     return NextResponse.next();
   }
 
+  if (pathname.startsWith('/gallery/photos/')) {
+    return NextResponse.next();
+  }
+
   if (!validRoutesSet.has(pathname)) {
     return NextResponse.rewrite(new URL('/404', req.url));
   }

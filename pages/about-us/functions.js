@@ -14,7 +14,7 @@ export default function AboutUs() {
     let mounted = true;
     (async () => {
       try {
-        const res = await fetch('/api/adm/about');
+        const res = await fetch('/api/about');
         if (!res.ok) return;
         const data = await res.json();
         if (mounted) setAboutContent(Array.isArray(data) ? data : []);

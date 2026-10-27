@@ -19,7 +19,7 @@ export default function Photos() {
 
   const fetchGalleries = async () => {
     try {
-      const response = await fetch('/api/adm/photos');
+      const response = await fetch('/api/photos');
       if (response.ok) {
         const data = await response.json();
         setGalleries(data);
@@ -32,7 +32,7 @@ export default function Photos() {
   };
 
   const handleGalleryClick = (galleryId) => {
-    router.push(`/media/photos/${galleryId}`);
+    router.push(`/gallery/photos/${galleryId}`);
   };
 
   const filtered = useMemo(() => {

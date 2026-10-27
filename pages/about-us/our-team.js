@@ -10,21 +10,37 @@ import { t } from '@/lib/translations';
 import { MdApartment } from "react-icons/md";
 
 export default function OurTeam() {
-  // Load admin-managed team for dynamic top cards (Minister / MoS)
   const [team, setTeam] = useState([]);
   const [loadingTeam, setLoadingTeam] = useState(true);
+
+  const [sections, setSections] = useState([]);
+  const [people, setPeople] = useState([]);
+  const [contacts, setContacts] = useState([]);
+  const [loadingSections, setLoadingSections] = useState(true);
 
   useEffect(() => {
     let mounted = true;
     (async () => {
       try {
-        const res = await fetch('/api/adm/our-team');
+        const res = await fetch('/api/our-team');
         if (!res.ok) return;
-        const rows = await res.json();
-        if (mounted) setTeam(Array.isArray(rows) ? rows.filter(r => r && r.is_active) : []);
-      } catch { }
-      finally {
-        if (mounted) setLoadingTeam(false);
+        const data = await res.json();
+
+        if (mounted) {
+          const teamRows = data.team || [];
+          setTeam(teamRows.filter(r => r && r.is_active));
+
+          setSections(Array.isArray(data.sections) ? data.sections.filter(x => x?.is_active) : []);
+          setPeople(Array.isArray(data.people) ? data.people.filter(x => x?.is_active) : []);
+          setContacts(Array.isArray(data.contacts) ? data.contacts.filter(x => x?.is_active) : []);
+        }
+      } catch (e) {
+        console.error('Failed to load our team data:', e);
+      } finally {
+        if (mounted) {
+          setLoadingTeam(false);
+          setLoadingSections(false);
+        }
       }
     })();
     return () => { mounted = false; };
@@ -50,35 +66,6 @@ export default function OurTeam() {
     if (r === 'official') return 'OFFICIAL';
     return r.toUpperCase();
   };
-
-  // Sections/People/Contacts from Admin
-  const [sections, setSections] = useState([]);
-  const [people, setPeople] = useState([]);
-  const [contacts, setContacts] = useState([]);
-  const [loadingSections, setLoadingSections] = useState(true);
-  useEffect(() => {
-    let mounted = true;
-    (async () => {
-      try {
-        const [s, p, c] = await Promise.all([
-          fetch('/api/adm/our-team/sections'),
-          fetch('/api/adm/our-team/people'),
-          fetch('/api/adm/our-team/contacts'),
-        ]);
-        const [sv, pv, cv] = await Promise.all([
-          s.ok ? s.json() : [],
-          p.ok ? p.json() : [],
-          c.ok ? c.json() : [],
-        ]);
-        if (!mounted) return;
-        setSections(Array.isArray(sv) ? sv.filter(x => x?.is_active) : []);
-        setPeople(Array.isArray(pv) ? pv.filter(x => x?.is_active) : []);
-        setContacts(Array.isArray(cv) ? cv.filter(x => x?.is_active) : []);
-      } catch { /* ignore */ }
-      finally { if (mounted) setLoadingSections(false); }
-    })();
-    return () => { mounted = false; };
-  }, []);
 
   const composedData = useMemo(() => {
     const byPerson = new Map();
