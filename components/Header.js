@@ -22,6 +22,51 @@ export default function Header() {
       ? [{ name: "हिन्दी", url: "https://www.cabsec.nic.in" }]
       : [{ name: "English", url: "https://cabsec.nic.in" }];
 
+
+const [mobileBarFixed, setMobileBarFixed] = useState(false);
+const mobileBarRef = useRef(null);
+
+useEffect(() => {
+  const bar = mobileBarRef.current;
+  if (!bar) return;
+
+  let ticking = false;
+
+  const handleScroll = () => {
+    if (ticking) return;
+
+    ticking = true;
+
+    window.requestAnimationFrame(() => {
+      const top = bar.getBoundingClientRect().top;
+
+      setMobileBarFixed((current) => {
+        const shouldFix = current
+          ? window.scrollY > 0
+          : top <= 0;
+
+        return shouldFix;
+      });
+
+      ticking = false;
+    });
+  };
+
+  handleScroll();
+
+  window.addEventListener("scroll", handleScroll, {
+    passive: true,
+  });
+
+  window.addEventListener("resize", handleScroll);
+
+  return () => {
+    window.removeEventListener("scroll", handleScroll);
+    window.removeEventListener("resize", handleScroll);
+  };
+}, []);
+
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
@@ -212,7 +257,7 @@ export default function Header() {
       </header>
 
       {/* Mobile Search */}
-      <div className="md:hidden sticky top-0 z-[999] bg-white border-b border-[#e6e6e6] px-4 py-2">
+      <div ref={mobileBarRef} className={`md:hidden z-[5000] bg-white border-b border-[#e6e6e6] px-4 py-2 ${ mobileBarFixed ? "fixed top-0 left-0 right-0" : "relative" }`} >
         <div className="flex items-center justify-between">
           <div className="flex items-center flex-1">
             <div className="flex items-center border-[2px] border-[#ebeaea] border-b-[3px] border-b-[#123a6b] rounded-t-[12px] overflow-hidden w-full max-w-[320px] bg-white">

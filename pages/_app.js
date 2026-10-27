@@ -77,7 +77,7 @@ export default function App({ Component, pageProps }) {
       
       <SafeEventListenerGuard />
       {!isAdminPage && (
-        <div className="sticky top-0 z-[998] bg-white">
+        <div className="relative bg-white md:sticky md:top-0 md:z-[998]">
           <Header />
           <Navbar />
         </div>

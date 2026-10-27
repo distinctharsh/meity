@@ -742,7 +742,7 @@ export default function NewNavbar() {
                 transform
                 transition-transform
                 duration-300
-                z-[5001]
+                z-[99999]
 
                 ${mobileMenuOpen ? "translate-x-0" : "translate-x-full"}
               `}
