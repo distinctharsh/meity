@@ -126,6 +126,15 @@
         "children": []
       },
       {
+        "id": 52,
+        "text": "Other Instructions and Guidelines",
+        "href": "/documents/other-instructions-and-guidelines",
+        "dropdown": false,
+        "display_order": 1,
+        "items": [],
+        "children": []
+      },
+      {
         "id": 49,
         "text": "Cabinet Committees - Compositions",
         "href": "/documents/cabinet-committees-compositions",
@@ -149,15 +158,6 @@
         "href": "/documents/instructions-on-cabinet-notes",
         "dropdown": false,
         "display_order": 3,
-        "items": [],
-        "children": []
-      },
-      {
-        "id": 52,
-        "text": "Other Instructions and Guidelines",
-        "href": "/documents/other-instructions-and-guidelines",
-        "dropdown": false,
-        "display_order": 4,
         "items": [],
         "children": []
       },
@@ -182,6 +182,15 @@
         "children": []
       },
       {
+        "id": 52,
+        "text": "Other Instructions and Guidelines",
+        "href": "/documents/other-instructions-and-guidelines",
+        "dropdown": false,
+        "display_order": 1,
+        "items": [],
+        "children": []
+      },
+      {
         "id": 49,
         "text": "Cabinet Committees - Compositions",
         "href": "/documents/cabinet-committees-compositions",
@@ -205,15 +214,6 @@
         "href": "/documents/instructions-on-cabinet-notes",
         "dropdown": false,
         "display_order": 3,
-        "items": [],
-        "children": []
-      },
-      {
-        "id": 52,
-        "text": "Other Instructions and Guidelines",
-        "href": "/documents/other-instructions-and-guidelines",
-        "dropdown": false,
-        "display_order": 4,
         "items": [],
         "children": []
       },

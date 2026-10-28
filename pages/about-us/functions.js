@@ -2,9 +2,8 @@ import Footer from "@/components/Footer";
 import Pdf from "@/components/icons/Pdf";
 import SubNavTabs from "@/components/SubNavTabs";
 import PageHeader from "@/components/PageHeader";
-import Skeleton, { SkeletonText, SkeletonSection, SkeletonDownloadCard } from "@/components/Skeleton";
+import Skeleton, { SkeletonText } from "@/components/Skeleton";
 import { useEffect, useState } from "react";
-import { t } from '@/lib/translations';
 
 export default function AboutUs() {
   const [aboutContent, setAboutContent] = useState([]);
@@ -14,12 +13,17 @@ export default function AboutUs() {
     let mounted = true;
     (async () => {
       try {
-        const res = await fetch('/api/about');
+        const res = await fetch("/api/about");
         if (!res.ok) return;
         const data = await res.json();
-        if (mounted) setAboutContent(Array.isArray(data) ? data : []);
+        if (mounted && Array.isArray(data)) {
+          const sorted = data.sort(
+            (a, b) => (a.display_order || 0) - (b.display_order || 0),
+          );
+          setAboutContent(sorted);
+        }
       } catch (e) {
-        console.error('Failed to load about content:', e);
+        console.error("Failed to load about content:", e);
       } finally {
         if (mounted) setLoading(false);
       }
@@ -27,20 +31,9 @@ export default function AboutUs() {
     return () => { mounted = false; };
   }, []);
 
-  const getContentByKey = (key) => {
-    const item = aboutContent.find(c => c.section_key === key);
-    return item ? item.content : '';
-  };
-
-  const getSectionByKey = (key) => {
-    return aboutContent.find(c => c.section_key === key);
-  };
-
   // HTML and Plain Text renderer
   const renderContent = (content) => {
     if (!content) return null;
-
-    // Check if the string contains any HTML tags
     const containsHtml = /<[a-z][\s\S]*>/i.test(content);
 
     if (containsHtml) {
@@ -52,14 +45,24 @@ export default function AboutUs() {
       );
     }
 
-    return content.split('\n').map((line, index) => (
-      line.trim() ? <p key={index} className="mb-4 text-justify">{line}</p> : null
-    ));
+    return content.split("\n").map((line, index) =>
+      line.trim() ? (
+        <p key={index} className="mb-4 text-justify">
+          {line}
+        </p>
+      ) : null,
+    );
   };
+
+  const visionItem = aboutContent.find(
+    (c) => c.section_key === "vision" && c.is_active !== false,
+  );
+  const otherSections = aboutContent.filter(
+    (c) => c.section_key !== "vision" && c.is_active !== false,
+  );
 
   return (
     <>
-      {/* Inline CSS for the ::before dot */}
       <style>{`
         .dot-before::before {
           content: "";
@@ -76,125 +79,116 @@ export default function AboutUs() {
       `}</style>
 
       <main id="main">
-        {/* Dynamic Page Header */}
         <PageHeader />
-
-        {/* Tabs (DB-driven) */}
         <SubNavTabs />
 
-        {/* Main Content */}
         <section className="bg-white py-12">
           <div className="gi-container flex flex-col md:grid md:grid-cols-[420px_minmax(0,1fr)] gap-6 md:gap-10">
-            {/* Left Box - Vision */}
+            {/* Left Box - Vision (Dynamic) */}
             <div
               className="bg-gray-100 p-6 rounded-lg inline-block align-top md:sticky md:top-[250px]"
-              style={{ height: 'fit-content' }}
+              style={{ height: "fit-content" }}
             >
               {loading ? (
                 <div className="space-y-3">
                   <Skeleton variant="title" />
                   <SkeletonText lines={4} />
                 </div>
-              ) : (
+              ) : visionItem ? (
                 <div className="text-[#123a6b] font-16-400 mb-4">
-                  {renderContent(getContentByKey('vision'))}
+                  {renderContent(visionItem.content)}
                 </div>
-              )}
+              ) : null}
             </div>
 
-            {/* Right Content - About, Mission, Objectives */}
+            {/* Right Content - Completely Dynamic loop based on display_order */}
             <div className="text-[#333] space-y-6">
-              <div>
-                <h2 className="text-[#123a6b] mb-2 font-24-700 text-justify">{t('functions')}</h2>
-                {loading ? <SkeletonText lines={3} /> : renderContent(getContentByKey('functions'))}
+              {loading ? (
+                <SkeletonText lines={8} />
+              ) : (
+                otherSections.map((section) => {
+                  if (section.content_type === "download" || section.file_url) {
+                    const isInternalLink =
+                      section.section_key === "cabinet_secretaries";
 
-              </div>
+                    return (
+                      <div key={section.id || section.section_key}>
+                        {section.title && (
+                          <h2 className="text-[#123a6b] mb-2 font-24-700 text-justify">
+                            {section.title}
+                          </h2>
+                        )}
+                        <div className="flex justify-between items-center bg-gray-100 p-4 rounded-md">
+                          <p className="mb-2 md:mb-0 flex items-center gap-2 text-gray-900 font-medium">
+                            <span className="material-symbols-outlined text-[#0f3c82]">
+                              draft
+                            </span>
+                            {section.title}
+                          </p>
 
-              <div>
-                <h2 className="text-[#123a6b] mb-2 font-24-700 text-justify">{t('Origin')}</h2>
-                {loading ? <SkeletonText lines={4} /> : renderContent(getContentByKey('origin'))}
-              </div>
+                          {isInternalLink ? (
+                            <a
+                              href="/about-us/cabinet-secretary"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              style={{
+                                background: "#a3bbf3",
+                                color: "#162f6a",
+                                padding: "4px 8px",
+                                cursor: "pointer",
+                                textDecoration: "none",
+                              }}
+                            >
+                              <span
+                                aria-hidden="true"
+                                className="material-symbols-outlined"
+                                style={{ fontSize: "15px" }}
+                              >
+                                arrow_right_alt
+                              </span>
+                            </a>
+                          ) : (
+                            <div className="flex items-center gap-3">
+                              <Pdf />
+                              <span className="text-xs text-gray-600">
+                                {section.file_size || "0 KB"}
+                              </span>
+                              <a
+                                href={section.file_url || "#"}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="bg-blue-100 text-blue-600 px-3 pt-1 rounded hover:bg-blue-200 inline-flex items-center"
+                                style={{ textDecoration: "none" }}
+                              >
+                                <span
+                                  aria-hidden="true"
+                                  className="material-symbols-outlined"
+                                  style={{
+                                    fontSize: "17px",
+                                    cursor: "pointer",
+                                  }}
+                                >
+                                  visibility
+                                </span>
+                              </a>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  }
 
-              <div>
-                <h2 className="text-[#123a6b] mb-2 font-24-700 text-justify">{t('development')}</h2>
-                {loading ? <SkeletonText lines={3} /> : renderContent(getContentByKey('development'))}
-              </div>
-
-
-
-              {/* Download Sections */}
-              {getSectionByKey('cabinet_secretaries') && (
-                <div>
-                  <h2 className="text-[#123a6b] mb-2 font-24-700 text-justify">{getSectionByKey('cabinet_secretaries').title}</h2>
-                  <div className="flex justify-between items-center bg-gray-100 p-4 rounded-md">
-                    <p className="mb-2 md:mb-0 flex items-center gap-2 text-gray-900 font-medium">
-                      <span className="material-symbols-outlined text-[#0f3c82]">draft</span>
-                      {getSectionByKey('cabinet_secretaries').title}
-                    </p>
-                    <a
-                      href="/about-us/cabinet-secretary"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      style={{ background: '#a3bbf3', color: '#162f6a', padding: '4px 8px', cursor: 'pointer', textDecoration: 'none' }}
-                    >
-                      <span aria-hidden="true" className="material-symbols-outlined  " style={{ fontSize: '15px' }}>arrow_right_alt</span>
-                    </a>
-                  </div>
-                </div>
-              )}
-
-              {getSectionByKey('work_distribution') && (
-                <div>
-                  <h2 className="text-[#123a6b] mb-2 font-24-700 text-justify">{getSectionByKey('work_distribution').title}</h2>
-                  <div className="flex justify-between items-center bg-gray-100 p-4 rounded-md">
-                    <div className="flex items-center gap-2">
-                      <p className="mb-2 md:mb-0 flex items-center gap-2 text-gray-900 font-medium">
-                        <span className="material-symbols-outlined text-[#0f3c82]">draft</span>
-                        {getSectionByKey('work_distribution').title}
-                      </p>
+                  return (
+                    <div key={section.id || section.section_key}>
+                      {section.title && (
+                        <h2 className="text-[#123a6b] mb-2 font-24-700 text-justify">
+                          {section.title}
+                        </h2>
+                      )}
+                      {renderContent(section.content)}
                     </div>
-                    <div className="flex items-center gap-3">
-                      <Pdf />
-                      <span className="text-xs text-gray-600">{getSectionByKey('work_distribution').file_size || '0 KB'}</span>
-                      <a
-                        href={getSectionByKey('work_distribution').file_url || '#'}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="bg-blue-100 text-blue-600 px-3 pt-1 rounded hover:bg-blue-200 inline-flex items-center"
-                        style={{ textDecoration: 'none' }}
-                      >
-                        <span aria-hidden="true" className="material-symbols-outlined  " style={{ fontSize: '17px', cursor: 'pointer' }}>visibility</span>
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {getSectionByKey('organization_chart') && (
-                <div>
-                  <h2 className="text-[#123a6b] mb-2 font-24-700 text-justify">{getSectionByKey('organization_chart').title}</h2>
-                  <div className="flex justify-between items-center bg-gray-100 p-4 rounded-md">
-                    <div className="flex items-center gap-2">
-                      <p className="mb-2 md:mb-0 flex items-center gap-2 text-gray-900 font-medium">
-                        <span className="material-symbols-outlined text-[#0f3c82]">draft</span>
-                        {getSectionByKey('organization_chart').title}
-                      </p>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <Pdf />
-                      <span className="text-xs text-gray-600">{getSectionByKey('organization_chart').file_size || '0 KB'}</span>
-                      <a
-                        href={getSectionByKey('organization_chart').file_url || '#'}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="bg-blue-100 text-blue-600 px-3 pt-1 rounded hover:bg-blue-200 inline-flex items-center"
-                        style={{ textDecoration: 'none' }}
-                      >
-                        <span aria-hidden="true" className="material-symbols-outlined  " style={{ fontSize: '17px', cursor: 'pointer' }}>visibility</span>
-                      </a>
-                    </div>
-                  </div>
-                </div>
+                  );
+                })
               )}
             </div>
           </div>

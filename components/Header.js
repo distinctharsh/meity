@@ -146,15 +146,23 @@ useEffect(() => {
               </Link>
 
               {/* Mobile Logo */}
+
               <div className="md:hidden w-full flex justify-center my-1">
-                <img
-                  src="/images/digitalindia.svg"
-                  alt={t("digital_india")}
-                  width={120}
-                  height={120}
-                  style={{ width: 120, height: "auto" }}
-                />
+                <a
+                  href="https://www.digitalindia.gov.in/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <img
+                    src="/images/digitalindia.svg"
+                    alt={t("digital_india")}
+                    width={120}
+                    height={120}
+                    style={{ width: 120, height: "auto" }}
+                  />
+                </a>
               </div>
+
 
               {/* Desktop Search */}
               <div className="hidden md:flex items-center md:ml-auto md:mb-0 md:mr-5 order-4 md:order-none w-full md:w-auto justify-center md:justify-end">
@@ -192,13 +200,19 @@ useEffect(() => {
 
             {/* Center Logo */}
             <div className="hidden md:flex justify-end pr-8 order-3 md:order-none">
-              <img
-                src="/images/digitalindia.svg"
-                alt={t("digital_india")}
-                width={100}
-                height={100}
-                style={{ width: 200, height: "auto" }}
-              />
+              <a
+                href="https://www.digitalindia.gov.in/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <img
+                  src="/images/digitalindia.svg"
+                  alt={t("digital_india")}
+                  width={100}
+                  height={100}
+                  style={{ width: 200, height: "auto" }}
+                />
+              </a>
             </div>
 
             {/* Right Column */}
