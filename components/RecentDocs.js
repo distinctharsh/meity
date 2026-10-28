@@ -1,7 +1,6 @@
 "use client";
 
 import { FiChevronRight } from "react-icons/fi";
-import { useState, useEffect } from "react";
 import Document from "./icons/Document";
 import { showConfirmationPopup } from "./common/ConfirmationPopup";
 import { t } from "@/lib/translations";
@@ -13,36 +12,9 @@ const fallbackRecent = [
   },
 ];
 
-const RecentDocs = ({ docs = [], importantLinks: initialImportantLinks = [] }) => {
+const RecentDocs = ({ docs = [], importantLinks = [] }) => {
   const displayDocs = Array.isArray(docs) && docs.length > 0 ? docs : fallbackRecent;
-  const [importantLinks, setImportantLinks] = useState(initialImportantLinks);
-
-  // Fallback fetch for important links if not passed via props
-  useEffect(() => {
-    if (initialImportantLinks.length > 0) {
-      setImportantLinks(initialImportantLinks);
-      return;
-    }
-
-    async function fetchLinks() {
-      try {
-        const res = await fetch("/api/home");
-        if (res.ok) {
-          const data = await res.json();
-          if (data.importantLinks && Array.isArray(data.importantLinks)) {
-            const activeLinks = data.importantLinks
-              .filter((link) => Number(link.is_active) === 1)
-              .sort((a, b) => Number(a.display_order || 0) - Number(b.display_order || 0));
-            setImportantLinks(activeLinks);
-          }
-        }
-      } catch (error) {
-        console.error("Failed to fetch important links:", error);
-      }
-    }
-
-    fetchLinks();
-  }, [initialImportantLinks]);
+  const displayLinks = Array.isArray(importantLinks) && importantLinks.length > 0 ? importantLinks : [];
 
   const handleLinkClick = async (link) => {
     try {
@@ -226,7 +198,7 @@ const RecentDocs = ({ docs = [], importantLinks: initialImportantLinks = [] }) =
 
               <div className="relative w-full">
                 <ul className="m-0 p-0 w-full mt-2 bg-white">
-                  {importantLinks.map((link, i) => (
+                  {displayLinks.map((link, i) => (
                     <li
                       key={i}
                       className="flex items-center justify-between border-b last:border-none border-[#e6ecff] py-3 px-4 hover:bg-[#f7f9ff] cursor-pointer transition-colors important-link-text"

@@ -21,7 +21,7 @@ export default function Home({ homeData }) {
         <PmQuote quotes={homeData?.pmQuotes || []} />
         <AboutSection data={homeData?.homeData?.aboutSection || homeData?.aboutSection} />
         <Offerings offerings={homeData?.offerings || []} />
-        <RecentDocs docs={homeData?.recentDocs || []} />
+        <RecentDocs docs={homeData?.recentDocs || []} importantLinks={homeData?.importantLinks || []} />
         {/* <SocialMediaFeed /> */}
         <PromoSection />
         <PartnerLogoCarousel logos={homeData?.partnerLogos || []} />
