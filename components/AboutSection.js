@@ -180,7 +180,7 @@ export default function AboutSection({ data: initialData = null }) {
               <div className="flex justify-center">
                 <a href="/about-us/cabinet-secretary">
                   <Image
-                    src="/images/about/cs.jpg"
+                    src="/images/about/cs.jpg" loading="eager"
                     alt="Dr. T. V. Somanathan"
                     width={215}
                     height={200}

@@ -4,13 +4,15 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "next build --webpack",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "postbuild": "node scripts/hide-next-version.js"
   },
   "dependencies": {
     "@ckeditor/ckeditor5-build-classic": "^41.4.2",
-    "@ckeditor/ckeditor5-react": "^11.1.2",
+    "@ckeditor/ckeditor5-editor-classic": "^47.5.0",
+    "@ckeditor/ckeditor5-react": "^11.0.1",
     "@monaco-editor/react": "^4.7.0",
     "bcryptjs": "^2.4.3",
     "formidable": "^3.5.4",

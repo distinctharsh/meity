@@ -2,7 +2,10 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import pool from '@/lib/db';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
+const JWT_SECRET = process.env.JWT_SECRET ;
+if (!JWT_SECRET) {
+    throw new Error('JWT_SECRET is not configured');
+}
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -35,16 +38,24 @@ export default async function handler(req, res) {
     }
 
     // Generate JWT token
-    const token = jwt.sign(
-      {
-        userId: user.id,
-        username: user.username,
-        role: user.role
-      },
-      JWT_SECRET,
-      { expiresIn: '24h' }
-    );
-
+const token = jwt.sign(
+  {
+    sub: String(user.id),
+    username: user.username,
+    role: user.role
+  },
+  JWT_SECRET,
+  {
+    algorithm: 'HS256',
+    expiresIn: '30m',
+    issuer: 'cabsec-cms',
+    audience: 'cabsec-cms-api'
+  }
+);
+res.setHeader(
+  'Set-Cookie',
+  `cms_token=${token}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=1800`
+);
     // Return user data (without password) and token
     const { password_hash, ...userWithoutPassword } = user;
 

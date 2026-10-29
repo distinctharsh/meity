@@ -60,7 +60,7 @@ const OfferingForm = ({ offering, onSubmit, onCancel, tabType = 'schemes' }) => 
         formDataToUpload.append('file', file);
         formDataToUpload.append('type', tabType);
         
-        const uploadResponse = await fetch('/api/upload', {
+        const uploadResponse = await fetch('/api/adm/upload', {
           method: 'POST',
           body: formDataToUpload
         });

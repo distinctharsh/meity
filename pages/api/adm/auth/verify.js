@@ -1,7 +1,10 @@
 import jwt from 'jsonwebtoken';
 import pool from '@/lib/db';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) {
+    throw new Error('JWT_SECRET is not configured');
+}
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
@@ -17,7 +20,11 @@ export default async function handler(req, res) {
 
   try {
     // Verify JWT token
-    const decoded = jwt.verify(token, JWT_SECRET);
+    const decoded = jwt.verify(token, JWT_SECRET, {
+    algorithms: ['HS256'],
+    issuer: 'cabsec-cms',
+    audience: 'cabsec-cms-api'
+});
 
     // Get user from database
     const [users] = await pool.query(

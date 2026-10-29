@@ -1,40 +1,40 @@
 {
   "slides": [
     {
-      "id": 1,
+      "id": 14,
       "image_url": "/uploads/media/1791461691412_pxx7uu.jpg",
       "link_url": "",
       "display_order": 0,
       "is_active": 1,
       "created_at": "2026-10-08T12:14:52.000Z",
-      "updated_at": "2026-10-27T10:00:54.000Z"
+      "updated_at": "2026-10-22T12:29:37.000Z"
     },
     {
-      "id": 2,
+      "id": 15,
       "image_url": "/uploads/media/1791821213494_y20t6r.jpg",
       "link_url": "",
       "display_order": 1,
       "is_active": 1,
       "created_at": "2026-10-12T16:06:57.000Z",
-      "updated_at": "2026-10-27T06:36:00.000Z"
+      "updated_at": "2026-10-12T16:07:03.000Z"
     },
     {
-      "id": 3,
+      "id": 16,
       "image_url": "/uploads/media/1791821229697_zndijy.jpeg",
       "link_url": "",
       "display_order": 2,
       "is_active": 1,
       "created_at": "2026-10-12T16:07:14.000Z",
-      "updated_at": "2026-10-27T06:36:01.000Z"
+      "updated_at": "2026-10-12T16:07:14.000Z"
     },
     {
-      "id": 4,
+      "id": 17,
       "image_url": "/uploads/media/1791821239903_9r0qtw.jpeg",
       "link_url": "",
       "display_order": 3,
       "is_active": 1,
       "created_at": "2026-10-12T16:07:24.000Z",
-      "updated_at": "2026-10-27T10:00:55.000Z"
+      "updated_at": "2026-10-12T16:07:24.000Z"
     }
   ],
   "announcements": [],
@@ -43,11 +43,11 @@
       "id": 1,
       "quote_text": "भारत आज सिर्फ growth कि वजह से नहीं जाना जा रहा बल्कि governance, transparency और innovation के नए benchmarks सेट कर रहा है|\r ",
       "author": "PM’s address on the 17th Civil Services Day",
-      "image_url": "http://localhost:3000/images/pm/pm-modi.jpg",
+      "image_url": "/images/pm/pm-modi.jpg",
       "event_url": "https://www.pmindia.gov.in/en/news_updates/pms-address-on-the-17th-civil-services-day/?comment=disable",
       "quote_date": "2025-04-21T18:30:00.000Z",
       "created_at": "2025-10-14T07:45:11.000Z",
-      "updated_at": "2026-10-27T09:11:55.000Z"
+      "updated_at": "2026-10-22T12:29:45.000Z"
     }
   ],
   "aboutSection": null,
@@ -75,11 +75,11 @@
       "description": null,
       "type": "link",
       "file_url": null,
-      "external_url": "http://localhost:3000/report_document/guide_on_the_art_of_delegating_work/English/1_Upload_4248.pdf",
+      "external_url": "https://staging.cabsec.gov.in/report_document/guide_on_the_art_of_delegating_work/English/1_Upload_4248.pdf",
       "display_order": 1,
       "is_active": 1,
       "created_at": "2026-10-12T15:45:41.000Z",
-      "updated_at": "2026-10-12T15:45:41.000Z",
+      "updated_at": "2026-10-28T07:45:03.000Z",
       "is_key_document": 0
     },
     {
@@ -88,11 +88,11 @@
       "description": null,
       "type": "link",
       "file_url": null,
-      "external_url": "http://localhost:3000/report_document/guide_on_the_art_of_delegating_work/English/1_Upload_4248.pdf",
+      "external_url": "https://staging.cabsec.gov.in/report_document/guide_on_the_art_of_delegating_work/English/1_Upload_4248.pdf",
       "display_order": 2,
       "is_active": 1,
       "created_at": "2026-10-12T15:46:04.000Z",
-      "updated_at": "2026-10-12T15:46:04.000Z",
+      "updated_at": "2026-10-28T07:42:39.000Z",
       "is_key_document": 0
     },
     {
@@ -101,11 +101,11 @@
       "description": null,
       "type": "link",
       "file_url": null,
-      "external_url": "http://localhost:3000/report_document/circular/circulargeneral/English/1_Upload_4243.pdf",
+      "external_url": "https://staging.cabsec.gov.in/report_document/circular/circulargeneral/english/1_Upload_4243.pdf",
       "display_order": 3,
       "is_active": 1,
       "created_at": "2026-10-12T15:47:04.000Z",
-      "updated_at": "2026-10-12T15:47:04.000Z",
+      "updated_at": "2026-10-28T10:41:15.000Z",
       "is_key_document": 0
     },
     {
@@ -114,11 +114,11 @@
       "description": null,
       "type": "link",
       "file_url": null,
-      "external_url": "http://localhost:3000/media/photos/3",
+      "external_url": "https://staging.cabsec.gov.in/gallery/photos/3",
       "display_order": 4,
       "is_active": 1,
       "created_at": "2026-10-12T15:47:40.000Z",
-      "updated_at": "2026-10-12T15:47:40.000Z",
+      "updated_at": "2026-10-28T07:43:18.000Z",
       "is_key_document": 0
     },
     {
@@ -127,63 +127,63 @@
       "description": null,
       "type": "link",
       "file_url": null,
-      "external_url": "http://localhost:3000/media/photos/4",
+      "external_url": "https://staging.cabsec.gov.in/gallery/photos/4",
       "display_order": 5,
       "is_active": 1,
       "created_at": "2026-10-12T15:48:20.000Z",
-      "updated_at": "2026-10-12T15:48:20.000Z",
+      "updated_at": "2026-10-28T07:43:37.000Z",
       "is_key_document": 0
     },
     {
       "id": 7,
-      "title": "Allocation of Business Rules (AOB)",
+      "title": "Allocation of Buisness Rules (AOB)",
       "description": null,
       "type": "link",
       "file_url": null,
       "external_url": "https://staging.cabsec.gov.in/report_document/allocationbusinessrule/completeaobrules/english/1_Upload_4265.pdf",
       "display_order": 6,
       "is_active": 1,
-      "created_at": "2026-10-22T09:48:02.000Z",
-      "updated_at": "2026-10-23T11:16:03.000Z",
+      "created_at": "2026-10-23T11:42:01.000Z",
+      "updated_at": "2026-10-23T11:43:33.000Z",
       "is_key_document": 1
     },
     {
       "id": 8,
-      "title": "Transaction of Business Rules (TOB)",
+      "title": "Transaction of Buisness Rules (TOB)",
       "description": null,
       "type": "link",
       "file_url": null,
       "external_url": "https://staging.cabsec.gov.in/report_document/transactionofbusinessrulescomplete/completeaobrules/english/1_Upload_3983.pdf",
       "display_order": 7,
       "is_active": 1,
-      "created_at": "2026-10-22T09:49:15.000Z",
-      "updated_at": "2026-10-23T11:16:09.000Z",
+      "created_at": "2026-10-23T11:44:40.000Z",
+      "updated_at": "2026-10-23T11:44:40.000Z",
       "is_key_document": 1
     },
     {
       "id": 9,
-      "title": "Handbook on Cabinet Notes",
+      "title": "HandBook on Cabinet Notes",
       "description": null,
       "type": "link",
       "file_url": null,
       "external_url": "https://staging.cabsec.gov.in/report_document/handbook/english/1_Upload_3722.pdf",
       "display_order": 8,
       "is_active": 1,
-      "created_at": "2026-10-22T09:52:16.000Z",
-      "updated_at": "2026-10-23T11:16:14.000Z",
+      "created_at": "2026-10-23T11:45:23.000Z",
+      "updated_at": "2026-10-23T11:45:23.000Z",
       "is_key_document": 1
     },
     {
       "id": 10,
-      "title": "CABINET COMMITTEES",
+      "title": "Cabinet Committees",
       "description": null,
       "type": "link",
       "file_url": null,
       "external_url": "https://staging.cabsec.gov.in/report_document/cabinetcommittees/english/1_Upload_4300.pdf",
       "display_order": 9,
       "is_active": 1,
-      "created_at": "2026-10-22T09:54:10.000Z",
-      "updated_at": "2026-10-23T11:16:18.000Z",
+      "created_at": "2026-10-23T11:46:14.000Z",
+      "updated_at": "2026-10-23T11:46:14.000Z",
       "is_key_document": 1
     }
   ],
@@ -202,13 +202,13 @@
     {
       "id": 2,
       "title": "Former Cabinet Secretary List",
-      "url": "https://master-cabsec.digifootprint.gov.in/static/uploads/2025/06/39801d278cc54856899bd905a522e632.pdf",
-      "file_path": null,
+      "url": "https://staging.cabsec.gov.in/about/cabinet-secretaries",
+      "file_path": "",
       "link_type": "url",
       "display_order": 2,
       "is_active": 1,
       "created_at": "2026-05-06T12:23:10.000Z",
-      "updated_at": "2026-05-06T12:23:10.000Z"
+      "updated_at": "2026-10-26T08:26:09.000Z"
     },
     {
       "id": 6,
@@ -257,32 +257,32 @@
   ],
   "recentDocs": [
     {
-      "id": 26,
-      "title": "Filling up of two posts of Staff Car Driver (Ordinary Grade) in Cabinet Secretariat-Reg.",
-      "file_url": "/report_document/vacancies/english/1_Upload_3873.pdf",
-      "nav_name": null,
-      "nav_link": null
+      "id": 1,
+      "title": "Council of ministers with Portfolios",
+      "file_url": "/report_document/councilofministers/english/1_Upload_4295.pdf",
+      "nav_name": "Council of Ministers - Portfolio Allocations",
+      "nav_link": "/report_document/councilofministers/english/1_Upload_4295.pdf"
     },
     {
-      "id": 30,
-      "title": "Complete AOB Rules",
-      "file_url": "/report_document/allocationbusinessrule/completeaobrules/english/1_Upload_3980.pdf",
-      "nav_name": "Rules of Business",
-      "nav_link": "/documents/rules-of-business"
+      "id": 7,
+      "title": "Cabinet Committees",
+      "file_url": "/report_document/cabinetcommittees/english/1_Upload_4300.pdf",
+      "nav_name": "Cabinet Committees - Compositions",
+      "nav_link": "/report_document/cabinetcommittees/english/1_Upload_4300.pdf"
+    },
+    {
+      "id": 5,
+      "title": "1/34/1/2026-Cab. dated",
+      "file_url": "/report_document/changeinportfolio/english/1_Upload_4297.pdf",
+      "nav_name": "Council of Ministers - Portfolio Allocations",
+      "nav_link": "/report_document/changeinportfolio/english/1_Upload_4297.pdf"
     },
     {
       "id": 15,
       "title": "Order dated 13/01/2025",
       "file_url": "/report_document/allocationbusinessrule/amendment/english/1_Upload_3981.pdf",
       "nav_name": "Rules of Business",
-      "nav_link": "/documents/rules-of-business"
-    },
-    {
-      "id": 18,
-      "title": "1/20/1/2024-Cab",
-      "file_url": "/report_document/transactionofbusinessrulescomplete/tobamendment/english/1_Upload_3982.pdf",
-      "nav_name": "Rules of Business",
-      "nav_link": "/documents/rules-of-business"
+      "nav_link": "/report_document/allocationbusinessrule/amendment/english/1_Upload_3981.pdf"
     }
   ],
   "partnerLogos": [
@@ -295,7 +295,7 @@
       "display_order": 0,
       "is_active": 1,
       "created_at": "2026-05-06T11:55:42.000Z",
-      "updated_at": "2026-10-27T09:12:54.000Z"
+      "updated_at": "2026-09-15T12:15:59.000Z"
     },
     {
       "id": 3,

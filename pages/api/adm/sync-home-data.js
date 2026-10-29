@@ -34,7 +34,7 @@ export default async function handler(req, res) {
             rf.original_name AS title,
             rf.file_url,
             n.name AS nav_name,
-            n.link AS nav_link
+            rf.file_url AS nav_link
         FROM report_files rf
         INNER JOIN reports r
             ON r.id = rf.report_id
@@ -42,7 +42,7 @@ export default async function handler(req, res) {
             ON n.id = r.nav_item_id
         WHERE r.is_active = 1
           AND rf.publish_date >= MAKEDATE(YEAR(CURDATE()) - 1, 1)
-          AND rf.publish_date <  MAKEDATE(YEAR(CURDATE()) + 1, 1)
+          AND rf.publish_date <  MAKEDATE(YEAR(CURDATE()) + 1, 1) and n.name is not null
         ORDER BY rf.created_at DESC
         LIMIT 4;
       `),

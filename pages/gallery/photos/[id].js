@@ -95,7 +95,7 @@ export default function PhotoGalleryDetail() {
   if (loading) {
     return (
       <main id="main">
-        <PageHeader/>
+        <PageHeader pagePath="/gallery/photos" />
         <SubNavTabs />
         <section className="mt-10 py-10">
           <div className="gi-container">
@@ -120,7 +120,7 @@ export default function PhotoGalleryDetail() {
   if (!gallery) {
     return (
       <main id="main">
-        <PageHeader />
+        <PageHeader pagePath="/gallery/photos" />
         <SubNavTabs />
         <section className="mt-10 py-10">
           <div className="gi-container">

@@ -126,15 +126,6 @@
         "children": []
       },
       {
-        "id": 52,
-        "text": "Other Instructions and Guidelines",
-        "href": "/documents/other-instructions-and-guidelines",
-        "dropdown": false,
-        "display_order": 1,
-        "items": [],
-        "children": []
-      },
-      {
         "id": 49,
         "text": "Cabinet Committees - Compositions",
         "href": "/documents/cabinet-committees-compositions",
@@ -162,11 +153,20 @@
         "children": []
       },
       {
-        "id": 79,
-        "text": "Guides For Civil Servants",
-        "href": "/documents/guides-for-civil-servants",
+        "id": 87,
+        "text": "Guidelines for civil servants",
+        "href": "/documents/guidelines-for-civil-servants",
         "dropdown": false,
         "display_order": 4,
+        "items": [],
+        "children": []
+      },
+      {
+        "id": 52,
+        "text": "Other Instructions and Guidelines",
+        "href": "/documents/other-instructions-and-guidelines",
+        "dropdown": false,
+        "display_order": 5,
         "items": [],
         "children": []
       }
@@ -182,15 +182,6 @@
         "children": []
       },
       {
-        "id": 52,
-        "text": "Other Instructions and Guidelines",
-        "href": "/documents/other-instructions-and-guidelines",
-        "dropdown": false,
-        "display_order": 1,
-        "items": [],
-        "children": []
-      },
-      {
         "id": 49,
         "text": "Cabinet Committees - Compositions",
         "href": "/documents/cabinet-committees-compositions",
@@ -218,11 +209,20 @@
         "children": []
       },
       {
-        "id": 79,
-        "text": "Guides For Civil Servants",
-        "href": "/documents/guides-for-civil-servants",
+        "id": 87,
+        "text": "Guidelines for civil servants",
+        "href": "/documents/guidelines-for-civil-servants",
         "dropdown": false,
         "display_order": 4,
+        "items": [],
+        "children": []
+      },
+      {
+        "id": 52,
+        "text": "Other Instructions and Guidelines",
+        "href": "/documents/other-instructions-and-guidelines",
+        "dropdown": false,
+        "display_order": 5,
         "items": [],
         "children": []
       }
@@ -260,7 +260,7 @@
   {
     "id": 3,
     "text": "Notices",
-    "href": "/notices",
+    "href": "/notice",
     "dropdown": true,
     "display_order": 5,
     "items": [
@@ -276,7 +276,7 @@
       {
         "id": 69,
         "text": "Tenders",
-        "href": "/notices/tenders",
+        "href": "/offerings/tenders",
         "dropdown": false,
         "display_order": 2,
         "items": [],
@@ -296,7 +296,7 @@
       {
         "id": 69,
         "text": "Tenders",
-        "href": "/notices/tenders",
+        "href": "/offerings/tenders",
         "dropdown": false,
         "display_order": 2,
         "items": [],

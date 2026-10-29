@@ -19,8 +19,8 @@ export default function Header() {
 
   const languages =
     process.env.NEXT_PUBLIC_LANGUAGE === "1"
-      ? [{ name: "हिन्दी", url: "https://www.cabsec.nic.in" }]
-      : [{ name: "English", url: "https://cabsec.nic.in" }];
+      ? [{ name: "हिन्दी", url: "https://staging-hindi.cabsec.gov.in" }]
+      : [{ name: "English", url: "https://staging.cabsec.gov.in" }];
 
 
 const [mobileBarFixed, setMobileBarFixed] = useState(false);
@@ -146,23 +146,21 @@ useEffect(() => {
               </Link>
 
               {/* Mobile Logo */}
-
               <div className="md:hidden w-full flex justify-center my-1">
                 <a
                   href="https://www.digitalindia.gov.in/"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <img
-                    src="/images/digitalindia.svg"
-                    alt={t("digital_india")}
-                    width={120}
-                    height={120}
-                    style={{ width: 120, height: "auto" }}
-                  />
+                <img
+                  src="/images/digitalindia.svg"
+                  alt={t("digital_india")}
+                  width={120}
+                  height={120}
+                  style={{ width: 120, height: "auto" }}
+                />
                 </a>
               </div>
-
 
               {/* Desktop Search */}
               <div className="hidden md:flex items-center md:ml-auto md:mb-0 md:mr-5 order-4 md:order-none w-full md:w-auto justify-center md:justify-end">
@@ -205,13 +203,13 @@ useEffect(() => {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <img
-                  src="/images/digitalindia.svg"
-                  alt={t("digital_india")}
-                  width={100}
-                  height={100}
-                  style={{ width: 200, height: "auto" }}
-                />
+              <img
+                src="/images/digitalindia.svg"
+                alt={t("digital_india")}
+                width={100}
+                height={100}
+                style={{ width: 200, height: "auto" }}
+              />
               </a>
             </div>
 

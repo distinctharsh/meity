@@ -1,7 +1,7 @@
 [
   "/",
   "/about-us",
-  "/notices",
+  "/notice",
   "/gallery",
   "/about-us/functions",
   "/notices/vacancies",
@@ -27,17 +27,15 @@
   "/policies/cookie-policy",
   "/cookies",
   "/cookies/cookie-setting",
-  "/notices/tenders",
+  "/offerings/tenders",
   "/connect/rti",
   "/persona/researcher",
   "/persona/media",
-  "/documents/guides-for-civil-servants",
+  "/connect/rti/category-of-documents",
+  "/connect/proactive-disclosure",
+  "/about/cabinet-secretaries",
   "/about-us/cabinet-secretary",
-  "/admin",
+  "/documents/guidelines-for-civil-servants",
   "/help",
-  "/archives",
-  "/sitemap",
-  "/related-links",
-  "/connect/categories-of-documents",
-  "/connect/proactive-disclosure"
+  "/related-links"
 ]

@@ -1,13 +1,16 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: 'standalone',
   reactStrictMode: true,
   images: {
     // Avoid hostname configuration issues in dev/varied environments
     unoptimized: true,
   },
-  // Dev indicators ko disable karne ke liye ye add karein
-  devIndicators: false,
+  poweredByHeader: false,
 
+  // Do not generate browser source maps for production
+  productionBrowserSourceMaps: false,
+  devIndicators:false,
   // Disable caching for API routes to ensure real-time updates
   async headers() {
     return [

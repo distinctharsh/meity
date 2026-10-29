@@ -37,7 +37,7 @@ export default async function handler(req, res) {
     
     // 1. Saare active links fetch karein
     const [linkRows] = await connection.execute(
-      'SELECT link FROM navigation_items WHERE link IS NOT NULL AND link != "" AND is_active = 1'
+      'SELECT distinct(link) FROM navigation_items WHERE link IS NOT NULL AND link != "" AND is_active = 1 union select distinct(slug) as link from pages where is_active=1'
     );
     const uniqueLinks = [...new Set(linkRows.map(row => row.link))];
     const routesJsonPath = path.join(process.cwd(), 'lib', 'routes.json');
