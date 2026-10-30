@@ -78,7 +78,8 @@ export default function DocumentsSlug() {
           first_file_url: r.first_file_url || null,
           publish_date: r.publish_date || null,
           created_at: r.created_at || null,
-          isDirectFile: r.files_count === undefined && (r.publish_date || r.file_size !== undefined)
+          isDirectFile: r.files_count === undefined && (r.publish_date || r.file_size !== undefined),
+          view_type: r.view_type,
         }));
         if (mounted) setItems(mapped);
       } catch (e) {
@@ -185,11 +186,16 @@ export default function DocumentsSlug() {
 
             {/* TABLE HEADER - 4 COLUMNS (REPORT DETAIL STYLE) */}
             <div
-              className="hidden lg:grid grid-cols-[5fr_2fr_2fr_3fr] bg-[#a3bbf3] text-[#162f6a] rounded-[8px] px-6 py-4 mb-3 uppercase text-[12px] font-semibold tracking-[1px]"
+              className={`hidden lg:grid ${ items.some(item => Number(item.view_type) === 1) ? 'grid-cols-[7fr_3fr]' : 'grid-cols-[5fr_2fr_2fr_3fr]' } bg-[#a3bbf3] text-[#162f6a] rounded-[8px] px-6 py-4 mb-3 uppercase text-[12px] font-semibold tracking-[1px]`}
             >
               <div>Title</div>
-              <div className="text-center">Published Date</div>
-              <div className="text-center">Type/Size</div>
+              {items.every(item => Number(item.view_type) !== 1) && (
+                <>
+                  <div className="text-center">Published Date</div>
+                  <div className="text-center">Type/Size</div>
+                </>
+              )}
+
               <div className="text-right pr-2">Action</div>
             </div>
 
@@ -223,7 +229,11 @@ export default function DocumentsSlug() {
                   return (
                     <div
                       key={item.id}
-                      className="grid grid-cols-1 lg:grid-cols-[5fr_2fr_2fr_3fr] items-center bg-white rounded-[8px] border border-[#dbe4ff] px-6 py-4 shadow-sm hover:shadow-md transition-shadow gap-3 lg:gap-0"
+                      className={`grid grid-cols-1 ${
+                          Number(item.view_type) === 1
+                            ? 'lg:grid-cols-[7fr_3fr]'
+                            : 'lg:grid-cols-[5fr_2fr_2fr_3fr]'
+                        } items-center bg-white rounded-[8px] border border-[#dbe4ff] px-6 py-4 shadow-sm hover:shadow-md transition-shadow gap-3 lg:gap-0`}
                     >
                       {/* Title Column */}
                       <div className="text-sm pr-2">
@@ -240,6 +250,8 @@ export default function DocumentsSlug() {
                         </div>
                       </div>
 
+                    {Number(item.view_type) !== 1 && (
+                      <>
                       {/* Published Date Column - Normal group mein hide, Direct file mein show */}
                       <div className="lg:text-center text-sm">
                         <span className="lg:hidden text-xs text-gray-400 block uppercase font-normal mb-1">Published Date</span>
@@ -262,6 +274,8 @@ export default function DocumentsSlug() {
                           )}
                         </div>
                       </div>
+                      </>
+                    )}
 
                       {/* Action Column */}
                       <div className="flex items-center justify-between lg:justify-end gap-4 w-full">

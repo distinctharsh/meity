@@ -100,7 +100,7 @@ export default async function handler(req, res) {
     const firstFileWhereClause = `WHERE rf2.report_id = r.id AND rf2.is_active = ${archivedFileFilter}`;
 
     const [rows] = await pool.query(
-      `SELECT r.id, r.title, r.type, r.year, r.size, r.file_url,
+      `SELECT r.id, r.title, r.type, r.view_type, r.year, r.size, r.file_url,
               r.item_count,
               (SELECT COUNT(1) FROM report_files rf ${filesWhereClause}) AS files_count,
               (SELECT rf2.file_url FROM report_files rf2 ${firstFileWhereClause} ORDER BY rf2.id ASC LIMIT 1) AS first_file_url,
