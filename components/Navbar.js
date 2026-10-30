@@ -93,10 +93,13 @@ export default function NewNavbar() {
     onKeyDown,
     ...props
   }) => {
-    if (!isInternalPath(href)) {
+    const isFileLink = typeof href === "string" && /\.(pdf|jpg|jpeg|png)(\?.*)?$/i.test(href);
+    if (!isInternalPath(href) || isFileLink) {
       return (
         <a
           href={href}
+          target={isFileLink ? "_blank" : props.target}
+          rel={isFileLink ? "noopener noreferrer" : props.rel}
           className={className}
           onClick={onClick}
           onKeyDown={onKeyDown}
