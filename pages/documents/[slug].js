@@ -184,7 +184,7 @@ export default function DocumentsSlug() {
               </div>
             </div>
 
-            {/* TABLE HEADER - 4 COLUMNS (REPORT DETAIL STYLE) */}
+            {/* TABLE HEADER - DYNAMIC COLUMNS */}
             <div
               className={`hidden lg:grid ${ items.some(item => Number(item.view_type) === 1) ? 'grid-cols-[7fr_3fr]' : 'grid-cols-[5fr_2fr_2fr_3fr]' } bg-[#a3bbf3] text-[#162f6a] rounded-[8px] px-6 py-4 mb-3 uppercase text-[12px] font-semibold tracking-[1px]`}
             >
@@ -222,9 +222,15 @@ export default function DocumentsSlug() {
                   const icon = isGroup ? 'file_copy' : 'draft';
 
                   const publishDateStr = item.publish_date || item.created_at;
-                  const formattedDate = publishDateStr
-                    ? new Date(publishDateStr).toLocaleDateString('en-GB')
-                    : (item.year || '-');
+                  let formattedDate = '-';
+                  if (publishDateStr) {
+                    const parsed = new Date(publishDateStr);
+                    if (!isNaN(parsed.getTime())) {
+                      formattedDate = parsed.toLocaleDateString('en-GB');
+                    } else {
+                      formattedDate = publishDateStr;
+                    }
+                  }
 
                   return (
                     <div
@@ -252,28 +258,22 @@ export default function DocumentsSlug() {
 
                     {Number(item.view_type) !== 1 && (
                       <>
-                      {/* Published Date Column - Normal group - hide, Direct file - show */}
-                      <div className="lg:text-center text-sm">
-                        <span className="lg:hidden text-xs text-gray-400 block uppercase font-normal mb-1">Published Date</span>
-                        <span className="font-medium text-[#2c3e66]">
-                          {isGroup ? '-' : formattedDate}
-                        </span>
-                      </div>
-
-                      {/* Type/Size Column - Normal group - hide, Direct file - show */}
-                      <div className="lg:text-center text-sm">
-                        <span className="lg:hidden text-xs text-gray-400 block uppercase font-normal mb-1">Type/Size</span>
-                        <div className="inline-flex items-center justify-center gap-1.5 font-medium text-[#1d3f91]">
-                          {isGroup ? (
-                            <span>-</span>
-                          ) : (
-                            <>
-                              <span className="material-symbols-outlined text-[18px]">draft</span>
-                              <span>{item.size || '-'}</span>
-                            </>
-                          )}
+                        {/* Published Date Column */}
+                        <div className="lg:text-center text-sm">
+                          <span className="lg:hidden text-xs text-gray-400 block uppercase font-normal mb-1">Published Date</span>
+                          <span className="font-medium text-[#2c3e66]">
+                            {formattedDate}
+                          </span>
                         </div>
-                      </div>
+
+                        {/* Type/Size Column */}
+                        <div className="lg:text-center text-sm">
+                          <span className="lg:hidden text-xs text-gray-400 block uppercase font-normal mb-1">Type/Size</span>
+                          <div className="inline-flex items-center justify-center gap-1.5 font-medium text-[#1d3f91]">
+                            <span className="material-symbols-outlined text-[18px]">draft</span>
+                            <span>{item.size || '-'}</span>
+                          </div>
+                        </div>
                       </>
                     )}
 

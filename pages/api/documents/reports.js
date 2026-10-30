@@ -67,7 +67,8 @@ export default async function handler(req, res) {
           `SELECT rf.id, rf.original_name AS title, rf.file_type AS type, 
                   YEAR(COALESCE(rf.publish_date, rf.created_at)) AS year, 
                   rf.file_size AS size, rf.file_url,
-                  NULL AS count, 1 AS files_count, rf.file_url AS first_file_url
+                  NULL AS count, 1 AS files_count, rf.file_url AS first_file_url,
+                  rf.publish_date, rf.created_at, 2 AS view_type
            FROM report_files rf
            WHERE rf.report_id = ? AND rf.is_active = 1
            ORDER BY rf.id DESC`,
