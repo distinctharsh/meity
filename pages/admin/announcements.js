@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import AdminLayout from '../../components/admin/AdminLayout';
 import AnnouncementForm from '../../components/admin/AnnouncementForm';
 import { parseBoolean } from '@/utils/debug';
+import { syncHomeData } from '@/utils/api';
 
 export default function AnnouncementsManagement() {
   const [announcements, setAnnouncements] = useState([]);
@@ -72,6 +73,7 @@ export default function AnnouncementsManagement() {
 
       if (response.ok) {
         setAnnouncements(announcements.filter(announcement => announcement.id !== id));
+        await syncHomeData();
         alert('Announcement deleted successfully!');
       } else {
         // Handle specific HTTP error responses
@@ -114,6 +116,7 @@ export default function AnnouncementsManagement() {
         setShowForm(false);
         setEditingAnnouncement(null);
         fetchAnnouncements();
+        await syncHomeData();
         
         // Show success message
         alert(editingAnnouncement ? 'Announcement updated successfully!' : 'Announcement created successfully!');
@@ -183,6 +186,7 @@ export default function AnnouncementsManagement() {
       if (response.ok) {
         const result = await response.json();
         fetchAnnouncements();
+        await syncHomeData();
         alert(result.message || 'Status updated successfully!');
       } else {
         // Handle specific HTTP error responses

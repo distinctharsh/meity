@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import AdminLayout from '../../components/admin/AdminLayout';
 import ImportantLinksForm from '../../components/admin/ImportantLinksForm';
+import { syncHomeData } from '@/utils/api';
 
 export default function ImportantLinksManagement() {
   const [links, setLinks] = useState([]);
@@ -47,6 +48,7 @@ export default function ImportantLinksManagement() {
 
       if (response.ok) {
         setLinks(links.filter(link => link.id !== id));
+        await syncHomeData(); 
       } else {
         alert('Failed to delete important link');
       }
@@ -79,6 +81,7 @@ export default function ImportantLinksManagement() {
         setShowForm(false);
         setEditingLink(null);
         fetchLinks();
+        await syncHomeData(); 
       } else {
         const error = await response.json();
         alert(error.message || 'Failed to save important link');
@@ -104,6 +107,7 @@ export default function ImportantLinksManagement() {
 
       if (response.ok) {
         fetchLinks();
+        await syncHomeData();
       } else {
         alert('Failed to update link status');
       }

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import AdminLayout from '../../components/admin/AdminLayout';
 import WhatsNewForm from '../../components/admin/WhatsNewForm';
+import { syncHomeData } from '@/utils/api';
 
 export default function WhatsNewManagement() {
   const [items, setItems] = useState([]);
@@ -47,6 +48,7 @@ export default function WhatsNewManagement() {
 
       if (response.ok) {
         setItems(items.filter(item => item.id !== id));
+        await syncHomeData(); 
       } else {
         alert('Failed to delete what\'s new item');
       }
@@ -79,6 +81,7 @@ export default function WhatsNewManagement() {
         setShowForm(false);
         setEditingItem(null);
         fetchItems();
+        await syncHomeData(); 
       } else {
         const error = await response.json();
         alert(error.message || 'Failed to save what\'s new item');
@@ -104,6 +107,7 @@ export default function WhatsNewManagement() {
 
       if (response.ok) {
         fetchItems();
+        await syncHomeData(); 
       } else {
         alert('Failed to update item status');
       }
@@ -113,7 +117,7 @@ export default function WhatsNewManagement() {
     }
   };
 
-  
+
   if (loading) {
     return (
       <AdminLayout>

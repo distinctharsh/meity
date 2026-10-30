@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import AdminLayout from '../../components/admin/AdminLayout';
 import PartnerLogoForm from '../../components/admin/PartnerLogoForm';
+import { syncHomeData } from '@/utils/api';
 
 export default function PartnerLogosManagement() {
   const [logos, setLogos] = useState([]);
@@ -47,6 +48,7 @@ export default function PartnerLogosManagement() {
 
       if (response.ok) {
         setLogos(logos.filter(logo => logo.id !== id));
+        await syncHomeData();
       } else {
         alert('Failed to delete partner logo');
       }
@@ -76,6 +78,7 @@ export default function PartnerLogosManagement() {
         setShowForm(false);
         setEditingLogo(null);
         fetchLogos();
+        await syncHomeData();
       } else {
         const error = await response.json();
         alert(error.message || 'Failed to save partner logo');
@@ -101,6 +104,7 @@ export default function PartnerLogosManagement() {
 
       if (response.ok) {
         fetchLogos();
+        await syncHomeData();
       } else {
         alert('Failed to update logo status');
       }
@@ -148,6 +152,7 @@ export default function PartnerLogosManagement() {
       });
 
       fetchLogos();
+      await syncHomeData();
     } catch (error) {
       console.error('Move error:', error);
       alert('Failed to reorder logos');

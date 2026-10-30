@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { syncHomeData } from '@/utils/api';
 
 export default function PmQuoteForm() {
   const today = new Date().toISOString().slice(0,10);
@@ -76,7 +77,10 @@ export default function PmQuoteForm() {
     setLoading(true);
     try {
       const res = await fetch('/api/adm/pm-quotes', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(form) });
-      if (res.ok) await load();
+      if (res.ok) {
+        await load();
+        await syncHomeData();
+      }
     } finally {
       setLoading(false);
     }

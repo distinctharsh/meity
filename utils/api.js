@@ -84,3 +84,18 @@ export const useAutoRefresh = (fetchFunction) => {
 
   return [data, loading, error, fetchData];
 };
+
+
+
+export const syncHomeData = async () => {
+  try {
+    const response = await fetchWithCacheBusting('/api/adm/sync-home-data', {
+      method: 'POST',
+    });
+    if (!response.ok) {
+      console.error('Home data sync failed');
+    }
+  } catch (error) {
+    console.error('Home data sync error:', error);
+  }
+};

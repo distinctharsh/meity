@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import AdminLayout from '../../components/admin/AdminLayout';
 import SliderForm from '../../components/admin/SliderForm';
+import { syncHomeData } from '../../utils/api';
 
 export default function HeroSliderManagement() {
   const [slides, setSlides] = useState([]);
@@ -46,6 +47,7 @@ export default function HeroSliderManagement() {
 
       if (response.ok) {
         setSlides(slides.filter(slide => slide.id !== id));
+        await syncHomeData();
       } else {
         alert('Failed to delete slide');
       }
@@ -72,6 +74,7 @@ export default function HeroSliderManagement() {
         setShowForm(false);
         setEditingSlide(null);
         fetchSlides();
+        await syncHomeData();
       } else {
         const error = await response.json();
         alert(error.message || 'Failed to save slide');
@@ -89,18 +92,20 @@ export default function HeroSliderManagement() {
 
     setSlides(newSlides);
 
-    // Update display_order in database
     try {
-      await fetch('/api/adm/slider/reorder', {
+      const response = await fetch('/api/adm/slider/reorder', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ slides: newSlides }),
       });
+
+      if (response.ok) {
+        await syncHomeData();
+      }
     } catch (error) {
       console.error('Reorder error:', error);
-      // Revert on error
       fetchSlides();
     }
   };
