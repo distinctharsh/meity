@@ -50,6 +50,34 @@ export default async function handler(req, res) {
       }
     } else if (nav) {
       const norm = nav.split('?')[0];
+
+      // 1. Check whether `view_type = 2` for this nav-path record.
+      const [bypassCheck] = await pool.query(
+        `SELECT r.id FROM reports r 
+         JOIN navigation_items ni ON r.nav_item_id = ni.id 
+         WHERE ni.link = ? AND r.view_type = 2 LIMIT 1`,
+        [norm]
+      );
+
+      if (bypassCheck && bypassCheck.length > 0) {
+        const targetReportId = bypassCheck[0].id;
+
+        // 2. If view_type = 2 then get direct files from report_files
+        const [reportFiles] = await pool.query(
+          `SELECT rf.id, rf.original_name AS title, rf.file_type AS type, 
+                  YEAR(COALESCE(rf.publish_date, rf.created_at)) AS year, 
+                  rf.file_size AS size, rf.file_url,
+                  NULL AS count, 1 AS files_count, rf.file_url AS first_file_url
+           FROM report_files rf
+           WHERE rf.report_id = ? AND rf.is_active = 1
+           ORDER BY rf.id DESC`,
+          [targetReportId]
+        );
+
+        return res.status(200).json(reportFiles);
+      }
+
+      // 3. Normal behavior if view_type is not equal to 2:
       if (hasNavItem) {
         const [navRows] = await pool.query('SELECT id FROM navigation_items WHERE link = ? LIMIT 1', [norm]);
         if (navRows && navRows.length) {
