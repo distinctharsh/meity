@@ -73,9 +73,12 @@ export default function DocumentsSlug() {
           type: r.type || 'pdf',
           year: r.year || null,
           size: r.size || r.file_size || '-',
-          count: (typeof r.files_count === 'number' ? r.files_count : (r.item_count || null)),
+          count: r.files_count !== undefined ? r.files_count : (r.item_count || null),
           file_url: r.file_url || null,
           first_file_url: r.first_file_url || null,
+          publish_date: r.publish_date || null,
+          created_at: r.created_at || null,
+          isDirectFile: r.files_count === undefined && (r.publish_date || r.file_size !== undefined)
         }));
         if (mounted) setItems(mapped);
       } catch (e) {
@@ -101,10 +104,10 @@ export default function DocumentsSlug() {
   // Sorting
   const sorted = useMemo(() => {
     return [...filtered].sort((a, b) => {
-      const yearA = Number(a.year) || 0;
-      const yearB = Number(b.year) || 0;
-      if (sort === "Oldest") return yearA - yearB;
-      return yearB - yearA;
+      const dateA = new Date(a.publish_date || a.created_at || a.year).getTime() || 0;
+      const dateB = new Date(b.publish_date || b.created_at || b.year).getTime() || 0;
+      if (sort === "Oldest") return dateA - dateB;
+      return dateB - dateA;
     });
   }, [filtered, sort]);
 
@@ -180,13 +183,14 @@ export default function DocumentsSlug() {
               </div>
             </div>
 
-            {/* TABLE HEADER - EXACT TENDER STYLE */}
+            {/* TABLE HEADER - 4 COLUMNS (REPORT DETAIL STYLE) */}
             <div
-              className="hidden lg:grid grid-cols-[7fr_2fr_3fr] bg-[#a3bbf3] text-[#162f6a] rounded-[8px] px-6 py-4 mb-3 uppercase text-[12px] font-semibold tracking-[1px]"
+              className="hidden lg:grid grid-cols-[5fr_2fr_2fr_3fr] bg-[#a3bbf3] text-[#162f6a] rounded-[8px] px-6 py-4 mb-3 uppercase text-[12px] font-semibold tracking-[1px]"
             >
               <div>Title</div>
-              <div className="text-center"></div>
-              <div className="text-right mr-5">Type/Size</div>
+              <div className="text-center">Published Date</div>
+              <div className="text-center">Type/Size</div>
+              <div className="text-right pr-2">Action</div>
             </div>
 
             {/* TABLE BODY (Card-Style List) */}
@@ -205,24 +209,30 @@ export default function DocumentsSlug() {
                 </div>
               ) : (
                 paginated.map((item) => {
-                  const isGroup = item.type === 'group';
+                  const isGroup = item.type === 'group' && !item.isDirectFile;
                   const viewHref = isGroup ? `/documents/report/${item.id}` : (item.file_url || '#');
                   const viewAttrs = isGroup ? {} : { target: item.file_url ? '_blank' : undefined, rel: item.file_url ? 'noreferrer' : undefined };
-                  const viewText = isGroup ? 'View All' : 'View';
+                  const viewText = isGroup ? 'View All' : 'VIEW';
                   const icon = isGroup ? 'file_copy' : 'draft';
+
+                  const publishDateStr = item.publish_date || item.created_at;
+                  const formattedDate = publishDateStr
+                    ? new Date(publishDateStr).toLocaleDateString('en-GB')
+                    : (item.year || '-');
 
                   return (
                     <div
                       key={item.id}
-                      className="grid grid-cols-1 lg:grid-cols-[7fr_2fr_3fr] items-center bg-white rounded-[8px] border border-[#dbe4ff] px-6 py-4 shadow-sm hover:shadow-md transition-shadow gap-3 lg:gap-0"
+                      className="grid grid-cols-1 lg:grid-cols-[5fr_2fr_2fr_3fr] items-center bg-white rounded-[8px] border border-[#dbe4ff] px-6 py-4 shadow-sm hover:shadow-md transition-shadow gap-3 lg:gap-0"
                     >
                       {/* Title Column */}
                       <div className="text-sm pr-2">
-                        <span className="lg:hidden text-xs text-gray-400 block uppercase font-normal">Title</span>
+                        <span className="lg:hidden text-xs text-gray-400 block uppercase font-normal mb-1">Title</span>
                         <div className="flex items-center gap-2">
                           <span className="material-symbols-outlined text-[#1d3f91]">{icon}</span>
                           <span className="font-semibold text-[#1d3f91]">{item.title}</span>
-                          {item.count && (
+                          {/* Count sirf tabhi dikhega jab ye normal group report ho */}
+                          {isGroup && item.count && (
                             <span className="ml-1 inline-flex justify-center items-center w-6 h-6 text-[11px] rounded bg-blue-100 text-blue-700 font-medium">
                               {item.count}
                             </span>
@@ -230,21 +240,32 @@ export default function DocumentsSlug() {
                         </div>
                       </div>
 
-                      {/* Published Year Column */}
+                      {/* Published Date Column - Normal group mein hide, Direct file mein show */}
                       <div className="lg:text-center text-sm">
-                        <span className="lg:hidden text-xs text-gray-400 block uppercase font-normal"></span>
-                        {/* <span className="font-medium text-[#2c3e66]">{item.year || '-'}</span> */}
+                        <span className="lg:hidden text-xs text-gray-400 block uppercase font-normal mb-1">Published Date</span>
+                        <span className="font-medium text-[#2c3e66]">
+                          {isGroup ? '-' : formattedDate}
+                        </span>
                       </div>
 
-                      {/* Type/Size + Action Column */}
+                      {/* Type/Size Column - Normal group mein hide, Direct file mein show */}
+                      <div className="lg:text-center text-sm">
+                        <span className="lg:hidden text-xs text-gray-400 block uppercase font-normal mb-1">Type/Size</span>
+                        <div className="inline-flex items-center justify-center gap-1.5 font-medium text-[#1d3f91]">
+                          {isGroup ? (
+                            <span>-</span>
+                          ) : (
+                            <>
+                              <span className="material-symbols-outlined text-[18px]">draft</span>
+                              <span>{item.size || '-'}</span>
+                            </>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Action Column */}
                       <div className="flex items-center justify-between lg:justify-end gap-4 w-full">
                         <span className="lg:hidden text-xs text-gray-400 block uppercase font-normal">Action</span>
-                        {!isGroup && (
-                          <div className="inline-flex items-center gap-1.5 text-sm font-medium text-[#1d3f91]">
-                            <span className="material-symbols-outlined text-[18px]">draft</span>
-                            <span>{item.size || '-'}</span>
-                          </div>
-                        )}
                         <a
                           href={viewHref}
                           {...viewAttrs}
