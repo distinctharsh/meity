@@ -241,7 +241,7 @@ export default function DocumentsSlug() {
                         <div className="flex items-center gap-2">
                           <span className="material-symbols-outlined text-[#1d3f91]">{icon}</span>
                           <span className="font-semibold text-[#1d3f91]">{item.title}</span>
-                          {/* Count sirf tabhi dikhega jab ye normal group report ho */}
+                          {/* show when normal group report */}
                           {isGroup && item.count && (
                             <span className="ml-1 inline-flex justify-center items-center w-6 h-6 text-[11px] rounded bg-blue-100 text-blue-700 font-medium">
                               {item.count}
@@ -252,7 +252,7 @@ export default function DocumentsSlug() {
 
                     {Number(item.view_type) !== 1 && (
                       <>
-                      {/* Published Date Column - Normal group mein hide, Direct file mein show */}
+                      {/* Published Date Column - Normal group - hide, Direct file - show */}
                       <div className="lg:text-center text-sm">
                         <span className="lg:hidden text-xs text-gray-400 block uppercase font-normal mb-1">Published Date</span>
                         <span className="font-medium text-[#2c3e66]">
@@ -260,7 +260,7 @@ export default function DocumentsSlug() {
                         </span>
                       </div>
 
-                      {/* Type/Size Column - Normal group mein hide, Direct file mein show */}
+                      {/* Type/Size Column - Normal group - hide, Direct file - show */}
                       <div className="lg:text-center text-sm">
                         <span className="lg:hidden text-xs text-gray-400 block uppercase font-normal mb-1">Type/Size</span>
                         <div className="inline-flex items-center justify-center gap-1.5 font-medium text-[#1d3f91]">
