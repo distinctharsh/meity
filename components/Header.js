@@ -17,11 +17,11 @@ export default function Header() {
 
   const dropdownRef = useRef(null);
 
-  const languages =
-    process.env.NEXT_PUBLIC_LANGUAGE === "1"
-      ? [{ name: "हिन्दी", url: "https://staging-hindi.cabsec.gov.in" }]
-      : [{ name: "English", url: "https://staging.cabsec.gov.in" }];
-
+  const switchUrl = process.env.NEXT_PUBLIC_SWITCH_URL || "https://cabsec.gov.in";
+  
+  const languages = switchUrl
+    ? [{ name: process.env.NEXT_PUBLIC_LANGUAGE === "1" ? "हिन्दी" : "English", url: switchUrl }]
+    : [];
 
 const [mobileBarFixed, setMobileBarFixed] = useState(false);
 const mobileBarRef = useRef(null);
