@@ -59,6 +59,15 @@
         "display_order": 4,
         "items": [],
         "children": []
+      },
+      {
+        "id": 58,
+        "text": "Work Distribution",
+        "href": "file:///C:/xampp/htdocs/cabsec-cms-main/public/uploads/files-1760516763214-28888982.pdf",
+        "dropdown": false,
+        "display_order": 4,
+        "items": [],
+        "children": []
       }
     ],
     "children": [
@@ -102,6 +111,15 @@
         "id": 57,
         "text": "Cabinet Committees",
         "href": "/about-us/cabinet-committees",
+        "dropdown": false,
+        "display_order": 4,
+        "items": [],
+        "children": []
+      },
+      {
+        "id": 58,
+        "text": "Work Distribution",
+        "href": "https://staging.cabsec.gov.in/cabsec-cms-main/public/uploads/files-1760516763214-28888982.pdf",
         "dropdown": false,
         "display_order": 4,
         "items": [],
