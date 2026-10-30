@@ -989,6 +989,7 @@ export default function SubNavTabs({ pagePath }) {
                   it.archiveHref ||
                   '#';
 
+                  const isFileLink = typeof displayHref === "string" && /\.(pdf|jpg|jpeg|png)(\?.*)?$/i.test(displayHref);
                 if (
                   isArchivePath &&
                   it.archiveHref
@@ -1071,13 +1072,19 @@ export default function SubNavTabs({ pagePath }) {
                   );
                 }
 
-                return (
+              return (
                   <a
-                    key={
-                      keyValue
+                    key={keyValue}
+                    href={displayHref}
+                    target={
+                      isFileLink || displayHref.startsWith("http")
+                        ? "_blank"
+                        : "_self"
                     }
-                    href={
-                      displayHref
+                    rel={
+                      isFileLink || displayHref.startsWith("http")
+                        ? "noopener noreferrer"
+                        : undefined
                     }
                     className="
                       text-white/80
@@ -1089,19 +1096,13 @@ export default function SubNavTabs({ pagePath }) {
                       color: '#fff',
                     }}
                     onClick={(e) => {
-                      if (
-                        hasDraggedRef.current
-                      ) {
+                      if (hasDraggedRef.current) {
                         e.preventDefault();
                         e.stopPropagation();
 
-                        setTimeout(
-                          () => {
-                            hasDraggedRef.current =
-                              false;
-                          },
-                          80
-                        );
+                        setTimeout(() => {
+                          hasDraggedRef.current = false;
+                        }, 80);
                       }
                     }}
                   >
