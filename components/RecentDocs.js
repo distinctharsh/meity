@@ -16,25 +16,34 @@ const RecentDocs = ({ docs = [], importantLinks = [] }) => {
   const displayDocs = Array.isArray(docs) && docs.length > 0 ? docs : fallbackRecent;
   const displayLinks = Array.isArray(importantLinks) && importantLinks.length > 0 ? importantLinks : [];
 
-  const handleLinkClick = async (link) => {
-    try {
-      const targetUrl = link.url || link.file_path;
-      if (targetUrl) {
-        const confirmed = await showConfirmationPopup({
-          title: t("external_website"),
-          message: t("external_website_message"),
-          confirmText: t("continue"),
-          cancelText: t("cancel"),
-        });
+    const handleLinkClick = async (link) => {
+      try {
+        const targetUrl = link.url || link.file_path;
+        if (targetUrl) {
+          const isInternalLink = 
+            targetUrl.startsWith('/') || 
+            targetUrl.startsWith('#') || 
+            (typeof window !== 'undefined' && targetUrl.startsWith(window.location.origin));
 
-        if (confirmed) {
-          window.open(targetUrl, "_blank", "noopener,noreferrer");
+          if (isInternalLink) {
+            window.open(targetUrl, "_blank", "noopener,noreferrer");
+          } else {
+            const confirmed = await showConfirmationPopup({
+              title: t("external_website"),
+              message: t("external_website_message"),
+              confirmText: t("continue"),
+              cancelText: t("cancel"),
+            });
+
+            if (confirmed) {
+              window.open(targetUrl, "_blank", "noopener,noreferrer");
+            }
+          }
         }
+      } catch (error) {
+        console.error("Error handling link click:", error);
       }
-    } catch (error) {
-      console.error("Error handling link click:", error);
-    }
-  };
+    };
 
   return (
     <>
