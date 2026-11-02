@@ -1,4 +1,19 @@
 import pool from '@/lib/db';
+import jwt from 'jsonwebtoken';
+import { logAuditAction } from '../logger';
+
+const JWT_SECRET = process.env.JWT_SECRET;
+
+function getLoggedInUser(req) {
+  const token = req.cookies?.cms_token;
+  if (!token || !JWT_SECRET) return { userId: null, username: 'System Admin' };
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    return { userId: decoded.sub || null, username: decoded.username || 'Admin' };
+  } catch (e) {
+    return { userId: null, username: 'System Admin' };
+  }
+}
 
 export default async function handler(req, res) {
   if (req.method === 'GET') {
@@ -10,6 +25,7 @@ export default async function handler(req, res) {
       const [rows] = await pool.query('SELECT id, quote_text, author, image_url, event_url, quote_date, updated_at FROM pm_quotes ORDER BY updated_at DESC, created_at DESC LIMIT 1');
       res.status(200).json(rows[0] || null);
     } catch (error) {
+      console.error('Error fetching PM quote:', error);
       res.status(500).json({ message: 'Internal server error' });
     }
   } else if (req.method === 'POST') {
@@ -20,21 +36,47 @@ export default async function handler(req, res) {
       }
       const today = new Date().toISOString().slice(0, 10);
       const [rows] = await pool.query('SELECT id FROM pm_quotes ORDER BY updated_at DESC, created_at DESC LIMIT 1');
+      
+      const { userId, username } = getLoggedInUser(req);
+
       if (rows.length > 0) {
         const id = rows[0].id;
         await pool.query(
           'UPDATE pm_quotes SET quote_text = ?, author = ?, image_url = ?, event_url = ?, quote_date = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
           [quote_text, author || 'Prime Minister', image_url || null, event_url || null, (quote_date && String(quote_date).trim() !== '' ? quote_date : today), id]
         );
+
+        await logAuditAction(
+          req,
+          userId,
+          username,
+          'PM_QUOTES',
+          'UPDATE',
+          id,
+          `Updated PM Quote with ID ${id}`
+        );
+
         return res.status(200).json({ id, message: 'PM Quote updated' });
       } else {
         const [result] = await pool.query(
           'INSERT INTO pm_quotes (quote_text, author, image_url, event_url, quote_date) VALUES (?, ?, ?, ?, ?)',
           [quote_text, author || 'Prime Minister', image_url || null, event_url || null, (quote_date && String(quote_date).trim() !== '' ? quote_date : today)]
         );
+
+        await logAuditAction(
+          req,
+          userId,
+          username,
+          'PM_QUOTES',
+          'CREATE',
+          result.insertId,
+          `Created new PM Quote with ID ${result.insertId}`
+        );
+
         return res.status(201).json({ id: result.insertId, message: 'PM Quote created' });
       }
     } catch (error) {
+      console.error('Error saving PM quote:', error);
       res.status(500).json({ message: 'Internal server error' });
     }
   } else {

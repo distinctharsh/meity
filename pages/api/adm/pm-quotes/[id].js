@@ -1,4 +1,19 @@
 import pool from '@/lib/db';
+import jwt from 'jsonwebtoken';
+import { logAuditAction } from '../logger';
+
+const JWT_SECRET = process.env.JWT_SECRET;
+
+function getLoggedInUser(req) {
+  const token = req.cookies?.cms_token;
+  if (!token || !JWT_SECRET) return { userId: null, username: 'System Admin' };
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    return { userId: decoded.sub || null, username: decoded.username || 'Admin' };
+  } catch (e) {
+    return { userId: null, username: 'System Admin' };
+  }
+}
 
 export default async function handler(req, res) {
   const { id } = req.query;
@@ -10,6 +25,7 @@ export default async function handler(req, res) {
       if (!rows.length) return res.status(404).json({ message: 'PM Quote not found' });
       res.status(200).json(rows[0]);
     } catch (error) {
+      console.error('Error fetching PM quote by ID:', error);
       res.status(500).json({ message: 'Internal server error' });
     }
   } else if (req.method === 'PUT') {
@@ -24,8 +40,21 @@ export default async function handler(req, res) {
         [quote_text, author || 'Prime Minister', image_url || null, event_url || null, (quote_date && String(quote_date).trim() !== '' ? quote_date : today), id]
       );
       if (result.affectedRows === 0) return res.status(404).json({ message: 'PM Quote not found' });
+
+      const { userId, username } = getLoggedInUser(req);
+      await logAuditAction(
+        req,
+        userId,
+        username,
+        'PM_QUOTES',
+        'UPDATE',
+        id,
+        `Updated PM Quote ID ${id}`
+      );
+
       res.status(200).json({ message: 'PM Quote updated successfully' });
     } catch (error) {
+      console.error('Error updating PM quote:', error);
       res.status(500).json({ message: 'Internal server error' });
     }
   } else if (req.method === 'DELETE') {
