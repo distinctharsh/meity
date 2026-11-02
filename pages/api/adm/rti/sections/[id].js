@@ -1,4 +1,19 @@
 import pool from '@/lib/db';
+import jwt from 'jsonwebtoken';
+import { logAuditAction } from '../../logger';
+
+const JWT_SECRET = process.env.JWT_SECRET;
+
+function getLoggedInUser(req) {
+  const token = req.cookies?.cms_token;
+  if (!token || !JWT_SECRET) return { userId: null, username: 'System Admin' };
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    return { userId: decoded.sub || null, username: decoded.username || 'Admin' };
+  } catch (e) {
+    return { userId: null, username: 'System Admin' };
+  }
+}
 
 export default async function handler(req, res) {
   const { id } = req.query;
@@ -29,6 +44,18 @@ export default async function handler(req, res) {
       values.push(id);
       const [result] = await pool.query(sql, values);
       if (result.affectedRows === 0) return res.status(404).json({ message: 'Not found' });
+
+      const { userId, username } = getLoggedInUser(req);
+      await logAuditAction(
+        req,
+        userId,
+        username,
+        'RTI_SECTIONS',
+        'UPDATE',
+        id,
+        `Updated RTI Section ID ${id}`
+      );
+
       res.status(200).json({ message: 'Updated' });
     } catch (error) {
       console.error('Error updating RTI section:', error);
@@ -38,6 +65,18 @@ export default async function handler(req, res) {
     try {
       const [result] = await pool.query('DELETE FROM rti_sections WHERE id = ?', [id]);
       if (result.affectedRows === 0) return res.status(404).json({ message: 'Not found' });
+
+      const { userId, username } = getLoggedInUser(req);
+      await logAuditAction(
+        req,
+        userId,
+        username,
+        'RTI_SECTIONS',
+        'DELETE',
+        id,
+        `Deleted RTI Section with ID ${id}`
+      );
+
       res.status(200).json({ message: 'Deleted' });
     } catch (error) {
       console.error('Error deleting RTI section:', error);

@@ -1,4 +1,19 @@
 import pool from '../../../lib/db';
+import jwt from 'jsonwebtoken';
+import { logAuditAction } from './logger';
+
+const JWT_SECRET = process.env.JWT_SECRET;
+
+function getLoggedInUser(req) {
+  const token = req.cookies?.cms_token;
+  if (!token || !JWT_SECRET) return { userId: null, username: 'System Admin' };
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    return { userId: decoded.sub || null, username: decoded.username || 'Admin' };
+  } catch (e) {
+    return { userId: null, username: 'System Admin' };
+  }
+}
 
 async function handler(req, res) {
   try {
@@ -70,6 +85,17 @@ async function handlePost(req, res) {
       [title, url || null, file_path || null, link_type, newDisplayOrder, is_active]
     );
 
+    const { userId, username } = getLoggedInUser(req);
+    await logAuditAction(
+      req,
+      userId,
+      username,
+      'IMPORTANT_LINKS',
+      'CREATE',
+      result.insertId,
+      `Created Important Link: "${title}" (ID: ${result.insertId})`
+    );
+
     return res.status(201).json({ 
       message: 'Important link created successfully',
       id: result.insertId 
@@ -129,6 +155,17 @@ async function handlePut(req, res) {
       return res.status(404).json({ message: 'Important link not found' });
     }
 
+    const { userId, username } = getLoggedInUser(req);
+    await logAuditAction(
+      req,
+      userId,
+      username,
+      'IMPORTANT_LINKS',
+      'UPDATE',
+      id,
+      `Updated Important Link ID ${id}`
+    );
+
     return res.status(200).json({ message: 'Important link updated successfully' });
   } catch (error) {
     console.error('Error updating important link:', error);
@@ -149,6 +186,17 @@ async function handleDelete(req, res) {
     if (result.affectedRows === 0) {
       return res.status(404).json({ message: 'Important link not found' });
     }
+
+    const { userId, username } = getLoggedInUser(req);
+    await logAuditAction(
+      req,
+      userId,
+      username,
+      'IMPORTANT_LINKS',
+      'DELETE',
+      id,
+      `Deleted Important Link with ID ${id}`
+    );
 
     return res.status(200).json({ message: 'Important link deleted successfully' });
   } catch (error) {

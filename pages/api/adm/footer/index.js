@@ -1,6 +1,21 @@
 import pool from '@/lib/db';
 import fs from 'fs';
 import path from 'path';
+import jwt from 'jsonwebtoken';
+import { logAuditAction } from '../logger';
+
+const JWT_SECRET = process.env.JWT_SECRET;
+
+function getLoggedInUser(req) {
+  const token = req.cookies?.cms_token;
+  if (!token || !JWT_SECRET) return { userId: null, username: 'System Admin' };
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    return { userId: decoded.sub || null, username: decoded.username || 'Admin' };
+  } catch (e) {
+    return { userId: null, username: 'System Admin' };
+  }
+}
 
 export default async function handler(req, res) {
   if (req.method === 'GET') {
@@ -78,6 +93,17 @@ export default async function handler(req, res) {
       } catch (fileErr) {
         console.error('Error writing footer.json file:', fileErr);
       }
+
+      const { userId, username } = getLoggedInUser(req);
+      await logAuditAction(
+        req,
+        userId,
+        username,
+        'FOOTER_MANAGEMENT',
+        'UPDATE',
+        1,
+        `Updated main website footer content and social links`
+      );
 
       return res.status(200).json({ message: 'Footer updated successfully' });
     } catch (error) {

@@ -1,4 +1,19 @@
 import pool from '@/lib/db';
+import jwt from 'jsonwebtoken';
+import { logAuditAction } from '../logger';
+
+const JWT_SECRET = process.env.JWT_SECRET;
+
+function getLoggedInUser(req) {
+  const token = req.cookies?.cms_token;
+  if (!token || !JWT_SECRET) return { userId: null, username: 'System Admin' };
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    return { userId: decoded.sub || null, username: decoded.username || 'Admin' };
+  } catch (e) {
+    return { userId: null, username: 'System Admin' };
+  }
+}
 
 export default async function handler(req, res) {
   if (req.method === 'GET') {
@@ -23,6 +38,18 @@ export default async function handler(req, res) {
         'INSERT INTO rti_sections (title, display_order, is_active) VALUES (?, ?, ?)',
         [title, display_order || nextOrder, is_active !== false ? 1 : 0]
       );
+
+      const { userId, username } = getLoggedInUser(req);
+      await logAuditAction(
+        req,
+        userId,
+        username,
+        'RTI_SECTIONS',
+        'CREATE',
+        result.insertId,
+        `Created RTI Section: "${title}" (ID: ${result.insertId})`
+      );
+
       res.status(201).json({ id: result.insertId, message: 'Section created' });
     } catch (error) {
       console.error('Error creating RTI section:', error);

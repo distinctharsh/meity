@@ -1,4 +1,19 @@
 import pool from '@/lib/db';
+import jwt from 'jsonwebtoken';
+import { logAuditAction } from '../../logger'; 
+
+const JWT_SECRET = process.env.JWT_SECRET;
+
+function getLoggedInUser(req) {
+  const token = req.cookies?.cms_token;
+  if (!token || !JWT_SECRET) return { userId: null, username: 'System Admin' };
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    return { userId: decoded.sub || null, username: decoded.username || 'Admin' };
+  } catch (e) {
+    return { userId: null, username: 'System Admin' };
+  }
+}
 
 export default async function handler(req, res) {
   const { id } = req.query;
@@ -27,6 +42,18 @@ export default async function handler(req, res) {
       if (!fields.length) return res.status(400).json({ message: 'No fields to update' });
       vals.push(id);
       const [r] = await pool.query(`UPDATE our_team_people SET ${fields.join(', ')} WHERE id = ?`, vals);
+
+      const { userId, username } = getLoggedInUser(req);
+      await logAuditAction(
+        req,
+        userId,
+        username,
+        'OUR_TEAM_PEOPLE',
+        'UPDATE',
+        id,
+        `Updated team member ID ${id}`
+      );
+
       return res.status(200).json({ updated: r.affectedRows > 0 });
     } catch (e) {
       console.error('Update person error', e);
@@ -35,6 +62,18 @@ export default async function handler(req, res) {
   } else if (req.method === 'DELETE') {
     try {
       const [r] = await pool.query('DELETE FROM our_team_people WHERE id = ?', [id]);
+
+      const { userId, username } = getLoggedInUser(req);
+      await logAuditAction(
+        req,
+        userId,
+        username,
+        'OUR_TEAM_PEOPLE',
+        'DELETE',
+        id,
+        `Deleted team member with ID ${id}`
+      );
+
       return res.status(200).json({ deleted: r.affectedRows > 0 });
     } catch (e) {
       console.error('Delete person error', e);

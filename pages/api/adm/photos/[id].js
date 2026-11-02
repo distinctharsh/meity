@@ -1,4 +1,19 @@
 import db from '../../../../lib/db';
+import jwt from 'jsonwebtoken';
+import { logAuditAction } from '../logger';
+
+const JWT_SECRET = process.env.JWT_SECRET;
+
+function getLoggedInUser(req) {
+  const token = req.cookies?.cms_token;
+  if (!token || !JWT_SECRET) return { userId: null, username: 'System Admin' };
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    return { userId: decoded.sub || null, username: decoded.username || 'Admin' };
+  } catch (e) {
+    return { userId: null, username: 'System Admin' };
+  }
+}
 
 async function query(sql, params = []) {
   const connection = await db.getConnection();
@@ -52,6 +67,17 @@ export default async function handler(req, res) {
       if (updateResult.affectedRows === 0) {
         return res.status(404).json({ message: 'Photo gallery not found' });
       }
+
+      const { userId, username } = getLoggedInUser(req);
+      await logAuditAction(
+        req,
+        userId,
+        username,
+        'PHOTO_GALLERIES',
+        'UPDATE',
+        id,
+        `Updated Photo Gallery ID ${id}`
+      );
       
       return res.status(200).json({ message: 'Gallery updated successfully' });
     }
@@ -63,6 +89,17 @@ export default async function handler(req, res) {
       if (deleteResult.affectedRows === 0) {
         return res.status(404).json({ message: 'Photo gallery not found' });
       }
+
+      const { userId, username } = getLoggedInUser(req);
+      await logAuditAction(
+        req,
+        userId,
+        username,
+        'PHOTO_GALLERIES',
+        'DELETE',
+        id,
+        `Deleted Photo Gallery with ID ${id}`
+      );
       
       return res.status(200).json({ message: 'Gallery deleted successfully' });
     }

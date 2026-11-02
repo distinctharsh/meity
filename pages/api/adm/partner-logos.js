@@ -1,4 +1,19 @@
 import pool from '../../../lib/db';
+import jwt from 'jsonwebtoken';
+import { logAuditAction } from './logger';
+
+const JWT_SECRET = process.env.JWT_SECRET;
+
+function getLoggedInUser(req) {
+  const token = req.cookies?.cms_token;
+  if (!token || !JWT_SECRET) return { userId: null, username: 'System Admin' };
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    return { userId: decoded.sub || null, username: decoded.username || 'Admin' };
+  } catch (e) {
+    return { userId: null, username: 'System Admin' };
+  }
+}
 
 async function handler(req, res) {
   try {
@@ -48,6 +63,17 @@ async function handlePost(req, res) {
     const [result] = await pool.query(
       'INSERT INTO partner_logos (title, image_url, alt_text, external_link, display_order, is_active) VALUES (?, ?, ?, ?, ?, ?)',
       [title || null, image_url, alt_text || null, external_link || null, display_order, is_active]
+    );
+
+    const { userId, username } = getLoggedInUser(req);
+    await logAuditAction(
+      req,
+      userId,
+      username,
+      'PARTNER_LOGOS',
+      'CREATE',
+      result.insertId,
+      `Created Partner Logo: "${title || 'Untitled'}" (ID: ${result.insertId})`
     );
 
     return res.status(201).json({ 
@@ -113,6 +139,17 @@ async function handlePut(req, res) {
       return res.status(404).json({ message: 'Partner logo not found' });
     }
 
+    const { userId, username } = getLoggedInUser(req);
+    await logAuditAction(
+      req,
+      userId,
+      username,
+      'PARTNER_LOGOS',
+      'UPDATE',
+      id,
+      `Updated Partner Logo ID ${id}`
+    );
+
     return res.status(200).json({ message: 'Partner logo updated successfully' });
   } catch (error) {
     console.error('Error updating partner logo:', error);
@@ -133,6 +170,17 @@ async function handleDelete(req, res) {
     if (result.affectedRows === 0) {
       return res.status(404).json({ message: 'Partner logo not found' });
     }
+
+    const { userId, username } = getLoggedInUser(req);
+    await logAuditAction(
+      req,
+      userId,
+      username,
+      'PARTNER_LOGOS',
+      'DELETE',
+      id,
+      `Deleted Partner Logo with ID ${id}`
+    );
 
     return res.status(200).json({ message: 'Partner logo deleted successfully' });
   } catch (error) {

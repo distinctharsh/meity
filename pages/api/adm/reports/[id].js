@@ -1,4 +1,19 @@
 import pool from '@/lib/db';
+import jwt from 'jsonwebtoken';
+import { logAuditAction } from '../logger';
+
+const JWT_SECRET = process.env.JWT_SECRET;
+
+function getLoggedInUser(req) {
+  const token = req.cookies?.cms_token;
+  if (!token || !JWT_SECRET) return { userId: null, username: 'System Admin' };
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    return { userId: decoded.sub || null, username: decoded.username || 'Admin' };
+  } catch (e) {
+    return { userId: null, username: 'System Admin' };
+  }
+}
 
 export default async function handler(req, res) {
   const { id } = req.query;
@@ -79,6 +94,18 @@ export default async function handler(req, res) {
       values.push(id);
       const [result] = await pool.query(sql, values);
       if (result.affectedRows === 0) return res.status(404).json({ message: 'Not found' });
+
+      const { userId, username } = getLoggedInUser(req);
+      await logAuditAction(
+        req,
+        userId,
+        username,
+        'REPORTS',
+        'UPDATE',
+        id,
+        `Updated Report ID ${id}`
+      );
+
       return res.status(200).json({ message: 'Updated' });
     } catch (e) {
       console.error('Update report error', e);
@@ -88,6 +115,18 @@ export default async function handler(req, res) {
     try {
       const [result] = await pool.query('DELETE FROM reports WHERE id = ?', [id]);
       if (result.affectedRows === 0) return res.status(404).json({ message: 'Not found' });
+
+      const { userId, username } = getLoggedInUser(req);
+      await logAuditAction(
+        req,
+        userId,
+        username,
+        'REPORTS',
+        'DELETE',
+        id,
+        `Deleted Report with ID ${id}`
+      );
+
       return res.status(200).json({ message: 'Deleted' });
     } catch (e) {
       console.error('Delete report error', e);

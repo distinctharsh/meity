@@ -1,4 +1,19 @@
 import pool from '@/lib/db';
+import jwt from 'jsonwebtoken';
+import { logAuditAction } from '../logger';
+
+const JWT_SECRET = process.env.JWT_SECRET;
+
+function getLoggedInUser(req) {
+  const token = req.cookies?.cms_token;
+  if (!token || !JWT_SECRET) return { userId: null, username: 'System Admin' };
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    return { userId: decoded.sub || null, username: decoded.username || 'Admin' };
+  } catch (e) {
+    return { userId: null, username: 'System Admin' };
+  }
+}
 
 export default async function handler(req, res) {
   if (req.method === 'GET') {
@@ -26,6 +41,8 @@ export default async function handler(req, res) {
       const [rows] = await pool.query('SELECT id FROM rti_page_content LIMIT 1');
       const existing = rows[0];
 
+      const { userId, username } = getLoggedInUser(req);
+
       if (existing) {
         const fields = [];
         const values = [];
@@ -37,12 +54,34 @@ export default async function handler(req, res) {
         const sql = `UPDATE rti_page_content SET ${fields.join(', ')} WHERE id = ?`;
         values.push(existing.id);
         await pool.query(sql, values);
+
+        await logAuditAction(
+          req,
+          userId,
+          username,
+          'RTI_CONTENT',
+          'UPDATE',
+          existing.id,
+          `Updated RTI Page Content (ID: ${existing.id})`
+        );
+
         res.status(200).json({ message: 'Updated' });
       } else {
-        await pool.query(
+        const [insertResult] = await pool.query(
           'INSERT INTO rti_page_content (page_title, intro_heading, intro_bullets, is_active) VALUES (?, ?, ?, ?)',
           [page_title || 'RTI', intro_heading || 'Power and Duties of Officials', intro_bullets || '[]', is_active !== false ? 1 : 0]
         );
+
+        await logAuditAction(
+          req,
+          userId,
+          username,
+          'RTI_CONTENT',
+          'CREATE',
+          insertResult.insertId,
+          `Created RTI Page Content (ID: ${insertResult.insertId})`
+        );
+
         res.status(201).json({ message: 'Created' });
       }
     } catch (error) {

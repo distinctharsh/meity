@@ -2,6 +2,21 @@ import pool from '@/lib/db';
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
+import jwt from 'jsonwebtoken';
+import { logAuditAction } from '../logger'; 
+
+const JWT_SECRET = process.env.JWT_SECRET;
+
+function getLoggedInUser(req) {
+  const token = req.cookies?.cms_token;
+  if (!token || !JWT_SECRET) return { userId: null, username: 'System Admin' };
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    return { userId: decoded.sub || null, username: decoded.username || 'Admin' };
+  } catch (e) {
+    return { userId: null, username: 'System Admin' };
+  }
+}
 
 const UPLOAD_DIR = path.join(process.cwd(), 'public', 'uploads', 'about');
 
@@ -73,6 +88,17 @@ export default async function handler(req, res) {
         return res.status(404).json({ message: 'About content not found' });
       }
 
+      const { userId, username } = getLoggedInUser(req);
+      await logAuditAction(
+        req,
+        userId,
+        username,
+        'ABOUT_MANAGEMENT',
+        'UPDATE',
+        id,
+        `Updated About section ID ${id} (${section_key})`
+      );
+
       return res.status(200).json({ message: 'Updated successfully' });
     } catch (e) {
       console.error('Update about_content error', e);
@@ -88,6 +114,17 @@ export default async function handler(req, res) {
       if (result.affectedRows === 0) {
         return res.status(404).json({ message: 'About content not found' });
       }
+
+      const { userId, username } = getLoggedInUser(req);
+      await logAuditAction(
+        req,
+        userId,
+        username,
+        'ABOUT_MANAGEMENT',
+        'DELETE',
+        id,
+        `Deleted About section with ID ${id}`
+      );
 
       return res.status(200).json({ message: 'Deleted successfully' });
     } catch (e) {

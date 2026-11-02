@@ -1,4 +1,19 @@
 import pool from '@/lib/db';
+import jwt from 'jsonwebtoken';
+import { logAuditAction } from '../logger';
+
+const JWT_SECRET = process.env.JWT_SECRET;
+
+function getLoggedInUser(req) {
+  const token = req.cookies?.cms_token;
+  if (!token || !JWT_SECRET) return { userId: null, username: 'System Admin' };
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    return { userId: decoded.sub || null, username: decoded.username || 'Admin' };
+  } catch (e) {
+    return { userId: null, username: 'System Admin' };
+  }
+}
 
 export default async function handler(req, res) {
   if (req.method === 'GET') {
@@ -40,6 +55,17 @@ export default async function handler(req, res) {
         (title, type, description, published_date, file_name, file_size, is_active)
         VALUES (?, 'vacancy', ?, ?, ?, ?, ?)
       `, [title, description, published_date, file_name, file_size, is_active !== undefined ? is_active : 1]);
+
+      const { userId, username } = getLoggedInUser(req);
+      await logAuditAction(
+        req,
+        userId,
+        username,
+        'VACANCIES',
+        'CREATE',
+        result.insertId,
+        `Created Vacancy: "${title}" (ID: ${result.insertId})`
+      );
 
       res.status(201).json({ id: result.insertId, message: 'Vacancy created successfully' });
     } catch (error) {

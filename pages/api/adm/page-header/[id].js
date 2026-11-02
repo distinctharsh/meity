@@ -1,4 +1,19 @@
 import pool from '@/lib/db';
+import jwt from 'jsonwebtoken';
+import { logAuditAction } from '../logger';
+
+const JWT_SECRET = process.env.JWT_SECRET;
+
+function getLoggedInUser(req) {
+  const token = req.cookies?.cms_token;
+  if (!token || !JWT_SECRET) return { userId: null, username: 'System Admin' };
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    return { userId: decoded.sub || null, username: decoded.username || 'Admin' };
+  } catch (e) {
+    return { userId: null, username: 'System Admin' };
+  }
+}
 
 export default async function handler(req, res) {
   const { id } = req.query;
@@ -28,6 +43,18 @@ export default async function handler(req, res) {
         [next.page_path, next.background_url, id]
       );
       if (!r.affectedRows) return res.status(404).json({ message: 'Not found' });
+
+      const { userId, username } = getLoggedInUser(req);
+      await logAuditAction(
+        req,
+        userId,
+        username,
+        'PAGE_HEADERS',
+        'UPDATE',
+        id,
+        `Updated Page Header ID ${id} ("${next.page_path}")`
+      );
+
       res.status(200).json({ message: 'Updated' });
     } catch (err) {
       console.error('Admin page header update error', err);
@@ -37,6 +64,18 @@ export default async function handler(req, res) {
     try {
       const [r] = await pool.query('DELETE FROM page_headers WHERE id = ?', [id]);
       if (!r.affectedRows) return res.status(404).json({ message: 'Not found' });
+
+      const { userId, username } = getLoggedInUser(req);
+      await logAuditAction(
+        req,
+        userId,
+        username,
+        'PAGE_HEADERS',
+        'DELETE',
+        id,
+        `Deleted Page Header with ID ${id}`
+      );
+
       res.status(200).json({ message: 'Deleted' });
     } catch (err) {
       console.error('Admin page header delete error', err);
@@ -46,4 +85,3 @@ export default async function handler(req, res) {
     res.status(405).json({ message: 'Method not allowed' });
   }
 }
-

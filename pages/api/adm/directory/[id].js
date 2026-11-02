@@ -1,4 +1,19 @@
 import pool from "@/lib/db";
+import jwt from "jsonwebtoken";
+import { logAuditAction } from "../logger";
+
+const JWT_SECRET = process.env.JWT_SECRET;
+
+function getLoggedInUser(req) {
+  const token = req.cookies?.cms_token;
+  if (!token || !JWT_SECRET) return { userId: null, username: 'System Admin' };
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    return { userId: decoded.sub || null, username: decoded.username || 'Admin' };
+  } catch (e) {
+    return { userId: null, username: 'System Admin' };
+  }
+}
 
 function safeParse(s) { try { return s ? JSON.parse(s) : []; } catch { return []; } }
 function toArray(v) {
@@ -47,6 +62,18 @@ export default async function handler(req, res) {
           id,
         ]
       );
+
+      const { userId, username } = getLoggedInUser(req);
+      await logAuditAction(
+        req,
+        userId,
+        username,
+        'DIRECTORY',
+        'UPDATE',
+        id,
+        `Updated Directory Entry ID ${id} ("${name}")`
+      );
+
       return res.status(200).json({ ok: true });
     } catch (e) {
       console.error("directory update error", e);
@@ -57,6 +84,18 @@ export default async function handler(req, res) {
   if (req.method === "DELETE") {
     try {
       await pool.query("DELETE FROM directory_entries WHERE id = ?", [id]);
+
+      const { userId, username } = getLoggedInUser(req);
+      await logAuditAction(
+        req,
+        userId,
+        username,
+        'DIRECTORY',
+        'DELETE',
+        id,
+        `Deleted Directory Entry with ID ${id}`
+      );
+
       return res.status(200).json({ ok: true });
     } catch (e) {
       console.error("directory delete error", e);

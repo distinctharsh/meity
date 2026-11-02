@@ -2,6 +2,21 @@ import pool from '@/lib/db';
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
+import jwt from 'jsonwebtoken';
+import { logAuditAction } from '../logger';
+
+const JWT_SECRET = process.env.JWT_SECRET;
+
+function getLoggedInUser(req) {
+  const token = req.cookies?.cms_token;
+  if (!token || !JWT_SECRET) return { userId: null, username: 'System Admin' };
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    return { userId: decoded.sub || null, username: decoded.username || 'Admin' };
+  } catch (e) {
+    return { userId: null, username: 'System Admin' };
+  }
+}
 
 const UPLOAD_DIR = path.join(process.cwd(), 'public', 'uploads', 'about');
 
@@ -30,15 +45,12 @@ export const config = {
 };
 
 async function ensureTable() {
-  // Drop old table if it has ENUM content_type (causes issues)
   try {
     const [cols] = await pool.query("SHOW COLUMNS FROM about_content LIKE 'content_type'");
     if (cols.length > 0 && cols[0].Type && cols[0].Type.includes('enum')) {
       await pool.query('DROP TABLE about_content');
     }
-  } catch (e) {
-    // Table doesn't exist yet, that's fine
-  }
+  } catch (e) {}
 
   await pool.query(`
     CREATE TABLE IF NOT EXISTS about_content (
@@ -63,7 +75,6 @@ async function ensureTable() {
   await safeAlter('ALTER TABLE about_content ADD COLUMN file_name VARCHAR(255) NULL');
 }
 
-// Helper to run middleware as promise
 const runMiddleware = (req, res, fn) => {
   return new Promise((resolve, reject) => {
     fn(req, res, (result) => {
@@ -93,7 +104,6 @@ export default async function handler(req, res) {
 
   if (req.method === 'POST') {
     try {
-      // Parse multipart form with multer
       await runMiddleware(req, res, upload.single('file'));
 
       const section_key = req.body.section_key;
@@ -123,6 +133,18 @@ export default async function handler(req, res) {
         'INSERT INTO about_content (section_key, title, content, content_type, display_order, is_active, file_url, file_size, file_name) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
         [section_key, title, content, content_type, finalOrder, !!is_active, file_url, file_size, file_name]
       );
+
+      const { userId, username } = getLoggedInUser(req);
+      await logAuditAction(
+        req,
+        userId,
+        username,
+        'ABOUT_MANAGEMENT',
+        'CREATE',
+        ins.insertId,
+        `Created About section: "${section_key}" (ID: ${ins.insertId})`
+      );
+
       return res.status(201).json({ id: ins.insertId });
     } catch (e) {
       console.error('POST error', e);

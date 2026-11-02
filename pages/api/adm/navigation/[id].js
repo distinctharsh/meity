@@ -1,4 +1,19 @@
 import pool from '@/lib/db';
+import jwt from 'jsonwebtoken';
+import { logAuditAction } from '../logger';
+
+const JWT_SECRET = process.env.JWT_SECRET;
+
+function getLoggedInUser(req) {
+  const token = req.cookies?.cms_token;
+  if (!token || !JWT_SECRET) return { userId: null, username: 'System Admin' };
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    return { userId: decoded.sub || null, username: decoded.username || 'Admin' };
+  } catch (e) {
+    return { userId: null, username: 'System Admin' };
+  }
+}
 
 export default async function handler(req, res) {
   const { id } = req.query;
@@ -21,7 +36,7 @@ export default async function handler(req, res) {
       return res.status(200).json(rows[0]);
     } catch (error) {
       console.error('Error fetching navigation item:', error);
-      return res.status(500).json({ message: 'Internal server error' });
+      res.status(500).json({ message: 'Internal server error' });
     }
   }
 
@@ -123,6 +138,17 @@ export default async function handler(req, res) {
 
         await pool.query('COMMIT');
 
+        const { userId, username } = getLoggedInUser(req);
+        await logAuditAction(
+          req,
+          userId,
+          username,
+          'NAVIGATION',
+          'UPDATE',
+          id,
+          `Updated Navigation Item ID ${id} ("${next.name}")`
+        );
+
         return res.status(200).json({
           message: 'Navigation updated successfully'
         });
@@ -181,6 +207,17 @@ export default async function handler(req, res) {
         }
 
         await pool.query('COMMIT');
+
+        const { userId, username } = getLoggedInUser(req);
+        await logAuditAction(
+          req,
+          userId,
+          username,
+          'NAVIGATION',
+          'DELETE',
+          id,
+          `Deleted Navigation Item with ID ${id}`
+        );
 
         return res.status(200).json({
           message: 'Navigation deleted successfully'

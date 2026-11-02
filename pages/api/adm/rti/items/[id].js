@@ -1,6 +1,21 @@
 import pool from '@/lib/db';
 import fs from 'fs';
 import path from 'path';
+import jwt from 'jsonwebtoken';
+import { logAuditAction } from '../../logger';
+
+const JWT_SECRET = process.env.JWT_SECRET;
+
+function getLoggedInUser(req) {
+  const token = req.cookies?.cms_token;
+  if (!token || !JWT_SECRET) return { userId: null, username: 'System Admin' };
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    return { userId: decoded.sub || null, username: decoded.username || 'Admin' };
+  } catch (e) {
+    return { userId: null, username: 'System Admin' };
+  }
+}
 
 function formatBytes(bytes) {
   if (!bytes || isNaN(bytes)) return '';
@@ -65,6 +80,18 @@ export default async function handler(req, res) {
       values.push(id);
       const [result] = await pool.query(sql, values);
       if (result.affectedRows === 0) return res.status(404).json({ message: 'Not found' });
+
+      const { userId, username } = getLoggedInUser(req);
+      await logAuditAction(
+        req,
+        userId,
+        username,
+        'RTI_ITEMS',
+        'UPDATE',
+        id,
+        `Updated RTI Item ID ${id}`
+      );
+
       res.status(200).json({ message: 'Updated' });
     } catch (error) {
       console.error('Error updating RTI item:', error);
@@ -74,6 +101,18 @@ export default async function handler(req, res) {
     try {
       const [result] = await pool.query('DELETE FROM rti_items WHERE id = ?', [id]);
       if (result.affectedRows === 0) return res.status(404).json({ message: 'Not found' });
+
+      const { userId, username } = getLoggedInUser(req);
+      await logAuditAction(
+        req,
+        userId,
+        username,
+        'RTI_ITEMS',
+        'DELETE',
+        id,
+        `Deleted RTI Item with ID ${id}`
+      );
+
       res.status(200).json({ message: 'Deleted' });
     } catch (error) {
       console.error('Error deleting RTI item:', error);
