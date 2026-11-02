@@ -1,4 +1,19 @@
 import pool from '@/lib/db';
+import jwt from 'jsonwebtoken';
+import { logAuditAction } from '../logger';
+
+const JWT_SECRET = process.env.JWT_SECRET;
+
+function getLoggedInUser(req) {
+  const token = req.cookies?.cms_token;
+  if (!token || !JWT_SECRET) return { userId: null, username: 'System Admin' };
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    return { userId: decoded.sub || null, username: decoded.username || 'Admin' };
+  } catch (e) {
+    return { userId: null, username: 'System Admin' };
+  }
+}
 
 export default async function handler(req, res) {
   const { id } = req.query;
@@ -40,6 +55,17 @@ export default async function handler(req, res) {
         return res.status(404).json({ message: 'Slide not found' });
       }
 
+      const { userId, username } = getLoggedInUser(req);
+      await logAuditAction(
+        req,
+        userId,
+        username,
+        'HERO_SLIDER',
+        'UPDATE',
+        id,
+        `Updated hero slider with ID ${id}`
+      );
+
       res.status(200).json({ message: 'Slide updated successfully' });
     } catch (error) {
       console.error('Error updating slide:', error);
@@ -55,6 +81,17 @@ export default async function handler(req, res) {
       if (result.affectedRows === 0) {
         return res.status(404).json({ message: 'Slide not found' });
       }
+
+      const { userId, username } = getLoggedInUser(req);
+      await logAuditAction(
+        req,
+        userId,
+        username,
+        'HERO_SLIDER',
+        'DELETE',
+        id,
+        `Deleted hero slider with ID ${id}`
+      );
 
       res.status(200).json({ message: 'Slide deleted successfully' });
     } catch (error) {

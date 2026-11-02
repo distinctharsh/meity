@@ -1,4 +1,19 @@
 import pool from '@/lib/db';
+import jwt from 'jsonwebtoken';
+import { logAuditAction } from '../logger';
+
+const JWT_SECRET = process.env.JWT_SECRET;
+
+function getLoggedInUser(req) {
+  const token = req.cookies?.cms_token;
+  if (!token || !JWT_SECRET) return { userId: null, username: 'System Admin' };
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    return { userId: decoded.sub || null, username: decoded.username || 'Admin' };
+  } catch (e) {
+    return { userId: null, username: 'System Admin' };
+  }
+}
 
 export default async function handler(req, res) {
   if (req.method === 'GET') {
@@ -28,6 +43,17 @@ export default async function handler(req, res) {
       const [result] = await pool.query(
         'INSERT INTO hero_slides (image_url, link_url, display_order, is_active) VALUES (?, ?, ?, ?)',
         [image_url, link_url, display_order || 0, is_active !== false]
+      );
+
+      const { userId, username } = getLoggedInUser(req);
+      await logAuditAction(
+        req,
+        userId,
+        username,
+        'HERO_SLIDER',
+        'CREATE',
+        result.insertId,
+        `Created new hero slider with ID ${result.insertId}`
       );
 
       res.status(201).json({ 
