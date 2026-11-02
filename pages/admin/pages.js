@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, useMemo } from 'react';
 import AdminLayout from '@/components/admin/AdminLayout';
+import { syncPagesAndRoutes } from '@/utils/api';
 
 import dynamic from 'next/dynamic';
 import { loader } from '@monaco-editor/react';
@@ -36,8 +37,6 @@ export default function PagesManagement() {
     }
   };
 
-  
-
   const handleAdd = () => {
     setEditing(null);
     setShowForm(true);
@@ -54,6 +53,7 @@ export default function PagesManagement() {
       const res = await fetch(`/api/adm/pages/${id}`, { method: 'DELETE' });
       if (res.ok) {
         await refresh();
+        await syncPagesAndRoutes();
       } else {
         const j = await res.json().catch(() => ({}));
         alert(j.message || 'Delete failed');
@@ -83,8 +83,12 @@ export default function PagesManagement() {
           is_active: !pg.is_active,
         }),
       });
-      if (res.ok) refresh();
-      else alert('Failed to update status');
+      if (res.ok) {
+        refresh();
+        await syncPagesAndRoutes();
+      } else {
+        alert('Failed to update status');
+      }
     } catch (e) {
       console.error('Toggle active error', e);
       alert('Failed to update status');
@@ -184,10 +188,15 @@ export default function PagesManagement() {
 
         {showForm && (
           <PageForm
-            onClose={() => { setShowForm(false); setEditing(null); }}
-            onSaved={async () => { setShowForm(false); setEditing(null); await refresh(); }}
-            editing={editing}
-          />
+          onClose={() => { setShowForm(false); setEditing(null); }}
+          onSaved={async () => {
+            setShowForm(false); 
+            setEditing(null); 
+            await refresh(); 
+            await syncPagesAndRoutes();
+          }}
+          editing={editing}
+        />
         )}
       </div>
     </AdminLayout>

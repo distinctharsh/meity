@@ -99,3 +99,14 @@ export const syncHomeData = async () => {
     console.error('Home data sync error:', error);
   }
 };
+
+export const syncPagesAndRoutes = async () => {
+  try {
+    await Promise.all([
+      fetch('/api/adm/sync-pages-content', { method: 'GET' }).catch(() => {}),
+      fetch('/api/adm/sync-routes', { method: 'POST' }).catch(() => {})
+    ]);
+  } catch (error) {
+    console.error('Pages & routes sync error:', error);
+  }
+};
