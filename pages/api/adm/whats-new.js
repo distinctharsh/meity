@@ -1,4 +1,19 @@
 import pool from '../../../lib/db';
+import jwt from 'jsonwebtoken';
+import { logAuditAction } from './logger'; 
+
+const JWT_SECRET = process.env.JWT_SECRET;
+
+function getLoggedInUser(req) {
+  const token = req.cookies?.cms_token;
+  if (!token || !JWT_SECRET) return { userId: null, username: 'System Admin' };
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    return { userId: decoded.sub || null, username: decoded.username || 'Admin' };
+  } catch (e) {
+    return { userId: null, username: 'System Admin' };
+  }
+}
 
 async function handler(req, res) {
   try {
@@ -70,6 +85,17 @@ async function handlePost(req, res) {
       [title, type, file_url, external_url, newDisplayOrder, is_active, is_key_document]
     );
 
+    const { userId, username } = getLoggedInUser(req);
+    await logAuditAction(
+      req,
+      userId,
+      username,
+      'WHATS_NEW',
+      'CREATE',
+      result.insertId,
+      `Created What's New item: "${title}" (ID: ${result.insertId})`
+    );
+
     return res.status(201).json({ 
       message: 'What\'s New item created successfully',
       id: result.insertId 
@@ -133,6 +159,17 @@ async function handlePut(req, res) {
       return res.status(404).json({ message: 'What\'s New item not found' });
     }
 
+    const { userId, username } = getLoggedInUser(req);
+    await logAuditAction(
+      req,
+      userId,
+      username,
+      'WHATS_NEW',
+      'UPDATE',
+      id,
+      `Updated What's New item ID ${id}`
+    );
+
     return res.status(200).json({ message: 'What\'s New item updated successfully' });
   } catch (error) {
     console.error('Error updating what\'s new item:', error);
@@ -153,6 +190,17 @@ async function handleDelete(req, res) {
     if (result.affectedRows === 0) {
       return res.status(404).json({ message: 'What\'s New item not found' });
     }
+
+    const { userId, username } = getLoggedInUser(req);
+    await logAuditAction(
+      req,
+      userId,
+      username,
+      'WHATS_NEW',
+      'DELETE',
+      id,
+      `Deleted What's New item with ID ${id}`
+    );
 
     return res.status(200).json({ message: 'What\'s New item deleted successfully' });
   } catch (error) {
