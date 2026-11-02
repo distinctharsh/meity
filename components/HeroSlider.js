@@ -13,23 +13,41 @@ const HeroSlider = ({ slides: initialSlides = [] }) => {
 
   const duration = 5000; // 5 sec per slide
 
-  useEffect(() => {
-    if (initialSlides.length > 0) {
-      setSlides(initialSlides);
-      return;
-    }
+  const specialBanner = {
+    id: 'special-cbps-banner',
+    image_url: 'https://cbpssubscriber.mygov.in/assets/uploads/juGajmc1gOVBUtt5?27',
+    link_url: 'https://cbpssubscriber.mygov.in/aff/XOnE4iV7FWFXldrm',
+    isSpecialBanner: true
+  };
 
+  useEffect(() => {
     let mounted = true;
     async function load() {
       try {
         const res = await fetch('/api/slider', { cache: 'no-store' });
         const data = res.ok ? (await res.json()) : [];
-        if (mounted) setSlides(Array.isArray(data) ? data : []);
+        const fetchedSlides = Array.isArray(data) ? data : [];
+        
+        if (mounted) {
+          if (fetchedSlides.length > 0) {
+            setSlides([specialBanner, ...fetchedSlides]);
+          } else {
+            setSlides([specialBanner]);
+          }
+        }
       } catch (e) {
-        if (mounted) setSlides([]);
+        if (mounted) {
+          setSlides(initialSlides.length > 0 ? [specialBanner, ...initialSlides] : [specialBanner]);
+        }
       }
     }
-    load();
+
+    if (initialSlides.length > 0) {
+      setSlides([specialBanner, ...initialSlides]);
+    } else {
+      load();
+    }
+
     return () => { mounted = false; };
   }, [initialSlides]);
 
@@ -137,7 +155,24 @@ const HeroSlider = ({ slides: initialSlides = [] }) => {
       <div className="relative w-full" suppressHydrationWarning style={{ height: mounted && containerHeight ? `${containerHeight}px` : undefined }}>
         {slides.map((s, index) => {
           const isActive = index === currentSlide;
-          const SlideContent = (
+          const SlideContent = s.isSpecialBanner ? (
+            <img
+              src={s.image_url}
+              alt="cbps banner"
+              id="_XOnE4iV7FWFXldrm"
+              className="w-full h-full object-cover"
+              style={{ cursor: 'pointer', display: 'block', width: '100%', height: '100%', margin: 0, padding: 0 }}
+              {...(index === 0 ? { fetchPriority: "high", loading: "eager" } : { loading: "lazy" })}
+              onLoad={(e) => {
+                try {
+                  if (typeof _done == 'undefined' || !_done) {
+                    e.target.setAttribute('src', e.target.getAttribute('src') + '?' + Math.floor((Math.random() * 100) + 1));
+                    window._done = true;
+                  }
+                } catch(err) {}
+              }}
+            />
+          ) : (
             <img
               src={s.image_url}
               alt={`Slide ${index + 1}`}
@@ -152,7 +187,7 @@ const HeroSlider = ({ slides: initialSlides = [] }) => {
               className={`absolute inset-0 transition-opacity duration-300 ${isActive ? 'opacity-100 z-[1]' : 'opacity-0 z-0 pointer-events-none'}`}
             >
               {s.link_url ? (
-                <a href={s.link_url} className="block w-full h-full" aria-label={`Slide ${index + 1}`}>
+                <a href={s.link_url} target="_blank" rel="noopener noreferrer" className="block w-full h-full show_msg" aria-label={`Slide ${index + 1}`}>
                   {SlideContent}
                 </a>
               ) : (
