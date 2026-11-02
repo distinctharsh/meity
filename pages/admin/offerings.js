@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import AdminLayout from '../../components/admin/AdminLayout';
 import OfferingForm from '../../components/admin/OfferingForm';
-import { syncHomeData } from '@/utils/api';
 
 export default function OfferingsManagement() {
   const [offerings, setOfferings] = useState([]);
@@ -71,7 +70,6 @@ export default function OfferingsManagement() {
 
       if (response.ok) {
         setOfferings(offerings.filter(item => item.id !== id));
-        await syncHomeData();
       } else {
         alert(`Failed to delete ${itemType}`);
       }
@@ -101,7 +99,6 @@ export default function OfferingsManagement() {
         setShowForm(false);
         setEditingOffering(null);
         fetchOfferings();
-        await syncHomeData();
       } else {
         const error = await response.json();
         alert(error.message || 'Failed to save item');
@@ -125,7 +122,6 @@ export default function OfferingsManagement() {
 
       if (response.ok) {
         fetchOfferings();
-        await syncHomeData();
       } else {
         alert('Failed to update status');
       }
