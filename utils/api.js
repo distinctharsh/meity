@@ -110,3 +110,11 @@ export const syncPagesAndRoutes = async () => {
     console.error('Pages & routes sync error:', error);
   }
 };
+
+export const syncRoutesAndNavTree = async () => {
+  try {
+    await fetch('/api/adm/sync-routes', { method: 'POST' }).catch(() => {});
+  } catch (error){
+    console.error('Routes & nav-tree sync error:', error);  
+  }
+}

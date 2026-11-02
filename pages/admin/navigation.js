@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import AdminLayout from '../../components/admin/AdminLayout';
+import { syncRoutesAndNavTree } from '@/utils/api';
 
 export default function NavigationManagement() {
   const [navigationItems, setNavigationItems] = useState([]);
@@ -45,6 +46,7 @@ export default function NavigationManagement() {
 
       if (response.ok) {
         setNavigationItems(navigationItems.filter(item => item.id !== id));
+        await syncRoutesAndNavTree(); 
       } else {
         alert('Failed to delete navigation item');
       }
@@ -71,6 +73,7 @@ export default function NavigationManagement() {
         setShowForm(false);
         setEditingItem(null);
         fetchNavigation();
+        await syncRoutesAndNavTree(); 
       } else {
         const error = await response.json();
         alert(error.message || 'Failed to save navigation item');
@@ -93,6 +96,7 @@ export default function NavigationManagement() {
 
       if (response.ok) {
         fetchNavigation();
+        await syncRoutesAndNavTree(); 
       } else {
         alert('Failed to update navigation item status');
       }
