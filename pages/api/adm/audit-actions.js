@@ -7,7 +7,9 @@ export default async function handler(req, res) {
 
   try {
     const [rows] = await pool.query(
-      'SELECT * FROM audit_actions ORDER BY created_at DESC LIMIT 100'
+      `SELECT * FROM audit_actions 
+       WHERE created_at >= NOW() - INTERVAL 1 MONTH 
+       ORDER BY created_at DESC`
     );
     return res.status(200).json(rows || []);
   } catch (error) {

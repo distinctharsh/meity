@@ -96,6 +96,13 @@ const AdminLayout = ({ children }) => {
         { name: 'Page Headers', href: '/admin/page-headers', icon: '🏷️', description: 'Hero & breadcrumb per-page' },
         { name: 'Footer', href: '/admin/footer', icon: '🔻', description: 'Manage site footer' }
       ] 
+    },
+    { 
+      type: 'section', 
+      name: 'System & Security', 
+      items: [
+        { name: 'Audit Logs', href: '/admin/audit', icon: '🛡️', description: 'Monitor audit actions & trails' }
+      ] 
     }
   ];
 
