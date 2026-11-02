@@ -139,7 +139,7 @@ export default function AuditLogsPage() {
                 <table className="min-w-full divide-y divide-gray-200 text-sm">
                   <thead className="bg-gray-50 text-gray-600 font-semibold">
                     <tr>
-                      <th className="px-4 py-3 text-left">ID</th>
+                      <th className="px-4 py-3 text-left">S.No.</th>
                       <th className="px-4 py-3 text-left">Module</th>
                       <th className="px-4 py-3 text-left">Action</th>
                       <th className="px-4 py-3 text-left">User</th>
@@ -151,12 +151,12 @@ export default function AuditLogsPage() {
                   <tbody className="divide-y divide-gray-200 text-gray-700">
                     {currentLogs.length === 0 ? (
                       <tr>
-                        <td colSpan="7" className="px-4 py-8 text-center text-gray-500">No audit actions found.</td>
+                        <td colSpan="8" className="px-4 py-8 text-center text-gray-500">No audit actions found.</td>
                       </tr>
                     ) : (
-                      currentLogs.map((log) => (
+                      currentLogs.map((log, index) => (
                         <tr key={log.id} className="hover:bg-gray-50 transition-colors">
-                          <td className="px-4 py-3 font-medium text-gray-900">{log.id}</td>
+                          <td className="px-4 py-3 font-medium text-gray-500">{indexOfFirstItem + index + 1}</td>
                           <td className="px-4 py-3">
                             <span className="px-2.5 py-1 text-xs font-semibold rounded-full bg-blue-50 text-blue-700">
                               {log.module}
@@ -186,7 +186,7 @@ export default function AuditLogsPage() {
                 <table className="min-w-full divide-y divide-gray-200 text-sm">
                   <thead className="bg-gray-50 text-gray-600 font-semibold">
                     <tr>
-                      <th className="px-4 py-3 text-left">ID</th>
+                      <th className="px-4 py-3 text-left">S.No.</th>
                       <th className="px-4 py-3 text-left">Username</th>
                       <th className="px-4 py-3 text-left">Action / Event</th>
                       <th className="px-4 py-3 text-left">IP Address</th>
@@ -197,12 +197,12 @@ export default function AuditLogsPage() {
                   <tbody className="divide-y divide-gray-200 text-gray-700">
                     {currentLogs.length === 0 ? (
                       <tr>
-                        <td colSpan="6" className="px-4 py-8 text-center text-gray-500">No audit trails found.</td>
+                        <td colSpan="7" className="px-4 py-8 text-center text-gray-500">No audit trails found.</td>
                       </tr>
                     ) : (
-                      currentLogs.map((trail) => (
+                      currentLogs.map((trail, index) => (
                         <tr key={trail.id} className="hover:bg-gray-50 transition-colors">
-                          <td className="px-4 py-3 font-medium text-gray-900">{trail.id}</td>
+                          <td className="px-4 py-3 font-medium text-gray-500">{indexOfFirstItem + index + 1}</td>
                           <td className="px-4 py-3 font-medium">{trail.username || 'Admin'}</td>
                           <td className="px-4 py-3">
                             <span className="px-2.5 py-1 text-xs font-semibold rounded-full bg-purple-50 text-purple-700">
