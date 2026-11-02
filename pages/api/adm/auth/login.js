@@ -1,6 +1,7 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import pool from '@/lib/db';
+import { logAuditTrail } from '../logger'; 
 
 const JWT_SECRET = process.env.JWT_SECRET ;
 if (!JWT_SECRET) {
@@ -26,6 +27,8 @@ export default async function handler(req, res) {
     );
 
     if (users.length === 0) {
+      await logAuditTrail(req, null, username, 'FAILED_LOGIN');
+
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 
@@ -34,28 +37,33 @@ export default async function handler(req, res) {
     // Verify password
     const isValidPassword = await bcrypt.compare(password, user.password_hash);
     if (!isValidPassword) {
+      await logAuditTrail(req, user.id, user.username, 'FAILED_LOGIN');
+
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 
     // Generate JWT token
-const token = jwt.sign(
-  {
-    sub: String(user.id),
-    username: user.username,
-    role: user.role
-  },
-  JWT_SECRET,
-  {
-    algorithm: 'HS256',
-    expiresIn: '30m',
-    issuer: 'cabsec-cms',
-    audience: 'cabsec-cms-api'
-  }
-);
-res.setHeader(
-  'Set-Cookie',
-  `cms_token=${token}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=1800`
-);
+    const token = jwt.sign(
+      {
+        sub: String(user.id),
+        username: user.username,
+        role: user.role
+      },
+      JWT_SECRET,
+      {
+        algorithm: 'HS256',
+        expiresIn: '30m',
+        issuer: 'cabsec-cms',
+        audience: 'cabsec-cms-api'
+      }
+    );
+    res.setHeader(
+      'Set-Cookie',
+      `cms_token=${token}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=1800`
+    );
+
+    await logAuditTrail(req, user.id, user.username, 'LOGIN');
+
     // Return user data (without password) and token
     const { password_hash, ...userWithoutPassword } = user;
 
