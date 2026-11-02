@@ -1,4 +1,6 @@
 import pool from '@/lib/db';
+import fs from 'fs';
+import path from 'path';
 
 export default async function handler(req, res) {
   if (req.method === 'GET') {
@@ -64,6 +66,19 @@ export default async function handler(req, res) {
         ['main', sectionsJson, socialLinksJson, copyrightText]
       );
 
+      try {
+        const footerPayload = {
+          sections: sections || [],
+          social_links: social_links || {},
+          copyright: copyrightText,
+          updated_at: new Date().toISOString()
+        };
+        const footerJsonPath = path.join(process.cwd(), 'lib', 'footer.json');
+        fs.writeFileSync(footerJsonPath, JSON.stringify(footerPayload, null, 2), 'utf8');
+      } catch (fileErr) {
+        console.error('Error writing footer.json file:', fileErr);
+      }
+
       return res.status(200).json({ message: 'Footer updated successfully' });
     } catch (error) {
       console.error('Error updating footer:', error);
@@ -73,5 +88,3 @@ export default async function handler(req, res) {
     return res.status(405).json({ message: 'Method not allowed' });
   }
 }
-
-// API implementation here
