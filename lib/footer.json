@@ -1,0 +1,51 @@
+{
+  "sections": [
+    {
+      "title": "USEFUL LINKS",
+      "links": [
+        {
+          "label": "Archivesss",
+          "url": "/archives"
+        },
+        {
+          "label": "Sitemap",
+          "url": "/sitemap"
+        }
+      ]
+    },
+    {
+      "title": "Website Policies",
+      "links": [
+        {
+          "label": "Website Policies",
+          "url": "/policies/terms-of-use"
+        },
+        {
+          "label": "Help",
+          "url": "/help"
+        }
+      ]
+    },
+    {
+      "title": "Related Links",
+      "links": [
+        {
+          "label": "Related Links",
+          "url": "/related-links"
+        },
+        {
+          "label": "Contact Us",
+          "url": "/connect/contact-us"
+        }
+      ]
+    }
+  ],
+  "social_links": {
+    "twitter": "",
+    "youtube": "",
+    "facebook": "",
+    "instagram": ""
+  },
+  "copyright": "This Website belong to Cabinet Secretariat, Government of India",
+  "updated_at": "2026-11-02T06:47:47.754Z"
+}
