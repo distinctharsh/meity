@@ -10,8 +10,6 @@ export default async function handler(req, res) {
   let connection;
   try {
     connection = await pool.getConnection();
-
-    // Database se sabhi active home data aur recent documents parallel fetch karein
     const [
       [slides],
       [announcements],
@@ -20,7 +18,8 @@ export default async function handler(req, res) {
       [whatsNew],
       [importantLinks],
       [recentDocs],
-      [partnerLogos]
+      [partnerLogos],
+      [footerRows]
     ] = await Promise.all([
       connection.execute('SELECT * FROM hero_slides WHERE is_active = 1 ORDER BY display_order ASC'),
       connection.execute('SELECT * FROM announcements WHERE is_active = 1 ORDER BY created_at DESC'),
@@ -46,8 +45,29 @@ export default async function handler(req, res) {
         ORDER BY rf.created_at DESC
         LIMIT 4;
       `),
-      connection.execute('SELECT * FROM partner_logos WHERE is_active = 1 ORDER BY display_order ASC')
+      connection.execute('SELECT * FROM partner_logos WHERE is_active = 1 ORDER BY display_order ASC'),
+      connection.execute('SELECT id, type, sections, social_links, copyright, created_at, updated_at FROM footer WHERE type = ? LIMIT 1', ['main'])
     ]);
+
+    // Footer row format parsing
+    let footerData = null;
+    if (footerRows && footerRows.length > 0) {
+      const row = footerRows[0];
+      let sections = null;
+      let socialLinks = null;
+      try { sections = row.sections ? JSON.parse(row.sections) : null; } catch (e) { sections = null; }
+      try { socialLinks = row.social_links ? JSON.parse(row.social_links) : null; } catch (e) { socialLinks = null; }
+      
+      footerData = {
+        id: row.id,
+        type: row.type,
+        sections,
+        social_links: socialLinks,
+        copyright: row.copyright,
+        created_at: row.created_at,
+        updated_at: row.updated_at,
+      };
+    }
 
     const homeDataPayload = {
       slides: slides || [],
@@ -58,16 +78,16 @@ export default async function handler(req, res) {
       whatsNew: whatsNew || [],
       importantLinks: importantLinks || [],
       recentDocs: recentDocs || [],
-      partnerLogos: partnerLogos || []
+      partnerLogos: partnerLogos || [],
+      footer: footerData
     };
 
     const filePath = path.join(process.cwd(), 'lib', 'homeData.json');
-
     fs.writeFileSync(filePath, JSON.stringify(homeDataPayload, null, 2), 'utf8');
 
     return res.status(200).json({
       success: true,
-      message: "Successfully synced and updated homeData.json including recentDocs from database!"
+      message: "Successfully synced and updated homeData.json including footer and recentDocs from database!"
     });
 
   } catch (error) {

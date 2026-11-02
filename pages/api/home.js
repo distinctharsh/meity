@@ -57,7 +57,8 @@ export default async function handler(req, res) {
       whatsNew: [],
       importantLinks: [],
       recentDocs: [],
-      partnerLogos: []
+      partnerLogos: [],
+      footer: null
     };
 
     if (fs.existsSync(filePath)) {

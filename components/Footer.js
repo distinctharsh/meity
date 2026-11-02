@@ -127,9 +127,9 @@ const Footer = () => {
             </div>
 
             {/* Footer Bottom Text */}
-            <div className="text-left text-gray-300 text-base mt-0 md:mt-0 md:whitespace-nowrap">
-              {copyrightText}
-            </div>
+            <div className="text-left text-gray-300 text-base mt-0 md:mt-0 md:whitespace-nowrap"
+              dangerouslySetInnerHTML={{ __html: copyrightText }}
+            />
           </div>
 
           <div className="flex flex-col items-center md:items-end space-y-4 mt-0 md:mt-5">

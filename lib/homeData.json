@@ -352,5 +352,59 @@
       "created_at": "2026-05-06T11:57:18.000Z",
       "updated_at": "2026-09-15T12:17:39.000Z"
     }
-  ]
+  ],
+  "footer": {
+    "id": 1,
+    "type": "main",
+    "sections": [
+      {
+        "title": "USEFUL LINKS",
+        "links": [
+          {
+            "label": "Archives",
+            "url": "/archives"
+          },
+          {
+            "label": "Sitemap",
+            "url": "#"
+          }
+        ]
+      },
+      {
+        "title": "Website Policies",
+        "links": [
+          {
+            "label": "Website Policies",
+            "url": "/policies/terms-of-use"
+          },
+          {
+            "label": "Help",
+            "url": "/help"
+          }
+        ]
+      },
+      {
+        "title": "Related Links",
+        "links": [
+          {
+            "label": "Related Links",
+            "url": "/related-links"
+          },
+          {
+            "label": "Contact Us",
+            "url": "/connect/contact-us"
+          }
+        ]
+      }
+    ],
+    "social_links": {
+      "twitter": "",
+      "youtube": "",
+      "facebook": "",
+      "instagram": ""
+    },
+    "copyright": "This Website belong to Cabinet Secretariat, Government of India",
+    "created_at": "2025-11-10T09:51:04.000Z",
+    "updated_at": "2026-11-02T04:43:00.000Z"
+  }
 }

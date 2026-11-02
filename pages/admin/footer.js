@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import AdminLayout from '../../components/admin/AdminLayout';
+import { syncHomeData } from '@/utils/api';
 
 export default function FooterAdminPage() {
   const [loading, setLoading] = useState(true);
@@ -132,6 +133,7 @@ export default function FooterAdminPage() {
       if (response.ok) {
         alert('Footer settings saved successfully!');
         fetchFooter();
+        await syncHomeData();
       } else {
         const error = await response.json().catch(() => ({}));
         alert(error.message || 'Failed to save footer settings');
@@ -407,5 +409,3 @@ export default function FooterAdminPage() {
     </AdminLayout>
   );
 }
-
-// Footer admin page implementation here
