@@ -1,46 +1,159 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import crypto from 'crypto';
 import pool from '@/lib/db';
-import { logAuditTrail } from '../logger'; 
+import { logAuditTrail } from '../logger';
 
 const JWT_SECRET = process.env.JWT_SECRET;
+
 if (!JWT_SECRET) {
-    throw new Error('JWT_SECRET is not configured');
+  throw new Error('JWT_SECRET is not configured');
+}
+
+// Must match the public value used by the frontend.
+const PUBLIC_CRYPTO_KEY = process.env.JWT_SECRET;
+
+if (!PUBLIC_CRYPTO_KEY) {
+  throw new Error('JWT_SECRET is not configured');
+}
+
+// Decrypt CryptoJS AES-256-CBC payload
+function decryptPassword(encryptedPassword) {
+  try {
+    if (
+      typeof encryptedPassword !== 'string' ||
+      !encryptedPassword ||
+      encryptedPassword.length > 2048
+    ) {
+      return null;
+    }
+
+    const encryptedBuffer = Buffer.from(
+      encryptedPassword,
+      'base64'
+    );
+
+    // Reject invalid or malformed Base64
+    if (
+      encryptedBuffer.length === 0 ||
+      encryptedBuffer.toString('base64') !== encryptedPassword ||
+      encryptedBuffer.length % 16 !== 0
+    ) {
+      return null;
+    }
+
+    const key = crypto
+      .createHash('sha256')
+      .update(PUBLIC_CRYPTO_KEY, 'utf8')
+      .digest();
+
+    const iv = crypto
+      .createHash('sha256')
+      .update(PUBLIC_CRYPTO_KEY, 'utf8')
+      .digest()
+      .subarray(0, 16);
+
+    const decipher = crypto.createDecipheriv(
+      'aes-256-cbc',
+      key,
+      iv
+    );
+
+    const decrypted = Buffer.concat([
+      decipher.update(encryptedBuffer),
+      decipher.final()
+    ]);
+
+    return decrypted.toString('utf8');
+
+  } catch (error) {
+    return null;
+  }
 }
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
-    return res.status(405).json({ message: 'Method not allowed' });
+    res.setHeader('Allow', ['POST']);
+
+    return res.status(405).json({
+      message: 'Method not allowed'
+    });
   }
 
-  const { username, password } = req.body;
+  const { username, encryptedPassword } = req.body || {};
 
-  if (!username || !password) {
-    return res.status(400).json({ message: 'Username and password are required' });
+  if (
+    typeof username !== 'string' ||
+    !username.trim() ||
+    typeof encryptedPassword !== 'string' ||
+    !encryptedPassword
+  ) {
+    return res.status(400).json({
+      message: 'Username and password are required'
+    });
   }
 
   try {
-    // Find user in database
+    // Decrypt password
+    const password = decryptPassword(encryptedPassword);
+
+    if (password === null || !password) {
+      await logAuditTrail(
+        req,
+        null,
+        username,
+        'FAILED_LOGIN'
+      );
+
+      return res.status(401).json({
+        message: 'Invalid credentials'
+      });
+    }
+
+    // Find active user
     const [users] = await pool.query(
-      'SELECT * FROM cms_users WHERE username = ? AND is_active = 1',
-      [username]
+      `SELECT id, username, email, password_hash, role, is_active
+       FROM cms_users
+       WHERE username = ? AND is_active = 1
+       LIMIT 1`,
+      [username.trim()]
     );
 
     if (users.length === 0) {
-      await logAuditTrail(req, null, username, 'FAILED_LOGIN');
-      return res.status(401).json({ message: 'Invalid credentials' });
+      await logAuditTrail(
+        req,
+        null,
+        username,
+        'FAILED_LOGIN'
+      );
+
+      return res.status(401).json({
+        message: 'Invalid credentials'
+      });
     }
 
     const user = users[0];
 
-    // Verify password
-    const isValidPassword = await bcrypt.compare(password, user.password_hash);
+    // Verify decrypted password
+    const isValidPassword = await bcrypt.compare(
+      password,
+      user.password_hash
+    );
+
     if (!isValidPassword) {
-      await logAuditTrail(req, user.id, user.username, 'FAILED_LOGIN');
-      return res.status(401).json({ message: 'Invalid credentials' });
+      await logAuditTrail(
+        req,
+        user.id,
+        user.username,
+        'FAILED_LOGIN'
+      );
+
+      return res.status(401).json({
+        message: 'Invalid credentials'
+      });
     }
 
-    // Generate JWT token
+    // Generate JWT
     const token = jwt.sign(
       {
         sub: String(user.id),
@@ -55,23 +168,35 @@ export default async function handler(req, res) {
         audience: 'cabsec-cms-api'
       }
     );
+
+    // HttpOnly authentication cookie
     res.setHeader(
       'Set-Cookie',
       `cms_token=${token}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=1800`
     );
 
-    await logAuditTrail(req, user.id, user.username, 'LOGIN');
+    await logAuditTrail(
+      req,
+      user.id,
+      user.username,
+      'LOGIN'
+    );
 
-    const { password_hash, ...userWithoutPassword } = user;
+    const {
+      password_hash,
+      ...userWithoutPassword
+    } = user;
 
-    res.status(200).json({
+    return res.status(200).json({
       message: 'Login successful',
-      token,
       user: userWithoutPassword
     });
 
   } catch (error) {
     console.error('Login error:', error);
-    res.status(500).json({ message: 'Internal server error' });
+
+    return res.status(500).json({
+      message: 'Internal server error'
+    });
   }
 }

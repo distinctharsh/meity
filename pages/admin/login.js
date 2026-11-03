@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
+import CryptoJS from '../../lib/crypto-js.min.js';
 
 export default function AdminLogin() {
   const [formData, setFormData] = useState({
@@ -8,60 +9,102 @@ export default function AdminLogin() {
     password: '',
     captchaInput: ''
   });
-  
+
   const [generatedCaptchaText, setGeneratedCaptchaText] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
   const router = useRouter();
-
   const canvasRef = useRef(null);
 
-  // Generate random alphanumeric captcha string (e.g., A7k9P)
+  const encryptPassword = (password) => {
+    try {
+      const publicKey = process.env.NEXT_PUBLIC_LOGIN_CRYPTO_KEY;
+
+      if (!publicKey || !password) {
+        throw new Error('Encryption configuration missing.');
+      }
+
+      const key = CryptoJS.SHA256(publicKey);
+
+      const ivHash = CryptoJS.SHA256(publicKey);
+      const iv = CryptoJS.lib.WordArray.create(
+        ivHash.words.slice(0, 4),
+        16
+      );
+
+      const encrypted = CryptoJS.AES.encrypt(password, key, {
+        iv,
+        mode: CryptoJS.mode.CBC,
+        padding: CryptoJS.pad.Pkcs7
+      });
+
+      return CryptoJS.enc.Base64.stringify(encrypted.ciphertext);
+
+    } catch (err) {
+      console.error('Encryption error:', err);
+      return '';
+    }
+  };
+
   const generateCaptchaString = () => {
-    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789';
+    const chars =
+      'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789';
     let result = '';
     for (let i = 0; i < 6; i++) {
-      result += chars.charAt(Math.floor(Math.random() * chars.length));
+      result += chars.charAt(
+        Math.floor(Math.random() * chars.length)
+      );
     }
     return result;
   };
 
-  // Draw captcha on canvas
+  // Draw 
   const drawCaptcha = (text) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
-    
-    // Canvas dimensions
+
     canvas.width = 160;
     canvas.height = 45;
 
-    // Background color
     ctx.fillStyle = '#f3f4f6';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Add noise/lines for security
     for (let i = 0; i < 5; i++) {
-      ctx.strokeStyle = `rgba(${Math.random() * 150}, ${Math.random() * 150}, ${Math.random() * 150}, 0.5)`;
+      ctx.strokeStyle = `rgba(
+        ${Math.random() * 150},
+        ${Math.random() * 150},
+        ${Math.random() * 150},
+        0.5
+      )`;
       ctx.beginPath();
-      ctx.moveTo(Math.random() * canvas.width, Math.random() * canvas.height);
-      ctx.lineTo(Math.random() * canvas.width, Math.random() * canvas.height);
+      ctx.moveTo(
+        Math.random() * canvas.width,
+        Math.random() * canvas.height
+      );
+      ctx.lineTo(
+        Math.random() * canvas.width,
+        Math.random() * canvas.height
+      );
       ctx.stroke();
     }
 
-    // Draw text with slight rotation/distortion per character
     ctx.font = 'bold 24px monospace';
     ctx.textBaseline = 'middle';
-    
+
     for (let i = 0; i < text.length; i++) {
       ctx.save();
       const x = 20 + i * 22;
       const y = 22 + (Math.random() * 8 - 4);
       ctx.translate(x, y);
-      ctx.rotate((Math.random() - 0.5) * 0.4); // Random tilt
-      
-      ctx.fillStyle = `rgb(${Math.floor(Math.random() * 80)}, ${Math.floor(Math.random() * 80)}, ${Math.floor(Math.random() * 120)})`;
+      ctx.rotate((Math.random() - 0.5) * 0.4);
+
+      ctx.fillStyle = `rgb(
+        ${Math.floor(Math.random() * 80)},
+        ${Math.floor(Math.random() * 80)},
+        ${Math.floor(Math.random() * 120)}
+      )`;
       ctx.fillText(text[i], 0, 0);
       ctx.restore();
     }
@@ -71,7 +114,10 @@ export default function AdminLogin() {
     const newText = generateCaptchaString();
     setGeneratedCaptchaText(newText);
     drawCaptcha(newText);
-    setFormData(prev => ({ ...prev, captchaInput: '' }));
+    setFormData(prev => ({
+      ...prev,
+      captchaInput: ''
+    }));
   };
 
   useEffect(() => {
@@ -83,8 +129,15 @@ export default function AdminLogin() {
     setError('');
     setSuccessMsg('');
 
-    // Case-insensitive comparison
-    if (formData.captchaInput.trim().toUpperCase() !== generatedCaptchaText.toUpperCase()) {
+    if (!formData.username.trim() || !formData.password) {
+      setError('Username and password are required.');
+      return;
+    }
+
+    if (
+      formData.captchaInput.trim().toUpperCase() !==
+      generatedCaptchaText.toUpperCase()
+    ) {
       setError('Invalid Captcha code. Please try again.');
       refreshCaptcha();
       return;
@@ -93,28 +146,43 @@ export default function AdminLogin() {
     setLoading(true);
 
     try {
+      const encryptedPassword = encryptPassword(formData.password);
+
+      if (!encryptedPassword) {
+        throw new Error('Unable to encrypt password.');
+      }
+
       const response = await fetch('/api/adm/auth/login', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
+        credentials: 'same-origin',
         body: JSON.stringify({
-          username: formData.username,
-          password: formData.password
-        }),
+          username: formData.username.trim(),
+          encryptedPassword: encryptedPassword
+        })
       });
 
       const data = await response.json();
 
       if (response.ok) {
-        localStorage.setItem('admin_token', data.token);
+        setSuccessMsg('Login successful.');
+
         router.push('/admin');
       } else {
-        setError(data.message || 'Login failed');
+        setError(data.message || 'Login failed.');
+        setFormData(prev => ({
+          ...prev,
+          password: ''
+        }));
         refreshCaptcha();
       }
-    } catch (error) {
-      setError('Network error. Please try again.');
+    } catch (err) {
+      console.error('Login error:', err);
+      setError(
+        err.message || 'Network error. Please try again.'
+      );
       refreshCaptcha();
     } finally {
       setLoading(false);
@@ -122,10 +190,12 @@ export default function AdminLogin() {
   };
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+    const { name, value } = e.target;
+
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
   };
 
   return (
@@ -196,8 +266,8 @@ export default function AdminLogin() {
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium text-gray-700">Security Verification:</span>
                 <div className="flex items-center gap-2">
-                  <canvas 
-                    ref={canvasRef} 
+                  <canvas
+                    ref={canvasRef}
                     className="border border-gray-300 rounded-lg bg-white shadow-inner pointer-events-none"
                     title="Captcha Image (Cannot be copied)"
                   />
