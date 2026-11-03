@@ -19,10 +19,10 @@ export default function AdminLogin() {
 
   const encryptPassword = (password) => {
     try {
-      const publicKey = process.env.NEXT_PUBLIC_LOGIN_CRYPTO_KEY;
+      const publicKey = process.env.NEXT_PUBLIC_LOGIN_CRYPTO_KEY || 'cabsec-cms-secure-fallback-key';
 
-      if (!publicKey || !password) {
-        throw new Error('Encryption configuration missing.');
+      if (!password) {
+        throw new Error('Password is missing.');
       }
 
       const key = CryptoJS.SHA256(publicKey);
@@ -40,7 +40,7 @@ export default function AdminLogin() {
       });
 
       return CryptoJS.enc.Base64.stringify(encrypted.ciphertext);
-
+      
     } catch (err) {
       console.error('Encryption error:', err);
       return '';
@@ -48,18 +48,14 @@ export default function AdminLogin() {
   };
 
   const generateCaptchaString = () => {
-    const chars =
-      'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789';
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789';
     let result = '';
     for (let i = 0; i < 6; i++) {
-      result += chars.charAt(
-        Math.floor(Math.random() * chars.length)
-      );
+      result += chars.charAt(Math.floor(Math.random() * chars.length));
     }
     return result;
   };
 
-  // Draw 
   const drawCaptcha = (text) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -131,19 +127,17 @@ export default function AdminLogin() {
 
     if (!formData.username.trim() || !formData.password) {
       setError('Username and password are required.');
+      refreshCaptcha();
       return;
     }
 
-    if (
-      formData.captchaInput.trim().toUpperCase() !==
-      generatedCaptchaText.toUpperCase()
-    ) {
+    if (formData.captchaInput.trim().toUpperCase() !== generatedCaptchaText.toUpperCase()) {
       setError('Invalid Captcha code. Please try again.');
       refreshCaptcha();
       return;
     }
 
-    setLoading(true);
+    setLoading(test => true);
 
     try {
       const encryptedPassword = encryptPassword(formData.password);
@@ -165,24 +159,18 @@ export default function AdminLogin() {
       });
 
       const data = await response.json();
+      refreshCaptcha();
 
       if (response.ok) {
         setSuccessMsg('Login successful.');
-
         router.push('/admin');
       } else {
         setError(data.message || 'Login failed.');
-        setFormData(prev => ({
-          ...prev,
-          password: ''
-        }));
-        refreshCaptcha();
+        setFormData(prev => ({ ...prev, password: '' }));
       }
     } catch (err) {
       console.error('Login error:', err);
-      setError(
-        err.message || 'Network error. Please try again.'
-      );
+      setError(err.message || 'Network error. Please try again.');
       refreshCaptcha();
     } finally {
       setLoading(false);
@@ -191,7 +179,6 @@ export default function AdminLogin() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-
     setFormData(prev => ({
       ...prev,
       [name]: value
@@ -240,6 +227,7 @@ export default function AdminLogin() {
                   name="username"
                   type="text"
                   required
+                  autoComplete="username"
                   className="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
                   placeholder="Username"
                   value={formData.username}
@@ -253,6 +241,7 @@ export default function AdminLogin() {
                   name="password"
                   type="password"
                   required
+                  autoComplete="current-password"
                   className="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
                   placeholder="Password"
                   value={formData.password}
