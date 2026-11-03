@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import pool from '@/lib/db';
 import { logAuditTrail } from '../logger'; 
 
-const JWT_SECRET = process.env.JWT_SECRET ;
+const JWT_SECRET = process.env.JWT_SECRET;
 if (!JWT_SECRET) {
     throw new Error('JWT_SECRET is not configured');
 }
@@ -28,7 +28,6 @@ export default async function handler(req, res) {
 
     if (users.length === 0) {
       await logAuditTrail(req, null, username, 'FAILED_LOGIN');
-
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 
@@ -38,7 +37,6 @@ export default async function handler(req, res) {
     const isValidPassword = await bcrypt.compare(password, user.password_hash);
     if (!isValidPassword) {
       await logAuditTrail(req, user.id, user.username, 'FAILED_LOGIN');
-
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 
@@ -64,7 +62,6 @@ export default async function handler(req, res) {
 
     await logAuditTrail(req, user.id, user.username, 'LOGIN');
 
-    // Return user data (without password) and token
     const { password_hash, ...userWithoutPassword } = user;
 
     res.status(200).json({
@@ -75,17 +72,6 @@ export default async function handler(req, res) {
 
   } catch (error) {
     console.error('Login error:', error);
-    let message = 'Internal server error';
-    if (error && error.code === 'ER_NO_SUCH_TABLE') {
-      message = 'Users table not found. Please run script.sql to create schema.';
-    } else if (error && error.code === 'ER_ACCESS_DENIED_ERROR') {
-      message = 'Database access denied. Check MySQL credentials in lib/db.js';
-    } else if (error && error.code === 'ER_BAD_DB_ERROR') {
-      message = 'Database not found. Create cabsec_cms and run script.sql';
-    }
-    res.status(500).json({
-      message,
-      code: process.env.NODE_ENV !== 'production' ? error.code : undefined
-    });
+    res.status(500).json({ message: 'Internal server error' });
   }
 }

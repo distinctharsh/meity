@@ -109,7 +109,8 @@ const AdminLayout = ({ children }) => {
       type: 'section', 
       name: 'System & Security', 
       items: [
-        { name: 'Audit Logs', href: '/admin/audit', icon: '🛡️', description: 'Monitor audit actions & trails' }
+        { name: 'Audit Logs', href: '/admin/audit', icon: '🛡️', description: 'Monitor audit actions & trails' },
+        { name: 'Change Password', href: '/admin/change-password', icon: '🔑', description: 'Update admin password' }
       ] 
     }
   ];
