@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import AdminLayout from '@/components/admin/AdminLayout';
 import Head from 'next/head';
+import CryptoJS from '../../lib/crypto-js.min.js';
 
 export default function ChangePasswordPage() {
   const [formData, setFormData] = useState({
@@ -23,6 +24,34 @@ export default function ChangePasswordPage() {
       ...formData,
       [e.target.name]: e.target.value
     });
+  };
+
+  const encryptPassword = (password) => {
+    try {
+      const publicKey = process.env.NEXT_PUBLIC_LOGIN_CRYPTO_KEY || 'cabsec-cms-secure-fallback-key';
+
+      if (!password) {
+        return '';
+      }
+
+      const key = CryptoJS.SHA256(publicKey);
+      const ivHash = CryptoJS.SHA256(publicKey);
+      const iv = CryptoJS.lib.WordArray.create(
+        ivHash.words.slice(0, 4),
+        16
+      );
+
+      const encrypted = CryptoJS.AES.encrypt(password, key, {
+        iv,
+        mode: CryptoJS.mode.CBC,
+        padding: CryptoJS.pad.Pkcs7
+      });
+
+      return CryptoJS.enc.Base64.stringify(encrypted.ciphertext);
+    } catch (err) {
+      console.error('Encryption error:', err);
+      return '';
+    }
   };
 
   // Password strength checker helper
@@ -65,12 +94,20 @@ export default function ChangePasswordPage() {
     setLoading(true);
 
     try {
+      // Encrypt passwords before sending payload
+      const encryptedCurrent = encryptPassword(formData.currentPassword);
+      const encryptedNew = encryptPassword(formData.newPassword);
+
+      if (!encryptedCurrent || !encryptedNew) {
+        throw new Error('Unable to encrypt passwords securely.');
+      }
+
       const res = await fetch('/api/adm/auth/change-password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          currentPassword: formData.currentPassword,
-          newPassword: formData.newPassword
+          encryptedCurrentPassword: encryptedCurrent,
+          encryptedNewPassword: encryptedNew
         })
       });
 
@@ -83,7 +120,7 @@ export default function ChangePasswordPage() {
         setError(data.message || 'Failed to update password.');
       }
     } catch (err) {
-      setError('Network error. Please try again.');
+      setError(err.message || 'Network error. Please try again.');
     } finally {
       setLoading(false);
     }
