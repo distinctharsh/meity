@@ -19,14 +19,18 @@ export default async function handler(req, res) {
         userId = decoded.sub || null;
         username = decoded.username || 'Admin User';
       } catch (err) {
+        // Token invalid or expired, continue logout
       }
     }
 
     await logAuditTrail(req, userId, username, 'LOGOUT');
 
+    const isProduction = process.env.NODE_ENV === 'production';
+    const secureFlag = isProduction ? 'Secure; ' : '';
+
     res.setHeader(
       'Set-Cookie',
-      'cms_token=; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=0'
+      `cms_token=; Path=/; HttpOnly; ${secureFlag}SameSite=Strict; Max-Age=0`
     );
 
     return res.status(200).json({ message: 'Logout successful' });
