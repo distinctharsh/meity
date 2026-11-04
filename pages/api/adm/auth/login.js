@@ -60,11 +60,30 @@ export default async function handler(req, res) {
     return res.status(400).json({ message: 'Username and password are required' });
   }
 
+  const trimmedUsername = username.trim();
+
   try {
+    // 1. STRICT LOCKOUT CHECK: If user has 5 or more failed attempts in the last 30 minutes,
+    // block everything immediately (even if the 6th attempt has the correct password).
+    const [failedAttempts] = await pool.query(
+      `SELECT COUNT(*) as count 
+       FROM audit_trails 
+       WHERE username = ? 
+         AND action = 'FAILED_LOGIN' 
+         AND created_at >= (NOW() - INTERVAL 30 MINUTE)`,
+      [trimmedUsername]
+    );
+
+    if (failedAttempts[0].count >= 5) {
+      return res.status(429).json({ 
+        message: 'Your account has been locked. Please contact administrator.' 
+      });
+    }
+
     const decryptedCombined = decryptPassword(encryptedPassword);
 
     if (!decryptedCombined || decryptedCombined.length <= 5) {
-      await logAuditTrail(req, null, username, 'FAILED_LOGIN');
+      await logAuditTrail(req, null, trimmedUsername, 'FAILED_LOGIN');
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 
@@ -73,11 +92,11 @@ export default async function handler(req, res) {
     const [users] = await pool.query(
       `SELECT id, username, email, password_hash, role, is_active
        FROM cms_users WHERE username = ? AND is_active = 1 LIMIT 1`,
-      [username.trim()]
+      [trimmedUsername]
     );
 
     if (users.length === 0) {
-      await logAuditTrail(req, null, username, 'FAILED_LOGIN');
+      await logAuditTrail(req, null, trimmedUsername, 'FAILED_LOGIN');
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 
@@ -89,14 +108,14 @@ export default async function handler(req, res) {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 
-    // 1. Generate standard signed JWT
+    // 2. Generate standard signed JWT
     const rawToken = jwt.sign(
       { sub: String(user.id), username: user.username, role: user.role },
       JWT_SECRET,
       { algorithm: 'HS256', expiresIn: '30m', issuer: 'cabsec-cms', audience: 'cabsec-cms-api' }
     );
 
-    // 2. Encrypt the entire token
+    // 3. Encrypt the entire token
     const encryptedToken = encryptTokenString(rawToken);
 
     if (!encryptedToken) {
