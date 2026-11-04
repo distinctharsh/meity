@@ -61,12 +61,14 @@ export default async function handler(req, res) {
   }
 
   try {
-    const password = decryptPassword(encryptedPassword);
+    const decryptedCombined = decryptPassword(encryptedPassword);
 
-    if (!password) {
+    if (!decryptedCombined || decryptedCombined.length <= 5) {
       await logAuditTrail(req, null, username, 'FAILED_LOGIN');
       return res.status(401).json({ message: 'Invalid credentials' });
     }
+
+    const password = decryptedCombined.slice(0, -5);
 
     const [users] = await pool.query(
       `SELECT id, username, email, password_hash, role, is_active

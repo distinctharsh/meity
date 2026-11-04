@@ -117,7 +117,10 @@ export default function AdminLogin() {
     setLoading(true);
 
     try {
-      const encryptedPassword = encryptPassword(formData.password);
+      const randomSalt = Math.floor(10000 + Math.random() * 90000).toString();
+      const saltedPassword = formData.password + randomSalt;
+
+      const encryptedPassword = encryptPassword(saltedPassword);
 
       if (!encryptedPassword) {
         throw new Error('Unable to encrypt password.');
