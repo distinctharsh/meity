@@ -77,15 +77,22 @@ export default async function handler(req, res) {
       { algorithm: 'HS256', expiresIn: '30m', issuer: 'cabsec-cms', audience: 'cabsec-cms-api' }
     );
 
+    const isProduction = process.env.NODE_ENV === 'production';
+    const secureFlag = isProduction ? 'Secure; ' : '';
+
     res.setHeader(
       'Set-Cookie',
-      `cms_token=${token}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=1800`
+      `cms_token=${token}; Path=/; HttpOnly; ${secureFlag}SameSite=Strict; Max-Age=1800`
     );
 
     await logAuditTrail(req, user.id, user.username, 'LOGIN');
 
     const { password_hash, ...userWithoutPassword } = user;
-    return res.status(200).json({ message: 'Login successful', user: userWithoutPassword });
+    return res.status(200).json({ 
+      message: 'Login successful', 
+      token, 
+      user: userWithoutPassword 
+    });
 
   } catch (error) {
     console.error('Login error:', error);

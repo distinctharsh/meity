@@ -26,12 +26,8 @@ export default function AdminLogin() {
       }
 
       const key = CryptoJS.SHA256(publicKey);
-
       const ivHash = CryptoJS.SHA256(publicKey);
-      const iv = CryptoJS.lib.WordArray.create(
-        ivHash.words.slice(0, 4),
-        16
-      );
+      const iv = CryptoJS.lib.WordArray.create(ivHash.words.slice(0, 4), 16);
 
       const encrypted = CryptoJS.AES.encrypt(password, key, {
         iv,
@@ -40,7 +36,6 @@ export default function AdminLogin() {
       });
 
       return CryptoJS.enc.Base64.stringify(encrypted.ciphertext);
-      
     } catch (err) {
       console.error('Encryption error:', err);
       return '';
@@ -68,21 +63,10 @@ export default function AdminLogin() {
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     for (let i = 0; i < 5; i++) {
-      ctx.strokeStyle = `rgba(
-        ${Math.random() * 150},
-        ${Math.random() * 150},
-        ${Math.random() * 150},
-        0.5
-      )`;
+      ctx.strokeStyle = `rgba(${Math.random() * 150}, ${Math.random() * 150}, ${Math.random() * 150}, 0.5)`;
       ctx.beginPath();
-      ctx.moveTo(
-        Math.random() * canvas.width,
-        Math.random() * canvas.height
-      );
-      ctx.lineTo(
-        Math.random() * canvas.width,
-        Math.random() * canvas.height
-      );
+      ctx.moveTo(Math.random() * canvas.width, Math.random() * canvas.height);
+      ctx.lineTo(Math.random() * canvas.width, Math.random() * canvas.height);
       ctx.stroke();
     }
 
@@ -96,11 +80,7 @@ export default function AdminLogin() {
       ctx.translate(x, y);
       ctx.rotate((Math.random() - 0.5) * 0.4);
 
-      ctx.fillStyle = `rgb(
-        ${Math.floor(Math.random() * 80)},
-        ${Math.floor(Math.random() * 80)},
-        ${Math.floor(Math.random() * 120)}
-      )`;
+      ctx.fillStyle = `rgb(${Math.floor(Math.random() * 80)}, ${Math.floor(Math.random() * 80)}, ${Math.floor(Math.random() * 120)})`;
       ctx.fillText(text[i], 0, 0);
       ctx.restore();
     }
@@ -110,10 +90,7 @@ export default function AdminLogin() {
     const newText = generateCaptchaString();
     setGeneratedCaptchaText(newText);
     drawCaptcha(newText);
-    setFormData(prev => ({
-      ...prev,
-      captchaInput: ''
-    }));
+    setFormData(prev => ({ ...prev, captchaInput: '' }));
   };
 
   useEffect(() => {
@@ -137,7 +114,7 @@ export default function AdminLogin() {
       return;
     }
 
-    setLoading(test => true);
+    setLoading(true);
 
     try {
       const encryptedPassword = encryptPassword(formData.password);
@@ -148,9 +125,7 @@ export default function AdminLogin() {
 
       const response = await fetch('/api/adm/auth/login', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json' },
         credentials: 'same-origin',
         body: JSON.stringify({
           username: formData.username.trim(),
@@ -162,8 +137,15 @@ export default function AdminLogin() {
       refreshCaptcha();
 
       if (response.ok) {
-        setSuccessMsg('Login successful.');
-        router.push('/admin');
+        if (data.token) {
+          localStorage.setItem('admin_token', data.token);
+        }
+
+        setSuccessMsg('Login successful. Redirecting...');
+        
+        setTimeout(() => {
+          window.location.href = '/admin';
+        }, 300);
       } else {
         setError(data.message || 'Login failed.');
         setFormData(prev => ({ ...prev, password: '' }));
@@ -179,10 +161,7 @@ export default function AdminLogin() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   return (
@@ -250,7 +229,6 @@ export default function AdminLogin() {
               </div>
             </div>
 
-            {/* Image Canvas Captcha Section */}
             <div className="bg-gray-50 p-4 rounded-lg border border-gray-200 space-y-3 select-none">
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium text-gray-700">Security Verification:</span>
@@ -258,7 +236,7 @@ export default function AdminLogin() {
                   <canvas
                     ref={canvasRef}
                     className="border border-gray-300 rounded-lg bg-white shadow-inner pointer-events-none"
-                    title="Captcha Image (Cannot be copied)"
+                    title="Captcha Image"
                   />
                   <button
                     type="button"
