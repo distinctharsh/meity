@@ -108,7 +108,7 @@ export default function AdminLogin() {
       return;
     }
 
-    if (formData.captchaInput.trim().toUpperCase() !== generatedCaptchaText.toUpperCase()) {
+    if (formData.captchaInput.trim() !== generatedCaptchaText) {
       setError('Invalid Captcha code. Please try again.');
       refreshCaptcha();
       return;
