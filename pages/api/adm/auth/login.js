@@ -72,7 +72,7 @@ export default async function handler(req, res) {
     }
 
     const token = jwt.sign(
-      { sub: String(user.id) },
+      { sub: String(user.id), username: user.username, role: user.role },
       JWT_SECRET,
       { algorithm: 'HS256', expiresIn: '30m', issuer: 'cabsec-cms', audience: 'cabsec-cms-api' }
     );
