@@ -129,7 +129,7 @@ export default function AdminLogin() {
         credentials: 'same-origin',
         body: JSON.stringify({
           username: formData.username.trim(),
-          encryptedPassword: encryptedPassword
+          password: encryptedPassword
         })
       });
 

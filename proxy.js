@@ -1,9 +1,41 @@
 import { NextResponse } from 'next/server';
 import jwt from 'jsonwebtoken';
+import crypto from 'crypto';
 import routesData from '@/lib/routes.json';
 
 const validRoutesSet = new Set(routesData);
 const JWT_SECRET = process.env.JWT_SECRET;
+
+if (!JWT_SECRET) {
+  throw new Error('Security configuration missing.');
+}
+
+// Function to decrypt an encrypted cookie string using JWT_SECRET
+function decryptTokenString(encryptedTokenString) {
+  try {
+    if (!encryptedTokenString || typeof encryptedTokenString !== 'string') {
+      return null;
+    }
+    if (encryptedTokenString.length % 2 !== 0) {
+      return null;
+    }
+
+    const encryptedBuffer = Buffer.from(encryptedTokenString, 'hex');
+    if (encryptedBuffer.length === 0 || encryptedBuffer.length % 16 !== 0) {
+      return null;
+    }
+
+    const key = crypto.createHash('sha256').update(JWT_SECRET, 'utf8').digest();
+    const iv = crypto.createHash('sha256').update(JWT_SECRET, 'utf8').digest().subarray(0, 16);
+
+    const decipher = crypto.createDecipheriv('aes-256-cbc', key, iv);
+    const decrypted = Buffer.concat([decipher.update(encryptedBuffer), decipher.final()]);
+    return decrypted.toString('utf8');
+  } catch (error) {
+    return null;
+  }
+}
+
 const IGNORE_PREFIXES = [
   '/api',
   '/_next',
@@ -39,10 +71,10 @@ export function proxy(req) {
     return NextResponse.next();
   }
 
-  // Get JWT from HttpOnly cookie
-  const token = req.cookies.get('cms_token')?.value;
+  // Get encrypted JWT from HttpOnly cookie
+  const encryptedCookieToken = req.cookies.get('cms_token')?.value;
 
-  if (!token) {
+  if (!encryptedCookieToken) {
     return NextResponse.json(
       { error: 'Unauthorized' },
       { status: 401 }
@@ -50,7 +82,18 @@ export function proxy(req) {
   }
 
   try {
-    const decoded = jwt.verify(token, JWT_SECRET, {
+    // 1. First, decrypt the encrypted token.
+    const rawToken = decryptTokenString(encryptedCookieToken);
+
+    if (!rawToken) {
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      );
+    }
+
+    // 2. Now verify the original token.
+    const decoded = jwt.verify(rawToken, JWT_SECRET, {
       algorithms: ['HS256'],
       issuer: 'cabsec-cms',
       audience: 'cabsec-cms-api'

@@ -27,10 +27,21 @@ export default function AdminDashboard() {
 
         // Decode token to get user info
         try {
-          const payload = JSON.parse(atob(token.split('.')[1]));
-          setUser(payload);
+          const verifyRes = await fetch('/api/adm/auth/verify');
+          if (!verifyRes.ok) {
+            localStorage.removeItem('admin_token');
+            router.push('/admin/login');
+            return;
+          }
+          const verifyData = await verifyRes.json();
+          if (verifyData.authenticated && verifyData.user) {
+            setUser(verifyData.user);
+          } else {
+            router.push('/admin/login');
+            return;
+          }
         } catch (tokenError) {
-          console.error('Token decode error:', tokenError);
+          console.error('Auth verification error:', tokenError);
           localStorage.removeItem('admin_token');
           router.push('/admin/login');
           return;

@@ -5,12 +5,28 @@ import pool from '@/lib/db';
 import { logAuditTrail } from '../logger';
 
 const JWT_SECRET = process.env.JWT_SECRET;
-const PUBLIC_CRYPTO_KEY = process.env.JWT_SECRET;
 
-if (!JWT_SECRET || !PUBLIC_CRYPTO_KEY) {
-  throw new Error('Security configuration missing.');
+if (!JWT_SECRET) {
+  throw new Error('Security configuration missing: JWT_SECRET is not set.');
 }
 
+// Function to securely encrypt the entire JWT token string using JWT_SECRET
+function encryptTokenString(tokenStr) {
+  try {
+    const key = crypto.createHash('sha256').update(JWT_SECRET, 'utf8').digest();
+    const iv = crypto.createHash('sha256').update(JWT_SECRET, 'utf8').digest().subarray(0, 16);
+
+    const cipher = crypto.createCipheriv('aes-256-cbc', key, iv);
+    let encrypted = cipher.update(tokenStr, 'utf8', 'hex');
+    encrypted += cipher.final('hex');
+    return encrypted;
+  } catch (error) {
+    console.error('Token encryption error:', error);
+    return null;
+  }
+}
+
+// Function to decrypt the incoming client-side password using JWT_SECRET
 function decryptPassword(encryptedPassword) {
   try {
     if (typeof encryptedPassword !== 'string' || !encryptedPassword || encryptedPassword.length > 2048) {
@@ -21,8 +37,8 @@ function decryptPassword(encryptedPassword) {
       return null;
     }
 
-    const key = crypto.createHash('sha256').update(PUBLIC_CRYPTO_KEY, 'utf8').digest();
-    const iv = crypto.createHash('sha256').update(PUBLIC_CRYPTO_KEY, 'utf8').digest().subarray(0, 16);
+    const key = crypto.createHash('sha256').update(JWT_SECRET, 'utf8').digest();
+    const iv = crypto.createHash('sha256').update(JWT_SECRET, 'utf8').digest().subarray(0, 16);
 
     const decipher = crypto.createDecipheriv('aes-256-cbc', key, iv);
     const decrypted = Buffer.concat([decipher.update(encryptedBuffer), decipher.final()]);
@@ -38,7 +54,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ message: 'Method not allowed' });
   }
 
-  const { username, encryptedPassword } = req.body || {};
+  const { username, password: encryptedPassword } = req.body || {};
 
   if (!username || !encryptedPassword) {
     return res.status(400).json({ message: 'Username and password are required' });
@@ -71,18 +87,26 @@ export default async function handler(req, res) {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 
-    const token = jwt.sign(
+    // 1. Generate standard signed JWT
+    const rawToken = jwt.sign(
       { sub: String(user.id), username: user.username, role: user.role },
       JWT_SECRET,
       { algorithm: 'HS256', expiresIn: '30m', issuer: 'cabsec-cms', audience: 'cabsec-cms-api' }
     );
+
+    // 2. Encrypt the entire token
+    const encryptedToken = encryptTokenString(rawToken);
+
+    if (!encryptedToken) {
+      return res.status(500).json({ message: 'Token encryption failed' });
+    }
 
     const isProduction = process.env.NODE_ENV === 'production';
     const secureFlag = isProduction ? 'Secure; ' : '';
 
     res.setHeader(
       'Set-Cookie',
-      `cms_token=${token}; Path=/; HttpOnly; ${secureFlag}SameSite=Strict; Max-Age=1800`
+      `cms_token=${encryptedToken}; Path=/; HttpOnly; ${secureFlag}SameSite=Strict; Max-Age=1800`
     );
 
     await logAuditTrail(req, user.id, user.username, 'LOGIN');
@@ -90,7 +114,7 @@ export default async function handler(req, res) {
     const { password_hash, ...userWithoutPassword } = user;
     return res.status(200).json({ 
       message: 'Login successful', 
-      token, 
+      token: encryptedToken, 
       user: userWithoutPassword 
     });
 
