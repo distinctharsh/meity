@@ -26,24 +26,11 @@ export default function AdminDashboard() {
         }
 
         // Decode token to get user info
-        // 🔒 Token ab encrypted hai, isliye client-side par decode karne ki zaroorat nahi hai.
-        // Hum backend ki /api/adm/auth/verify API se authenticated user ki details fetch karenge.
         try {
-          const verifyRes = await fetch('/api/adm/auth/verify');
-          if (!verifyRes.ok) {
-            localStorage.removeItem('admin_token');
-            router.push('/admin/login');
-            return;
-          }
-          const verifyData = await verifyRes.json();
-          if (verifyData.authenticated && verifyData.user) {
-            setUser(verifyData.user);
-          } else {
-            router.push('/admin/login');
-            return;
-          }
+          const payload = JSON.parse(atob(token.split('.')[1]));
+          setUser(payload);
         } catch (tokenError) {
-          console.error('Auth verification error:', tokenError);
+          console.error('Token decode error:', tokenError);
           localStorage.removeItem('admin_token');
           router.push('/admin/login');
           return;
