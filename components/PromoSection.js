@@ -58,7 +58,7 @@ const PromoSection = () => {
                         href="https://www.mygov.in/campaigns/make-in-india/?target=webview&type=campaign&nid=0"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="block w-full h-full"
+                        className="block w-full h-full relative"
                     >
                         <Image
                             src="/images/promo/digital-personal-data.jpg"

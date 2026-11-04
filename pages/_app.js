@@ -42,7 +42,7 @@ export default function App({ Component, pageProps }) {
   return (
     <>
       <Head>
-        <title>{t("cabinet_secretariat")} | {t("government_of_india")}</title>
+        <title>{`${t("cabinet_secretariat")} | ${t("government_of_india")}`}</title>
         <link rel="icon" type="image/svg+xml" href="/images/emblem.svg" />
       </Head>
 
