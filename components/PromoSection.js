@@ -77,7 +77,8 @@ const PromoSection = () => {
                         poster="/media/promo-poster.jpg"
                         className="w-full h-full object-cover"
                         controls
-                        preload="auto"
+                        preload="none" 
+                        playsInline
                     />
                 </div>
 
