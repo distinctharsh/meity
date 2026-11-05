@@ -214,29 +214,29 @@ useEffect(() => {
             </div>
 
             {/* Right Column */}
-            <div className="flex justify-center md:justify-end gap-[18px] mb-0 md:mb-[10px] order-1 md:order-none w-full">
-              <div className="flex gap-3 items-center">
+            <div className="flex items-center justify-end md:justify-end gap-2 md:gap-[18px] mb-0 md:mb-[10px] order-1 md:order-none w-full md:w-auto">
+              <div className="flex items-center gap-2 md:gap-3">
                 <a
                   href="#main-content"
-                  className="bg-transparent border-0 cursor-pointer p-[6px] inline-flex"
+                  className="bg-transparent border-0 cursor-pointer p-1 md:p-[6px] inline-flex shrink-0" title={t("skip_to_main_content_label")}
                 >
                   <img
                     src="/images/icons/skip.svg"
-                    alt={t("skip_to_main_content_label")}
+                    alt={t("skip_to_main_content_label")} className="w-[22px] h-[22px] md:w-auto md:h-auto"
                   />
                 </a>
                 <div
-                  className="relative border-x border-[#162f6a] px-[6px] flex items-center"
+                  className="relative border-x border-[#162f6a] px-2 md:px-[6px] flex items-center shrink-0"
                   ref={dropdownRef}
                 >
                   <button
                     onClick={() => setLangOpen(!langOpen)}
-                    className="flex items-center justify-center bg-transparent border-0 cursor-pointer"
+                    className="flex items-center justify-center bg-transparent border-0 cursor-pointer" aria-label="Language switch"
                   >
                     <img
                       src="/images/icons/bhashini.svg"
                       alt="Language"
-                      className="w-[28px] h-[28px]"
+                      className="w-[24px] h-[24px] md:w-[28px] md:h-[28px]"
                     />
                   </button>
 
@@ -260,7 +260,9 @@ useEffect(() => {
                     </div>
                   )}
                 </div>
-                <AccessibilityBar />
+                <div className="shrink-0 flex items-center">
+                  <AccessibilityBar />
+                </div>
               </div>
             </div>
 
