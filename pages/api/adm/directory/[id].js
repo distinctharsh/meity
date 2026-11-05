@@ -43,8 +43,31 @@ export default async function handler(req, res) {
     }
   }
 
-  if (req.method === "PUT") {
+  if (req.method === "POST") {
     try {
+      const action = req.body?._action;
+
+      if (action === "DELETE") {
+        await pool.query(
+          "UPDATE directory_entries SET is_active = 0 WHERE id = ?",
+          [id]
+        );
+
+        const { userId, username } = getLoggedInUser(req);
+
+        await logAuditAction(
+          req,
+          userId,
+          username,
+          'DIRECTORY',
+          'DELETE',
+          id,
+          `Deactivated Directory Entry with ID ${id}`
+        );
+
+        return res.status(200).json({ ok: true });
+      }
+
       const { role, name, tags = [], phones = [], emails = [], address, display_order, is_active } = req.body || {};
       if (!role || !name) return res.status(400).json({ message: "role and name are required" });
 
@@ -76,29 +99,7 @@ export default async function handler(req, res) {
 
       return res.status(200).json({ ok: true });
     } catch (e) {
-      console.error("directory update error", e);
-      return res.status(500).json({ message: "Internal server error" });
-    }
-  }
-
-  if (req.method === "DELETE") {
-    try {
-      await pool.query("DELETE FROM directory_entries WHERE id = ?", [id]);
-
-      const { userId, username } = getLoggedInUser(req);
-      await logAuditAction(
-        req,
-        userId,
-        username,
-        'DIRECTORY',
-        'DELETE',
-        id,
-        `Deleted Directory Entry with ID ${id}`
-      );
-
-      return res.status(200).json({ ok: true });
-    } catch (e) {
-      console.error("directory delete error", e);
+      console.error("directory post action error", e);
       return res.status(500).json({ message: "Internal server error" });
     }
   }
