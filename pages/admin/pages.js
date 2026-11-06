@@ -12,6 +12,7 @@ loader.config({
   },
 });
 
+const JoditEditor = dynamic(() => import('jodit-react'), { ssr: false });
 const MonacoEditor = dynamic(() => import('@monaco-editor/react'), { ssr: false });
 
 export default function PagesManagement() {
@@ -592,33 +593,43 @@ function PageForm({ onClose, onSaved, editing }) {
             </div>
 
             {editorMode === 'visual' ? (
-              <div className="mt-3 border rounded bg-white overflow-hidden">
+              <div className="mt-3 border rounded bg-white overflow-hidden shadow-sm">
                 <div className="px-3 py-2 border-b bg-gray-50 flex items-center justify-between">
-                  <div className="text-xs font-medium text-gray-700">Content</div>
-                  <div className="text-[10px] text-gray-500">Uses CKEditor (npm packages)</div>
+                  <div className="text-xs font-semibold text-gray-700 flex items-center gap-2">
+                    <span>Visual Rich Text Editor (Jodit Professional)</span>
+                    <span className="text-[10px] bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full">100% Offline Ready</span>
+                  </div>
+                  <div className="text-[10px] text-gray-500">Supports Images, Tables, Alignments & Full Formatting</div>
                 </div>
-                <div className="p-3">
-                  {ckEditorError ? (
-                    <div className="mb-3 p-3 border border-amber-200 bg-amber-50 text-amber-900 text-xs rounded">
-                      {ckEditorError}
-                    </div>
-                  ) : null}
-                  {!ck && !ckEditorError ? (
-                    <div className="text-xs text-gray-600">Loading editor…</div>
-                  ) : null}
-                  {ck ? (
-                    <ck.CKEditor
-                      editor={ck.ClassicEditor}
-                      data={form.content_html || ''}
-                      onChange={(event, editor) => {
-                        try {
-                          const data = editor.getData();
-                          setForm((prev) => ({ ...prev, content_html: data }));
-                        } catch {
-                        }
-                      }}
-                    />
-                  ) : null}
+
+                {/* Jodit Offline WYSIWYG Editor */}
+                <div className="p-2 bg-white">
+                  <JoditEditor
+                    value={form.content_html || ''}
+                    tabIndex={1}
+                    onBlur={(newContent) => setForm(prev => ({ ...prev, content_html: newContent }))}
+                    onChange={(newContent) => {}}
+                    config={{
+                      readonly: false,
+                      height: 400,
+                      toolbarButtonSize: 'middle',
+                      buttons: [
+                        'source', '|',
+                        'bold', 'strikethrough', 'underline', 'italic', '|',
+                        'ul', 'ol', '|',
+                        'outdent', 'indent', '|',
+                        'font', 'fontsize', 'brush', 'paragraph', '|',
+                        'image', 'file', 'table', 'link', '|',
+                        'align', 'undo', 'redo', '|',
+                        'hr', 'eraser', 'fullsize'
+                      ],
+                      uploader: {
+                        insertImageAsBase64: true // Offline environment ke liye images ko direct base64/safe embed karega
+                      },
+                      removeButtons: ['about'],
+                      showXPathInStatusbar: false
+                    }}
+                  />
                 </div>
               </div>
             ) : (

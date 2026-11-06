@@ -1,16 +1,15 @@
 {
   "/a/a": {
-    "id": 44,
-    "title": "Test",
+    "id": 45,
+    "title": "A",
     "slug": "/a/a",
     "hero_title": null,
     "hero_subtitle": null,
     "hero_image_url": null,
     "content": {
-      "html": "<p>Hii</p>",
+      "html": "<p style=\"text-align: left;\"><img src=\"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTDv3Z9SqaDYG4gWjEdExkC3eE7_cETeQiYxCM2zYiBOw&amp;s=10\" alt=\"\" width=\"81\" height=\"129\" style=\"float: left;\"><br><br>Government of India<br>Cabinet Secretariat<br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br><br><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; COMPOSITION OF THE CABINET COMMITTEES<br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; (As on 15.10.2026)<br><br><br></p>",
       "css": "",
-      "js": "",
-      "no_scope": false
+      "js": ""
     },
     "is_active": 1
   },
