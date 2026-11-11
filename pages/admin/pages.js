@@ -12,7 +12,6 @@ loader.config({
   },
 });
 
-const JoditEditor = dynamic(() => import('jodit-react'), { ssr: false });
 const MonacoEditor = dynamic(() => import('@monaco-editor/react'), { ssr: false });
 
 export default function PagesManagement() {
@@ -206,8 +205,6 @@ export default function PagesManagement() {
 
 // Using Monaco-based code editors (HTML/CSS/JS) with live preview
 function PageForm({ onClose, onSaved, editing }) {
-  const editorRef = useRef(null); // <-- FIX: useRef ko component ke andar shift kar diya gaya hai
-
   const [form, setForm] = useState({
     title: '',
     slug: '',
@@ -225,12 +222,12 @@ function PageForm({ onClose, onSaved, editing }) {
   const [useNavDropdown, setUseNavDropdown] = useState(true);
   const [navLoading, setNavLoading] = useState(true);
   const [routeCheck, setRouteCheck] = useState({ checking: false, staticExists: false, cmsExists: false, conflict: false, message: '' });
-  const [navConflicts, setNavConflicts] = useState({});
+  const [navConflicts, setNavConflicts] = useState({}); // { '/cabinet-secretariat/about': { staticExists, cmsExists, conflict, message } }
   const [activeTab, setActiveTab] = useState('html');
   const [leftPanePct, setLeftPanePct] = useState(60);
   const [dragging, setDragging] = useState(false);
-  const [editorMode, setEditorMode] = useState('visual');
-  const [ck, setCk] = useState(null);
+  const [editorMode, setEditorMode] = useState('visual'); // 'visual' | 'advanced'
+  const [ck, setCk] = useState(null); // { CKEditor, ClassicEditor }
   const [ckEditorError, setCkEditorError] = useState('');
 
   useEffect(() => {
@@ -247,10 +244,12 @@ function PageForm({ onClose, onSaved, editing }) {
         is_active: editing.is_active !== false,
         display_order: editing.display_order ?? 0,
       });
+      // If the slug isn't present in navigation, allow manual entry view
       setUseNavDropdown(true);
     }
   }, [editing]);
 
+  // Load navigation as dropdown options
   useEffect(() => {
     let mounted = true;
     async function loadNav() {
@@ -258,6 +257,7 @@ function PageForm({ onClose, onSaved, editing }) {
       try {
         const res = await fetch('/api/adm/navigation');
         const items = res.ok ? (await res.json()) : [];
+        // Build label with hierarchy e.g., Parent / Child
         const byId = new Map(items.map(i => [i.id, i]));
         const labelFor = (it) => {
           let label = it.name || '';
@@ -274,7 +274,9 @@ function PageForm({ onClose, onSaved, editing }) {
           .map(it => ({ value: it.link, label: `${labelFor(it)} — ${it.link}` }));
         if (mounted) setNavOptions(options);
 
+        // Bulk check for conflicts on each option and disable those with conflicts
         try {
+          // Load all existing CMS pages once and build a set of their slugs
           const pagesRes = await fetch('/api/adm/pages');
           const pagesData = pagesRes.ok ? await pagesRes.json() : [];
           const cmsSlugs = new Set(
@@ -287,6 +289,7 @@ function PageForm({ onClose, onSaved, editing }) {
             const slug = opt.value.startsWith('/') ? opt.value : '/' + opt.value;
             const normalizedSlug = ensureLeadingSlash(slug);
 
+            // 1) static route check
             let staticExists = false;
             try {
               const r = await fetch(normalizedSlug, { headers: { 'x-skip-cms': '1' }, cache: 'no-store' });
@@ -294,7 +297,10 @@ function PageForm({ onClose, onSaved, editing }) {
               staticExists = r.ok && !isCms;
             } catch {}
 
+            // 2) cms page check via admin pages list
             let cmsExists = cmsSlugs.has(normalizedSlug);
+
+            // If editing and option equals the page's current slug, don't treat as conflict
             if (editing && normalizedSlug === ensureLeadingSlash(editing.slug)) {
               cmsExists = false;
             }
@@ -323,6 +329,69 @@ function PageForm({ onClose, onSaved, editing }) {
   const updateField = (key, value) => setForm(prev => ({ ...prev, [key]: value }));
 
   useEffect(() => {
+    let cancelled = false;
+    async function load() {
+      if (typeof window === 'undefined') return;
+      if (editorMode !== 'visual') return;
+      if (ck) return;
+      try {
+        setCkEditorError('');
+        const [{ CKEditor }, classicMod] = await Promise.all([
+          import('@ckeditor/ckeditor5-react'),
+          import('@ckeditor/ckeditor5-build-classic')
+        ]);
+        const ClassicEditor = classicMod?.default || classicMod?.ClassicEditor || classicMod;
+        if (!CKEditor || !ClassicEditor) {
+          throw new Error('CKEditor modules loaded but exports were not found');
+        }
+        if (!cancelled) setCk({ CKEditor, ClassicEditor });
+      } catch (e) {
+        console.warn('CKEditor npm load/init failed', e);
+        if (!cancelled) setCkEditorError('CKEditor failed to load. Please reinstall packages or check build compatibility.');
+      }
+    }
+    load();
+    return () => { cancelled = true; };
+  }, [editorMode, ck]);
+
+  // Lazy-load Prettier in the browser for formatting
+  const ensurePrettierLoaded = async () => {
+    if (typeof window === 'undefined') return null;
+    if (window.prettier && window.prettierPlugins) return window.prettier;
+    const loadScript = (src) => new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      s.src = src;
+      s.async = true;
+      s.onload = resolve;
+      s.onerror = reject;
+      document.head.appendChild(s);
+    });
+    try {
+      await loadScript('/vendor/prettier/standalone.js');
+      await loadScript('/vendor/prettier/parser-html.js');
+      await loadScript('/vendor/prettier/parser-postcss.js');
+      await loadScript('/vendor/prettier/parser-babel.js');
+      return window.prettier;
+    } catch (e) {
+      console.warn('Prettier load failed', e);
+      return null;
+    }
+  };
+
+  const formatWithPrettier = async (lang, code) => {
+    const prettier = await ensurePrettierLoaded();
+    if (!prettier || !window.prettierPlugins) return code;
+    try {
+      const parser = lang === 'html' ? 'html' : (lang === 'css' ? 'css' : 'babel');
+      return prettier.format(code || '', { parser, plugins: window.prettierPlugins });
+    } catch (e) {
+      console.warn('Prettier format failed', e);
+      return code;
+    }
+  };
+
+  // Handle splitter drag to resize editor/preview
+  useEffect(() => {
     const onMove = (e) => {
       if (!dragging) return;
       const container = document.getElementById('cms-editor-split');
@@ -345,6 +414,7 @@ function PageForm({ onClose, onSaved, editing }) {
     return s.startsWith('/') ? s : '/' + s;
   };
 
+  // Check for route conflicts whenever slug changes
   useEffect(() => {
     let cancelled = false;
     async function check() {
@@ -355,6 +425,7 @@ function PageForm({ onClose, onSaved, editing }) {
       }
       if (!cancelled) setRouteCheck(prev => ({ ...prev, checking: true }));
       try {
+        // 1) Check if a static route exists (skip CMS rewrite). Treat CMS catch-all as NOT static.
         let staticExists = false;
         try {
           const res = await fetch(slug, { headers: { 'x-skip-cms': '1' }, cache: 'no-store' });
@@ -362,6 +433,7 @@ function PageForm({ onClose, onSaved, editing }) {
           staticExists = res.ok && !isCms && slug !== ensureLeadingSlash(editing?.slug || '');
         } catch {}
 
+        // 2) Check if a CMS page already exists for the slug
         let cmsExists = false;
         try {
           const pathNoSlash = slug.replace(/^\//, '');
@@ -369,6 +441,7 @@ function PageForm({ onClose, onSaved, editing }) {
           cmsExists = res2.ok;
         } catch {}
 
+        // When editing, allow same page id; API doesn't return id here, so keep strict warning if cmsExists and slug !== original
         let conflict = false;
         let message = '';
         if (staticExists) {
@@ -388,10 +461,13 @@ function PageForm({ onClose, onSaved, editing }) {
     return () => { cancelled = true; clearTimeout(t); };
   }, [form.slug, editing]);
 
+  // Build the live preview document when code changes
   const previewDoc = useMemo(
     () => buildPreviewDoc(form.content_html, form.content_css, form.content_js),
     [form.content_html, form.content_css, form.content_js]
   );
+
+  // removed stray previewDoc from PagesManagement
 
   const save = async (e) => {
     e.preventDefault();
@@ -472,26 +548,38 @@ function PageForm({ onClose, onSaved, editing }) {
               ) : (
                 <input value={form.slug} onChange={(e) => updateField('slug', e.target.value)} placeholder="/cabinet-secretariat/about" className="mt-1 w-full border rounded px-3 py-2" />
               )}
-              <p className="text-xs text-gray-500 mt-1">This page will be available at <code>&lt;slug&gt;</code>.</p>
+              <p className="text-xs text-gray-500 mt-1">This page will be available at <code>&lt;slug&gt;</code>. Example: slug "/cabinet-secretariat/about" → URL "/cabinet-secretariat/about"</p>
               {form.slug ? (
                 <p className="text-xs text-blue-700 mt-1">Preview URL: <code>{ensureLeadingSlash(form.slug)}</code></p>
+              ) : null}
+              {routeCheck.message ? (
+                <p className={`text-xs mt-1 ${routeCheck.conflict ? 'text-red-700' : 'text-gray-600'}`}>
+                  {routeCheck.checking ? 'Checking route… ' : ''}{routeCheck.message}
+                </p>
               ) : null}
             </div>
             <div className="flex items-center space-x-2 mt-6">
               <input id="is_active" type="checkbox" checked={form.is_active} onChange={(e) => updateField('is_active', e.target.checked)} />
               <label htmlFor="is_active" className="text-sm text-gray-700">Active</label>
             </div> 
+
           </div>
 
+          {/* Code Editors: Tabbed Monaco with Resizable Live Preview */}
           <div className="mt-6">
             <h3 className="text-lg font-semibold">Page Code</h3>
+            <div className="flex items-center justify-between mt-1">
+              <p className="text-xs text-gray-500">Write raw HTML, CSS, and JavaScript. Live preview on the right. Drag the divider to resize.</p>
+              <span className="text-[10px] text-gray-500">CSS is safely scoped to this page only.</span>
+            </div>
+
             <div className="mt-3 flex items-center gap-2">
               <button
                 type="button"
                 onClick={() => setEditorMode('visual')}
                 className={editorMode === 'visual' ? 'px-3 py-1.5 text-xs rounded border bg-white shadow-sm' : 'px-3 py-1.5 text-xs rounded border hover:bg-gray-50'}
               >
-                Visual Editor (Jodit)
+                Visual Editor (CKEditor)
               </button>
               <button
                 type="button"
@@ -500,123 +588,107 @@ function PageForm({ onClose, onSaved, editing }) {
               >
                 Advanced (HTML/CSS/JS)
               </button>
+              <span className="text-xs text-gray-500">Default is Visual for non-technical admins.</span>
             </div>
 
             {editorMode === 'visual' ? (
-              <div className="mt-3 border rounded bg-white overflow-hidden shadow-sm">
+              <div className="mt-3 border rounded bg-white overflow-hidden">
                 <div className="px-3 py-2 border-b bg-gray-50 flex items-center justify-between">
-                  <div className="text-xs font-semibold text-gray-700 flex items-center gap-2">
-                    <span>Visual Rich Text Editor (Jodit Professional)</span>
-                    <span className="text-[10px] bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full">100% Offline Ready</span>
-                  </div>
-                  {/* Dedicated Upload Button for Local Images */}
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="file"
-                      id="jodit-local-img-upload"
-                      accept="image/*"
-                      className="hidden"
-                      onChange={(e) => {
-                        const file = e.target.files?.[0];
-                        if (!file) return;
-                        const reader = new FileReader();
-                        reader.onload = (event) => {
-                          const base64Str = event.target.result;
-                          
-                          if (editorRef.current) {
-                            const joditInstance = editorRef.current;
-                            // Jodit ke official selection method se image insert karein taaki cursor break na ho
-                            if (joditInstance.selection && typeof joditInstance.selection.insertImage === 'function') {
-                              joditInstance.selection.insertImage(base64Str);
-                            } else if (joditInstance.s && typeof joditInstance.s.insertImage === 'function') {
-                              joditInstance.s.insertImage(base64Str);
-                            } else {
-                              // Fallback
-                              const imgTag = `<img src="${base64Str}" alt="" style="max-width:100%; height:auto;" />`;
-                              joditInstance.value = (joditInstance.value || '') + imgTag;
-                            }
-                            
-                            // State sync update
-                            setForm(prev => ({ ...prev, content_html: joditInstance.value }));
-                          }
-                          e.target.value = '';
-                        };
-                        reader.readAsDataURL(file);
+                  <div className="text-xs font-medium text-gray-700">Content</div>
+                  <div className="text-[10px] text-gray-500">Uses CKEditor (npm packages)</div>
+                </div>
+                <div className="p-3">
+                  {ckEditorError ? (
+                    <div className="mb-3 p-3 border border-amber-200 bg-amber-50 text-amber-900 text-xs rounded">
+                      {ckEditorError}
+                    </div>
+                  ) : null}
+                  {!ck && !ckEditorError ? (
+                    <div className="text-xs text-gray-600">Loading editor…</div>
+                  ) : null}
+                  {ck ? (
+                    <ck.CKEditor
+                      editor={ck.ClassicEditor}
+                      data={form.content_html || ''}
+                      onChange={(event, editor) => {
+                        try {
+                          const data = editor.getData();
+                          setForm((prev) => ({ ...prev, content_html: data }));
+                        } catch {
+                        }
                       }}
                     />
-                    <button
-                      type="button"
-                      onClick={() => document.getElementById('jodit-local-img-upload').click()}
-                      className="px-3 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700 flex items-center gap-1 shadow-sm cursor-pointer"
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
-                      Upload Image from PC
-                    </button>
-                  </div>
-                </div>
-
-                <div className="p-2 bg-white">
-                  <JoditEditor
-                    ref={editorRef}
-                    value={form.content_html || ''}
-                    tabIndex={1}
-                    onBlur={(newContent) => setForm(prev => ({ ...prev, content_html: newContent }))}
-                    onChange={(newContent) => {}}
-                    config={{
-                      readonly: false,
-                      height: 400,
-                      toolbarButtonSize: 'middle',
-                      buttons: [
-                        'source', '|',
-                        'bold', 'strikethrough', 'underline', 'italic', 'brush', '|',
-                        'ul', 'ol', '|',
-                        'outdent', 'indent', '|',
-                        'font', 'fontsize', 'paragraph', 'lineHeight', '|',
-                        'image', 'file', 'video', 'table', 'link', '|',
-                        'align', 'undo', 'redo', '|',
-                        'cut', 'copy', 'paste', 'selectall', '|',
-                        'hr', 'eraser', 'fullsize', 'print', 'symbol'
-                      ],
-                      showCharsCounter: true,
-                      showWordsCounter: true,
-                      iframe: false,
-                    }}
-                  />
+                  ) : null}
                 </div>
               </div>
             ) : (
               <div id="cms-editor-split" className="mt-3 h-[68vh] border rounded overflow-hidden bg-white flex">
-                <div className="h-full flex flex-col" style={{ width: `${leftPanePct}%` }}>
-                  <div className="flex items-center justify-between border-b bg-gray-50 px-2 h-10">
-                    <div className="flex items-center gap-1">
-                      {['html','css','js'].map(t => (
-                        <button key={t} type="button" className={`px-3 py-1 text-xs rounded ${activeTab===t ? 'bg-white border shadow-sm' : 'hover:bg-gray-100'}`} onClick={() => setActiveTab(t)}>{t.toUpperCase()}</button>
-                      ))}
-                    </div>
+              {/* Left pane: tabs + editor */}
+              <div className="h-full flex flex-col" style={{ width: `${leftPanePct}%` }}>
+                <div className="flex items-center justify-between border-b bg-gray-50 px-2 h-10">
+                  <div className="flex items-center gap-1">
+                    {['html','css','js'].map(t => (
+                      <button key={t} type="button" className={`px-3 py-1 text-xs rounded ${activeTab===t ? 'bg-white border shadow-sm' : 'hover:bg-gray-100'}`} onClick={() => setActiveTab(t)}>{t.toUpperCase()}</button>
+                    ))}
                   </div>
-                  <div className="flex-1">
+                  <div className="flex items-center gap-1">
                     {activeTab==='html' && (
-                      <MonacoEditor height="100%" language="html" value={form.content_html || ''} onChange={(v) => updateField('content_html', v || '')} options={{ minimap: { enabled: false }, fontSize: 14, wordWrap: 'on' }} />
+                      <div className="flex gap-1">
+                        <button type="button" className="px-2 py-0.5 text-xs border rounded" onClick={() => updateField('content_html', (form.content_html||'') + '\n<div class="container">\n\t<h1>Heading</h1>\n\t<p>Paragraph</p>\n</div>\n')}>div+h1+p</button>
+                        <button type="button" className="px-2 py-0.5 text-xs border rounded" onClick={() => updateField('content_html', (form.content_html||'') + '\n<section class="section">\n\t<h2>Section</h2>\n</section>\n')}>section</button>
+                        <button type="button" className="px-2 py-0.5 text-xs border rounded" onClick={() => updateField('content_html', (form.content_html||'') + '\n<a href=\"#\" class=\"btn\">Link</a>\n')}>link</button>
+                      </div>
                     )}
                     {activeTab==='css' && (
-                      <MonacoEditor height="100%" language="css" value={form.content_css || ''} onChange={(v) => updateField('content_css', v || '')} options={{ minimap: { enabled: false }, fontSize: 14, wordWrap: 'on' }} />
+                      <div className="flex gap-1">
+                        <button type="button" className="px-2 py-0.5 text-xs border rounded" onClick={() => updateField('content_css', (form.content_css||'') + '\n.container{max-width:1200px;margin:0 auto;padding:16px;}\n')}>.container</button>
+                        <button type="button" className="px-2 py-0.5 text-xs border rounded" onClick={() => updateField('content_css', (form.content_css||'') + '\n.btn{display:inline-block;background:#2563eb;color:#fff;padding:8px 12px;border-radius:6px;}\n')}>.btn</button>
+                      </div>
                     )}
                     {activeTab==='js' && (
-                      <MonacoEditor height="100%" language="javascript" value={form.content_js || ''} onChange={(v) => updateField('content_js', v || '')} options={{ minimap: { enabled: false }, fontSize: 14, wordWrap: 'on' }} />
+                      <div className="flex gap-1">
+                        <button type="button" className="px-2 py-0.5 text-xs border rounded" onClick={() => updateField('content_js', (form.content_js||'') + '\ndocument.addEventListener(\"DOMContentLoaded\",()=>{\n\tconsole.log(\"Ready\");\n});\n')}>DOMContentLoaded</button>
+                        <button type="button" className="px-2 py-0.5 text-xs border rounded" onClick={() => updateField('content_js', (form.content_js||'') + '\nconst el=document.querySelector(\".btn\");\nif(el){ el.addEventListener(\"click\",(e)=>{ e.preventDefault(); alert(\"Clicked\"); }); }\n')}>.btn click</button>
+                      </div>
                     )}
+                    <button type="button" className="px-2 py-0.5 text-xs border rounded bg-gray-100" onClick={async () => {
+                      if (activeTab==='html') updateField('content_html', await formatWithPrettier('html', form.content_html||''));
+                      if (activeTab==='css') updateField('content_css', await formatWithPrettier('css', form.content_css||''));
+                      if (activeTab==='js') updateField('content_js', await formatWithPrettier('js', form.content_js||''));
+                    }}>Format</button>
                   </div>
                 </div>
-                <div className="w-1.5 cursor-col-resize bg-gray-100 hover:bg-gray-200" onMouseDown={() => setDragging(true)} title="Drag to resize" />
-                <div className="h-full flex-1 flex flex-col">
-                  <div className="flex items-center justify-between border-b bg-gray-50 px-2 h-10">
-                    <h4 className="text-xs font-medium">Live Preview</h4>
-                  </div>
-                  <div className="flex-1">
-                    <iframe title="preview" className="w-full h-full bg-white" sandbox="allow-scripts allow-same-origin" srcDoc={previewDoc} />
-                  </div>
+                <div className="flex-1">
+                  {activeTab==='html' && (
+                    <MonacoEditor height="100%" language="html" value={form.content_html || ''} onChange={(v) => updateField('content_html', v || '')} options={{ minimap: { enabled: false }, fontSize: 14, wordWrap: 'on', lineNumbers: 'on' }} />
+                  )}
+                  {activeTab==='css' && (
+                    <MonacoEditor height="100%" language="css" value={form.content_css || ''} onChange={(v) => updateField('content_css', v || '')} options={{ minimap: { enabled: false }, fontSize: 14, wordWrap: 'on', lineNumbers: 'on' }} />
+                  )}
+                  {activeTab==='js' && (
+                    <MonacoEditor height="100%" language="javascript" value={form.content_js || ''} onChange={(v) => updateField('content_js', v || '')} options={{ minimap: { enabled: false }, fontSize: 14, wordWrap: 'on', lineNumbers: 'on' }} />
+                  )}
                 </div>
               </div>
+
+              {/* Splitter */}
+              <div className="w-1.5 cursor-col-resize bg-gray-100 hover:bg-gray-200" onMouseDown={() => setDragging(true)} title="Drag to resize" />
+
+              {/* Right pane: preview */}
+              <div className="h-full flex-1 flex flex-col">
+                <div className="flex items-center justify-between border-b bg-gray-50 px-2 h-10">
+                  <h4 className="text-xs font-medium">Live Preview</h4>
+                  <div className="flex items-center gap-2">
+                    <button type="button" className="px-2 py-0.5 text-xs border rounded" onClick={() => { updateField('content_html', form.content_html); }}>Refresh</button>
+                  </div>
+                </div>
+                <div className="flex-1">
+                  <iframe title="preview" className="w-full h-full bg-white" sandbox="allow-scripts allow-same-origin" srcDoc={previewDoc} />
+                </div>
+              </div>
+            </div>
             )}
+            <p className="text-xs text-gray-500 mt-2">Note: This code is inserted as-is (including scripts). Ensure only trusted admins can edit pages.</p>
           </div>
 
           <div className="flex justify-end space-x-3 pt-2">
@@ -660,11 +732,15 @@ function safeExtractJs(content_json) {
 }
 
 function buildPreviewDoc(html = '', css = '', js = '') {
+  // Sanitize content to remove unwanted links and references
   const sanitizeContent = (content) => {
     if (!content) return content;
     return content
+      // Remove GitHub links
       .replace(/https?:\/\/github\.com[^"'\s]*/gi, '')
+      // Remove MDJAdmin references
       .replace(/MDJAdmin/gi, '')
+      // Remove any other unwanted promotional links (add more patterns as needed)
       .replace(/https?:\/\/[^\s]*MDJ[^\s]*/gi, '');
   };
 
@@ -672,6 +748,7 @@ function buildPreviewDoc(html = '', css = '', js = '') {
   const cleanCss = sanitizeContent(css);
   const cleanJs = sanitizeContent(js);
 
+  // Minimal HTML document with embedded CSS and JS for the iframe preview
   return `<!DOCTYPE html>
 <html>
   <head>
