@@ -681,3 +681,59 @@ table.dataTable.no-footer {
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: #6b7280;
 }
+
+
+/* Public page par CKEditor images ko right side wrap karne ke liye */
+.cms-content img, article img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Jab aap editor mein 'Side image' select karte hain */
+.cms-content .image-style-side, 
+article .image-style-side {
+  float: right;
+  margin-left: 1.5rem;
+  margin-bottom: 1rem;
+  max-width: 45%;
+}
+
+/* Layout ko break hone se bachane ke liye clearfix */
+.cms-content::after, article::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+
+/* CMS Content Wrapper ko normal block flow mein rakhein */
+.cms-content, 
+.page-content-body {
+  display: block !important;
+  width: 100%;
+}
+
+/* Image floating aur text wrap ke liye */
+.cms-content img.image-style-side, 
+.page-content-body img.image-style-side {
+  float: right !important;
+  margin: 0 0 1rem 1.5rem !important;
+  max-width: 45% !important;
+  display: block;
+}
+
+.cms-content img.image-style-align-left, 
+.page-content-body img.image-style-align-left {
+  float: left !important;
+  margin: 0 1.5rem 1rem 0 !important;
+  max-width: 45% !important;
+  display: block;
+}
+
+/* Clearfix takki text image ke niche overlap na ho */
+.cms-content::after, 
+.page-content-body::after {
+  content: "";
+  display: table;
+  clear: both;
+}

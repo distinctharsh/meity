@@ -14,6 +14,290 @@ loader.config({
 
 const MonacoEditor = dynamic(() => import('@monaco-editor/react'), { ssr: false });
 
+function CKEditorCDN({ value, onChange }) {
+  const editorRef = useRef(null);
+  const instanceRef = useRef(null);
+  const onChangeRef = useRef(onChange);
+
+  const [status, setStatus] = useState('loading');
+  const [errorMessage, setErrorMessage] = useState('');
+
+  useEffect(() => {
+    onChangeRef.current = onChange;
+  }, [onChange]);
+
+  useEffect(() => {
+    let mounted = true;
+    let editorInstance = null;
+
+    const SCRIPT_ID = 'ckeditor-umd-script';
+    const CSS_ID = 'ckeditor-umd-css';
+
+    const initialize = async () => {
+      if (!mounted || !editorRef.current) return;
+
+      try {
+        const CK = window.CKEDITOR;
+
+        if (!CK) {
+          throw new Error('window.CKEDITOR not found.');
+        }
+
+        const {
+          ClassicEditor,
+          Essentials,
+          Paragraph,
+          Heading,
+          Bold,
+          Italic,
+          Underline,
+          Strikethrough,
+          Code,
+          Subscript,
+          Superscript,
+          Link,
+          List,
+          TodoList,
+          BlockQuote,
+          Alignment,
+          Font,
+          Highlight,
+          Image,
+          ImageToolbar,
+          ImageCaption,
+          ImageStyle,
+          ImageUpload,
+          ImageResize,
+          PictureEditing,
+          Table,
+          TableToolbar,
+          TableColumnResize,
+          TableProperties,
+          TableCellProperties,
+          HorizontalLine,
+          SpecialCharacters,
+          SourceEditing,
+          RemoveFormat,
+          FindAndReplace,
+          CodeBlock,
+          PageBreak
+        } = CK;
+
+        if (!ClassicEditor) {
+          throw new Error('ClassicEditor export missing.');
+        }
+
+        // Custom Upload Adapter Plugin for Local /api/adm/upload
+        function MyUploadAdapterPlugin(editor) {
+          editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
+            return {
+              upload: async () => {
+                const file = await loader.file;
+                const data = new FormData();
+                data.append('file', file);
+                data.append('type', 'images');
+
+                const response = await fetch('/api/adm/upload', {
+                  method: 'POST',
+                  body: data,
+                });
+
+                if (!response.ok) {
+                  const errorJson = await response.json().catch(() => ({}));
+                  throw new Error(errorJson.error || 'Image upload failed on server.');
+                }
+
+                const result = await response.json();
+                return {
+                  default: result.url || result.location
+                };
+              }
+            };
+          };
+        }
+
+        const plugins = [
+          Essentials,
+          Paragraph,
+          Heading,
+          Bold,
+          Italic,
+          Underline,
+          Strikethrough,
+          Code,
+          Subscript,
+          Superscript,
+          Link,
+          List,
+          TodoList,
+          BlockQuote,
+          Alignment,
+          Font,
+          Highlight,
+          Image,
+          ImageToolbar,
+          ImageCaption,
+          ImageStyle,
+          ImageUpload,
+          ImageResize,
+          PictureEditing,
+          Table,
+          TableToolbar,
+          TableColumnResize,
+          TableProperties,
+          TableCellProperties,
+          HorizontalLine,
+          SpecialCharacters,
+          SourceEditing,
+          RemoveFormat,
+          FindAndReplace,
+          CodeBlock,
+          PageBreak,
+          MyUploadAdapterPlugin
+        ];
+
+        const editor = await ClassicEditor.create(
+          editorRef.current,
+          {
+            licenseKey: 'GPL',
+            plugins,
+            toolbar: [
+              'sourceEditing', '|',
+              'findAndReplace', '|',
+              'heading', '|',
+              'fontFamily', 'fontSize', 'fontColor', 'fontBackgroundColor', '|',
+              'bold', 'italic', 'underline', 'strikethrough', 'subscript', 'superscript', 'highlight', '|',
+              'alignment', '|',
+              'link', 'imageUpload', 'insertTable', 'horizontalLine', 'pageBreak', 'specialCharacters', '|',
+              'bulletedList', 'numberedList', 'todoList', '|',
+              'blockQuote', 'codeBlock', 'removeFormat', '|',
+              'undo', 'redo'
+            ],
+            image: {
+              toolbar: [
+                'imageStyle:inline',
+                'imageStyle:block',
+                'imageStyle:side',
+                '|',
+                'toggleImageCaption',
+                'imageTextAlternative',
+                '|',
+                'resizeImage'
+              ]
+            },
+            table: {
+              contentToolbar: [
+                'tableColumn',
+                'tableRow',
+                'mergeTableCells',
+                'tableProperties',
+                'tableCellProperties'
+              ]
+            },
+            root: {
+              placeholder: 'Start typing your content or drag & drop images here...'
+            }
+          }
+        );
+
+        if (!mounted) {
+          await editor.destroy();
+          return;
+        }
+
+        editorInstance = editor;
+        instanceRef.current = editor;
+
+        editor.setData(value || '');
+
+        editor.model.document.on('change:data', () => {
+          onChangeRef.current?.(editor.getData());
+        });
+
+        setStatus('ready');
+
+      } catch (error) {
+        console.error('CKEditor initialization failed:', error);
+        if (mounted) {
+          setErrorMessage(error.message);
+          setStatus('error');
+        }
+      }
+    };
+
+    const loadEditor = () => {
+      if (!document.getElementById(CSS_ID)) {
+        const link = document.createElement('link');
+        link.id = CSS_ID;
+        link.rel = 'stylesheet';
+        link.href = '/ckeditor/ckeditor5/ckeditor5.css';
+        document.head.appendChild(link);
+      }
+
+      if (window.CKEDITOR) {
+        initialize();
+        return;
+      }
+
+      const existing = document.getElementById(SCRIPT_ID);
+
+      if (existing) {
+        if (existing.dataset.loaded === 'true') {
+          initialize();
+          return;
+        }
+        existing.addEventListener('load', initialize, { once: true });
+        return;
+      }
+
+      const script = document.createElement('script');
+      script.id = SCRIPT_ID;
+      script.src = '/ckeditor/ckeditor5/ckeditor5.umd.js';
+      script.onload = () => {
+        script.dataset.loaded = 'true';
+        initialize();
+      };
+      script.onerror = () => {
+        if (mounted) {
+          setErrorMessage('Cannot load CKEditor UMD script');
+          setStatus('error');
+        }
+      };
+      document.body.appendChild(script);
+    };
+
+    loadEditor();
+
+    return () => {
+      mounted = false;
+      if (editorInstance) {
+        editorInstance.destroy().catch(console.error);
+      }
+      instanceRef.current = null;
+    };
+  }, []);
+
+  useEffect(() => {
+    const editor = instanceRef.current;
+    if (editor && editor.getData() !== (value || '')) {
+      editor.setData(value || '');
+    }
+  }, [value]);
+
+  return (
+    <div className="w-full">
+      {status === 'loading' && <div className="p-3 text-sm text-gray-500">Loading Offline CKEditor...</div>}
+      {status === 'error' && (
+        <div className="p-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded">
+          <strong>CKEditor Error:</strong>
+          <p>{errorMessage}</p>
+        </div>
+      )}
+      <div ref={editorRef} style={{ display: status === 'error' ? 'none' : 'block' }} />
+    </div>
+  );
+}
+
 export default function PagesManagement() {
   const [pages, setPages] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -188,22 +472,21 @@ export default function PagesManagement() {
 
         {showForm && (
           <PageForm
-          onClose={() => { setShowForm(false); setEditing(null); }}
-          onSaved={async () => {
-            setShowForm(false); 
-            setEditing(null); 
-            await refresh(); 
-            await syncPagesAndRoutes();
-          }}
-          editing={editing}
-        />
+            onClose={() => { setShowForm(false); setEditing(null); }}
+            onSaved={async () => {
+              setShowForm(false); 
+              setEditing(null); 
+              await refresh(); 
+              await syncPagesAndRoutes();
+            }}
+            editing={editing}
+          />
         )}
       </div>
     </AdminLayout>
   );
 }
 
-// Using Monaco-based code editors (HTML/CSS/JS) with live preview
 function PageForm({ onClose, onSaved, editing }) {
   const [form, setForm] = useState({
     title: '',
@@ -222,13 +505,11 @@ function PageForm({ onClose, onSaved, editing }) {
   const [useNavDropdown, setUseNavDropdown] = useState(true);
   const [navLoading, setNavLoading] = useState(true);
   const [routeCheck, setRouteCheck] = useState({ checking: false, staticExists: false, cmsExists: false, conflict: false, message: '' });
-  const [navConflicts, setNavConflicts] = useState({}); // { '/cabinet-secretariat/about': { staticExists, cmsExists, conflict, message } }
+  const [navConflicts, setNavConflicts] = useState({});
   const [activeTab, setActiveTab] = useState('html');
   const [leftPanePct, setLeftPanePct] = useState(60);
   const [dragging, setDragging] = useState(false);
   const [editorMode, setEditorMode] = useState('visual'); // 'visual' | 'advanced'
-  const [ck, setCk] = useState(null); // { CKEditor, ClassicEditor }
-  const [ckEditorError, setCkEditorError] = useState('');
 
   useEffect(() => {
     if (editing) {
@@ -244,12 +525,10 @@ function PageForm({ onClose, onSaved, editing }) {
         is_active: editing.is_active !== false,
         display_order: editing.display_order ?? 0,
       });
-      // If the slug isn't present in navigation, allow manual entry view
       setUseNavDropdown(true);
     }
   }, [editing]);
 
-  // Load navigation as dropdown options
   useEffect(() => {
     let mounted = true;
     async function loadNav() {
@@ -257,7 +536,6 @@ function PageForm({ onClose, onSaved, editing }) {
       try {
         const res = await fetch('/api/adm/navigation');
         const items = res.ok ? (await res.json()) : [];
-        // Build label with hierarchy e.g., Parent / Child
         const byId = new Map(items.map(i => [i.id, i]));
         const labelFor = (it) => {
           let label = it.name || '';
@@ -274,9 +552,7 @@ function PageForm({ onClose, onSaved, editing }) {
           .map(it => ({ value: it.link, label: `${labelFor(it)} — ${it.link}` }));
         if (mounted) setNavOptions(options);
 
-        // Bulk check for conflicts on each option and disable those with conflicts
         try {
-          // Load all existing CMS pages once and build a set of their slugs
           const pagesRes = await fetch('/api/adm/pages');
           const pagesData = pagesRes.ok ? await pagesRes.json() : [];
           const cmsSlugs = new Set(
@@ -289,7 +565,6 @@ function PageForm({ onClose, onSaved, editing }) {
             const slug = opt.value.startsWith('/') ? opt.value : '/' + opt.value;
             const normalizedSlug = ensureLeadingSlash(slug);
 
-            // 1) static route check
             let staticExists = false;
             try {
               const r = await fetch(normalizedSlug, { headers: { 'x-skip-cms': '1' }, cache: 'no-store' });
@@ -297,10 +572,7 @@ function PageForm({ onClose, onSaved, editing }) {
               staticExists = r.ok && !isCms;
             } catch {}
 
-            // 2) cms page check via admin pages list
             let cmsExists = cmsSlugs.has(normalizedSlug);
-
-            // If editing and option equals the page's current slug, don't treat as conflict
             if (editing && normalizedSlug === ensureLeadingSlash(editing.slug)) {
               cmsExists = false;
             }
@@ -328,33 +600,6 @@ function PageForm({ onClose, onSaved, editing }) {
 
   const updateField = (key, value) => setForm(prev => ({ ...prev, [key]: value }));
 
-  useEffect(() => {
-    let cancelled = false;
-    async function load() {
-      if (typeof window === 'undefined') return;
-      if (editorMode !== 'visual') return;
-      if (ck) return;
-      try {
-        setCkEditorError('');
-        const [{ CKEditor }, classicMod] = await Promise.all([
-          import('@ckeditor/ckeditor5-react'),
-          import('@ckeditor/ckeditor5-build-classic')
-        ]);
-        const ClassicEditor = classicMod?.default || classicMod?.ClassicEditor || classicMod;
-        if (!CKEditor || !ClassicEditor) {
-          throw new Error('CKEditor modules loaded but exports were not found');
-        }
-        if (!cancelled) setCk({ CKEditor, ClassicEditor });
-      } catch (e) {
-        console.warn('CKEditor npm load/init failed', e);
-        if (!cancelled) setCkEditorError('CKEditor failed to load. Please reinstall packages or check build compatibility.');
-      }
-    }
-    load();
-    return () => { cancelled = true; };
-  }, [editorMode, ck]);
-
-  // Lazy-load Prettier in the browser for formatting
   const ensurePrettierLoaded = async () => {
     if (typeof window === 'undefined') return null;
     if (window.prettier && window.prettierPlugins) return window.prettier;
@@ -390,7 +635,6 @@ function PageForm({ onClose, onSaved, editing }) {
     }
   };
 
-  // Handle splitter drag to resize editor/preview
   useEffect(() => {
     const onMove = (e) => {
       if (!dragging) return;
@@ -414,7 +658,6 @@ function PageForm({ onClose, onSaved, editing }) {
     return s.startsWith('/') ? s : '/' + s;
   };
 
-  // Check for route conflicts whenever slug changes
   useEffect(() => {
     let cancelled = false;
     async function check() {
@@ -425,7 +668,6 @@ function PageForm({ onClose, onSaved, editing }) {
       }
       if (!cancelled) setRouteCheck(prev => ({ ...prev, checking: true }));
       try {
-        // 1) Check if a static route exists (skip CMS rewrite). Treat CMS catch-all as NOT static.
         let staticExists = false;
         try {
           const res = await fetch(slug, { headers: { 'x-skip-cms': '1' }, cache: 'no-store' });
@@ -433,7 +675,6 @@ function PageForm({ onClose, onSaved, editing }) {
           staticExists = res.ok && !isCms && slug !== ensureLeadingSlash(editing?.slug || '');
         } catch {}
 
-        // 2) Check if a CMS page already exists for the slug
         let cmsExists = false;
         try {
           const pathNoSlash = slug.replace(/^\//, '');
@@ -441,7 +682,6 @@ function PageForm({ onClose, onSaved, editing }) {
           cmsExists = res2.ok;
         } catch {}
 
-        // When editing, allow same page id; API doesn't return id here, so keep strict warning if cmsExists and slug !== original
         let conflict = false;
         let message = '';
         if (staticExists) {
@@ -461,13 +701,10 @@ function PageForm({ onClose, onSaved, editing }) {
     return () => { cancelled = true; clearTimeout(t); };
   }, [form.slug, editing]);
 
-  // Build the live preview document when code changes
   const previewDoc = useMemo(
     () => buildPreviewDoc(form.content_html, form.content_css, form.content_js),
     [form.content_html, form.content_css, form.content_js]
   );
-
-  // removed stray previewDoc from PagesManagement
 
   const save = async (e) => {
     e.preventDefault();
@@ -548,31 +785,19 @@ function PageForm({ onClose, onSaved, editing }) {
               ) : (
                 <input value={form.slug} onChange={(e) => updateField('slug', e.target.value)} placeholder="/cabinet-secretariat/about" className="mt-1 w-full border rounded px-3 py-2" />
               )}
-              <p className="text-xs text-gray-500 mt-1">This page will be available at <code>&lt;slug&gt;</code>. Example: slug "/cabinet-secretariat/about" → URL "/cabinet-secretariat/about"</p>
+              <p className="text-xs text-gray-500 mt-1">This page will be available at <code>&lt;slug&gt;</code>.</p>
               {form.slug ? (
                 <p className="text-xs text-blue-700 mt-1">Preview URL: <code>{ensureLeadingSlash(form.slug)}</code></p>
-              ) : null}
-              {routeCheck.message ? (
-                <p className={`text-xs mt-1 ${routeCheck.conflict ? 'text-red-700' : 'text-gray-600'}`}>
-                  {routeCheck.checking ? 'Checking route… ' : ''}{routeCheck.message}
-                </p>
               ) : null}
             </div>
             <div className="flex items-center space-x-2 mt-6">
               <input id="is_active" type="checkbox" checked={form.is_active} onChange={(e) => updateField('is_active', e.target.checked)} />
               <label htmlFor="is_active" className="text-sm text-gray-700">Active</label>
             </div> 
-
           </div>
 
-          {/* Code Editors: Tabbed Monaco with Resizable Live Preview */}
           <div className="mt-6">
             <h3 className="text-lg font-semibold">Page Code</h3>
-            <div className="flex items-center justify-between mt-1">
-              <p className="text-xs text-gray-500">Write raw HTML, CSS, and JavaScript. Live preview on the right. Drag the divider to resize.</p>
-              <span className="text-[10px] text-gray-500">CSS is safely scoped to this page only.</span>
-            </div>
-
             <div className="mt-3 flex items-center gap-2">
               <button
                 type="button"
@@ -588,107 +813,64 @@ function PageForm({ onClose, onSaved, editing }) {
               >
                 Advanced (HTML/CSS/JS)
               </button>
-              <span className="text-xs text-gray-500">Default is Visual for non-technical admins.</span>
             </div>
 
             {editorMode === 'visual' ? (
-              <div className="mt-3 border rounded bg-white overflow-hidden">
+              <div className="mt-3 border rounded bg-white overflow-hidden shadow-sm">
                 <div className="px-3 py-2 border-b bg-gray-50 flex items-center justify-between">
-                  <div className="text-xs font-medium text-gray-700">Content</div>
-                  <div className="text-[10px] text-gray-500">Uses CKEditor (npm packages)</div>
+                  <div className="text-xs font-semibold text-gray-700 flex items-center gap-2">
+                    <span>Visual Rich Text Editor (CKEditor Classic)</span>
+                    <span className="text-[10px] bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full">100% Offline Ready</span>
+                  </div>
                 </div>
-                <div className="p-3">
-                  {ckEditorError ? (
-                    <div className="mb-3 p-3 border border-amber-200 bg-amber-50 text-amber-900 text-xs rounded">
-                      {ckEditorError}
-                    </div>
-                  ) : null}
-                  {!ck && !ckEditorError ? (
-                    <div className="text-xs text-gray-600">Loading editor…</div>
-                  ) : null}
-                  {ck ? (
-                    <ck.CKEditor
-                      editor={ck.ClassicEditor}
-                      data={form.content_html || ''}
-                      onChange={(event, editor) => {
-                        try {
-                          const data = editor.getData();
-                          setForm((prev) => ({ ...prev, content_html: data }));
-                        } catch {
-                        }
-                      }}
-                    />
-                  ) : null}
+
+                <div className="p-3 bg-white">
+                  <CKEditorCDN
+                    value={form.content_html || ''}
+                    onChange={(html) => setForm(prev => ({ ...prev, content_html: html }))}
+                  />
                 </div>
               </div>
             ) : (
               <div id="cms-editor-split" className="mt-3 h-[68vh] border rounded overflow-hidden bg-white flex">
-              {/* Left pane: tabs + editor */}
-              <div className="h-full flex flex-col" style={{ width: `${leftPanePct}%` }}>
-                <div className="flex items-center justify-between border-b bg-gray-50 px-2 h-10">
-                  <div className="flex items-center gap-1">
-                    {['html','css','js'].map(t => (
-                      <button key={t} type="button" className={`px-3 py-1 text-xs rounded ${activeTab===t ? 'bg-white border shadow-sm' : 'hover:bg-gray-100'}`} onClick={() => setActiveTab(t)}>{t.toUpperCase()}</button>
-                    ))}
+                <div className="h-full flex flex-col" style={{ width: `${leftPanePct}%` }}>
+                  <div className="flex items-center justify-between border-b bg-gray-50 px-2 h-10">
+                    <div className="flex items-center gap-1">
+                      {['html','css','js'].map(t => (
+                        <button key={t} type="button" className={`px-3 py-1 text-xs rounded ${activeTab===t ? 'bg-white border shadow-sm' : 'hover:bg-gray-100'}`} onClick={() => setActiveTab(t)}>{t.toUpperCase()}</button>
+                      ))}
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <button type="button" className="px-2 py-0.5 text-xs border rounded bg-gray-100" onClick={async () => {
+                        if (activeTab==='html') updateField('content_html', await formatWithPrettier('html', form.content_html||''));
+                        if (activeTab==='css') updateField('content_css', await formatWithPrettier('css', form.content_css||''));
+                        if (activeTab==='js') updateField('content_js', await formatWithPrettier('js', form.content_js||''));
+                      }}>Format</button>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-1">
+                  <div className="flex-1">
                     {activeTab==='html' && (
-                      <div className="flex gap-1">
-                        <button type="button" className="px-2 py-0.5 text-xs border rounded" onClick={() => updateField('content_html', (form.content_html||'') + '\n<div class="container">\n\t<h1>Heading</h1>\n\t<p>Paragraph</p>\n</div>\n')}>div+h1+p</button>
-                        <button type="button" className="px-2 py-0.5 text-xs border rounded" onClick={() => updateField('content_html', (form.content_html||'') + '\n<section class="section">\n\t<h2>Section</h2>\n</section>\n')}>section</button>
-                        <button type="button" className="px-2 py-0.5 text-xs border rounded" onClick={() => updateField('content_html', (form.content_html||'') + '\n<a href=\"#\" class=\"btn\">Link</a>\n')}>link</button>
-                      </div>
+                      <MonacoEditor height="100%" language="html" value={form.content_html || ''} onChange={(v) => updateField('content_html', v || '')} options={{ minimap: { enabled: false }, fontSize: 14, wordWrap: 'on' }} />
                     )}
                     {activeTab==='css' && (
-                      <div className="flex gap-1">
-                        <button type="button" className="px-2 py-0.5 text-xs border rounded" onClick={() => updateField('content_css', (form.content_css||'') + '\n.container{max-width:1200px;margin:0 auto;padding:16px;}\n')}>.container</button>
-                        <button type="button" className="px-2 py-0.5 text-xs border rounded" onClick={() => updateField('content_css', (form.content_css||'') + '\n.btn{display:inline-block;background:#2563eb;color:#fff;padding:8px 12px;border-radius:6px;}\n')}>.btn</button>
-                      </div>
+                      <MonacoEditor height="100%" language="css" value={form.content_css || ''} onChange={(v) => updateField('content_css', v || '')} options={{ minimap: { enabled: false }, fontSize: 14, wordWrap: 'on' }} />
                     )}
                     {activeTab==='js' && (
-                      <div className="flex gap-1">
-                        <button type="button" className="px-2 py-0.5 text-xs border rounded" onClick={() => updateField('content_js', (form.content_js||'') + '\ndocument.addEventListener(\"DOMContentLoaded\",()=>{\n\tconsole.log(\"Ready\");\n});\n')}>DOMContentLoaded</button>
-                        <button type="button" className="px-2 py-0.5 text-xs border rounded" onClick={() => updateField('content_js', (form.content_js||'') + '\nconst el=document.querySelector(\".btn\");\nif(el){ el.addEventListener(\"click\",(e)=>{ e.preventDefault(); alert(\"Clicked\"); }); }\n')}>.btn click</button>
-                      </div>
+                      <MonacoEditor height="100%" language="javascript" value={form.content_js || ''} onChange={(v) => updateField('content_js', v || '')} options={{ minimap: { enabled: false }, fontSize: 14, wordWrap: 'on' }} />
                     )}
-                    <button type="button" className="px-2 py-0.5 text-xs border rounded bg-gray-100" onClick={async () => {
-                      if (activeTab==='html') updateField('content_html', await formatWithPrettier('html', form.content_html||''));
-                      if (activeTab==='css') updateField('content_css', await formatWithPrettier('css', form.content_css||''));
-                      if (activeTab==='js') updateField('content_js', await formatWithPrettier('js', form.content_js||''));
-                    }}>Format</button>
                   </div>
                 </div>
-                <div className="flex-1">
-                  {activeTab==='html' && (
-                    <MonacoEditor height="100%" language="html" value={form.content_html || ''} onChange={(v) => updateField('content_html', v || '')} options={{ minimap: { enabled: false }, fontSize: 14, wordWrap: 'on', lineNumbers: 'on' }} />
-                  )}
-                  {activeTab==='css' && (
-                    <MonacoEditor height="100%" language="css" value={form.content_css || ''} onChange={(v) => updateField('content_css', v || '')} options={{ minimap: { enabled: false }, fontSize: 14, wordWrap: 'on', lineNumbers: 'on' }} />
-                  )}
-                  {activeTab==='js' && (
-                    <MonacoEditor height="100%" language="javascript" value={form.content_js || ''} onChange={(v) => updateField('content_js', v || '')} options={{ minimap: { enabled: false }, fontSize: 14, wordWrap: 'on', lineNumbers: 'on' }} />
-                  )}
-                </div>
-              </div>
-
-              {/* Splitter */}
-              <div className="w-1.5 cursor-col-resize bg-gray-100 hover:bg-gray-200" onMouseDown={() => setDragging(true)} title="Drag to resize" />
-
-              {/* Right pane: preview */}
-              <div className="h-full flex-1 flex flex-col">
-                <div className="flex items-center justify-between border-b bg-gray-50 px-2 h-10">
-                  <h4 className="text-xs font-medium">Live Preview</h4>
-                  <div className="flex items-center gap-2">
-                    <button type="button" className="px-2 py-0.5 text-xs border rounded" onClick={() => { updateField('content_html', form.content_html); }}>Refresh</button>
+                <div className="w-1.5 cursor-col-resize bg-gray-100 hover:bg-gray-200" onMouseDown={() => setDragging(true)} title="Drag to resize" />
+                <div className="h-full flex-1 flex flex-col">
+                  <div className="flex items-center justify-between border-b bg-gray-50 px-2 h-10">
+                    <h4 className="text-xs font-medium">Live Preview</h4>
+                  </div>
+                  <div className="flex-1">
+                    <iframe title="preview" className="w-full h-full bg-white" sandbox="allow-scripts allow-same-origin" srcDoc={previewDoc} />
                   </div>
                 </div>
-                <div className="flex-1">
-                  <iframe title="preview" className="w-full h-full bg-white" sandbox="allow-scripts allow-same-origin" srcDoc={previewDoc} />
-                </div>
               </div>
-            </div>
             )}
-            <p className="text-xs text-gray-500 mt-2">Note: This code is inserted as-is (including scripts). Ensure only trusted admins can edit pages.</p>
           </div>
 
           <div className="flex justify-end space-x-3 pt-2">
@@ -732,15 +914,11 @@ function safeExtractJs(content_json) {
 }
 
 function buildPreviewDoc(html = '', css = '', js = '') {
-  // Sanitize content to remove unwanted links and references
   const sanitizeContent = (content) => {
     if (!content) return content;
     return content
-      // Remove GitHub links
       .replace(/https?:\/\/github\.com[^"'\s]*/gi, '')
-      // Remove MDJAdmin references
       .replace(/MDJAdmin/gi, '')
-      // Remove any other unwanted promotional links (add more patterns as needed)
       .replace(/https?:\/\/[^\s]*MDJ[^\s]*/gi, '');
   };
 
@@ -748,7 +926,6 @@ function buildPreviewDoc(html = '', css = '', js = '') {
   const cleanCss = sanitizeContent(css);
   const cleanJs = sanitizeContent(js);
 
-  // Minimal HTML document with embedded CSS and JS for the iframe preview
   return `<!DOCTYPE html>
 <html>
   <head>
