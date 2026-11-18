@@ -116,6 +116,29 @@ const AdminLayout = ({ children }) => {
   ];
 
   // ------------------------------------------------
+  // Role Based Navigation
+  // ------------------------------------------------
+
+  const userRole = Number(user?.role);
+  console.log('User Role:', userRole);
+
+  const allowedRole3Menus = [
+    '/admin/directory',
+    '/admin/our-team'
+  ];
+
+  const filteredNavigation = userRole === 3
+    ? navigation
+        .map(section => ({
+          ...section,
+          items: section.items.filter(item =>
+            allowedRole3Menus.includes(item.href)
+          )
+        }))
+        .filter(section => section.items.length > 0)
+    : navigation;
+
+  // ------------------------------------------------
   // Authentication: Verify HttpOnly cookie
   // ------------------------------------------------
 
@@ -392,7 +415,7 @@ const AdminLayout = ({ children }) => {
 
               <nav className="mt-6 px-2 space-y-1">
 
-                {navigation.map((section) => (
+                {filteredNavigation.map((section) => (
                   <div key={section.name} className="mb-4">
 
                     {section.name !== 'Dashboard' && (
@@ -564,7 +587,7 @@ const AdminLayout = ({ children }) => {
                   }`}
                 >
 
-                  {navigation.map((section) => (
+                  {filteredNavigation.map((section) => (
                     <div key={section.name} className="space-y-1">
 
                       {section.name !== 'Dashboard' && (
