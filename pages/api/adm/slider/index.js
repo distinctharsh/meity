@@ -1,6 +1,6 @@
 import pool from '@/lib/db';
 import jwt from 'jsonwebtoken';
-import { logAuditAction } from '../logger';
+import { logAuditAction, hasPermission } from '../logger';
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
@@ -33,6 +33,10 @@ export default async function handler(req, res) {
       res.status(500).json({ message: 'Internal server error' });
     }
   } else if (req.method === 'POST') {
+    if (!(await hasPermission(req, 'slider:write'))) {
+      return res.status(403).json({ message: 'Forbidden' });
+    }
+
     try {
       const { image_url, link_url, display_order, is_active } = req.body;
 

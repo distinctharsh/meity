@@ -115,6 +115,14 @@ export default async function handler(req, res) {
 
         const user = users[0];
 
+        const [perms] = await pool.query(
+            'SELECT permission FROM cms_role_permissions WHERE role_id = ?',
+            [user.role]
+            );
+
+        user.permissions = perms.map(p => p.permission);
+        console.log('User permissions:', user.permissions);
+
         return res.status(200).json({
             authenticated: true,
             message: 'Token valid',
