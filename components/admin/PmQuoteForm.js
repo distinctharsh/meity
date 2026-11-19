@@ -76,7 +76,21 @@ export default function PmQuoteForm() {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await fetch('/api/adm/pm-quotes', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(form) });
+      const url = form.id
+        ? `/api/adm/pm-quotes/${form.id}`
+        : '/api/adm/pm-quotes';
+
+      const payload = form.id
+        ? { ...form, action: 'update' }
+        : form;
+
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      });
       if (res.ok) {
         await load();
         await syncHomeData();

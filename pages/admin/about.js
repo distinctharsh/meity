@@ -104,11 +104,25 @@ export default function AdminAboutPage() {
 
   const onDelete = async (id) => {
     if (!confirm('Delete this content section?')) return;
-    const res = await fetch(`/api/adm/about/${id}`, { method: 'DELETE' });
-    if (!res.ok) {
-      alert('Delete failed');
-    } else {
+    try {
+      const res = await fetch(`/api/adm/about/${id}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          action: 'delete'
+        })
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.message || 'Delete failed');
+      }
+
       await load();
+    } catch (e) {
+      alert(e.message || 'Delete failed');
     }
   };
 
@@ -382,16 +396,15 @@ function AboutContentForm({ initial, onCancel, onSaved }) {
   });
   const [saving, setSaving] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
-
+  
   const submit = async (e) => {
     e.preventDefault();
     try {
       setSaving(true);
       const url = initial ? `/api/adm/about/${initial.id}` : '/api/adm/about';
-      const method = initial ? 'PUT' : 'POST';
-      
-      // Use FormData for file upload
+
       const formData = new FormData();
+      formData.append('action', initial ? 'update' : 'create');
       formData.append('section_key', form.section_key);
       formData.append('title', form.title);
       formData.append('content', form.content);
@@ -401,16 +414,19 @@ function AboutContentForm({ initial, onCancel, onSaved }) {
       formData.append('file_url', form.file_url);
       formData.append('file_size', form.file_size);
       formData.append('file_name', form.file_name);
-      
+
       if (selectedFile) {
         formData.append('file', selectedFile);
       }
-      
+
       const res = await fetch(url, {
-        method,
-        body: formData,
+        method: 'POST',
+        body: formData
       });
-      if (!res.ok) throw new Error('Save failed');
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.message || 'Save failed');
+      }
       onSaved && onSaved();
     } catch (e) {
       alert(e.message || 'Save failed');

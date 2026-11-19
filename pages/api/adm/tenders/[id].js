@@ -47,12 +47,23 @@ export default async function handler(req, res) {
       console.error('Error fetching tender:', error);
       res.status(500).json({ message: 'Internal server error' });
     }
-  } else if (req.method === 'PUT') {
+  } else if (req.method === 'POST') {
+  const { action } = req.body;
+
+  if (action === 'update') {
     try {
-      const { title, tender_id, published_date, due_date, file_name, file_size, is_active } = req.body;
+      const {
+        title,
+        tender_id,
+        published_date,
+        due_date,
+        file_name,
+        file_size,
+        is_active
+      } = req.body;
 
       const [result] = await pool.query(`
-        UPDATE vacancies_tenders 
+        UPDATE vacancies_tenders
         SET title = COALESCE(?, title),
             tender_id = COALESCE(?, tender_id),
             published_date = COALESCE(?, published_date),
@@ -79,15 +90,21 @@ export default async function handler(req, res) {
         `Updated Tender ID ${id}`
       );
 
-      res.status(200).json({ message: 'Tender updated successfully' });
+      return res.status(200).json({
+        message: 'Tender updated successfully'
+      });
     } catch (error) {
       console.error('Error updating tender:', error);
-      res.status(500).json({ message: 'Failed to update tender' });
+      return res.status(500).json({
+        message: 'Failed to update tender'
+      });
     }
-  } else if (req.method === 'DELETE') {
+  } else if (action === 'delete') {
     try {
       const [result] = await pool.query(`
-        DELETE FROM vacancies_tenders 
+        UPDATE vacancies_tenders
+        SET is_active = 0,
+            updated_at = NOW()
         WHERE id = ? AND type = 'tender'
       `, [id]);
 
@@ -96,22 +113,29 @@ export default async function handler(req, res) {
       }
 
       const { userId, username } = getLoggedInUser(req);
-      await logAuditAction(
+       await logAuditAction(
         req,
         userId,
         username,
         'TENDERS',
         'DELETE',
         id,
-        `Deleted Tender with ID ${id}`
+        `Soft deleted Tender ID ${id}`
       );
 
-      res.status(200).json({ message: 'Tender deleted successfully' });
+      return res.status(200).json({
+        message: 'Tender deleted successfully'
+      });
     } catch (error) {
       console.error('Error deleting tender:', error);
-      res.status(500).json({ message: 'Failed to delete tender' });
+      return res.status(500).json({
+        message: 'Failed to delete tender'
+      });
     }
   } else {
-    res.status(405).json({ message: 'Method not allowed' });
+      return res.status(400).json({
+        message: 'Invalid action'
+      });
+    }
   }
 }

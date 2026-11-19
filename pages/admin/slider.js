@@ -18,7 +18,7 @@ export default function HeroSliderManagement() {
       const response = await fetch('/api/adm/slider');
       if (response.ok) {
         const data = await response.json();
-        setSlides(data);
+        setSlides(data.filter(slide => slide.is_active === 1 || slide.is_active === true));
       }
     } catch (error) {
       console.error('Failed to fetch slides:', error);
@@ -42,14 +42,19 @@ export default function HeroSliderManagement() {
 
     try {
       const response = await fetch(`/api/adm/slider/${id}`, {
-        method: 'DELETE'
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ action: 'delete' }),
       });
 
       if (response.ok) {
         setSlides(slides.filter(slide => slide.id !== id));
         await syncHomeData();
       } else {
-        alert('Failed to delete slide');
+        const error = await response.json().catch(() => ({}));
+        alert(error.message || 'Failed to delete slide');
       }
     } catch (error) {
       console.error('Delete error:', error);
@@ -60,14 +65,14 @@ export default function HeroSliderManagement() {
   const handleFormSubmit = async (formData) => {
     try {
       const url = editingSlide ? `/api/adm/slider/${editingSlide.id}` : '/api/adm/slider';
-      const method = editingSlide ? 'PUT' : 'POST';
+      const payload = editingSlide ? { ...formData, action: 'update' } : formData;
 
       const response = await fetch(url, {
-        method,
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(payload),
       });
 
       if (response.ok) {
@@ -76,7 +81,7 @@ export default function HeroSliderManagement() {
         fetchSlides();
         await syncHomeData();
       } else {
-        const error = await response.json();
+        const error = await response.json().catch(() => ({}));
         alert(error.message || 'Failed to save slide');
       }
     } catch (error) {

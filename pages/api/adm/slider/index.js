@@ -25,7 +25,7 @@ export default async function handler(req, res) {
       res.setHeader('Surrogate-Control', 'no-store');
       
       const [rows] = await pool.query(
-        'SELECT * FROM hero_slides ORDER BY display_order ASC, created_at DESC'
+        'SELECT * FROM hero_slides WHERE is_active = 1 ORDER BY display_order ASC, created_at DESC'
       );
       res.status(200).json(rows);
     } catch (error) {

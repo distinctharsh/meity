@@ -57,79 +57,137 @@ export default async function handler(req, res) {
     return res.status(400).json({ message: 'Valid ID required' });
   }
 
-  if (req.method === 'PUT') {
+  if (req.method === 'POST') {
     try {
       await runMiddleware(req, res, upload.single('file'));
 
-      const section_key = req.body.section_key;
-      const title = req.body.title;
-      const content = req.body.content;
-      const content_type = req.body.content_type;
-      const display_order = req.body.display_order;
-      const is_active = req.body.is_active !== 'false';
-      let file_url = req.body.file_url || null;
-      let file_size = req.body.file_size || null;
-      let file_name = req.body.file_name || null;
+      const action = req.body.action;
 
-      if (req.file) {
-        file_url = `/uploads/about/${req.file.filename}`;
-        file_size = `${(req.file.size / 1024).toFixed(2)} KB`;
-        file_name = req.file.originalname;
+      if (action === 'update') {
+        const {
+          section_key,
+          title,
+          content,
+          content_type,
+          display_order
+        } = req.body;
+
+        const is_active = req.body.is_active === 'true' || req.body.is_active === '1';
+
+        let file_url = req.body.file_url || null;
+        let file_size = req.body.file_size || null;
+        let file_name = req.body.file_name || null;
+
+        if (req.file) {
+          file_url = `/uploads/about/${req.file.filename}`;
+          file_size = `${(req.file.size / 1024).toFixed(2)} KB`;
+          file_name = req.file.originalname;
+        }
+
+        if (!section_key) {
+          return res.status(400).json({
+            message: 'section_key is required'
+          });
+        }
+
+        const [result] = await pool.query(
+          `UPDATE about_content
+          SET section_key = ?,
+              title = ?,
+              content = ?,
+              content_type = ?,
+              display_order = ?,
+              is_active = ?,
+              file_url = ?,
+              file_size = ?,
+              file_name = ?,
+              updated_at = CURRENT_TIMESTAMP
+          WHERE id = ?`,
+          [
+            section_key,
+            title,
+            content,
+            content_type,
+            display_order,
+            is_active,
+            file_url,
+            file_size,
+            file_name,
+            id
+          ]
+        );
+
+        if (result.affectedRows === 0) {
+          return res.status(404).json({
+            message: 'About content not found'
+          });
+        }
+
+        const { userId, username } = getLoggedInUser(req);
+        await logAuditAction(
+          req,
+          userId,
+          username,
+          'ABOUT_MANAGEMENT',
+          'UPDATE',
+          id,
+          `Updated About section ID ${id} (${section_key})`
+        );
+
+        return res.status(200).json({
+          message: 'Updated successfully'
+        });
+
+      } else if (action === 'delete') {
+
+        const [result] = await pool.query(
+          `UPDATE about_content
+          SET is_active = 0,
+              updated_at = CURRENT_TIMESTAMP
+          WHERE id = ? AND is_active != 0`,
+          [id]
+        );
+
+        if (result.affectedRows === 0) {
+          return res.status(404).json({
+            message: 'About content not found or already deleted'
+          });
+        }
+
+        const { userId, username } = getLoggedInUser(req);
+        await logAuditAction(
+          req,
+          userId,
+          username,
+          'ABOUT_MANAGEMENT',
+          'DELETE',
+          id,
+          `Deleted About section with ID ${id}`
+        );
+
+        return res.status(200).json({
+          message: 'Deleted successfully'
+        });
+
+      } else {
+        return res.status(400).json({
+          message: 'Invalid action'
+        });
       }
 
-      if (!section_key) return res.status(400).json({ message: 'section_key is required' });
-
-      const [result] = await pool.query(
-        'UPDATE about_content SET section_key = ?, title = ?, content = ?, content_type = ?, display_order = ?, is_active = ?, file_url = ?, file_size = ?, file_name = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
-        [section_key, title, content, content_type, display_order, is_active, file_url, file_size, file_name, id]
-      );
-
-      if (result.affectedRows === 0) {
-        return res.status(404).json({ message: 'About content not found' });
-      }
-
-      const { userId, username } = getLoggedInUser(req);
-      await logAuditAction(
-        req,
-        userId,
-        username,
-        'ABOUT_MANAGEMENT',
-        'UPDATE',
-        id,
-        `Updated About section ID ${id} (${section_key})`
-      );
-
-      return res.status(200).json({ message: 'Updated successfully' });
     } catch (e) {
       console.error('Update about_content error', e);
+
       if (e.code === 'ER_DUP_ENTRY') {
-        return res.status(400).json({ message: 'section_key already exists' });
-      }
-      return res.status(500).json({ message: 'Internal server error', error: e.message });
-    }
-  } else if (req.method === 'DELETE') {
-    try {
-      const [result] = await pool.query('DELETE FROM about_content WHERE id = ?', [id]);
-
-      if (result.affectedRows === 0) {
-        return res.status(404).json({ message: 'About content not found' });
+        return res.status(400).json({
+          message: 'section_key already exists'
+        });
       }
 
-      const { userId, username } = getLoggedInUser(req);
-      await logAuditAction(
-        req,
-        userId,
-        username,
-        'ABOUT_MANAGEMENT',
-        'DELETE',
-        id,
-        `Deleted About section with ID ${id}`
-      );
-
-      return res.status(200).json({ message: 'Deleted successfully' });
-    } catch (e) {
-      console.error('Delete about_content error', e);
-      return res.status(500).json({ message: 'Internal server error' });
+      return res.status(500).json({
+        message: 'Internal server error',
+        error: e.message
+      });
     }
   }
 

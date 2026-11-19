@@ -42,12 +42,16 @@ export default function WhatsNewManagement() {
     if (!confirm('Are you sure you want to delete this what\'s new item?')) return;
 
     try {
-      const response = await fetch(`/api/adm/whats-new?id=${id}`, {
-        method: 'DELETE'
+      const response = await fetch('/api/adm/whats-new', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id, action: 'delete' }),
       });
 
       if (response.ok) {
-        setItems(items.filter(item => item.id !== id));
+        fetchItems();
         await syncHomeData(); 
       } else {
         alert('Failed to delete what\'s new item');
@@ -60,17 +64,14 @@ export default function WhatsNewManagement() {
 
   const handleFormSubmit = async (formData) => {
     try {
-      const apiUrl = editingItem 
-        ? '/api/adm/whats-new' 
-        : '/api/adm/whats-new';
-      
-      const method = editingItem ? 'PUT' : 'POST';
-      const payload = editingItem 
-        ? { ...formData, id: editingItem.id }
-        : formData;
+      const apiUrl = '/api/adm/whats-new';
+
+      const payload = editingItem
+        ? { ...formData, id: editingItem.id, action: 'update' }
+        : { ...formData, action: 'create' };
 
       const response = await fetch(apiUrl, {
-        method,
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -81,7 +82,7 @@ export default function WhatsNewManagement() {
         setShowForm(false);
         setEditingItem(null);
         fetchItems();
-        await syncHomeData(); 
+        await syncHomeData();
       } else {
         const error = await response.json();
         alert(error.message || 'Failed to save what\'s new item');
@@ -95,7 +96,7 @@ export default function WhatsNewManagement() {
   const toggleActive = async (id, isActive) => {
     try {
       const response = await fetch('/api/adm/whats-new', {
-        method: 'PUT',
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },

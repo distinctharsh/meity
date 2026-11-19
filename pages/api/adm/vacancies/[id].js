@@ -47,68 +47,76 @@ export default async function handler(req, res) {
       console.error('Error fetching vacancy:', error);
       res.status(500).json({ message: 'Internal server error' });
     }
-  } else if (req.method === 'PUT') {
-    try {
-      const { title, description, published_date, file_name, file_size, is_active } = req.body;
+  } else if (req.method === 'POST') {
+    const { action } = req.body;
 
-      const [result] = await pool.query(`
-        UPDATE vacancies_tenders 
-        SET title = COALESCE(?, title),
-            description = COALESCE(?, description),
-            published_date = COALESCE(?, published_date),
-            file_name = COALESCE(?, file_name),
-            file_size = COALESCE(?, file_size),
-            is_active = COALESCE(?, is_active),
-            updated_at = NOW()
-        WHERE id = ? AND type = 'vacancy'
-      `, [title, description, published_date, file_name, file_size, is_active, id]);
+    if (action === 'update') {
+      try {
+        const { title, description, published_date, due_date, file_name, file_size, is_active } = req.body;
 
-      if (result.affectedRows === 0) {
-        return res.status(404).json({ message: 'Vacancy not found' });
+        const [result] = await pool.query(`
+          UPDATE vacancies_tenders
+          SET title = COALESCE(?, title),
+              description = COALESCE(?, description),
+              published_date = COALESCE(?, published_date),
+              due_date = COALESCE(?, due_date),
+              file_name = COALESCE(?, file_name),
+              file_size = COALESCE(?, file_size),
+              is_active = COALESCE(?, is_active),
+              updated_at = NOW()
+          WHERE id = ? AND type = 'vacancy'
+        `, [title, description, published_date, due_date, file_name, file_size, is_active, id]);
+
+        if (result.affectedRows === 0) {
+          return res.status(404).json({ message: 'Vacancy not found' });
+        }
+
+        const { userId, username } = getLoggedInUser(req);
+        await logAuditAction(
+          req,
+          userId,
+          username,
+          'VACANCIES',
+          'UPDATE',
+          id,
+          `Updated Vacancy ID ${id}`
+        );
+
+        res.status(200).json({ message: 'Vacancy updated successfully' });
+      } catch (error) {
+        console.error('Error updating vacancy:', error);
+        res.status(500).json({ message: 'Failed to update vacancy' });
       }
+    } else if (action === 'delete') {
+      try {
+        const [result] = await pool.query(`
+          UPDATE vacancies_tenders
+          SET is_active = 0
+          WHERE id = ? AND type = 'vacancy'
+        `, [id]);
 
-      const { userId, username } = getLoggedInUser(req);
-      await logAuditAction(
-        req,
-        userId,
-        username,
-        'VACANCIES',
-        'UPDATE',
-        id,
-        `Updated Vacancy ID ${id}`
-      );
+        if (result.affectedRows === 0) {
+          return res.status(404).json({ message: 'Vacancy not found' });
+        }
 
-      res.status(200).json({ message: 'Vacancy updated successfully' });
-    } catch (error) {
-      console.error('Error updating vacancy:', error);
-      res.status(500).json({ message: 'Failed to update vacancy' });
-    }
-  } else if (req.method === 'DELETE') {
-    try {
-      const [result] = await pool.query(`
-        DELETE FROM vacancies_tenders 
-        WHERE id = ? AND type = 'vacancy'
-      `, [id]);
+        const { userId, username } = getLoggedInUser(req);
+        await logAuditAction(
+          req,
+          userId,
+          username,
+          'VACANCIES',
+          'DELETE',
+          id,
+          `Deleted Vacancy with ID ${id}`
+        );
 
-      if (result.affectedRows === 0) {
-        return res.status(404).json({ message: 'Vacancy not found' });
+        res.status(200).json({ message: 'Vacancy deleted successfully' });
+      } catch (error) {
+        console.error('Error deleting vacancy:', error);
+        res.status(500).json({ message: 'Failed to delete vacancy' });
       }
-
-      const { userId, username } = getLoggedInUser(req);
-      await logAuditAction(
-        req,
-        userId,
-        username,
-        'VACANCIES',
-        'DELETE',
-        id,
-        `Deleted Vacancy with ID ${id}`
-      );
-
-      res.status(200).json({ message: 'Vacancy deleted successfully' });
-    } catch (error) {
-      console.error('Error deleting vacancy:', error);
-      res.status(500).json({ message: 'Failed to delete vacancy' });
+    } else {
+      res.status(400).json({ message: 'Invalid action. Use action=update or action=delete' });
     }
   } else {
     res.status(405).json({ message: 'Method not allowed' });

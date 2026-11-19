@@ -42,8 +42,10 @@ export default function PartnerLogosManagement() {
     if (!confirm('Are you sure you want to delete this partner logo?')) return;
 
     try {
-      const response = await fetch(`/api/adm/partner-logos?id=${id}`, {
-        method: 'DELETE'
+      const response = await fetch('/api/adm/partner-logos', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, action: 'delete' })
       });
 
       if (response.ok) {
@@ -61,13 +63,12 @@ export default function PartnerLogosManagement() {
   const handleFormSubmit = async (formData) => {
     try {
       const apiUrl = '/api/adm/partner-logos';
-      const method = editingLogo ? 'PUT' : 'POST';
-      const payload = editingLogo 
-        ? { ...formData, id: editingLogo.id }
-        : formData;
+      const payload = editingLogo
+        ? { ...formData, id: editingLogo.id, action: 'update' }
+        : { ...formData, action: 'create' };
 
       const response = await fetch(apiUrl, {
-        method,
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -92,13 +93,14 @@ export default function PartnerLogosManagement() {
   const toggleActive = async (id, isActive) => {
     try {
       const response = await fetch('/api/adm/partner-logos', {
-        method: 'PUT',
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ 
-          id, 
-          is_active: !isActive 
+        body: JSON.stringify({
+          id,
+          is_active: !isActive,
+          action: 'toggle'
         }),
       });
 
@@ -114,50 +116,44 @@ export default function PartnerLogosManagement() {
     }
   };
 
-  const moveLogo = async (id, direction) => {
-    const currentIndex = logos.findIndex(logo => logo.id === id);
-    if (currentIndex === -1) return;
+  
+const moveLogo = async (id, direction) => {
+  const currentLogo = logos.find(logo => logo.id === id);
+  if (!currentLogo) return;
 
-    let newIndex;
-    if (direction === 'up') {
-      newIndex = currentIndex > 0 ? currentIndex - 1 : logos.length - 1;
-    } else {
-      newIndex = currentIndex < logos.length - 1 ? currentIndex + 1 : 0;
-    }
+  let newOrder = Number(currentLogo.display_order);
 
-    const currentLogo = logos[currentIndex];
-    const targetLogo = logos[newIndex];
+  if (direction === 'up') {
+    if (newOrder === 0) return;
+    newOrder -= 1;
+  } else {
+    newOrder += 1;
+  }
 
-    try {
-      await fetch('/api/adm/partner-logos', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ 
-          id: currentLogo.id, 
-          display_order: targetLogo.display_order 
-        }),
-      });
+  try {
+    const response = await fetch('/api/adm/partner-logos', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        id: currentLogo.id,
+        display_order: newOrder
+      }),
+    });
 
-      await fetch('/api/adm/partner-logos', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ 
-          id: targetLogo.id, 
-          display_order: currentLogo.display_order 
-        }),
-      });
-
-      fetchLogos();
+    if (response.ok) {
+      await fetchLogos();
       await syncHomeData();
-    } catch (error) {
-      console.error('Move error:', error);
-      alert('Failed to reorder logos');
+    } else {
+      const error = await response.json();
+      alert(error.message || 'Failed to reorder logos');
     }
-  };
+  } catch (error) {
+    console.error('Move error:', error);
+    alert('Failed to reorder logos');
+  }
+};
 
   if (loading) {
     return (

@@ -67,10 +67,13 @@ export default function AnnouncementsManagement() {
     if (!confirm('Are you sure you want to delete this announcement?')) return;
 
     try {
-      const response = await fetch(`/api/adm/announcements/${id}`, {
-        method: 'DELETE'
-      });
-
+       const response = await fetch(`/api/adm/announcements/${id}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ action: 'delete' }),
+        });
       if (response.ok) {
         setAnnouncements(announcements.filter(announcement => announcement.id !== id));
         await syncHomeData();
@@ -99,18 +102,18 @@ export default function AnnouncementsManagement() {
     }
   };
 
-  const handleFormSubmit = async (formData) => {
-    try {
-      const url = editingAnnouncement ? `/api/adm/announcements/${editingAnnouncement.id}` : '/api/adm/announcements';
-      const method = editingAnnouncement ? 'PUT' : 'POST';
+    const handleFormSubmit = async (formData) => {
+      try {
+        const url = editingAnnouncement ? `/api/adm/announcements/${editingAnnouncement.id}` : '/api/adm/announcements';
+        const payload = editingAnnouncement ? { ...formData, action: 'update' } : formData;
 
-      const response = await fetch(url, {
-        method,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(payload),
+        });
 
       if (response.ok) {
         setShowForm(false);

@@ -24,12 +24,8 @@ async function handler(req, res) {
         return await handleGet(req, res);
       case 'POST':
         return await handlePost(req, res);
-      case 'PUT':
-        return await handlePut(req, res);
-      case 'DELETE':
-        return await handleDelete(req, res);
       default:
-        res.setHeader('Allow', ['GET', 'POST', 'PUT', 'DELETE']);
+        res.setHeader('Allow', ['GET', 'POST']);
         return res.status(405).json({ message: 'Method not allowed' });
     }
   } catch (error) {
@@ -54,19 +50,101 @@ async function handleGet(req, res) {
 
 async function handlePost(req, res) {
   try {
-    const { 
-      title, 
-      url, 
-      file_path,
-      link_type = 'url',
-      is_active = 1 
-    } = req.body;
+    const { action, id, title, url, file_path, link_type = 'url', is_active = 1 } = req.body;
 
+    // Soft Delete
+    if (action === 'delete') {
+      if (!id) {
+        return res.status(400).json({ message: 'Item ID is required' });
+      }
+
+      const [result] = await pool.query(
+        'UPDATE important_links SET is_active = 0, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
+        [id]
+      );
+
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ message: 'Important link not found' });
+      }
+
+      const { userId, username } = getLoggedInUser(req);
+      await logAuditAction(req, userId, username, 'IMPORTANT_LINKS', 'DELETE', id,
+        `Deactivated Important Link ID ${id}`);
+
+      return res.status(200).json({ message: 'Important link deactivated successfully' });
+    }
+
+    // Toggle Status
+    if (action === 'toggle') {
+      const [result] = await pool.query(
+        'UPDATE important_links SET is_active = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
+        [is_active ? 1 : 0, id]
+      );
+
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ message: 'Important link not found' });
+      }
+
+      return res.status(200).json({ message: 'Status updated successfully' });
+    }
+
+    // Update
+    if (action === 'update') {
+      if (!id) {
+        return res.status(400).json({ message: 'Item ID is required' });
+      }
+
+      const updates = [];
+      const values = [];
+
+      if (title !== undefined) {
+        updates.push('title = ?');
+        values.push(title);
+      }
+      if (url !== undefined) {
+        updates.push('url = ?');
+        values.push(url);
+      }
+      if (file_path !== undefined) {
+        updates.push('file_path = ?');
+        values.push(file_path);
+      }
+      if (link_type !== undefined) {
+        updates.push('link_type = ?');
+        values.push(link_type);
+      }
+      if (is_active !== undefined) {
+        updates.push('is_active = ?');
+        values.push(is_active);
+      }
+
+      if (!updates.length) {
+        return res.status(400).json({ message: 'No fields to update' });
+      }
+
+      values.push(id);
+
+      const [result] = await pool.query(
+        `UPDATE important_links SET ${updates.join(', ')}, updated_at = CURRENT_TIMESTAMP WHERE id = ?`,
+        values
+      );
+
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ message: 'Important link not found' });
+      }
+
+      const { userId, username } = getLoggedInUser(req);
+      await logAuditAction(req, userId, username, 'IMPORTANT_LINKS', 'UPDATE', id,
+        `Updated Important Link ID ${id}`);
+
+      return res.status(200).json({ message: 'Important link updated successfully' });
+    }
+
+    // Create
     if (!title) {
       return res.status(400).json({ message: 'Title is required' });
     }
 
-    // Validate based on link type
     if (link_type === 'url' && !url) {
       return res.status(400).json({ message: 'URL is required for external links' });
     }
@@ -75,10 +153,11 @@ async function handlePost(req, res) {
       return res.status(400).json({ message: 'File upload is required for file links' });
     }
 
-    // Get the maximum display_order and increment by 1
-    const [maxOrderResult] = await pool.query('SELECT MAX(display_order) as max_order FROM important_links');
-    const maxOrder = maxOrderResult[0].max_order || 0;
-    const newDisplayOrder = maxOrder + 1;
+    const [maxOrderResult] = await pool.query(
+      'SELECT MAX(display_order) as max_order FROM important_links'
+    );
+
+    const newDisplayOrder = (maxOrderResult[0].max_order || 0) + 1;
 
     const [result] = await pool.query(
       'INSERT INTO important_links (title, url, file_path, link_type, display_order, is_active) VALUES (?, ?, ?, ?, ?, ?)',
@@ -86,122 +165,16 @@ async function handlePost(req, res) {
     );
 
     const { userId, username } = getLoggedInUser(req);
-    await logAuditAction(
-      req,
-      userId,
-      username,
-      'IMPORTANT_LINKS',
-      'CREATE',
-      result.insertId,
-      `Created Important Link: "${title}" (ID: ${result.insertId})`
-    );
+    await logAuditAction(req, userId, username, 'IMPORTANT_LINKS', 'CREATE', result.insertId,
+      `Created Important Link: "${title}" (ID: ${result.insertId})`);
 
-    return res.status(201).json({ 
+    return res.status(201).json({
       message: 'Important link created successfully',
-      id: result.insertId 
+      id: result.insertId
     });
   } catch (error) {
-    console.error('Error creating important link:', error);
-    return res.status(500).json({ message: 'Failed to create important link' });
-  }
-}
-
-async function handlePut(req, res) {
-  try {
-    const { id, title, url, file_path, link_type, is_active } = req.body;
-
-    if (!id) {
-      return res.status(400).json({ message: 'Item ID is required' });
-    }
-
-    // Build dynamic update query
-    const updates = [];
-    const values = [];
-
-    if (title !== undefined) {
-      updates.push('title = ?');
-      values.push(title);
-    }
-    if (url !== undefined) {
-      updates.push('url = ?');
-      values.push(url);
-    }
-    if (file_path !== undefined) {
-      updates.push('file_path = ?');
-      values.push(file_path);
-    }
-    if (link_type !== undefined) {
-      updates.push('link_type = ?');
-      values.push(link_type);
-    }
-    if (is_active !== undefined) {
-      updates.push('is_active = ?');
-      values.push(is_active);
-    }
-
-    if (updates.length === 0) {
-      return res.status(400).json({ message: 'No fields to update' });
-    }
-
-    values.push(id);
-
-    const [result] = await pool.query(`
-      UPDATE important_links 
-      SET ${updates.join(', ')}, updated_at = CURRENT_TIMESTAMP
-      WHERE id = ?
-    `, values);
-
-    if (result.affectedRows === 0) {
-      return res.status(404).json({ message: 'Important link not found' });
-    }
-
-    const { userId, username } = getLoggedInUser(req);
-    await logAuditAction(
-      req,
-      userId,
-      username,
-      'IMPORTANT_LINKS',
-      'UPDATE',
-      id,
-      `Updated Important Link ID ${id}`
-    );
-
-    return res.status(200).json({ message: 'Important link updated successfully' });
-  } catch (error) {
-    console.error('Error updating important link:', error);
-    return res.status(500).json({ message: 'Failed to update important link' });
-  }
-}
-
-async function handleDelete(req, res) {
-  try {
-    const { id } = req.query;
-
-    if (!id) {
-      return res.status(400).json({ message: 'Item ID is required' });
-    }
-
-    const [result] = await pool.query('DELETE FROM important_links WHERE id = ?', [id]);
-
-    if (result.affectedRows === 0) {
-      return res.status(404).json({ message: 'Important link not found' });
-    }
-
-    const { userId, username } = getLoggedInUser(req);
-    await logAuditAction(
-      req,
-      userId,
-      username,
-      'IMPORTANT_LINKS',
-      'DELETE',
-      id,
-      `Deleted Important Link with ID ${id}`
-    );
-
-    return res.status(200).json({ message: 'Important link deleted successfully' });
-  } catch (error) {
-    console.error('Error deleting important link:', error);
-    return res.status(500).json({ message: 'Failed to delete important link' });
+    console.error('Error processing important link:', error);
+    return res.status(500).json({ message: 'Failed to process important link' });
   }
 }
 

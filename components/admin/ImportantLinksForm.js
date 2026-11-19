@@ -61,7 +61,9 @@ export default function ImportantLinksForm({ link, onSubmit, onCancel }) {
       });
 
       if (!response.ok) {
-        throw new Error('Upload failed');
+        const errorData = await response.json().catch(() => ({}));
+        console.error('Upload failed:', errorData);
+        return;
       }
 
       const result = await response.json();

@@ -24,12 +24,8 @@ async function handler(req, res) {
         return await handleGet(req, res);
       case 'POST':
         return await handlePost(req, res);
-      case 'PUT':
-        return await handlePut(req, res);
-      case 'DELETE':
-        return await handleDelete(req, res);
       default:
-        res.setHeader('Allow', ['GET', 'POST', 'PUT', 'DELETE']);
+        res.setHeader('Allow', ['GET', 'POST']);
         return res.status(405).json({ message: 'Method not allowed' });
     }
   } catch (error) {
@@ -54,38 +50,103 @@ async function handleGet(req, res) {
 
 async function handlePost(req, res) {
   try {
-    const { title, image_url, alt_text, external_link, display_order = 0, is_active = 1 } = req.body;
+    const { id, title, image_url, alt_text, external_link, display_order, is_active, action } = req.body;
 
+    // DELETE using POST
+    if (action === 'delete') {
+      if (!id) {
+        return res.status(400).json({ message: 'Logo ID is required' });
+      }
+
+      const [result] = await pool.query(
+        'DELETE FROM partner_logos WHERE id = ?',
+        [id]
+      );
+
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ message: 'Partner logo not found' });
+      }
+
+      const { userId, username } = getLoggedInUser(req);
+      await logAuditAction(req, userId, username, 'PARTNER_LOGOS', 'DELETE', id, `Deleted Partner Logo ID ${id}`);
+
+      return res.status(200).json({ message: 'Partner logo deleted successfully' });
+    }
+
+    // UPDATE using POST
+    if (id) {
+      const updates = [];
+      const values = [];
+
+      if (title !== undefined) {
+        updates.push('title = ?');
+        values.push(title);
+      }
+      if (image_url !== undefined) {
+        updates.push('image_url = ?');
+        values.push(image_url);
+      }
+      if (alt_text !== undefined) {
+        updates.push('alt_text = ?');
+        values.push(alt_text);
+      }
+      if (external_link !== undefined) {
+        updates.push('external_link = ?');
+        values.push(external_link);
+      }
+      if (display_order !== undefined) {
+        updates.push('display_order = ?');
+        values.push(display_order);
+      }
+      if (is_active !== undefined) {
+        updates.push('is_active = ?');
+        values.push(is_active);
+      }
+
+      if (updates.length === 0) {
+        return res.status(400).json({ message: 'No fields to update' });
+      }
+
+      values.push(id);
+
+      const [result] = await pool.query(
+        `UPDATE partner_logos SET ${updates.join(', ')}, updated_at = CURRENT_TIMESTAMP WHERE id = ?`,
+        values
+      );
+
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ message: 'Partner logo not found' });
+      }
+
+      const { userId, username } = getLoggedInUser(req);
+      await logAuditAction(req, userId, username, 'PARTNER_LOGOS', 'UPDATE', id, `Updated Partner Logo ID ${id}`);
+
+      return res.status(200).json({ message: 'Partner logo updated successfully' });
+    }
+
+    // CREATE using POST
     if (!image_url) {
       return res.status(400).json({ message: 'Image URL is required' });
     }
 
     const [result] = await pool.query(
       'INSERT INTO partner_logos (title, image_url, alt_text, external_link, display_order, is_active) VALUES (?, ?, ?, ?, ?, ?)',
-      [title || null, image_url, alt_text || null, external_link || null, display_order, is_active]
+      [title || null, image_url, alt_text || null, external_link || null, display_order ?? 0, is_active ?? 1]
     );
 
     const { userId, username } = getLoggedInUser(req);
-    await logAuditAction(
-      req,
-      userId,
-      username,
-      'PARTNER_LOGOS',
-      'CREATE',
-      result.insertId,
-      `Created Partner Logo: "${title || 'Untitled'}" (ID: ${result.insertId})`
-    );
+    await logAuditAction(req, userId, username, 'PARTNER_LOGOS', 'CREATE', result.insertId, `Created Partner Logo ID ${result.insertId}`);
 
-    return res.status(201).json({ 
+    return res.status(201).json({
       message: 'Partner logo created successfully',
-      id: result.insertId 
+      id: result.insertId
     });
+
   } catch (error) {
-    console.error('Error creating partner logo:', error);
-    return res.status(500).json({ message: 'Failed to create partner logo' });
+    console.error('Partner logo POST error:', error);
+    return res.status(500).json({ message: 'Failed to process partner logo request' });
   }
 }
-
 async function handlePut(req, res) {
   try {
     const { id, title, image_url, alt_text, external_link, display_order, is_active } = req.body;

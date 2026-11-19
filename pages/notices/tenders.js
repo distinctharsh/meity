@@ -33,10 +33,12 @@ export default function Tenders() {
           tender_id: item.tender_id || "",
           title: item.title || "",
           description: item.description || "",
-          published_date: item.published_date,
-          due_date: item.due_date || item.closing_date,
+          published_date: item.published_date || "",
+          due_date: item.due_date || item.closing_date || "",
           file_url: item.file_name
-            ? `/uploads/tenders/${item.file_name}`
+            ? (item.file_name.startsWith('/')
+                ? item.file_name
+                : `/report_document/tenders/${item.file_name}`)
             : null,
           file_size: item.file_size || item.size || "-",
         }));

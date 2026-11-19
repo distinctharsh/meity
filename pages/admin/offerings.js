@@ -59,40 +59,54 @@ export default function OfferingsManagement() {
 
   const handleDelete = async (id) => {
     const itemType = activeTab === 'vacancies' ? 'vacancy' : 'tender';
-    if (!confirm(`Are you sure you want to permanently delete this ${itemType}?`)) return;
+    if (!confirm(`Are you sure you want to delete this ${itemType}?`)) return;
 
     try {
-      let apiUrl = activeTab === 'vacancies' ? `/api/adm/vacancies/${id}` : `/api/adm/tenders/${id}`;
-      
+      const apiUrl = activeTab === 'vacancies'
+        ? `/api/adm/vacancies/${id}`
+        : `/api/adm/tenders/${id}`;
+
       const response = await fetch(apiUrl, {
-        method: 'DELETE'
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          action: 'delete',
+        }),
       });
 
       if (response.ok) {
-        setOfferings(offerings.filter(item => item.id !== id));
+        fetchOfferings();
       } else {
-        alert(`Failed to delete ${itemType}`);
+        const error = await response.json();
+        console.error('Delete failed:', error);
       }
     } catch (error) {
       console.error('Delete error:', error);
-      alert(`Failed to delete ${itemType}`);
     }
   };
 
   const handleFormSubmit = async (formData) => {
     try {
-      let apiUrl = activeTab === 'vacancies' 
-        ? (editingOffering ? `/api/adm/vacancies/${editingOffering.id}` : '/api/adm/vacancies')
-        : (editingOffering ? `/api/adm/tenders/${editingOffering.id}` : '/api/adm/tenders');
-      
-      const method = editingOffering ? 'PUT' : 'POST';
+      const apiUrl = activeTab === 'vacancies'
+        ? (editingOffering
+            ? `/api/adm/vacancies/${editingOffering.id}`
+            : '/api/adm/vacancies')
+        : (editingOffering
+            ? `/api/adm/tenders/${editingOffering.id}`
+            : '/api/adm/tenders');
+
+      const payload = editingOffering
+        ? { ...formData, action: 'update' }
+        : formData;
 
       const response = await fetch(apiUrl, {
-        method,
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(payload),
       });
 
       if (response.ok) {
@@ -101,33 +115,39 @@ export default function OfferingsManagement() {
         fetchOfferings();
       } else {
         const error = await response.json();
-        alert(error.message || 'Failed to save item');
+        console.error('Save failed:', error);
       }
     } catch (error) {
       console.error('Save error:', error);
-      alert('Failed to save item');
     }
   };
 
   // Central status update logic (0, 1, 2 handler)
   const updateStatus = async (id, targetStatus) => {
     try {
-      let apiUrl = activeTab === 'vacancies' ? `/api/adm/vacancies/${id}` : `/api/adm/tenders/${id}`;
-      
+      const apiUrl = activeTab === 'vacancies'
+        ? `/api/adm/vacancies/${id}`
+        : `/api/adm/tenders/${id}`;
+
       const response = await fetch(apiUrl, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ is_active: targetStatus }),
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          action: 'update',
+          is_active: targetStatus,
+        }),
       });
 
       if (response.ok) {
         fetchOfferings();
       } else {
-        alert('Failed to update status');
+        const error = await response.json();
+        console.error('Status update failed:', error);
       }
     } catch (error) {
       console.error('Status update error:', error);
-      alert('Failed to update status');
     }
   };
 
@@ -216,13 +236,13 @@ export default function OfferingsManagement() {
             <thead className="bg-gray-50">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
-                {(activeTab === 'vacancies' || activeTab === 'tenders') && (
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                     {activeTab === 'vacancies'
-                  ? 'Published Date'
-                  : 'Published / Due Date'}
-                  </th>
-                )}
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Published Date
+                </th>
+
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Due Date
+                </th>
                 <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-24">Status</th>
                 <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider w-40">Actions</th>
               </tr>
@@ -230,7 +250,7 @@ export default function OfferingsManagement() {
             <tbody className="bg-white divide-y divide-gray-200">
               {offerings.length === 0 ? (
                 <tr>
-                  <td colSpan={4} className="px-6 py-4 text-center text-sm text-gray-500">
+                  <td colSpan={5} className="px-6 py-4 text-center text-sm text-gray-500">
                     {activeTab === 'vacancies' ? 'No vacancies found. Click the "+" button to add a new vacancy.' :
                      'No tenders found. Click the "+" button to add a new tender.'}
                   </td>
@@ -251,26 +271,19 @@ export default function OfferingsManagement() {
                           </div>
                         </div>
                       </td>
-                      {(activeTab === 'vacancies' || activeTab === 'tenders') && (
-                         <td className="p-2 text-sm">
-                            {activeTab === 'vacancies' && (
-                              item.published_date
-                                ? new Date(item.published_date).toLocaleDateString('en-IN')
-                                : 'No date'
-                            )}
+                      {/* Published Date */}
+                      <td className="px-6 py-4 text-sm text-gray-700">
+                        {item.published_date
+                          ? new Date(item.published_date).toLocaleDateString('en-IN')
+                          : 'No date'}
+                      </td>
 
-                            {activeTab === 'tenders' && (
-                              <>
-                                {item.published_date && (
-                                  <div>Published: {new Date(item.published_date).toLocaleDateString('en-IN')}</div>
-                                )}
-                                {item.due_date && (
-                                  <div>Due: {new Date(item.due_date).toLocaleDateString('en-IN')}</div>
-                                )}
-                              </>
-                            )}
-                          </td>
-                      )}
+                      {/* Due Date */}
+                      <td className="px-6 py-4 text-sm text-gray-700">
+                        {item.due_date
+                          ? new Date(item.due_date).toLocaleDateString('en-IN')
+                          : 'No due date'}
+                      </td>
                       <td className="px-6 py-4 text-center">
                         <span
                           className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${

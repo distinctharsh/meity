@@ -65,16 +65,15 @@ const OfferingForm = ({ offering, onSubmit, onCancel, tabType = 'schemes' }) => 
           body: formDataToUpload
         });
         
-        if (uploadResponse.ok) {
-          const uploadResult = await uploadResponse.json();
-          // Extract just the filename from the full path for DB storage
-          const fullPath = uploadResult.filePath || uploadResult.url || '';
-          const pathParts = fullPath.split('/');
-          formData.file_name = pathParts[pathParts.length - 1] || '';
-          formData.file_size = uploadResult.fileSize;
-        } else {
-          throw new Error('File upload failed');
+        const uploadResult = await uploadResponse.json();
+
+        if (!uploadResponse.ok) {
+          console.error('Upload API Error:', uploadResult);
+          return;
         }
+
+        formData.file_name = uploadResult.filePath;
+        formData.file_size = uploadResult.fileSize;
         
         setUploading(false);
       }
@@ -172,8 +171,8 @@ const OfferingForm = ({ offering, onSubmit, onCancel, tabType = 'schemes' }) => 
           </div>
         )}
 
-        {/* Due Date - only for tenders */}
-        {tabType === 'tenders' && (
+        {/* Due Date - for vacancies and tenders */}
+        {(tabType === 'vacancies' || tabType === 'tenders') && (
           <div className="sm:col-span-2 md:col-span-1">
             <label htmlFor="due_date" className="block text-sm font-medium text-gray-700">
               Due Date

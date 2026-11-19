@@ -39,22 +39,26 @@ export default function ImportantLinksManagement() {
   };
 
   const handleDelete = async (id) => {
-    if (!confirm('Are you sure you want to delete this important link?')) return;
+    if (!confirm('Are you sure you want to deactivate this important link?')) return;
 
     try {
-      const response = await fetch(`/api/adm/important-links?id=${id}`, {
-        method: 'DELETE'
+      const response = await fetch('/api/adm/important-links', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id, action: 'delete' }),
       });
 
       if (response.ok) {
-        setLinks(links.filter(link => link.id !== id));
-        await syncHomeData(); 
+        fetchLinks();
+        await syncHomeData();
       } else {
-        alert('Failed to delete important link');
+        alert('Failed to deactivate important link');
       }
     } catch (error) {
-      console.error('Delete error:', error);
-      alert('Failed to delete important link');
+      console.error('Deactivate error:', error);
+      alert('Failed to deactivate important link');
     }
   };
 
@@ -64,10 +68,10 @@ export default function ImportantLinksManagement() {
         ? '/api/adm/important-links' 
         : '/api/adm/important-links';
       
-      const method = editingLink ? 'PUT' : 'POST';
-      const payload = editingLink 
-        ? { ...formData, id: editingLink.id }
-        : formData;
+      const method = 'POST';
+      const payload = editingLink
+        ? { ...formData, id: editingLink.id, action: 'update' }
+        : { ...formData, action: 'create' };
 
       const response = await fetch(apiUrl, {
         method,
@@ -95,13 +99,14 @@ export default function ImportantLinksManagement() {
   const toggleActive = async (id, isActive) => {
     try {
       const response = await fetch('/api/adm/important-links', {
-        method: 'PUT',
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ 
-          id, 
-          is_active: !isActive 
+        body: JSON.stringify({
+          id,
+          is_active: !isActive,
+          action: 'toggle'
         }),
       });
 

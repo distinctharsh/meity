@@ -300,12 +300,12 @@ export default async function handler(req, res) {
     // ==========================================
     // TYPE DIRECTORY
     // ==========================================
-    const type =
+    const type = 
       Array.isArray(fields.type)
         ? fields.type[0]
         : fields.type || 'general';
 
-    /*
+        /*
      * IMPORTANT:
      * Do not allow arbitrary path characters from
      * the client to become part of uploadDir.
@@ -313,40 +313,32 @@ export default async function handler(req, res) {
      * Keep this allowlist synchronized with the
      * directories your application actually needs.
      */
-    const safeType =
+    const safeType = 
       String(type).replace(/[^a-zA-Z0-9_-]/g, '');
 
-    if (!safeType) {
-      await fs.promises.unlink(tempPath).catch(() => {});
+    // Vacancies / Tenders separate directory
+    const isOffering = ['vacancies', 'tenders'].includes(safeType);
 
-      return res.status(400).json({
-        error: 'Invalid upload type.',
-      });
-    }
+    const language = process.env.NEXT_PUBLIC_LANGUAGE === '1'
+    ? 'english'
+    : 'hindi';
 
-    // ==========================================
-    // CREATE UPLOAD DIRECTORY
-    // ==========================================
-    const uploadDir = path.join(
-      process.cwd(),
-      'public',
-      'uploads',
-      safeType
-    );
+    const uploadDir = isOffering
+      ? path.join(process.cwd(), 'public', 'report_document', safeType, language)
+      : path.join(process.cwd(), 'public', 'uploads', safeType);
 
+    // Create directory
     ensureDirSync(uploadDir);
 
     // ==========================================
     // SERVER-GENERATED FILE NAME
-    // NEVER TRUST ORIGINAL FILENAME
     // ==========================================
-    const fileName =
-      `${Date.now()}-${Math.random()
-        .toString(36)
-        .slice(2)}${ext}`;
+    const fileName = isOffering
+      ? `${Date.now()}_Upload_${Math.floor(Math.random() * 10000)}${ext}`
+      : `${Date.now()}-${Math.random().toString(36).slice(2)}${ext}`;
 
     const destPath = path.join(
-      uploadDir,
+      uploadDir, 
       fileName
     );
 
@@ -354,7 +346,7 @@ export default async function handler(req, res) {
     // COPY ONLY AFTER ALL VALIDATION
     // ==========================================
     await fs.promises.copyFile(
-      tempPath,
+      tempPath, 
       destPath
     );
 
@@ -370,15 +362,16 @@ export default async function handler(req, res) {
     // ==========================================
     // RESPONSE
     // ==========================================
-    const publicUrl =
-      `/uploads/${safeType}/${fileName}`;
+    const publicUrl = isOffering
+      ? `/report_document/${safeType}/${language}/${fileName}`
+      : `/uploads/${safeType}/${fileName}`;
 
     const fileSize = f.size || 0;
 
-    const fileSizeKB =
+    const fileSizeKB = 
       (fileSize / 1024).toFixed(1);
 
-    const fileSizeDisplay =
+    const fileSizeDisplay = 
       fileSizeKB < 1024
         ? `${fileSizeKB} KB`
         : `${(

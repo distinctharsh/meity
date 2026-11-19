@@ -28,7 +28,14 @@ export default async function handler(req, res) {
       console.error('Error fetching PM quote by ID:', error);
       res.status(500).json({ message: 'Internal server error' });
     }
-  } else if (req.method === 'PUT') {
+  } else if (req.method === 'POST') {
+    const { action } = req.body;
+
+    if (action !== 'update') {
+      return res.status(400).json({
+        message: 'Invalid action'
+      });
+    }
     try {
       const { quote_text, author, image_url, event_url, quote_date } = req.body;
       if (!quote_text || quote_text.toString().trim() === '') {

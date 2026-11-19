@@ -8,6 +8,15 @@ export default async function handler(req, res) {
   try {
     // Ensure table exists with correct schema
     await ensureTable();
+    await pool.query(`
+      UPDATE vacancies_tenders
+      SET is_active = 0,
+          updated_at = NOW()
+      WHERE type = 'vacancy'
+        AND due_date IS NOT NULL
+        AND due_date < CURDATE()
+        AND is_active = 1
+    `);
 
     // Get query parameters
     const { archived } = req.query;

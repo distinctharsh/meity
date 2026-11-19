@@ -110,12 +110,16 @@ export default function AdminDirectoryPage() {
 
   const onDelete = async (id) => {
     if (!confirm("Delete this entry?")) return;
-    const r = await fetch(`/api/adm/directory/${id}`, { 
+    const r = await fetch(`/api/adm/directory/${id}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ _action: "DELETE" })
     });
-    if (r.ok) await load();
+    if (!r.ok) {
+      alert("Delete failed");
+    } else {
+      await load();
+    }
   };
   const onSaved = async () => { setShowForm(false); setEditing(null); await load(); };
 

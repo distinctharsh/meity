@@ -1,54 +1,36 @@
 {
   "slides": [
     {
-      "id": 30,
-      "image_url": "/uploads/general/1794572190641-xkitekjd0ai.jpg",
+      "id": 17,
+      "image_url": "/uploads/media/1791821239903_9r0qtw.jpeg",
       "link_url": "",
       "display_order": 0,
       "is_active": 1,
-      "created_at": "2026-11-13T12:16:37.000Z",
-      "updated_at": "2026-11-13T12:16:37.000Z"
-    },
-    {
-      "id": 15,
-      "image_url": "/uploads/media/1791821213494_y20t6r.jpg",
-      "link_url": "",
-      "display_order": 1,
-      "is_active": 1,
-      "created_at": "2026-10-12T16:06:57.000Z",
-      "updated_at": "2026-10-12T16:07:03.000Z"
+      "created_at": "2026-10-12T16:07:24.000Z",
+      "updated_at": "2026-11-18T06:16:57.000Z"
     },
     {
       "id": 16,
       "image_url": "/uploads/media/1791821229697_zndijy.jpeg",
       "link_url": "",
-      "display_order": 2,
+      "display_order": 1,
       "is_active": 1,
       "created_at": "2026-10-12T16:07:14.000Z",
-      "updated_at": "2026-10-12T16:07:14.000Z"
-    },
-    {
-      "id": 17,
-      "image_url": "/uploads/media/1791821239903_9r0qtw.jpeg",
-      "link_url": "",
-      "display_order": 3,
-      "is_active": 1,
-      "created_at": "2026-10-12T16:07:24.000Z",
-      "updated_at": "2026-10-12T16:07:24.000Z"
+      "updated_at": "2026-11-18T06:16:57.000Z"
     }
   ],
   "announcements": [
     {
-      "id": 7,
-      "title": "Test",
-      "link_url": "https://distinctharsh.com",
-      "link_text": "distinctharsh",
+      "id": 8,
+      "title": "test",
+      "link_url": null,
+      "link_text": null,
       "is_active": 1,
-      "start_date": "2026-11-03T18:30:00.000Z",
-      "end_date": "2026-11-12T18:30:00.000Z",
+      "start_date": "2026-11-20T18:30:00.000Z",
+      "end_date": "2026-11-24T18:30:00.000Z",
       "display_order": 0,
-      "created_at": "2026-11-02T11:18:04.000Z",
-      "updated_at": "2026-11-02T11:18:04.000Z"
+      "created_at": "2026-11-18T05:43:35.000Z",
+      "updated_at": "2026-11-18T06:07:05.000Z"
     }
   ],
   "pmQuotes": [
@@ -58,9 +40,9 @@
       "author": "PM’s address on the 17th Civil Services Day",
       "image_url": "/images/pm/pm-modi.jpg",
       "event_url": "https://www.pmindia.gov.in/en/news_updates/pms-address-on-the-17th-civil-services-day/?comment=disable",
-      "quote_date": "2025-04-15T18:30:00.000Z",
+      "quote_date": "2025-04-11T18:30:00.000Z",
       "created_at": "2025-10-14T07:45:11.000Z",
-      "updated_at": "2026-11-02T13:06:15.000Z"
+      "updated_at": "2026-11-18T06:47:01.000Z"
     }
   ],
   "aboutSection": null,
@@ -201,7 +183,7 @@
     },
     {
       "id": 12,
-      "title": "s",
+      "title": "sty",
       "description": null,
       "type": "link",
       "file_url": null,
@@ -209,7 +191,20 @@
       "display_order": 10,
       "is_active": 1,
       "created_at": "2026-11-02T11:49:38.000Z",
-      "updated_at": "2026-11-02T11:49:38.000Z",
+      "updated_at": "2026-11-18T07:19:03.000Z",
+      "is_key_document": 0
+    },
+    {
+      "id": 13,
+      "title": "test",
+      "description": null,
+      "type": "link",
+      "file_url": null,
+      "external_url": "https://distinctharsh.com",
+      "display_order": 11,
+      "is_active": 1,
+      "created_at": "2026-11-18T07:19:24.000Z",
+      "updated_at": "2026-11-18T07:19:24.000Z",
       "is_key_document": 1
     }
   ],
@@ -279,6 +274,17 @@
       "is_active": 1,
       "created_at": "2026-10-12T16:05:52.000Z",
       "updated_at": "2026-10-12T16:05:52.000Z"
+    },
+    {
+      "id": 12,
+      "title": "test",
+      "url": "",
+      "file_path": "/uploads/important-links/b5ccbc68188ba4d14bff3a480598300f50192d50890d0044d07a11837974faa8.pdf",
+      "link_type": "file",
+      "display_order": 7,
+      "is_active": 1,
+      "created_at": "2026-11-18T09:08:05.000Z",
+      "updated_at": "2026-11-18T09:08:25.000Z"
     }
   ],
   "recentDocs": [
@@ -313,15 +319,15 @@
   ],
   "partnerLogos": [
     {
-      "id": 1,
+      "id": 2,
       "title": "",
-      "image_url": "/uploads/media/1778068414059_vxjcco.jpg",
-      "alt_text": "pm",
-      "external_link": "https://www.pmindia.gov.in/en/",
+      "image_url": "/uploads/media/1778068572833_41lxg2.jpg",
+      "alt_text": "Data Gov.in",
+      "external_link": "https://www.data.gov.in/",
       "display_order": 0,
       "is_active": 1,
-      "created_at": "2026-05-06T11:55:42.000Z",
-      "updated_at": "2026-09-15T12:15:59.000Z"
+      "created_at": "2026-05-06T11:56:27.000Z",
+      "updated_at": "2026-11-18T07:01:07.000Z"
     },
     {
       "id": 3,
@@ -332,18 +338,7 @@
       "display_order": 0,
       "is_active": 1,
       "created_at": "2026-05-06T11:56:39.000Z",
-      "updated_at": "2026-09-15T12:17:04.000Z"
-    },
-    {
-      "id": 2,
-      "title": "",
-      "image_url": "/uploads/media/1778068572833_41lxg2.jpg",
-      "alt_text": "Data Gov.in",
-      "external_link": "https://www.data.gov.in/",
-      "display_order": 1,
-      "is_active": 1,
-      "created_at": "2026-05-06T11:56:27.000Z",
-      "updated_at": "2026-09-15T12:16:18.000Z"
+      "updated_at": "2026-11-18T07:01:27.000Z"
     },
     {
       "id": 4,
@@ -351,10 +346,21 @@
       "image_url": "/uploads/media/1778068611289_6grf2q.jpg",
       "alt_text": "916e9ab3e813d51ff056b428eaedac42",
       "external_link": "https://www.indiacode.nic.in/",
-      "display_order": 4,
+      "display_order": 0,
       "is_active": 1,
       "created_at": "2026-05-06T11:56:54.000Z",
-      "updated_at": "2026-09-15T12:17:15.000Z"
+      "updated_at": "2026-11-18T07:01:07.000Z"
+    },
+    {
+      "id": 8,
+      "title": "test",
+      "image_url": "/uploads/general/1794985685739-b34a4rwiutb.jpeg",
+      "alt_text": "Distinctharsh",
+      "external_link": "https://distinctharsh.com",
+      "display_order": 2,
+      "is_active": 1,
+      "created_at": "2026-11-18T06:58:04.000Z",
+      "updated_at": "2026-11-18T07:08:06.000Z"
     },
     {
       "id": 5,
@@ -362,10 +368,21 @@
       "image_url": "/uploads/media/1778068624420_qk6hqv.jpg",
       "alt_text": "cebc17a8f9c8fe7643156e9ea2d1741d",
       "external_link": "https://esamiksha.gov.in/",
-      "display_order": 5,
+      "display_order": 3,
       "is_active": 1,
       "created_at": "2026-05-06T11:57:06.000Z",
-      "updated_at": "2026-09-15T12:17:27.000Z"
+      "updated_at": "2026-11-18T07:08:34.000Z"
+    },
+    {
+      "id": 1,
+      "title": "",
+      "image_url": "/uploads/media/1778068414059_vxjcco.jpg",
+      "alt_text": "pm",
+      "external_link": "https://www.pmindia.gov.in/en/",
+      "display_order": 4,
+      "is_active": 1,
+      "created_at": "2026-05-06T11:55:42.000Z",
+      "updated_at": "2026-11-18T07:08:39.000Z"
     },
     {
       "id": 6,
@@ -373,10 +390,10 @@
       "image_url": "/uploads/media/1778068636290_w4oql3.jpg",
       "alt_text": "dd10418bcbdd24e8c56f2ca2ef3c85a8",
       "external_link": "https://presidentofindia.nic.in/",
-      "display_order": 7,
+      "display_order": 4,
       "is_active": 1,
       "created_at": "2026-05-06T11:57:18.000Z",
-      "updated_at": "2026-09-15T12:17:39.000Z"
+      "updated_at": "2026-11-18T07:08:45.000Z"
     }
   ]
 }

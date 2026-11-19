@@ -42,10 +42,15 @@ export default function Vacancies() {
           description: item.description || "",
           year: item.year || "",
           published_date: item.published_date || "",
-          start_date: item.start_date || item.published_date || "", 
+          start_date: item.start_date || item.published_date || "",
           due_date: item.due_date || item.closing_date || "",
-          file_url: item.file_url || (item.file_name ? `/uploads/${item.file_name}` : null),
-          file_size: item.size || "-"
+          file_url: item.file_name
+            ? (item.file_name.startsWith('/')
+                ? item.file_name
+                : `/report_document/vacancies/${item.file_name}`)
+            : null,
+
+          file_size: item.file_size || "-"
         }));
 
         setItems(mapped);

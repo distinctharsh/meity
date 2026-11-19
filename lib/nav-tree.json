@@ -276,7 +276,7 @@
       {
         "id": 69,
         "text": "Tenders",
-        "href": "/offerings/tenders",
+        "href": "/notices/tenders",
         "dropdown": false,
         "display_order": 2,
         "items": [],
@@ -296,7 +296,7 @@
       {
         "id": 69,
         "text": "Tenders",
-        "href": "/offerings/tenders",
+        "href": "/notices/tenders",
         "dropdown": false,
         "display_order": 2,
         "items": [],

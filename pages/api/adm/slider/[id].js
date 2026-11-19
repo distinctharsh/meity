@@ -38,65 +38,71 @@ export default async function handler(req, res) {
       console.error('Error fetching slide:', error);
       res.status(500).json({ message: 'Internal server error' });
     }
-  } else if (req.method === 'PUT') {
-    try {
-      const { image_url, link_url, display_order, is_active } = req.body;
+  } else if (req.method === 'POST') {
+    const { action } = req.body;
 
-      if (!image_url) {
-        return res.status(400).json({ message: 'Image URL is required' });
+    if (action === 'update') {
+      try {
+        const { image_url, link_url, display_order, is_active } = req.body;
+
+        if (!image_url) {
+          return res.status(400).json({ message: 'Image URL is required' });
+        }
+
+        const [result] = await pool.query(
+          'UPDATE hero_slides SET image_url = ?, link_url = ?, display_order = ?, is_active = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
+          [image_url, link_url, display_order || 0, is_active !== false, id]
+        );
+
+        if (result.affectedRows === 0) {
+          return res.status(404).json({ message: 'Slide not found' });
+        }
+
+        const { userId, username } = getLoggedInUser(req);
+        await logAuditAction(
+          req,
+          userId,
+          username,
+          'HERO_SLIDER',
+          'UPDATE',
+          id,
+          `Updated hero slider with ID ${id}`
+        );
+
+        res.status(200).json({ message: 'Slide updated successfully' });
+      } catch (error) {
+        console.error('Error updating slide:', error);
+        res.status(500).json({ message: 'Internal server error' });
       }
+    } else if (action === 'delete') {
+      try {
+        const [result] = await pool.query(
+          'UPDATE hero_slides SET is_active = 0 WHERE id = ?',
+          [id]
+        );
 
-      const [result] = await pool.query(
-        'UPDATE hero_slides SET image_url = ?, link_url = ?, display_order = ?, is_active = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
-        [image_url, link_url, display_order || 0, is_active !== false, id]
-      );
+        if (result.affectedRows === 0) {
+          return res.status(404).json({ message: 'Slide not found' });
+        }
 
-      if (result.affectedRows === 0) {
-        return res.status(404).json({ message: 'Slide not found' });
+        const { userId, username } = getLoggedInUser(req);
+        await logAuditAction(
+          req,
+          userId,
+          username,
+          'HERO_SLIDER',
+          'DELETE',
+          id,
+          `Deleted hero slider with ID ${id}`
+        );
+
+        res.status(200).json({ message: 'Slide deleted successfully' });
+      } catch (error) {
+        console.error('Error deleting slide:', error);
+        res.status(500).json({ message: 'Internal server error' });
       }
-
-      const { userId, username } = getLoggedInUser(req);
-      await logAuditAction(
-        req,
-        userId,
-        username,
-        'HERO_SLIDER',
-        'UPDATE',
-        id,
-        `Updated hero slider with ID ${id}`
-      );
-
-      res.status(200).json({ message: 'Slide updated successfully' });
-    } catch (error) {
-      console.error('Error updating slide:', error);
-      res.status(500).json({ message: 'Internal server error' });
-    }
-  } else if (req.method === 'DELETE') {
-    try {
-      const [result] = await pool.query(
-        'DELETE FROM hero_slides WHERE id = ?',
-        [id]
-      );
-
-      if (result.affectedRows === 0) {
-        return res.status(404).json({ message: 'Slide not found' });
-      }
-
-      const { userId, username } = getLoggedInUser(req);
-      await logAuditAction(
-        req,
-        userId,
-        username,
-        'HERO_SLIDER',
-        'DELETE',
-        id,
-        `Deleted hero slider with ID ${id}`
-      );
-
-      res.status(200).json({ message: 'Slide deleted successfully' });
-    } catch (error) {
-      console.error('Error deleting slide:', error);
-      res.status(500).json({ message: 'Internal server error' });
+    } else {
+      res.status(400).json({ message: 'Invalid action. Use action=update or action=delete' });
     }
   } else {
     res.status(405).json({ message: 'Method not allowed' });
