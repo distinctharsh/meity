@@ -1,4 +1,5 @@
 import pool from '@/lib/db';
+import { syncFooter } from '@/utils/api';
 
 // 1. Log Login / Logout / Failed Login
 export async function logAuditTrail(req, userId, username, action) {
@@ -20,10 +21,25 @@ export async function logAuditAction(req, userId, username, module, actionType, 
   try {
     const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress || '';
 
-    await pool.query(
-      'INSERT INTO audit_actions (user_id, username, module, action_type, record_id, description, ip_address) VALUES (?, ?, ?, ?, ?, ?, ?)',
+    const [result] = await pool.query(
+      `INSERT INTO audit_actions (user_id, username, module, action_type, record_id, description, ip_address) VALUES (?, ?, ?, ?, ?, ?, ?)`,
       [userId || null, username || 'System Admin', module, actionType, recordId || null, description, ip]
     );
+
+   
+    const [rows] = await pool.query(
+      `SELECT created_at FROM audit_actions WHERE id = ?`,
+      [result.insertId]
+    );
+
+    if (rows.length) {
+      await pool.query(
+        `UPDATE footer SET updated_at = ? WHERE type = 'main'`,
+        [rows[0].created_at]
+      );
+    }
+
+    await syncFooter();
   } catch (err) {
     console.error('Audit action insert error:', err);
   }
