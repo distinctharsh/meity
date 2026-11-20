@@ -44,13 +44,3 @@ export async function logAuditAction(req, userId, username, module, actionType, 
     console.error('Audit action insert error:', err);
   }
 }
-
-export async function hasPermission(req, permission) {
-  const roleId = Number(req.headers['x-auth-role']);
-  if (!roleId) return false;
-  const [rows] = await pool.query(
-    'SELECT 1 FROM cms_role_permissions WHERE role_id = ? AND permission IN (?, ?) LIMIT 1',
-    [roleId, permission, '*']
-  );
-  return rows.length > 0;
-}

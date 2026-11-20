@@ -1,4 +1,4 @@
-import { useState, useEffect, Children, cloneElement, isValidElement } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
@@ -70,7 +70,7 @@ const AdminLayout = ({ children }) => {
       type: 'section',
       name: 'Homepage',
       items: [
-        { name: 'Hero Slider', href: '/admin/slider', icon: '🖼️', description: 'Manage homepage slider', permission: 'slider:write' },
+        { name: 'Hero Slider', href: '/admin/slider', icon: '🖼️', description: 'Manage homepage slider' },
         { name: 'PM Quote', href: '/admin/pm-quotes', icon: '🗣️', description: 'Manage Prime Minister quote' },
         { name: 'Social Feed', href: '/admin/social', icon: '🔗', description: 'Manage social posts' },
         { name: 'Announcements', href: '/admin/announcements', icon: '📢', description: 'Site announcements' },
@@ -89,8 +89,8 @@ const AdminLayout = ({ children }) => {
       items: [
         { name: 'Pages', href: '/admin/pages', icon: '📄', description: 'Create & manage pages' },
         { name: 'About Page', href: '/admin/about', icon: 'ℹ️', description: 'Manage About page content' },
-        { name: 'Our Team', href: '/admin/our-team', icon: '👥', description: 'Manage ministry team', permission: 'team:write' },
-        { name: 'Directory', href: '/admin/directory', icon: '📇', description: 'Manage directory', permission: 'directory:write' },
+        { name: 'Our Team', href: '/admin/our-team', icon: '👥', description: 'Manage ministry team' },
+        { name: 'Directory', href: '/admin/directory', icon: '📇', description: 'Manage directory' },
         { name: 'Photo Galleries', href: '/admin/photos', icon: '📷', description: 'Manage photo galleries' },
         { name: 'Documents', href: '/admin/reports', icon: '📑', description: 'Manage Documents > Reports' },
         { name: 'RTI Page', href: '/admin/rti', icon: '📋', description: 'Manage RTI content & sections' }
@@ -120,19 +120,23 @@ const AdminLayout = ({ children }) => {
   // ------------------------------------------------
 
   const userRole = Number(user?.role);
-  const permissions = user?.permissions || [];
-  const isAdmin = permissions.includes('*');
+  console.log('User Role:', userRole);
 
-  const filteredNavigation = isAdmin
-  ? navigation
-  : navigation
-      .map(section => ({
-        ...section,
-        items: section.items.filter(item =>
-          item.permission && permissions.includes(item.permission)
-        )
-      }))
-      .filter(section => section.items.length > 0);
+  const allowedRole3Menus = [
+    '/admin/directory',
+    '/admin/our-team'
+  ];
+
+  const filteredNavigation = userRole === 3
+    ? navigation
+        .map(section => ({
+          ...section,
+          items: section.items.filter(item =>
+            allowedRole3Menus.includes(item.href)
+          )
+        }))
+        .filter(section => section.items.length > 0)
+    : navigation;
 
   // ------------------------------------------------
   // Authentication: Verify HttpOnly cookie
@@ -773,11 +777,7 @@ const AdminLayout = ({ children }) => {
 
           <main className="flex-1 bg-gray-50">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-              {Children.map(children, child =>
-                isValidElement(child)
-                  ? cloneElement(child, { role: userRole, user, permissions })
-                  : child
-              )}
+              {children}
             </div>
           </main>
 
