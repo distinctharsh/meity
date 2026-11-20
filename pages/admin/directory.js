@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
 
 export default function AdminDirectoryPage() {
@@ -9,8 +9,8 @@ export default function AdminDirectoryPage() {
   const [query, setQuery] = useState('');
   const [perPage, setPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const dtRef = useRef(null);
+  const [sortKey, setSortKey] = useState('display_order');
+  const [sortDir, setSortDir] = useState('asc');
 
   const load = async () => {
     setLoading(true);
@@ -24,89 +24,57 @@ export default function AdminDirectoryPage() {
   };
   useEffect(() => { load(); }, []);
 
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    if (loading) return;
-    if (showForm) return;
-    if (!items || items.length === 0) return;
+  // Search + sort (display_order)
+  const filteredItems = useMemo(() => {
+    const q = query.toLowerCase();
+    const has = (v) =>
+      (Array.isArray(v) ? v.join(' ') : String(v ?? '')).toLowerCase().includes(q);
 
-    let cancelled = false;
-    let attemptTimer;
+    const filtered = !query
+      ? [...items]
+      : items.filter(
+          (r) =>
+            has(r.role) ||
+            has(r.name) ||
+            has(r.tags) ||
+            has(r.phones) ||
+            has(r.emails) ||
+            has(r.address)
+        );
 
-    const tryInit = () => {
-      if (cancelled) return;
-      const $ = window.jQuery;
-      if (!$ || !$.fn || !$.fn.DataTable) {
-        attemptTimer = setTimeout(tryInit, 50);
-        return;
+    const dir = sortDir === 'asc' ? 1 : -1;
+    return filtered.sort((a, b) => {
+      let av = a[sortKey];
+      let bv = b[sortKey];
+      if (sortKey === 'display_order' || sortKey === 'is_active') {
+        return ((Number(av) || 0) - (Number(bv) || 0)) * dir;
       }
+      return String(av ?? '').localeCompare(String(bv ?? ''), undefined, { sensitivity: 'base' }) * dir;
+    });
+  }, [items, query, sortKey, sortDir]);
 
-      const selector = '#admin-directory-table';
-      try {
-        if ($.fn.dataTable.isDataTable(selector)) {
-          try {
-            $(selector).DataTable().destroy(false);
-          } catch {
-          }
-        }
+  const toggleSort = (key) => {
+    if (sortKey === key) {
+      setSortDir(sortDir === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortKey(key);
+      setSortDir('asc');
+    }
+  };
 
-        const dt = $(selector).DataTable({
-          paging: true,
-          searching: true,
-          info: false,
-          lengthChange: false,
-          pageLength: perPage,
-          order: [[3, 'asc']],
-          autoWidth: false,
-          responsive: true,
-          dom: 't',
-          columnDefs: [
-            { orderable: false, targets: -1 },
-          ],
-          drawCallback: function () {
-            const info = this.api().page.info();
-            setTotalPages(Math.max(1, info.pages || 1));
-            setCurrentPage((info.page || 0) + 1);
-          },
-        });
+  const sortArrow = (key) =>
+    sortKey === key ? (sortDir === 'asc' ? ' ▲' : ' ▼') : '';
 
-        dtRef.current = dt;
-        dt.search(query || '');
-        dt.draw();
-      } catch {
-      }
-    };
-
-    tryInit();
-
-    return () => {
-      cancelled = true;
-      if (attemptTimer) clearTimeout(attemptTimer);
-      try {
-        const $ = window.jQuery;
-        const selector = '#admin-directory-table';
-        if ($ && $.fn && $.fn.dataTable && $.fn.dataTable.isDataTable(selector)) {
-          $(selector).DataTable().destroy(false);
-        }
-      } catch {
-      } finally {
-        dtRef.current = null;
-      }
-    };
-  }, [items, loading, showForm]);
+  // Pagination
+  const totalPages = Math.max(1, Math.ceil(filteredItems.length / perPage));
+  const paginatedItems = filteredItems.slice(
+    (currentPage - 1) * perPage,
+    currentPage * perPage
+  );
 
   useEffect(() => {
-    const dt = dtRef.current;
-    if (!dt) return;
-    dt.search(query || '').draw();
-  }, [query]);
-
-  useEffect(() => {
-    const dt = dtRef.current;
-    if (!dt) return;
-    dt.page.len(perPage);
-    dt.draw(false);
-  }, [perPage]);
+    setCurrentPage(1);
+  }, [query, perPage, sortKey, sortDir]);
 
   const onDelete = async (id) => {
     if (!confirm("Delete this entry?")) return;
@@ -177,15 +145,21 @@ export default function AdminDirectoryPage() {
             <table id="admin-directory-table" className="min-w-full divide-y divide-gray-200 table-fixed">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
-                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-20">Active</th>
-                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-20">Order</th>
+                <th onClick={() => toggleSort('role')} className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer select-none hover:text-gray-700">Role{sortArrow('role')}</th>
+                <th onClick={() => toggleSort('name')} className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer select-none hover:text-gray-700">Name{sortArrow('name')}</th>
+                <th onClick={() => toggleSort('is_active')} className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-20 cursor-pointer select-none hover:text-gray-700">Active{sortArrow('is_active')}</th>
+                <th onClick={() => toggleSort('display_order')} className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-20 cursor-pointer select-none hover:text-gray-700">Order{sortArrow('display_order')}</th>
                 <th className="px-4 py-2 w-28"></th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {items.map(r => (
+              {paginatedItems.length === 0 ? (
+                <tr>
+                  <td colSpan="5" className="px-4 py-8 text-center text-sm text-gray-500">
+                    No entries found.
+                  </td>
+                </tr>
+              ) : paginatedItems.map(r => (
                 <tr key={r.id}>
                   <td className="px-4 py-2 text-sm">{r.role}</td>
                   <td className="px-4 py-2 text-sm">{r.name}</td>
@@ -221,10 +195,7 @@ export default function AdminDirectoryPage() {
                 <li>
                   <button
                     className="w-8 h-8 inline-flex items-center justify-center rounded-full border text-gray-700 disabled:opacity-40"
-                    onClick={() => {
-                      const dt = dtRef.current;
-                      if (dt) dt.page('previous').draw('page');
-                    }}
+                    onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
                     disabled={currentPage === 1}
                     aria-label="Previous page"
                   >
@@ -253,10 +224,7 @@ export default function AdminDirectoryPage() {
                         <span className="w-8 h-8 inline-flex items-center justify-center text-gray-500">…</span>
                       ) : (
                         <button
-                          onClick={() => {
-                            const dt = dtRef.current;
-                            if (dt) dt.page(Number(p) - 1).draw('page');
-                          }}
+                          onClick={() => setCurrentPage(Number(p))}
                           className={
                             Number(p) === currentPage
                               ? "w-8 h-8 rounded-full bg-blue-100 text-blue-800 font-semibold"
@@ -273,10 +241,7 @@ export default function AdminDirectoryPage() {
                 <li>
                   <button
                     className="w-8 h-8 inline-flex items-center justify-center rounded-full border text-gray-700 disabled:opacity-40"
-                    onClick={() => {
-                      const dt = dtRef.current;
-                      if (dt) dt.page('next').draw('page');
-                    }}
+                    onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
                     disabled={currentPage === totalPages}
                     aria-label="Next page"
                   >

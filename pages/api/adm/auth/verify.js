@@ -115,6 +115,20 @@ export default async function handler(req, res) {
 
         const user = users[0];
 
+        const [roleRows] = await pool.query(
+            'SELECT allowed_menus FROM cms_roles WHERE id = ? AND is_active = 1',
+            [user.role]
+        );
+
+        if (roleRows.length === 0) {
+            user.allowed_menus = [];
+        } else {
+            const raw = roleRows[0].allowed_menus;
+            user.allowed_menus = raw == null
+                ? null
+                : raw.split(',').map(s => s.trim()).filter(Boolean);
+        }
+
         return res.status(200).json({
             authenticated: true,
             message: 'Token valid',

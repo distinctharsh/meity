@@ -119,20 +119,21 @@ const AdminLayout = ({ children }) => {
   // Role Based Navigation
   // ------------------------------------------------
 
-  const userRole = Number(user?.role);
-  console.log('User Role:', userRole);
+  const allowedMenus = user?.allowed_menus ?? null;
+  const isRestricted = Array.isArray(allowedMenus);
 
-  const allowedRole3Menus = [
-    '/admin/directory',
-    '/admin/our-team'
-  ];
+  const isBlocked =
+    isRestricted &&
+    !allowedMenus.some(
+      (p) => router.pathname === p || router.pathname.startsWith(p + '/')
+    );
 
-  const filteredNavigation = userRole === 3
+  const filteredNavigation = isRestricted
     ? navigation
         .map(section => ({
           ...section,
           items: section.items.filter(item =>
-            allowedRole3Menus.includes(item.href)
+            allowedMenus.includes(item.href)
           )
         }))
         .filter(section => section.items.length > 0)
@@ -246,6 +247,13 @@ const AdminLayout = ({ children }) => {
     };
 
   }, [router.isReady, router]);
+
+  useEffect(() => {
+    if (!user || !router.isReady) return;
+    if (isBlocked && allowedMenus?.[0]) {
+      router.replace(allowedMenus[0]);
+    }
+  }, [user, isBlocked, router.isReady]);
 
   // ------------------------------------------------
   // Logout
@@ -777,7 +785,7 @@ const AdminLayout = ({ children }) => {
 
           <main className="flex-1 bg-gray-50">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-              {children}
+              {isBlocked ? null : children}
             </div>
           </main>
 
