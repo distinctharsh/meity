@@ -53,7 +53,8 @@ const IGNORE_PREFIXES = [
   '/admin',
   '/sitemap',
   '/archives',
-  '/gallery'
+  '/gallery',
+  '/feedback',
 ];
 
 const IGNORE_EXTENSIONS =
