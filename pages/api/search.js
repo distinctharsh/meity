@@ -77,6 +77,7 @@ export default async function handler(req, res) {
             rf.original_name AS title,
             rf.file_url,
             rf.is_active,
+            r.is_active AS report_is_active,
             r.type, r.year, r.created_at,
             NULL AS files_count,
             'report_file' AS source
@@ -95,7 +96,7 @@ export default async function handler(req, res) {
           `
           SELECT
             id, title, type, description, tender_id,
-            published_date, due_date,
+            year(published_date) AS published_date , due_date,
             file_name AS file_url, file_size, created_at,
             'vacancies_tenders' AS source
           FROM vacancies_tenders

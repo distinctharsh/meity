@@ -55,19 +55,31 @@ export default function SearchPage() {
       return searchText.includes(query.toLowerCase());
     });
   }, [results, query]);
+
+  const isArchived = (item) =>
+  Number(item.is_active) === 2 ||
+  Number(item.report_is_active) === 2;
+
+
   const sorted = useMemo(() => {
-    const arr = [...filtered];
-    if (sort === "Newest") {
-      arr.sort((a, b) =>
-        String(b.year || "").localeCompare(String(a.year || ""))
-      );
-    } else {
-      arr.sort((a, b) =>
-        String(a.year || "").localeCompare(String(b.year || ""))
-      );
+  const arr = [...filtered];
+
+  arr.sort((a, b) => {
+    const archivedDiff = Number(isArchived(a)) - Number(isArchived(b));
+
+    if (archivedDiff !== 0) {
+      return archivedDiff;
     }
-    return arr;
-  }, [filtered, sort]);
+
+    if (sort === "Newest") {
+      return String(b.year || "").localeCompare(String(a.year || ""));
+    }
+
+    return String(a.year || "").localeCompare(String(b.year || ""));
+  });
+
+  return arr;
+}, [filtered, sort]);
   const totalPages = Math.ceil(sorted.length / perPage);
   const paginated = sorted.slice(
     (currentPage - 1) * perPage,
@@ -149,6 +161,12 @@ export default function SearchPage() {
                   <div>
                     <div className="text-[16px] font-medium flex items-center gap-2 flex-wrap">
                       <span>{item.matched_file_name || item.title}</span>
+
+                        {isArchived(item) && (
+                          <span className="px-2 py-1 text-[11px] font-semibold bg-red-100 text-red-700 rounded-md">
+                            ARCHIVED
+                          </span>
+                        )}
 
                       {item.source === "report_group" &&
                         item.files_count > 0 && (
