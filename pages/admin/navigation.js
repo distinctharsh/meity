@@ -41,12 +41,14 @@ export default function NavigationManagement() {
 
     try {
       const response = await fetch(`/api/adm/navigation/${id}`, {
-        method: 'DELETE'
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'delete' })
       });
 
       if (response.ok) {
         setNavigationItems(navigationItems.filter(item => item.id !== id));
-        await syncRoutesAndNavTree(); 
+        await syncRoutesAndNavTree();
       } else {
         alert('Failed to delete navigation item');
       }
@@ -59,21 +61,21 @@ export default function NavigationManagement() {
   const handleFormSubmit = async (formData) => {
     try {
       const url = editingItem ? `/api/adm/navigation/${editingItem.id}` : '/api/adm/navigation';
-      const method = editingItem ? 'PUT' : 'POST';
+      const body = editingItem ? { ...formData, action: 'update' } : formData;
 
       const response = await fetch(url, {
-        method,
-        headers: {
-          'Content-Type': 'application/json',
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json', 
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(body)
       });
 
       if (response.ok) {
         setShowForm(false);
         setEditingItem(null);
         fetchNavigation();
-        await syncRoutesAndNavTree(); 
+        await syncRoutesAndNavTree();
       } else {
         const error = await response.json();
         alert(error.message || 'Failed to save navigation item');
@@ -87,16 +89,16 @@ export default function NavigationManagement() {
   const toggleActive = async (id, isActive) => {
     try {
       const response = await fetch(`/api/adm/navigation/${id}`, {
-        method: 'PUT',
+        method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json', 
         },
-        body: JSON.stringify({ is_active: !isActive }),
+        body: JSON.stringify({ action: 'update', is_active: !isActive })
       });
-
+      
       if (response.ok) {
         fetchNavigation();
-        await syncRoutesAndNavTree(); 
+        await syncRoutesAndNavTree();
       } else {
         alert('Failed to update navigation item status');
       }

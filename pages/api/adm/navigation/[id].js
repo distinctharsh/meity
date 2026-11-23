@@ -36,20 +36,50 @@ export default async function handler(req, res) {
       return res.status(200).json(rows[0]);
     } catch (error) {
       console.error('Error fetching navigation item:', error);
-      res.status(500).json({ message: 'Internal server error' });
+      return res.status(500).json({ message: 'Internal server error' });
     }
   }
 
-  else if (req.method === 'PUT') {
+  if (req.method === 'POST') {
+    const { action } = req.body || {};
+
+    // DELETE
+    if (action === 'delete') {
+      try {
+        await pool.query('START TRANSACTION');
+        try {
+          await pool.query('DELETE FROM pages WHERE navigation_item_id = ?', [id]);
+
+          const [result] = await pool.query(
+            'DELETE FROM navigation_items WHERE id = ?',
+            [id]
+          );
+
+          if (!result.affectedRows) {
+            await pool.query('ROLLBACK');
+            return res.status(404).json({ message: 'Navigation item not found' });
+          }
+
+          await pool.query('COMMIT');
+
+          const { userId, username } = getLoggedInUser(req);
+          await logAuditAction(req, userId, username, 'NAVIGATION', 'DELETE', id,
+            `Deleted Navigation Item with ID ${id}`);
+
+          return res.status(200).json({ message: 'Navigation deleted successfully' });
+        } catch (err) {
+          await pool.query('ROLLBACK');
+          throw err;
+        }
+      } catch (error) {
+        console.error('Error deleting navigation:', error);
+        return res.status(500).json({ message: 'Internal server error' });
+      }
+    }
+
+    // UPDATE
     try {
-      const {
-        name,
-        link,
-        parent_id,
-        display_order,
-        is_active,
-        is_show
-      } = req.body;
+      const { name, link, parent_id, display_order, is_active, is_show } = req.body;
 
       await pool.query('START TRANSACTION');
 
@@ -127,10 +157,10 @@ export default async function handler(req, res) {
             WHERE navigation_item_id=?
             `,
             [
-              next.name,
-              next.link,
-              next.is_active,
-              next.display_order,
+              next.name, 
+              next.link, 
+              next.is_active, 
+              next.display_order, 
               id
             ]
           );
@@ -140,19 +170,19 @@ export default async function handler(req, res) {
 
         const { userId, username } = getLoggedInUser(req);
         await logAuditAction(
-          req,
-          userId,
-          username,
-          'NAVIGATION',
-          'UPDATE',
+          req, 
+          userId, 
+          username, 
+          'NAVIGATION', 
+          'UPDATE', 
           id,
           `Updated Navigation Item ID ${id} ("${next.name}")`
         );
 
-        return res.status(200).json({
-          message: 'Navigation updated successfully'
+        return res.status(200).json({ 
+          message: 'Navigation updated successfully' 
         });
-
+        
       } catch (err) {
         await pool.query('ROLLBACK');
         throw err;
@@ -162,82 +192,17 @@ export default async function handler(req, res) {
       console.error('Error updating navigation:', error);
 
       if (error?.code === 'ER_DUP_ENTRY') {
-        return res.status(409).json({
-          message: 'Duplicate slug/link exists'
+        return res.status(409).json({ 
+          message: 'Duplicate slug/link exists' 
         });
       }
-
-      return res.status(500).json({
-        message: 'Internal server error'
-      });
-    }
-  }
-
-  else if (req.method === 'DELETE') {
-    try {
-
-      await pool.query('START TRANSACTION');
-
-      try {
-
-        // Delete linked page first
-        await pool.query(
-          `
-          DELETE FROM pages
-          WHERE navigation_item_id=?
-          `,
-          [id]
-        );
-
-        // Delete navigation
-        const [result] = await pool.query(
-          `
-          DELETE FROM navigation_items
-          WHERE id=?
-          `,
-          [id]
-        );
-
-        if (!result.affectedRows) {
-          await pool.query('ROLLBACK');
-
-          return res.status(404).json({
-            message: 'Navigation item not found'
-          });
-        }
-
-        await pool.query('COMMIT');
-
-        const { userId, username } = getLoggedInUser(req);
-        await logAuditAction(
-          req,
-          userId,
-          username,
-          'NAVIGATION',
-          'DELETE',
-          id,
-          `Deleted Navigation Item with ID ${id}`
-        );
-
-        return res.status(200).json({
-          message: 'Navigation deleted successfully'
-        });
-
-      } catch (err) {
-        await pool.query('ROLLBACK');
-        throw err;
-      }
-
-    } catch (error) {
-      console.error('Error deleting navigation:', error);
-
-      return res.status(500).json({
-        message: 'Internal server error'
+      return res.status(500).json({ 
+        message: 'Internal server error' 
       });
     }
   }
 
   return res.status(405).json({
-    message: 'Method not allowed'
+    message: 'Method not allowed' 
   });
 }
