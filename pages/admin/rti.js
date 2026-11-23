@@ -91,157 +91,149 @@ export default function AdminRTIPage() {
   };
 
   const saveContent = async () => {
-    setSaving(true);
-    try {
-      const res = await fetch('/api/adm/rti/content', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          page_title: content.page_title,
-          intro_heading: content.intro_heading,
-          intro_bullets: content.intro_bullets
-        })
-      });
-      if (res.ok) showMsg('Page content saved!');
-      else showMsg('Failed to save content');
-    } catch (e) {
-      showMsg('Error saving content');
-    } finally {
-      setSaving(false);
-    }
-  };
+  setSaving(true);
+  try {
+    const res = await fetch('/api/adm/rti/content', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        page_title: content.page_title,
+        intro_heading: content.intro_heading,
+        intro_bullets: content.intro_bullets
+      })
+    });
+    if (res.ok) showMsg('Page content saved!');
+    else showMsg('Failed to save content');
+  } catch (e) {
+    showMsg('Error saving content');
+  } finally {
+    setSaving(false);
+  }
+};
 
   // Section CRUD
-  const saveSection = async (e) => {
-    e.preventDefault();
-    const fd = new FormData(e.target);
-    const rawOrder = fd.get('display_order');
-    const payload = {
-      title: fd.get('title'),
-      display_order: rawOrder === '' || rawOrder == null ? null : Number(rawOrder),
-      is_active: fd.get('is_active') === 'on'
-    };
-    setSaving(true);
-    try {
-      const url = editingSection ? `/api/adm/rti/sections/${editingSection.id}` : '/api/adm/rti/sections';
-      const method = editingSection ? 'PUT' : 'POST';
-      const res = await fetch(url, {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-      if (res.ok) {
-        showMsg(editingSection ? 'Section updated!' : 'Section created!');
-        setShowSectionForm(false);
-        setEditingSection(null);
-        loadAll();
-      } else {
-        showMsg('Failed to save section');
-      }
-    } catch (e) {
-      showMsg('Error saving section');
-    } finally {
-      setSaving(false);
-    }
+const saveSection = async (e) => {
+  e.preventDefault();
+  const fd = new FormData(e.target);
+  const rawOrder = fd.get('display_order');
+  const payload = {
+    title: fd.get('title'),
+    display_order: rawOrder === '' || rawOrder == null ? null : Number(rawOrder),
+    is_active: fd.get('is_active') === 'on'
   };
+  setSaving(true);
+  try {
+    const url = editingSection ? `/api/adm/rti/sections/${editingSection.id}` : '/api/adm/rti/sections';
+    const body = editingSection
+      ? { ...payload, action: 'update' }
+      : payload;
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    if (res.ok) {
+      showMsg(editingSection ? 'Section updated!' : 'Section created!');
+      setShowSectionForm(false);
+      setEditingSection(null);
+      loadAll();
+    } else {
+      showMsg('Failed to save section');
+    }
+  } catch (e) {
+    showMsg('Error saving section');
+  } finally {
+    setSaving(false);
+  }
+};
 
-  const deleteSection = async (id) => {
-    if (!confirm('Delete this section and all its items?')) return;
-    try {
-      const res = await fetch(`/api/adm/rti/sections/${id}`, { method: 'DELETE' });
-      if (res.ok) {
-        showMsg('Section deleted');
-        loadAll();
-      } else {
-        showMsg('Failed to delete');
-      }
-    } catch (e) {
-      showMsg('Error deleting');
-    }
-  };
+const toggleSectionActive = async (sec) => {
+  try {
+    const res = await fetch(`/api/adm/rti/sections/${sec.id}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'update', is_active: !sec.is_active })
+    });
+    if (res.ok) loadAll();
+  } catch (e) {
+    console.error(e);
+  }
+};
 
-  const toggleSectionActive = async (sec) => {
-    try {
-      const res = await fetch(`/api/adm/rti/sections/${sec.id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ is_active: !sec.is_active })
-      });
-      if (res.ok) loadAll();
-    } catch (e) {
-      console.error(e);
-    }
+const saveItem = async (e) => {
+  e.preventDefault();
+  const payload = {
+    section_id: Number(itemForm.section_id),
+    title: itemForm.title,
+    file_url: itemForm.file_url,
+    file_size: itemForm.file_size,
+    file_type: itemForm.file_type,
+    display_order: itemForm.display_order === '' ? null : Number(itemForm.display_order),
+    is_active: !!itemForm.is_active
   };
+  if (!payload.section_id) { 
+    alert('Please select a section');
+     return; 
+    }
+  if (!payload.title) { 
+    alert('Title is required'); 
+    return; 
+  }
+  setSaving(true);
+  try {
+    const url = editingItem ? `/api/adm/rti/items/${editingItem.id}` : '/api/adm/rti/items';
+    const body = editingItem
+      ? { ...payload, action: 'update' }
+      : payload;
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    if (res.ok) {
+      showMsg(editingItem ? 'Item updated!' : 'Item created!');
+      setShowItemForm(false);
+      setEditingItem(null);
+      loadAll();
+    } else {
+      showMsg('Failed to save item');
+    }
+  } catch (e) {
+    showMsg('Error saving item');
+  } finally {
+    setSaving(false);
+  }
+};
 
-  // Item CRUD
-  const saveItem = async (e) => {
-    e.preventDefault();
-    const payload = {
-      section_id: Number(itemForm.section_id),
-      title: itemForm.title,
-      file_url: itemForm.file_url,
-      file_size: itemForm.file_size,
-      file_type: itemForm.file_type,
-      display_order: itemForm.display_order === '' ? null : Number(itemForm.display_order),
-      is_active: !!itemForm.is_active
-    };
-    if (!payload.section_id) {
-      alert('Please select a section');
-      return;
+const deleteItem = async (id) => {
+  if (!confirm('Delete this item?')) return;
+  try {
+    const res = await fetch(`/api/adm/rti/items/${id}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'delete' })
+    });
+    if (res.ok) {
+      showMsg('Item deleted');
+      loadAll();
     }
-    if (!payload.title) {
-      alert('Title is required');
-      return;
-    }
-    setSaving(true);
-    try {
-      const url = editingItem ? `/api/adm/rti/items/${editingItem.id}` : '/api/adm/rti/items';
-      const method = editingItem ? 'PUT' : 'POST';
-      const res = await fetch(url, {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-      if (res.ok) {
-        showMsg(editingItem ? 'Item updated!' : 'Item created!');
-        setShowItemForm(false);
-        setEditingItem(null);
-        loadAll();
-      } else {
-        showMsg('Failed to save item');
-      }
-    } catch (e) {
-      showMsg('Error saving item');
-    } finally {
-      setSaving(false);
-    }
-  };
+  } catch (e) {
+    showMsg('Error deleting');
+  }
+};
 
-  const deleteItem = async (id) => {
-    if (!confirm('Delete this item?')) return;
-    try {
-      const res = await fetch(`/api/adm/rti/items/${id}`, { method: 'DELETE' });
-      if (res.ok) {
-        showMsg('Item deleted');
-        loadAll();
-      }
-    } catch (e) {
-      showMsg('Error deleting');
-    }
-  };
-
-  const toggleItemActive = async (item) => {
-    try {
-      const res = await fetch(`/api/adm/rti/items/${item.id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ is_active: !item.is_active })
-      });
-      if (res.ok) loadAll();
-    } catch (e) {
-      console.error(e);
-    }
-  };
+const toggleItemActive = async (item) => {
+  try {
+    const res = await fetch(`/api/adm/rti/items/${item.id}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'update', is_active: !item.is_active })
+    });
+    if (res.ok) loadAll();
+  } catch (e) {
+    console.error(e);
+  }
+};
 
   const openItemForm = (sectionId, item = null) => {
     setSelectedSectionId(sectionId);

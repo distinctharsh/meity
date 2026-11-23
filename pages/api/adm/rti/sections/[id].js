@@ -31,27 +31,45 @@ export default async function handler(req, res) {
       console.error('Error fetching RTI section:', error);
       res.status(500).json({ message: 'Internal server error' });
     }
-  } else if (req.method === 'PUT') {
+  } else if (req.method === 'POST') {
     try {
-      const { title, display_order, is_active } = req.body || {};
+      const { action, title, display_order, is_active } = req.body || {};
+
+      if (action === 'delete') {
+        const [result] = await pool.query(
+          'UPDATE rti_sections SET is_active = 0, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
+          [id]
+        );
+        if (result.affectedRows === 0) return res.status(404).json({ message: 'Not found' });
+
+        const { userId, username } = getLoggedInUser(req);
+        await logAuditAction(req, userId, username, 'RTI_SECTIONS', 'DELETE', id,
+          `Deactivated RTI Section ID ${id}`);
+
+        return res.status(200).json({ message: 'Deleted' });
+      }
+
+      // update
       const fields = [];
       const values = [];
       if (typeof title !== 'undefined') { fields.push('title = ?'); values.push(title); }
       if (typeof display_order !== 'undefined') { fields.push('display_order = ?'); values.push(display_order); }
-      if (typeof is_active !== 'undefined') { fields.push('is_active = ?'); values.push(!!is_active ? 1 : 0); }
+      if (typeof is_active !== 'undefined') { fields.push('is_active = ?'); values.push(is_active ? 1 : 0); }
       if (!fields.length) return res.status(400).json({ message: 'No valid fields to update' });
-      const sql = `UPDATE rti_sections SET ${fields.join(', ')}, updated_at = CURRENT_TIMESTAMP WHERE id = ?`;
       values.push(id);
-      const [result] = await pool.query(sql, values);
+      const [result] = await pool.query(
+        `UPDATE rti_sections SET ${fields.join(', ')}, updated_at = CURRENT_TIMESTAMP WHERE id = ?`,
+        values
+      );
       if (result.affectedRows === 0) return res.status(404).json({ message: 'Not found' });
 
       const { userId, username } = getLoggedInUser(req);
       await logAuditAction(
-        req,
-        userId,
-        username,
-        'RTI_SECTIONS',
-        'UPDATE',
+        req, 
+        userId, 
+        username, 
+        'RTI_SECTIONS', 
+        'UPDATE', 
         id,
         `Updated RTI Section ID ${id}`
       );
@@ -59,27 +77,6 @@ export default async function handler(req, res) {
       res.status(200).json({ message: 'Updated' });
     } catch (error) {
       console.error('Error updating RTI section:', error);
-      res.status(500).json({ message: 'Internal server error' });
-    }
-  } else if (req.method === 'DELETE') {
-    try {
-      const [result] = await pool.query('DELETE FROM rti_sections WHERE id = ?', [id]);
-      if (result.affectedRows === 0) return res.status(404).json({ message: 'Not found' });
-
-      const { userId, username } = getLoggedInUser(req);
-      await logAuditAction(
-        req,
-        userId,
-        username,
-        'RTI_SECTIONS',
-        'DELETE',
-        id,
-        `Deleted RTI Section with ID ${id}`
-      );
-
-      res.status(200).json({ message: 'Deleted' });
-    } catch (error) {
-      console.error('Error deleting RTI section:', error);
       res.status(500).json({ message: 'Internal server error' });
     }
   } else {
