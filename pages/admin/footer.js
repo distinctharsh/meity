@@ -1,27 +1,20 @@
 import { useState, useEffect } from 'react';
 import AdminLayout from '../../components/admin/AdminLayout';
 
+const MAX_SECTIONS = 6;
+const MAX_LINKS = 10;
+
+const emptyLink = () => ({ label: '', url: '' });
+const emptySection = () => ({ title: '', links: [emptyLink()] });
+
+const inputCls =
+  'w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-3 py-2';
+
 export default function FooterAdminPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
-  // Section 1
-  const [section1Link1Label, setSection1Link1Label] = useState('');
-  const [section1Link1Url, setSection1Link1Url] = useState('');
-  const [section1Link2Label, setSection1Link2Label] = useState('');
-  const [section1Link2Url, setSection1Link2Url] = useState('');
-
-  // Section 2
-  const [section2Link1Label, setSection2Link1Label] = useState('');
-  const [section2Link1Url, setSection2Link1Url] = useState('');
-  const [section2Link2Label, setSection2Link2Label] = useState('');
-  const [section2Link2Url, setSection2Link2Url] = useState('');
-
-  // Section 3
-  const [section3Link1Label, setSection3Link1Label] = useState('');
-  const [section3Link1Url, setSection3Link1Url] = useState('');
-  const [section3Link2Label, setSection3Link2Label] = useState('');
-  const [section3Link2Url, setSection3Link2Url] = useState('');
+  const [sections, setSections] = useState([emptySection()]);
 
   // Social links
   const [twitterUrl, setTwitterUrl] = useState('');
@@ -41,29 +34,15 @@ export default function FooterAdminPage() {
       if (response.ok) {
         const data = await response.json();
         if (data) {
-          const sections = Array.isArray(data.sections) ? data.sections : [];
-          const s1 = sections[0] || {};
-          const s2 = sections[1] || {};
-          const s3 = sections[2] || {};
-
-          const s1Links = Array.isArray(s1.links) ? s1.links : [];
-          const s2Links = Array.isArray(s2.links) ? s2.links : [];
-          const s3Links = Array.isArray(s3.links) ? s3.links : [];
-
-          setSection1Link1Label(s1Links[0]?.label || 'Archives');
-          setSection1Link1Url(s1Links[0]?.url || '#');
-          setSection1Link2Label(s1Links[1]?.label || 'Sitemap');
-          setSection1Link2Url(s1Links[1]?.url || '#');
-
-          setSection2Link1Label(s2Links[0]?.label || 'Website Policies');
-          setSection2Link1Url(s2Links[0]?.url || '#');
-          setSection2Link2Label(s2Links[1]?.label || 'Help');
-          setSection2Link2Url(s2Links[1]?.url || '#');
-
-          setSection3Link1Label(s3Links[0]?.label || 'Related Links');
-          setSection3Link1Url(s3Links[0]?.url || '#');
-          setSection3Link2Label(s3Links[1]?.label || 'Contact Us');
-          setSection3Link2Url(s3Links[1]?.url || '#');
+          const raw = Array.isArray(data.sections) ? data.sections : [];
+          const loaded = raw.map((s) => ({
+            title: s?.title || '',
+            links: (Array.isArray(s?.links) ? s.links : []).map((l) => ({
+              label: l?.label || '',
+              url: l?.url || ''
+            }))
+          }));
+          setSections(loaded.length ? loaded : [emptySection()]);
 
           const social = data.social_links || {};
           setTwitterUrl(social.twitter || '');
@@ -81,52 +60,89 @@ export default function FooterAdminPage() {
     }
   };
 
+  // ---------- Section / link helpers ----------
+  const updateSection = (i, patch) =>
+    setSections((prev) => prev.map((s, idx) => (idx === i ? { ...s, ...patch } : s)));
+
+  const updateLink = (i, j, field, value) =>
+    setSections((prev) =>
+      prev.map((s, idx) =>
+        idx !== i
+          ? s
+          : { ...s, links: s.links.map((l, k) => (k === j ? { ...l, [field]: value } : l)) }
+      )
+    );
+
+  const addLink = (i) =>
+    setSections((prev) =>
+      prev.map((s, idx) =>
+        idx === i && s.links.length < MAX_LINKS
+          ? { ...s, links: [...s.links, emptyLink()] }
+          : s
+      )
+    );
+
+  const removeLink = (i, j) =>
+    setSections((prev) =>
+      prev.map((s, idx) =>
+        idx !== i ? s : { ...s, links: s.links.filter((_, k) => k !== j) }
+      )
+    );
+
+  const addSection = () =>
+    setSections((prev) => (prev.length < MAX_SECTIONS ? [...prev, emptySection()] : prev));
+
+  const removeSection = (i) => {
+    if (!confirm(`Remove Section ${i + 1}?`)) return;
+    setSections((prev) => prev.filter((_, idx) => idx !== i));
+  };
+
+  const moveSection = (i, dir) =>
+    setSections((prev) => {
+      const j = i + dir;
+      if (j < 0 || j >= prev.length) return prev;
+      const next = [...prev];
+      [next[i], next[j]] = [next[j], next[i]];
+      return next;
+    });
+
+  // ---------- Save ----------
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const cleaned = [];
+    for (let i = 0; i < sections.length; i++) {
+      const links = sections[i].links
+        .map((l) => ({ label: l.label.trim(), url: l.url.trim() || '#' }))
+        .filter((l) => l.label);
+
+      if (links.length === 0) {
+        alert(`Section ${i + 1} has no links. Add at least one link with a label, or remove the section.`);
+        return;
+      }
+      cleaned.push({ title: sections[i].title.trim(), links });
+    }
+
+    if (cleaned.length === 0) {
+      alert('Add at least one section.');
+      return;
+    }
+
     setSaving(true);
-
     try {
-      const sections = [
-        {
-          title: 'USEFUL LINKS',
-          links: [
-            { label: section1Link1Label, url: section1Link1Url },
-            { label: section1Link2Label, url: section1Link2Url },
-          ],
-        },
-        {
-          title: 'Website Policies',
-          links: [
-            { label: section2Link1Label, url: section2Link1Url },
-            { label: section2Link2Label, url: section2Link2Url },
-          ],
-        },
-        {
-          title: 'Related Links',
-          links: [
-            { label: section3Link1Label, url: section3Link1Url },
-            { label: section3Link2Label, url: section3Link2Url },
-          ],
-        },
-      ];
-
-      const socialLinks = {
-        twitter: twitterUrl,
-        youtube: youtubeUrl,
-        facebook: facebookUrl,
-        instagram: instagramUrl,
-      };
-
       const response = await fetch('/api/adm/footer', {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          sections,
-          social_links: socialLinks,
-          copyright,
-        }),
+          sections: cleaned,
+          social_links: {
+            twitter: twitterUrl,
+            youtube: youtubeUrl,
+            facebook: facebookUrl,
+            instagram: instagramUrl
+          },
+          copyright
+        })
       });
 
       if (response.ok) {
@@ -166,231 +182,186 @@ export default function FooterAdminPage() {
       <div className="space-y-6">
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <h1 className="text-3xl font-bold text-gray-900">Footer Management</h1>
-          <p className="text-gray-600 mt-1">Manage footer links, social media URLs and copyright text</p>
+          <p className="text-gray-600 mt-1">
+            Manage footer sections, links, social media URLs and copyright text
+          </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Sections */}
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-6">
-            {/* Section 1 */}
-            <div>
-              <h2 className="text-lg font-semibold text-gray-900 mb-3">
-                Section 1
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl font-semibold text-gray-900">
+                Sections ({sections.length}/{MAX_SECTIONS})
               </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Link 1 Label
-                  </label>
-                  <input
-                    type="text"
-                    className="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm mb-2"
-                    value={section1Link1Label}
-                    onChange={(e) => setSection1Link1Label(e.target.value)}
-                  />
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Link 1 URL
-                  </label>
-                  <input
-                    type="text"
-                    className="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm"
-                    value={section1Link1Url}
-                    onChange={(e) => setSection1Link1Url(e.target.value)}
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Link 2 Label
-                  </label>
-                  <input
-                    type="text"
-                    className="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm mb-2"
-                    value={section1Link2Label}
-                    onChange={(e) => setSection1Link2Label(e.target.value)}
-                  />
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Link 2 URL
-                  </label>
-                  <input
-                    type="text"
-                    className="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm"
-                    value={section1Link2Url}
-                    onChange={(e) => setSection1Link2Url(e.target.value)}
-                  />
-                </div>
-              </div>
+              <button
+                type="button"
+                onClick={addSection}
+                disabled={sections.length >= MAX_SECTIONS}
+                className="px-4 py-2 rounded-md bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                + Add Section
+              </button>
             </div>
 
-            {/* Section 2 */}
-            <div>
-              <h2 className="text-lg font-semibold text-gray-900 mb-3">
-                Section 2
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+            {sections.map((section, i) => (
+              <div key={i} className="border border-gray-200 rounded-lg p-4 space-y-4 bg-gray-50">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg font-semibold text-gray-900">Section {i + 1}</h3>
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => moveSection(i, -1)}
+                      disabled={i === 0}
+                      title="Move up"
+                      className="w-8 h-8 rounded border border-gray-300 bg-white text-gray-700 disabled:opacity-40"
+                    >
+                      ↑
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => moveSection(i, 1)}
+                      disabled={i === sections.length - 1}
+                      title="Move down"
+                      className="w-8 h-8 rounded border border-gray-300 bg-white text-gray-700 disabled:opacity-40"
+                    >
+                      ↓
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => removeSection(i)}
+                      disabled={sections.length === 1}
+                      className="px-3 h-8 rounded border border-red-200 bg-white text-red-600 text-sm hover:bg-red-50 disabled:opacity-40"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                </div>
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Link 1 Label
+                    Section Title
                   </label>
                   <input
                     type="text"
-                    className="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm mb-2"
-                    value={section2Link1Label}
-                    onChange={(e) => setSection2Link1Label(e.target.value)}
-                  />
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Link 1 URL
-                  </label>
-                  <input
-                    type="text"
-                    className="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm"
-                    value={section2Link1Url}
-                    onChange={(e) => setSection2Link1Url(e.target.value)}
+                    className={inputCls}
+                    value={section.title}
+                    onChange={(e) => updateSection(i, { title: e.target.value })}
+                    placeholder="e.g. Useful Links"
                   />
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Link 2 Label
-                  </label>
-                  <input
-                    type="text"
-                    className="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm mb-2"
-                    value={section2Link2Label}
-                    onChange={(e) => setSection2Link2Label(e.target.value)}
-                  />
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Link 2 URL
-                  </label>
-                  <input
-                    type="text"
-                    className="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm"
-                    value={section2Link2Url}
-                    onChange={(e) => setSection2Link2Url(e.target.value)}
-                  />
+
+                <div className="space-y-3">
+                  {section.links.map((link, j) => (
+                    <div
+                      key={j}
+                      className="grid grid-cols-1 md:grid-cols-[1fr_1fr_auto] gap-3 items-end"
+                    >
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Link {j + 1} Label
+                        </label>
+                        <input
+                          type="text"
+                          className={inputCls}
+                          value={link.label}
+                          onChange={(e) => updateLink(i, j, 'label', e.target.value)}
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Link {j + 1} URL
+                        </label>
+                        <input
+                          type="text"
+                          className={inputCls}
+                          value={link.url}
+                          onChange={(e) => updateLink(i, j, 'url', e.target.value)}
+                          placeholder="/page or https://..."
+                        />
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => removeLink(i, j)}
+                        disabled={section.links.length === 1}
+                        title="Remove link"
+                        className="h-10 px-3 rounded border border-red-200 bg-white text-red-600 text-sm hover:bg-red-50 disabled:opacity-40"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  ))}
                 </div>
+
+                <button
+                  type="button"
+                  onClick={() => addLink(i)}
+                  disabled={section.links.length >= MAX_LINKS}
+                  className="px-3 py-1.5 rounded border border-blue-200 bg-white text-blue-700 text-sm hover:bg-blue-50 disabled:opacity-50"
+                >
+                  + Add Link
+                </button>
+              </div>
+            ))}
+          </div>
+
+          {/* Social links */}
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <h2 className="text-lg font-semibold text-gray-900 mb-3">Social Media Links</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Twitter URL</label>
+                <input
+                  type="text"
+                  className={inputCls}
+                  value={twitterUrl}
+                  onChange={(e) => setTwitterUrl(e.target.value)}
+                  placeholder="https://x.com/..."
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">YouTube URL</label>
+                <input
+                  type="text"
+                  className={inputCls}
+                  value={youtubeUrl}
+                  onChange={(e) => setYoutubeUrl(e.target.value)}
+                  placeholder="https://youtube.com/..."
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Facebook URL</label>
+                <input
+                  type="text"
+                  className={inputCls}
+                  value={facebookUrl}
+                  onChange={(e) => setFacebookUrl(e.target.value)}
+                  placeholder="https://facebook.com/..."
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Instagram URL</label>
+                <input
+                  type="text"
+                  className={inputCls}
+                  value={instagramUrl}
+                  onChange={(e) => setInstagramUrl(e.target.value)}
+                  placeholder="https://instagram.com/..."
+                />
               </div>
             </div>
+          </div>
 
-            {/* Section 3 */}
-            <div>
-              <h2 className="text-lg font-semibold text-gray-900 mb-3">
-                Section 3
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Link 1 Label
-                  </label>
-                  <input
-                    type="text"
-                    className="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm mb-2"
-                    value={section3Link1Label}
-                    onChange={(e) => setSection3Link1Label(e.target.value)}
-                  />
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Link 1 URL
-                  </label>
-                  <input
-                    type="text"
-                    className="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm"
-                    value={section3Link1Url}
-                    onChange={(e) => setSection3Link1Url(e.target.value)}
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Link 2 Label
-                  </label>
-                  <input
-                    type="text"
-                    className="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm mb-2"
-                    value={section3Link2Label}
-                    onChange={(e) => setSection3Link2Label(e.target.value)}
-                  />
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Link 2 URL
-                  </label>
-                  <input
-                    type="text"
-                    className="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm"
-                    value={section3Link2Url}
-                    onChange={(e) => setSection3Link2Url(e.target.value)}
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Social links */}
-            <div>
-              <h2 className="text-lg font-semibold text-gray-900 mb-3">
-                Social Media Links
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Twitter URL
-                  </label>
-                  <input
-                    type="text"
-                    className="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm"
-                    value={twitterUrl}
-                    onChange={(e) => setTwitterUrl(e.target.value)}
-                    placeholder="https://x.com/..."
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    YouTube URL
-                  </label>
-                  <input
-                    type="text"
-                    className="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm"
-                    value={youtubeUrl}
-                    onChange={(e) => setYoutubeUrl(e.target.value)}
-                    placeholder="https://youtube.com/..."
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Facebook URL
-                  </label>
-                  <input
-                    type="text"
-                    className="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm"
-                    value={facebookUrl}
-                    onChange={(e) => setFacebookUrl(e.target.value)}
-                    placeholder="https://facebook.com/..."
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Instagram URL
-                  </label>
-                  <input
-                    type="text"
-                    className="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm"
-                    value={instagramUrl}
-                    onChange={(e) => setInstagramUrl(e.target.value)}
-                    placeholder="https://instagram.com/..."
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Copyright */}
-            <div>
-              <h2 className="text-lg font-semibold text-gray-900 mb-3">
-                Copyright
-              </h2>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Text
-              </label>
-              <input
-                type="text"
-                className="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm"
-                value={copyright}
-                onChange={(e) => setCopyright(e.target.value)}
-                placeholder="© 2024 Cabinet Secretariat, Government of India"
-              />
-            </div>
+          {/* Copyright */}
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <h2 className="text-lg font-semibold text-gray-900 mb-3">Copyright</h2>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Text</label>
+            <input
+              type="text"
+              className={inputCls}
+              value={copyright}
+              onChange={(e) => setCopyright(e.target.value)}
+            />
           </div>
 
           <div className="flex justify-end">
@@ -407,5 +378,3 @@ export default function FooterAdminPage() {
     </AdminLayout>
   );
 }
-
-// Footer admin page implementation here

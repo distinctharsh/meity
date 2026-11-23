@@ -14,7 +14,7 @@
       ]
     },
     {
-      "title": "Website Policies",
+      "title": "",
       "links": [
         {
           "label": "Website Policies",
@@ -27,7 +27,7 @@
       ]
     },
     {
-      "title": "Related Links",
+      "title": "",
       "links": [
         {
           "label": "Related Links",
@@ -36,6 +36,15 @@
         {
           "label": "Contact Us",
           "url": "/connect/contact-us"
+        }
+      ]
+    },
+    {
+      "title": "",
+      "links": [
+        {
+          "label": "Feedback",
+          "url": "/feedback"
         }
       ]
     }
@@ -47,5 +56,5 @@
     "instagram": ""
   },
   "copyright": "This Website belong to Cabinet Secretariat, Government of India",
-  "updated_at": "2026-11-02T07:25:37.238Z"
+  "updated_at": "2026-11-23T06:53:44.760Z"
 }
