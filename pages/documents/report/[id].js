@@ -122,6 +122,35 @@ export default function ReportDetail() {
     currentPage * effectivePerPage
   );
 
+  const getPageNumbers = () => {
+  const pages = [];
+  const delta = 2;
+
+  pages.push(1);
+
+  if (currentPage - delta > 2) {
+    pages.push('...');
+  }
+
+  for (
+    let i = Math.max(2, currentPage - delta);
+    i <= Math.min(totalPages - 1, currentPage + delta);
+    i++
+  ) {
+    pages.push(i);
+  }
+
+  if (currentPage + delta < totalPages - 1) {
+    pages.push('...');
+  }
+
+  if (totalPages > 1) {
+    pages.push(totalPages);
+  }
+
+  return [...new Set(pages)];
+};
+
   return (
     <>
       <main id="main">
@@ -210,7 +239,8 @@ export default function ReportDetail() {
             </div>
 
             {/* TABLE HEADER - EXACT TENDER STYLE */}
-            <div className="hidden lg:grid grid-cols-[5fr_2fr_2fr_3fr] bg-[#a3bbf3] text-[#162f6a] rounded-[8px] px-6 py-4 mb-3 uppercase text-[12px] font-semibold tracking-[1px]">
+            <div className="hidden lg:grid grid-cols-[0.5fr_5fr_2fr_2fr_3fr] bg-[#a3bbf3] text-[#162f6a] rounded-[8px] px-6 py-4 mb-3 uppercase text-[12px] font-semibold tracking-[1px]">
+              <div>S.No.</div>
               <div>Title</div>
               <div className="text-center">Published Date</div>
               <div className="text-center">Type/Size</div>
@@ -241,8 +271,12 @@ export default function ReportDetail() {
                   return (
                     <div
                       key={file.id || idx}
-                      className="grid grid-cols-1 lg:grid-cols-[5fr_2fr_2fr_3fr] items-center bg-white rounded-[8px] border border-[#dbe4ff] px-6 py-4 shadow-sm hover:shadow-md transition-shadow gap-3 lg:gap-0"
+                      className="grid grid-cols-1 lg:grid-cols-[0.5fr_5fr_2fr_2fr_3fr] items-center bg-white rounded-[8px] border border-[#dbe4ff] px-6 py-4 shadow-sm hover:shadow-md transition-shadow gap-3 lg:gap-0"
                     >
+                       <div className="text-sm font-semibold text-[#1d3f91]">
+                          <span className="lg:hidden text-xs text-gray-400 block uppercase font-normal mb-1">S.No.</span>
+                          {((currentPage - 1) * effectivePerPage) + idx + 1}
+                        </div>
                       {/* Title Column */}
                       <div className="text-sm pr-2">
                         <span className="lg:hidden text-xs text-gray-400 block uppercase font-normal mb-1">Title</span>
@@ -307,20 +341,26 @@ export default function ReportDetail() {
                           <span className="material-symbols-outlined text-[18px]">chevron_left</span>
                         </button>
                       </li>
-                      {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
-                        <li key={p}>
-                          <button
-                            type="button"
-                            onClick={() => setCurrentPage(p)}
-                            className={
-                              p === currentPage
-                                ? "w-8 h-8 rounded-full bg-[#c7d7ff] text-[#123a6b] font-bold shadow-sm"
-                                : "w-8 h-8 rounded-full text-[#123a6b] hover:bg-[#e8efff] transition-colors"
-                            }
-                            aria-current={p === currentPage ? "page" : undefined}
-                          >
-                            {p}
-                          </button>
+                      {getPageNumbers().map((p, index) => (
+                        <li key={`${p}-${index}`}>
+                          {p === '...' ? (
+                            <span className="w-8 h-8 inline-flex items-center justify-center text-gray-500">
+                              ...
+                            </span>
+                          ) : (
+                            <button
+                              type="button"
+                              onClick={() => setCurrentPage(p)}
+                              className={
+                                p === currentPage
+                                  ? "w-8 h-8 rounded-full bg-[#c7d7ff] text-[#123a6b] font-bold shadow-sm"
+                                  : "w-8 h-8 rounded-full text-[#123a6b] hover:bg-[#e8efff] transition-colors"
+                              }
+                              aria-current={p === currentPage ? "page" : undefined}
+                            >
+                              {p}
+                            </button>
+                          )}
                         </li>
                       ))}
                       <li>

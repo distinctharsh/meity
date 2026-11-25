@@ -80,11 +80,40 @@ export default function SearchPage() {
 
   return arr;
 }, [filtered, sort]);
-  const totalPages = Math.ceil(sorted.length / perPage);
+  const totalPages = Math.ceil(sorted.length / perPage) || 1;
   const paginated = sorted.slice(
     (currentPage - 1) * perPage,
     currentPage * perPage
   );
+
+  const getPageNumbers = () => {
+    const pages = [];
+    const delta = 2;
+
+    pages.push(1);
+
+    if (currentPage - delta > 2) {
+      pages.push('...');
+    }
+
+    for (
+      let i = Math.max(2, currentPage - delta);
+      i <= Math.min(totalPages - 1, currentPage + delta);
+      i++
+    ) {
+      pages.push(i);
+    }
+
+    if (currentPage + delta < totalPages - 1) {
+      pages.push('...');
+    }
+
+    if (totalPages > 1) {
+      pages.push(totalPages);
+    }
+
+    return [...new Set(pages)];
+  };
   return (
     <main id="main">
       <PageHeader pageTitle={`Search Results : ${q || ""}`} />
@@ -225,23 +254,43 @@ export default function SearchPage() {
 
           {/* PAGINATION */}
           {totalPages > 1 && (
-            <div className="flex justify-center gap-3 mt-8">
+            <div className="flex justify-center items-center gap-2 mt-8 flex-wrap">
               <button
                 disabled={currentPage === 1}
-                onClick={() => setCurrentPage(currentPage - 1)}
-                className="px-4 py-2 border rounded"
+                onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                className="w-8 h-8 inline-flex items-center justify-center rounded-full border border-gray-300 text-[#123a6b] disabled:opacity-40 hover:bg-gray-50"
               >
-                Prev
+                &lt;
               </button>
-              <span className="px-4 py-2">
-                {currentPage} / {totalPages}
-              </span>
+
+              {getPageNumbers().map((p, index) => (
+                <span key={`${p}-${index}`}>
+                  {p === '...' ? (
+                    <span className="w-8 h-8 inline-flex items-center justify-center text-gray-500">
+                      ...
+                    </span>
+                  ) : (
+                    <button
+                      onClick={() => setCurrentPage(p)}
+                      className={
+                        p === currentPage
+                          ? "w-8 h-8 rounded-full bg-[#c7d7ff] text-[#123a6b] font-bold shadow-sm"
+                          : "w-8 h-8 rounded-full text-[#123a6b] hover:bg-[#e8efff]"
+                      }
+                      aria-current={p === currentPage ? "page" : undefined}
+                    >
+                      {p}
+                    </button>
+                  )}
+                </span>
+              ))}
+
               <button
                 disabled={currentPage === totalPages}
-                onClick={() => setCurrentPage(currentPage + 1)}
-                className="px-4 py-2 border rounded"
+                onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                className="w-8 h-8 inline-flex items-center justify-center rounded-full border border-gray-300 text-[#123a6b] disabled:opacity-40 hover:bg-gray-50"
               >
-                Next
+                &gt;
               </button>
             </div>
           )}
