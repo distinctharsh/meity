@@ -16,7 +16,11 @@ export default async function handler(req, res) {
     }
   } else if (req.method === 'POST') {
     try {
-      const { name, template_key, description, schema_json, is_active = true } = req.body;
+      const { action, name, template_key, description, schema_json, is_active = true } = req.body;
+
+      if (action && action !== 'create') {
+        return res.status(400).json({ message: 'Invalid action' });
+      }
 
       if (!name || !template_key) {
         return res.status(400).json({ message: 'name and template_key are required' });

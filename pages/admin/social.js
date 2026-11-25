@@ -57,11 +57,24 @@ export default function AdminSocialPage() {
 
   const onDelete = async (id) => {
     if (!confirm('Delete this post?')) return;
-    const res = await fetch(`/api/adm/social-posts/${id}`, { method: 'DELETE' });
-    if (!res.ok) {
-      alert('Delete failed');
-    } else {
+
+    try {
+      const res = await fetch(`/api/adm/social-posts/${id}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ action: 'delete' })
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.message || 'Delete failed');
+      }
+
       await load();
+    } catch (e) {
+      alert(e.message || 'Delete failed');
     }
   };
 

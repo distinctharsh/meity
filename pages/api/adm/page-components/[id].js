@@ -4,7 +4,7 @@ export default async function handler(req, res) {
   const { id } = req.query;
   if (!id || isNaN(id)) return res.status(400).json({ message: 'Invalid id' });
 
-  if (req.method === 'DELETE') {
+  if (req.method === 'POST' && req.body.action === 'delete') {
     try {
       const [r] = await pool.query('DELETE FROM page_components WHERE id = ?', [id]);
       if (!r.affectedRows) return res.status(404).json({ message: 'Not found' });
@@ -13,7 +13,7 @@ export default async function handler(req, res) {
       console.error('Delete page component error', err);
       res.status(500).json({ message: 'Internal server error' });
     }
-  } else if (req.method === 'PUT') {
+  } else if (req.method === 'POST' && req.body.action === 'update') {
     try {
       const { display_order, props_json, is_active } = req.body;
       let propsToStore = null;

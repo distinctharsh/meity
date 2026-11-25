@@ -23,7 +23,7 @@ export default async function handler(req, res) {
       console.error('Error fetching offering:', error);
       res.status(500).json({ message: 'Internal server error' });
     }
-  } else if (req.method === 'PUT') {
+  } else if (req.method === 'POST' && req.body.action === 'update') {
     try {
       const { title, link_url, category, is_active } = req.body;
 
@@ -62,7 +62,7 @@ export default async function handler(req, res) {
       console.error('Error updating offering:', error);
       res.status(500).json({ message: 'Internal server error' });
     }
-  } else if (req.method === 'DELETE') {
+  } else if (req.method === 'POST' && req.body.action === 'delete') {
     try {
       const [result] = await pool.query(
         'DELETE FROM offerings WHERE id = ?',

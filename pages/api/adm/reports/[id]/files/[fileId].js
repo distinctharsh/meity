@@ -11,7 +11,7 @@ export default async function handler(req, res) {
     return res.status(400).json({ message: 'Invalid file ID' });
   }
 
-  if (req.method === 'PUT') {
+  if (req.method === 'POST' && req.body.action === 'update') {
     try {
       const { original_name, status } = req.body || {};
       

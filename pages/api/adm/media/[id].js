@@ -9,7 +9,7 @@ export default async function handler(req, res) {
     return res.status(400).json({ message: 'Invalid media ID' });
   }
 
-  if (req.method === 'DELETE') {
+  if (req.method === 'POST' && req.body.action === 'delete') {
     try {
       // Get file info from database
       const [rows] = await pool.query(

@@ -60,7 +60,7 @@ export default async function handler(req, res) {
     }
   }
 
-  if (req.method === 'PUT') {
+  if (req.method === 'POST' && req.query.action === 'update') {
     try {
       // Parse multipart form with multer
       await runMiddleware(req, res, upload.single('file'));
@@ -141,7 +141,7 @@ export default async function handler(req, res) {
     }
   }
 
-  if (req.method === 'DELETE') {
+  if (req.method === 'POST' && req.query.action === 'delete') {
     try {
       const [result] = await pool.query(
         'DELETE FROM vacancies_tenders WHERE id = ?',

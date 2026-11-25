@@ -11,7 +11,7 @@ export default async function handler(req, res) {
       console.error('Error fetching settings:', error);
       res.status(500).json({ message: 'Internal server error' });
     }
-  } else if (req.method === 'PUT') {
+  } else if (req.method === 'POST') {
     try {
       const settings = req.body;
 

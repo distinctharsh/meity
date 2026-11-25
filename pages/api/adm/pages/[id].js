@@ -91,7 +91,7 @@ export default async function handler(req, res) {
     UPDATE PAGE
   */
 
-  else if (req.method === 'PUT') {
+  else if (req.method === 'POST') {
 
     let conn;
 
@@ -287,7 +287,7 @@ export default async function handler(req, res) {
     DELETE PAGE
   */
 
-  else if (req.method === 'DELETE') {
+  else if (req.method === 'POST') {
 
     let conn;
 

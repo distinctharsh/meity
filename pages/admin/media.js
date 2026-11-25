@@ -70,7 +70,13 @@ export default function MediaLibrary() {
 
     try {
       const response = await fetch(`/api/adm/media/${id}`, {
-        method: 'DELETE'
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          action: 'delete',
+        }),
       });
 
       if (response.ok) {

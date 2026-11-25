@@ -28,7 +28,7 @@ export default async function handler(req, res) {
       console.error('Admin page header get error', err);
       return res.status(500).json({ message: 'Internal server error' });
     }
-  } else if (req.method === 'PUT') {
+  } else if (req.method === 'POST' && req.body?.action !== 'delete') {
     try {
       const { page_path, background_url } = req.body;
       const [curRows] = await pool.query('SELECT * FROM page_headers WHERE id = ?', [id]);
@@ -60,7 +60,7 @@ export default async function handler(req, res) {
       console.error('Admin page header update error', err);
       return res.status(500).json({ message: 'Internal server error' });
     }
-  } else if (req.method === 'DELETE') {
+  } else if (req.method === 'POST' && req.body?.action === 'delete') {
     try {
       const [r] = await pool.query('DELETE FROM page_headers WHERE id = ?', [id]);
       if (!r.affectedRows) return res.status(404).json({ message: 'Not found' });

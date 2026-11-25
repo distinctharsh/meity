@@ -46,7 +46,7 @@ export default async function handler(req, res) {
       console.error('Get report error', e);
       return res.status(500).json({ message: 'Internal server error' });
     }
-  } else if (req.method === 'PUT') {
+  } else if (req.method === 'POST' && req.body.action !== 'delete') {
     try {
       const body = req.body || {};
       const { title, type, year, size, file_url, nav_item_id, nav_link, item_count, display_order, is_active, is_archived, status } = body;
@@ -111,9 +111,12 @@ export default async function handler(req, res) {
       console.error('Update report error', e);
       return res.status(500).json({ message: 'Internal server error' });
     }
-  } else if (req.method === 'DELETE') {
+  } else if (req.method === 'POST' && req.body.action === 'delete') {
     try {
-      const [result] = await pool.query('DELETE FROM reports WHERE id = ?', [id]);
+      const [result] = await pool.query(
+        'UPDATE reports SET is_active = 0, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
+        [id]
+      );
       if (result.affectedRows === 0) return res.status(404).json({ message: 'Not found' });
 
       const { userId, username } = getLoggedInUser(req);
@@ -124,7 +127,7 @@ export default async function handler(req, res) {
         'REPORTS',
         'DELETE',
         id,
-        `Deleted Report with ID ${id}`
+        `Soft Deleted Report with ID ${id}`
       );
 
       return res.status(200).json({ message: 'Deleted' });

@@ -169,8 +169,8 @@ export default function ReportForm({ initial, onCancel, onSaved }) {
         is_archived: form.status === 2,
       };
       const url = initial ? `/api/adm/reports/${initial.id}` : '/api/adm/reports';
-      const method = initial ? 'PUT' : 'POST';
-      const res = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+      const method = 'POST';
+      const res = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...payload, action: 'update' }) });
       if (!res.ok) {
         const j = await res.json().catch(() => ({}));
         alert(j.message || 'Save failed');
@@ -210,7 +210,7 @@ export default function ReportForm({ initial, onCancel, onSaved }) {
             if (titleChanged) {
               try {
                 await fetch(`/api/adm/reports/${initial.id}/files/${f.id}`, {
-                  method: 'PUT',
+                  method: 'POST',
                   headers: { 'Content-Type': 'application/json' },
                   body: JSON.stringify({ original_name: customTitle, status: currentStatus })
                 });
@@ -311,7 +311,7 @@ export default function ReportForm({ initial, onCancel, onSaved }) {
       const res = await fetch(
         `/api/adm/reports/${initial.id}/files/${file.id}`,
         {
-          method: 'PUT',
+          method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ status: newStatus })
         }
@@ -352,9 +352,9 @@ export default function ReportForm({ initial, onCancel, onSaved }) {
         const res = await fetch(
           `/api/adm/reports/${initial.id}/files`,
           { 
-            method: 'DELETE',
+            method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ fileId: file.id })
+            body: JSON.stringify({ fileId: file.id, action: 'delete' })
           }
         );
         
@@ -407,7 +407,7 @@ export default function ReportForm({ initial, onCancel, onSaved }) {
     if (initial?.id) {
       try {
         await fetch(`/api/adm/reports/${initial.id}`, {
-          method: 'PUT',
+          method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ file_url: null })
         });

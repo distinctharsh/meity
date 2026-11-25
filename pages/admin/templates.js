@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import AdminLayout from '@/components/admin/AdminLayout';
 
 export default function TemplatesManagement() {
@@ -17,6 +17,7 @@ export default function TemplatesManagement() {
       setTemplates(data);
     } catch (e) {
       console.error('Load templates failed', e);
+      setTemplates([]);
     } finally { setLoading(false); }
   }
 
@@ -26,7 +27,10 @@ export default function TemplatesManagement() {
   async function handleDelete(id) {
     if (!confirm('Delete this template? Pages using it will need updating.')) return;
     try {
-      const res = await fetch(`/api/adm/page-templates/${id}`, { method: 'DELETE' });
+      const res = await fetch(`/api/adm/page-templates/${id}`, { method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'delete' }), 
+      });
       if (res.ok) await refresh(); else alert('Delete failed');
     } catch (e) { console.error(e); alert('Delete failed'); }
   }
@@ -34,9 +38,10 @@ export default function TemplatesManagement() {
   async function toggleActive(tpl) {
     try {
       const res = await fetch(`/api/adm/page-templates/${tpl.id}`, {
-        method: 'PUT',
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          action: 'update',
           name: tpl.name,
           template_key: tpl.template_key,
           description: tpl.description,
@@ -138,25 +143,52 @@ function TemplateForm({ onClose, onSaved, editing }) {
   async function save(e) {
     e.preventDefault();
     setSaving(true);
+
+    let parsedSchema = null;
+
+    try {
+      parsedSchema = form.schema_json
+        ? JSON.parse(form.schema_json)
+        : null;
+    } catch (error) {
+      alert('Invalid JSON schema. Please check your JSON syntax.');
+      setSaving(false);
+      return;
+    }
+
     try {
       const payload = {
         name: form.name.trim(),
         template_key: form.template_key.trim(),
         description: form.description || null,
-        schema_json: form.schema_json ? JSON.parse(form.schema_json) : null,
+        schema_json: parsedSchema,
         is_active: !!form.is_active,
+        action: editing ? 'update' : 'create',
       };
-      const url = editing ? `/api/adm/page-templates/${editing.id}` : '/api/adm/page-templates';
-      const method = editing ? 'PUT' : 'POST';
-      const res = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-      if (res.ok) await onSaved(); else {
+
+      const url = editing
+        ? `/api/adm/page-templates/${editing.id}`
+        : '/api/adm/page-templates';
+
+
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
+      if (res.ok) {
+        await onSaved();
+      } else {
         const j = await res.json().catch(() => ({}));
         alert(j.message || 'Save failed');
       }
     } catch (e2) {
       console.error('Save template error', e2);
       alert('Save failed');
-    } finally { setSaving(false); }
+    } finally {
+      setSaving(false);
+    }
   }
 
   function loadHeroTabsSchema() {

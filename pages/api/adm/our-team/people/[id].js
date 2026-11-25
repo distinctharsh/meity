@@ -28,7 +28,7 @@ export default async function handler(req, res) {
       console.error('Get person error', e);
       return res.status(500).json({ message: 'Internal server error' });
     }
-  } else if (req.method === 'PUT') {
+  } else if (req.method === 'POST' && req.body.action === 'update') {
     try {
       const { section_id, name, designation, address, display_order, is_active } = req.body || {};
       const fields = [];
@@ -59,7 +59,7 @@ export default async function handler(req, res) {
       console.error('Update person error', e);
       return res.status(500).json({ message: 'Internal server error' });
     }
-  } else if (req.method === 'DELETE') {
+  } else if (req.method === 'POST' && req.body.action === 'delete') {
     try {
       const [r] = await pool.query('DELETE FROM our_team_people WHERE id = ?', [id]);
 

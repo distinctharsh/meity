@@ -13,7 +13,7 @@ export default async function handler(req, res) {
       console.error('Get template error', err);
       res.status(500).json({ message: 'Internal server error' });
     }
-  } else if (req.method === 'PUT') {
+  } else if (req.method === 'POST' && req.body.action === 'update') {
     try {
       const { name, template_key, description, schema_json, is_active } = req.body;
 
@@ -44,7 +44,7 @@ export default async function handler(req, res) {
       }
       res.status(500).json({ message: 'Internal server error' });
     }
-  } else if (req.method === 'DELETE') {
+  } else if (req.method === 'POST' && req.body.action === 'delete') {
     try {
       const [result] = await pool.query('DELETE FROM page_templates WHERE id = ?', [id]);
       if (!result.affectedRows) return res.status(404).json({ message: 'Template not found' });

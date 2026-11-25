@@ -61,7 +61,17 @@ export default function AdminReportsPage() {
 
   const onDelete = async (id) => {
     if (!confirm('Delete this report?')) return;
-    const res = await fetch(`/api/adm/reports/${id}`, { method: 'DELETE' });
+
+    const res = await fetch(`/api/adm/reports/${id}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        action: 'delete',
+      }),
+    });
+
     if (!res.ok) {
       alert('Delete failed');
     } else {

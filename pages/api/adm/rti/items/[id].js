@@ -60,7 +60,7 @@ export default async function handler(req, res) {
       console.error('Error fetching RTI item:', error);
       res.status(500).json({ message: 'Internal server error' });
     }
-  } else if (req.method === 'PUT') {
+  } else if (req.method === 'POST' && req.body.action === 'update') {
     try {
       let { section_id, title, file_url, file_size, file_type, display_order, is_active } = req.body || {};
       // Auto-derive size/type when file_url changes
@@ -97,7 +97,7 @@ export default async function handler(req, res) {
       console.error('Error updating RTI item:', error);
       res.status(500).json({ message: 'Internal server error' });
     }
-  } else if (req.method === 'DELETE') {
+  } else if (req.method === 'POST' && req.body.action === 'delete') {
     try {
       const [result] = await pool.query('DELETE FROM rti_items WHERE id = ?', [id]);
       if (result.affectedRows === 0) return res.status(404).json({ message: 'Not found' });

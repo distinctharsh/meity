@@ -34,7 +34,7 @@ export default function Settings() {
 
     try {
       const response = await fetch('/api/adm/settings', {
-        method: 'PUT',
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },

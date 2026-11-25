@@ -7,7 +7,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    if (req.method === 'PUT') {
+    if (req.method === 'POST' && req.body.action !== 'delete') {
       const { platform, post_url, display_order = 0, is_active = true } = req.body || {};
       if (!platform || !post_url) {
         return res.status(400).json({ message: 'platform and post_url are required' });
@@ -22,12 +22,15 @@ export default async function handler(req, res) {
       return res.status(200).json(rows[0]);
     }
 
-    if (req.method === 'DELETE') {
-      await pool.query(`DELETE FROM social_media_posts WHERE id = ?`, [Number(id)]);
-      return res.status(204).end();
+    if (req.method === 'POST' && req.body.action === 'delete') {
+      await pool.query(
+        `UPDATE social_media_posts SET is_active = 0, updated_at = CURRENT_TIMESTAMP WHERE id = ?`,
+        [Number(id)]
+      );
+      return res.status(200).json({ message: 'Social post deactivated successfully' });
     }
 
-    res.setHeader('Allow', ['PUT', 'DELETE']);
+    res.setHeader('Allow', ['POST']);
     return res.status(405).json({ message: 'Method not allowed' });
   } catch (e) {
     console.error('Admin social-posts [id] error:', e);

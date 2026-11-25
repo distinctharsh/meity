@@ -45,7 +45,7 @@ export default function PhotosAdmin() {
     };
     
     const url = editingGallery ? `/api/adm/photos/${editingGallery.id}` : '/api/adm/photos';
-    const method = editingGallery ? 'PUT' : 'POST';
+    const method = 'POST';
 
     try {
       const response = await fetch(url, {
@@ -77,7 +77,13 @@ export default function PhotosAdmin() {
 
     try {
       const response = await fetch(`/api/adm/photos/${id}`, {
-        method: 'DELETE'
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          action: 'delete'
+        })
       });
 
       if (response.ok) {

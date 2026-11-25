@@ -45,7 +45,11 @@ export default function PageHeadersAdmin() {
   const handleDelete = async (id) => {
     if (!confirm('Delete this header?')) return;
     try {
-      const res = await fetch(`/api/adm/page-header/${id}`, { method: 'DELETE' });
+      const res = await fetch(`/api/adm/page-header/${id}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'delete' })
+      });
       if (res.ok) await refresh(); else alert('Delete failed');
     } catch (e) { console.error(e); alert('Delete failed'); }
   };
@@ -157,7 +161,7 @@ function HeaderForm({ editing, onClose, onSaved, pageOptions }) {
     setSaving(true);
     try {
       const url = editing ? `/api/adm/page-header/${editing.id}` : '/api/adm/page-header';
-      const method = editing ? 'PUT' : 'POST';
+      const method = 'POST';
       const res = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(form) });
       if (res.ok) await onSaved(); else {
         const j = await res.json().catch(() => ({}));

@@ -176,7 +176,7 @@ export default function AnnouncementsManagement() {
   const toggleActive = async (id, isActive) => {
     try {
       const response = await fetch('/api/adm/announcements/toggle-status', {
-        method: 'PUT',
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },

@@ -51,7 +51,7 @@ export default async function handler(req, res) {
       console.error('Add report files error', e);
       return res.status(500).json({ message: 'Internal server error' });
     }
-  } else if (req.method === 'DELETE') {
+  } else if (req.method === 'POST' && req.body.action === 'delete') {
     try {
       const { fileId } = req.body || {};
       

@@ -59,7 +59,7 @@ export default async function handler(req, res) {
       console.error('Error fetching footer:', error);
       return res.status(500).json({ message: 'Internal server error' });
     }
-  } else if (req.method === 'PUT') {
+  } else if (req.method === 'POST') {
     try {
       const { sections, social_links, copyright } = req.body || {};
 

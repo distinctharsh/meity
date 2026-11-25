@@ -29,7 +29,11 @@ export default function SubnavAdmin() {
   const handleDelete = async (id) => {
     if (!confirm('Delete this tab?')) return;
     try {
-      const res = await fetch(`/api/adm/subnav/${id}`, { method: 'DELETE' });
+      const res = await fetch(`/api/adm/subnav/${id}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'delete' })
+      });
       if (res.ok) await refresh(); else alert('Delete failed');
     } catch (e) { console.error(e); alert('Delete failed'); }
   };
@@ -125,7 +129,7 @@ function SubnavForm({ editing, onClose, onSaved }) {
     setSaving(true);
     try {
       const url = editing ? `/api/adm/subnav/${editing.id}` : '/api/adm/subnav';
-      const method = editing ? 'PUT' : 'POST';
+      const method = 'POST';
       const res = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(form) });
       if (res.ok) await onSaved(); else {
         const j = await res.json().catch(() => ({}));

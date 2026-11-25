@@ -334,7 +334,11 @@ export default function PagesManagement() {
   const handleDelete = async (id) => {
     if (!confirm('Delete this page?')) return;
     try {
-      const res = await fetch(`/api/adm/pages/${id}`, { method: 'DELETE' });
+      const res = await fetch(`/api/adm/pages/${id}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ is_active: 0 }),
+      });
       if (res.ok) {
         await refresh();
         await syncPagesAndRoutes();
@@ -351,7 +355,7 @@ export default function PagesManagement() {
   const toggleActive = async (pg) => {
     try {
       const res = await fetch(`/api/adm/pages/${pg.id}`, {
-        method: 'PUT',
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           title: pg.title,
@@ -723,7 +727,7 @@ function PageForm({ onClose, onSaved, editing }) {
       delete payload.content_css;
       delete payload.content_js;
       const url = editing ? `/api/adm/pages/${editing.id}` : '/api/adm/pages';
-      const method = editing ? 'PUT' : 'POST';
+      const method = 'POST';
       const res = await fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },

@@ -44,7 +44,7 @@ export default async function handler(req, res) {
       return res.status(200).json(galleries);
     }
     
-    if (req.method === 'POST') {
+    if (req.method === 'POST' && (!req.body.action || req.body.action === 'create')) {
       // Create new photo gallery
       const { title, date, images } = req.body;
       
@@ -74,7 +74,7 @@ export default async function handler(req, res) {
       });
     }
     
-    if (req.method === 'PUT') {
+    if (req.method === 'POST' && req.body.action === 'update') {
       // Update photo gallery
       const { id } = req.query;
       const { title, date, images } = req.body;
@@ -103,7 +103,7 @@ export default async function handler(req, res) {
       return res.status(200).json({ message: 'Gallery updated successfully' });
     }
     
-    if (req.method === 'DELETE') {
+    if (req.method === 'POST' && req.body.action === 'delete') {
       // Delete photo gallery
       const { id } = req.query;
       

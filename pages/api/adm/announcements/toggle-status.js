@@ -1,7 +1,7 @@
 import pool from '@/lib/db';
 
 export default async function handler(req, res) {
-  if (req.method !== 'PUT') {
+  if (req.method !== 'POST') {
     return res.status(405).json({ message: 'Method not allowed' });
   }
 
@@ -17,8 +17,8 @@ export default async function handler(req, res) {
 
   try {
     const [result] = await pool.query(
-      'UPDATE announcements SET is_active = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
-      [is_active, id]
+      'UPDATE announcements SET is_active = 0, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
+      [id]
     );
 
     if (result.affectedRows === 0) {

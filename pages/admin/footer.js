@@ -131,7 +131,7 @@ export default function FooterAdminPage() {
     setSaving(true);
     try {
       const response = await fetch('/api/adm/footer', {
-        method: 'PUT',
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           sections: cleaned,

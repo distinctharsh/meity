@@ -543,7 +543,13 @@ function PeopleManager({ sections, people, contacts, reload }) {
         const r = await fetch(`/api/adm/our-team/people/${editing.id}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(base) });
         if (!r.ok) throw new Error('Update failed');
         const existing = contacts.filter(ct => ct.person_id === editing.id);
-        for (const ex of existing) { await fetch(`/api/adm/our-team/contacts/${ex.id}`, { method: 'DELETE' }); }
+        for (const ex of existing) {
+          await fetch(`/api/adm/our-team/contacts/${ex.id}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'delete' })
+          });
+        }
         for (const ct of form.contacts) {
           if (!ct.type || !ct.value) continue;
           await fetch('/api/adm/our-team/contacts', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ person_id: editing.id, type: ct.type, value: ct.value }) });

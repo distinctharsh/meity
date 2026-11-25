@@ -35,7 +35,7 @@ export default async function handler(req, res) {
       console.error('Error fetching RTI content:', error);
       res.status(500).json({ message: 'Internal server error' });
     }
-  } else if (req.method === 'PUT') {
+  } else if (req.method === 'POST' && req.body.action === 'update') {
     try {
       const { page_title, intro_heading, intro_bullets, is_active } = req.body || {};
       const [rows] = await pool.query('SELECT id FROM rti_page_content LIMIT 1');

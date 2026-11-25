@@ -29,9 +29,18 @@ export default function RecentDocsAdmin() {
   const handleDelete = async (id) => {
     if (!confirm('Delete this document?')) return;
     try {
-      const res = await fetch(`/api/adm/recent-docs/${id}`, { method: 'DELETE' });
+      const res = await fetch(`/api/adm/recent-docs/${id}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'delete' }),
+      });
+
       if (res.ok) {
-        setDocs((prev) => prev.filter((d) => d.id !== id));
+        setDocs((prev) =>
+          prev.map((d) =>
+            d.id === id ? { ...d, is_active: 0 } : d
+          )
+        );
       } else {
         alert('Failed to delete');
       }
@@ -44,7 +53,7 @@ export default function RecentDocsAdmin() {
   const handleToggleActive = async (id, isActive) => {
     try {
       const res = await fetch(`/api/adm/recent-docs/${id}`, {
-        method: 'PUT',
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ is_active: !isActive }),
       });
@@ -59,7 +68,7 @@ export default function RecentDocsAdmin() {
   const handleFormSubmit = async (formData) => {
     try {
       const url = editingDoc ? `/api/adm/recent-docs/${editingDoc.id}` : '/api/adm/recent-docs';
-      const method = editingDoc ? 'PUT' : 'POST';
+      const method = 'POST';
       const res = await fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },

@@ -28,7 +28,7 @@ export default async function handler(req, res) {
       console.error('Get section error', e);
       return res.status(500).json({ message: 'Internal server error' });
     }
-  } else if (req.method === 'PUT') {
+  } else if (req.method === 'POST' && req.body.action === 'update') {
     try {
       const { title, display_order, is_active } = req.body || {};
       const fields = [];
@@ -56,7 +56,7 @@ export default async function handler(req, res) {
       console.error('Update section error', e);
       return res.status(500).json({ message: 'Internal server error' });
     }
-  } else if (req.method === 'DELETE') {
+  } else if (req.method === 'POST' && req.body.action === 'delete') {
     try {
       const [r] = await pool.query('DELETE FROM our_team_sections WHERE id = ?', [id]);
 
