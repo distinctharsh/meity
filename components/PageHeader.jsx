@@ -222,6 +222,14 @@ export default function PageHeader({
                 )
               );
 
+            const getFirstChildLink = (node) => {
+              if (!node?.children?.length) return null;
+              const firstChild = node.children[0];
+              const link = firstChild.href || firstChild.link || "";
+              if (link) return link;
+              return getFirstChildLink(firstChild);
+            };
+
             const buildBreadcrumb = (
               node,
               path = []
@@ -244,7 +252,8 @@ export default function PageHeader({
 
               path.unshift({
                 name,
-                href
+                href,
+                firstChildLink: getFirstChildLink(node),
               });
 
               const findParent = (
@@ -552,48 +561,47 @@ export default function PageHeader({
               {t('home')}
             </a>
 
-            {breadcrumbPath.map(
-              (item, index) => (
-                <span
+            {breadcrumbPath.map((item, index) => {
+              const isLast = index === breadcrumbPath.length - 1;
+              const targetLink = item.firstChildLink || item.href;
+              return (
+                <span 
                   key={`${item.href || item.name}-${index}`}
-                >
+                  >
 
-                  <span
-                    style={{
-                      color:
-                        textColor
+                  <span 
+                  style={{ 
+                    color: 
+                    textColor 
                     }}
                   >
                     {' / '}
                   </span>
 
-                  {item.href &&
-                  item.href !==
-                    effectivePath ? (
+                  {!isLast && targetLink ? (
                     <a
-                      href={item.href}
+                      href={targetLink}
                       className="hover:underline"
-                      style={{
-                        color:
-                          textColor
+                      style={{ 
+                        color: 
+                        textColor 
                       }}
                     >
                       {item.name}
                     </a>
                   ) : (
-                    <span
-                      style={{
-                        color:
-                          textColor
+                    <span 
+                    style={{ 
+                      color: 
+                      textColor 
                       }}
                     >
                       {item.name}
                     </span>
                   )}
-
                 </span>
-              )
-            )}
+              );
+            })}
 
           </p>
         ) : null}
