@@ -1,5 +1,4 @@
 import pool from '@/lib/db';
-import { syncFooter } from '@/utils/api';
 
 // 1. Log Login / Logout / Failed Login
 export async function logAuditTrail(req, userId, username, action) {
@@ -39,7 +38,6 @@ export async function logAuditAction(req, userId, username, module, actionType, 
       );
     }
 
-    await syncFooter();
   } catch (err) {
     console.error('Audit action insert error:', err);
   }

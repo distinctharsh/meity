@@ -567,29 +567,15 @@ export default function PageHeader({
                     {' / '}
                   </span>
 
-                  {item.href &&
-                  item.href !==
-                    effectivePath ? (
-                    <a
-                      href={item.href}
-                      className="hover:underline"
-                      style={{
-                        color:
-                          textColor
-                      }}
-                    >
-                      {item.name}
-                    </a>
-                  ) : (
-                    <span
-                      style={{
-                        color:
-                          textColor
-                      }}
-                    >
-                      {item.name}
-                    </span>
-                  )}
+                  <span
+                    style={{
+                      color: 
+                      textColor,
+                      cursor: "default",
+                    }}
+                  >
+                    {item.name}
+                  </span>
 
                 </span>
               )

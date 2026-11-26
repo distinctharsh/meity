@@ -15,7 +15,15 @@ const Footer = () => {
 
     const fetchFooter = async () => {
       try {
-        const res = await fetch("/api/footer");
+        await fetch("/api/adm/sync-footer", {
+          method: "POST",
+          cache: "no-store",
+        });
+
+        const res = await fetch("/api/footer?t=" + Date.now(), {
+          cache: "no-store",
+        });
+
         if (!res.ok) {
           return;
         }
@@ -38,6 +46,7 @@ const Footer = () => {
       isMounted = false;
     };
   }, []);
+
 
   if (loading || !data || !Array.isArray(data.sections)) {
     return null;

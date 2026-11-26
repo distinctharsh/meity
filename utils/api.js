@@ -118,18 +118,3 @@ export const syncRoutesAndNavTree = async () => {
     console.error('Routes & nav-tree sync error:', error);  
   }
 }
-
-export const syncFooter = async () => {
-  try {
-    console.log('Syncing footer...');
-    const response = await fetchWithCacheBusting('/api/adm/sync-footer', {
-      method: 'POST',
-    });
-
-    if (!response.ok) {
-      console.error('Footer sync failed');
-    }
-  } catch (error) {
-    console.error('Footer sync error:', error);
-  }
-};
