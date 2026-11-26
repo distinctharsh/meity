@@ -11,11 +11,12 @@ export default function ReportDetail() {
   const [error, setError] = useState("");
   const [yearFilter, setYearFilter] = useState("");
   const [query, setQuery] = useState("");
-  const [sort, setSort] = useState("Newest");
+  const [orderType, setOrderType] = useState(0);
   const [perPage, setPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   const [breadcrumb, setBreadcrumb] = useState([]);
   const [reportTitle, setReportTitle] = useState("");
+  const [sort, setSort] = useState("Newest");
 
   useEffect(() => {
     let mounted = true;
@@ -28,7 +29,18 @@ export default function ReportDetail() {
         const res = await fetch(`/api/documents/${encodeURIComponent(String(id))}/files${archivedParam}`);
         if (!res.ok) throw new Error('Failed to load report files');
         const data = await res.json();
-        if (mounted) setFiles((data && data.files) || []);
+        if (mounted) {
+          setFiles((data && data.files) || []);
+
+          const type = Number(data?.order_type ?? 0);
+          setOrderType(type);
+
+          if (type === 3) {
+            setSort("Oldest");
+          } else if (type === 4) {
+            setSort("Newest");
+          }
+        }
       } catch (e) {
         if (mounted) setError(e.message || 'Failed to load report files');
       } finally {
@@ -275,7 +287,9 @@ export default function ReportDetail() {
                     >
                        <div className="text-sm font-semibold text-[#1d3f91]">
                           <span className="lg:hidden text-xs text-gray-400 block uppercase font-normal mb-1">S.No.</span>
-                          {((currentPage - 1) * effectivePerPage) + idx + 1}
+                          {(orderType === 3 || orderType === 4) && sort === "Newest"
+                            ? sortedFiles.length - ((currentPage - 1) * effectivePerPage + idx)
+                            : ((currentPage - 1) * effectivePerPage) + idx + 1}
                         </div>
                       {/* Title Column */}
                       <div className="text-sm pr-2">
