@@ -15,9 +15,10 @@ export default async function handler(req, res) {
       [path, path.replace(/^\//, '')]
     );
 
-    if (navRows.length > 0) {
-      return res.status(200).json(null);
-    }
+    // if (navRows.length > 0) {
+    //   return res.status(200).json(null);
+    // }
+    // Navigation item found, but continue checking page_headers.
 
     const pathSegments = path.split('/').filter(Boolean);
     const slugWithoutSlash = pathSegments.join('/');
@@ -103,6 +104,8 @@ export default async function handler(req, res) {
             ph.id,
             ph.page_path,
             ph.background_url,
+            ph.title,
+            ph.description,
             ni.name AS parent_label,
             ni.link AS parent_href
 

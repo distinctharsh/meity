@@ -402,6 +402,7 @@ export default function PageHeader({
 
     return {
       heading:
+        base.title ||
         base.heading ||
         (!loading
           ? fallbackHeading
@@ -410,8 +411,8 @@ export default function PageHeader({
           ? (
               breadcrumbPath.length
                 ? breadcrumbPath[
-                    breadcrumbPath.length - 1
-                  ].name
+                  breadcrumbPath.length - 1
+                ].name
                 : toTitleCase(
                     (
                       effectivePath ||
@@ -426,6 +427,7 @@ export default function PageHeader({
           : ''),
 
       subheading:
+        base.description ||
         base.subheading ||
         fallbackSubheading ||
         '',
@@ -441,9 +443,11 @@ export default function PageHeader({
           : true,
 
       breadcrumb_enabled:
-        base.breadcrumb_enabled !== undefined
-          ? base.breadcrumb_enabled
-          : true,
+        base.description
+          ? false
+          : base.breadcrumb_enabled !== undefined
+            ? base.breadcrumb_enabled
+            : true,
 
       text_color:
         base.text_color ||
@@ -483,24 +487,24 @@ export default function PageHeader({
     <section
       className="bg-[#123a6b] text-white px-4 hero-before"
       style={{
-        background:
-          final.background_url
-            ? `url('${final.background_url}') no-repeat center center`
-            : undefined,
-
-        backgroundSize:
-          'cover',
-
-        paddingTop:
-          '90px',
-
-        paddingBottom:
-          '90px',
-
-        position:
-          'relative'
+        paddingTop: '90px',
+        paddingBottom: '90px',
+        position: 'relative',
+        overflow: 'hidden',
+        backgroundColor: '#123a6b'
       }}
     >
+      {final.background_url && (
+        <img
+          src={final.background_url}
+          alt=""
+          className="absolute inset-0 w-full h-full object-cover"
+          style={{
+            objectPosition: 'center',
+            zIndex: 0
+          }}
+        />
+      )}
 
       <div className="gi-container">
 
@@ -598,7 +602,11 @@ export default function PageHeader({
                 textColor
             }}
           >
-            {final.heading}
+            <div
+              dangerouslySetInnerHTML={{
+                __html: final.heading || ''
+              }}
+            />
           </h1>
         ) : null}
 
@@ -616,7 +624,12 @@ export default function PageHeader({
                 textColor
             }}
           >
-            {final.subheading}
+            <div
+              className="text-xl md:text-2xl opacity-90"
+              dangerouslySetInnerHTML={{
+                __html: final.subheading || ''
+              }}
+            />
           </p>
         ) : null}
 
