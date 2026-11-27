@@ -437,6 +437,9 @@ export default function PageHeader({
         fallbackBackgroundUrl ||
         '/images/headers/about-default.jpg',
 
+      overlay_gradient:
+        base.overlay_gradient || null,
+
       overlay:
         base.overlay !== undefined
           ? base.overlay
@@ -525,6 +528,7 @@ export default function PageHeader({
                 '100%',
 
               background:
+                final.overlay_gradient ||
                 'linear-gradient(90deg, rgb(22, 47, 106) 20%, transparent 70%)'
             }}
           />

@@ -104,6 +104,7 @@ export default async function handler(req, res) {
             ph.id,
             ph.page_path,
             ph.background_url,
+            ph.overlay_gradient,
             ph.title,
             ph.description,
             ni.name AS parent_label,
