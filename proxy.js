@@ -55,6 +55,7 @@ const IGNORE_PREFIXES = [
   '/archives',
   '/gallery',
   '/feedback',
+  '/good-practices',
 ];
 
 const IGNORE_EXTENSIONS =

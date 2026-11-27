@@ -1,0 +1,761 @@
+.practice-page {
+  width: min(100%, 1200px);
+  margin: 0 auto;
+  padding: 10px 4.6% 34px;
+  color: #0b1b43;
+  font-family: Noto Sans, sans-serif;
+  font-size: 14px;
+}
+
+.practice-loading,
+.practice-not-found {
+  padding: 70px 20px;
+  text-align: center;
+}
+
+.practice-not-found h2 {
+  font-size: 24px;
+  font-weight: 800;
+}
+
+.practice-not-found button {
+  margin-top: 20px;
+  background: #f05a00;
+  color: white;
+  padding: 11px 20px;
+  border-radius: 8px;
+}
+
+/* DETAIL CHIPS */
+
+.practice-page .chips {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 0 0 12px;
+}
+
+.practice-page .chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 13px;
+  border: 1px solid #d9defa;
+  border-radius: 30px;
+  background: #f7f7ff;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.practice-page .chip-purple {
+  background: #f1eaff;
+  color: #3d17bf;
+}
+
+.practice-page .chip-icon {
+  font-size: 19px;
+  line-height: 1;
+  color: #f05a00;
+}
+
+.practice-page .chip-icon.purple {
+  color: #5422c8;
+}
+
+/* HERO */
+
+.practice-hero {
+  min-height: 150px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  margin: 0 -5.1% 16px;
+  padding: 16px 5.1%;
+}
+
+.practice-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    #fff 0%,
+    #fff 51%,
+    rgba(255,255,255,.88) 62%,
+    rgba(255,255,255,.05) 100%
+  );
+}
+
+.practice-hero img {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 49%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 34%;
+}
+
+.practice-hero .hero-copy {
+  position: relative;
+  z-index: 1;
+  max-width: 690px;
+  border-left: 5px solid #ff6a00;
+  padding-left: 24px;
+}
+
+.practice-hero h1 {
+  font-size: clamp(27px, 3.4vw, 40px);
+  margin: 0 0 3px;
+  line-height: 1.2;
+  letter-spacing: -.8px;
+  font-weight: 800;
+}
+
+.practice-hero p {
+  font-size: clamp(13px, 1.45vw, 16px);
+  line-height: 1.42;
+  margin: 0;
+  max-width: 660px;
+}
+
+/* COMMON SECTIONS */
+
+.practice-page .section {
+  margin-top: 17px;
+}
+
+.practice-page .section h2 {
+  font-size: 20px;
+  line-height: 1.2;
+  margin: 0 0 10px;
+  font-weight: 800;
+  letter-spacing: -.4px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.practice-page .section-icon {
+  color: #f05a00;
+  font-size: 27px;
+  line-height: 1;
+}
+
+/* GALLERY */
+
+.practice-page .gallery {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 14px;
+}
+
+.practice-page .gallery figure {
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  margin: 0;
+  background: #e8edf5;
+}
+
+.practice-page .gallery figure img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  cursor: pointer;
+}
+
+.practice-page .gallery-main {
+  height: 262px;
+}
+
+.practice-page .gallery-side {
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+  gap: 12px;
+  min-height: 262px;
+}
+
+.practice-page .gallery-side figure {
+  min-height: 0;
+}
+
+.practice-page .gallery figcaption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 9px 13px;
+  color: white;
+  font-size: 13px;
+  background: linear-gradient(
+    transparent,
+    rgba(0,0,0,.8)
+  );
+}
+
+.practice-page .expand {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  border: 0;
+  border-radius: 5px;
+  color: white;
+  background: rgba(0,0,0,.65);
+  width: 29px;
+  height: 29px;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.practice-page .gallery-placeholder {
+  height: 100%;
+  min-height: 100px;
+  display: grid;
+  place-items: center;
+  color: #667085;
+  font-size: 13px;
+}
+
+/* IMPACT */
+
+.practice-page .impact-section {
+  border-top: 1px solid #edf1f7;
+  padding-top: 12px;
+}
+
+.practice-page .stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+}
+
+.practice-page .stat {
+  min-height: 112px;
+  border-radius: 15px;
+  padding: 12px 14px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.practice-page .stat-icon {
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.practice-page .stat strong {
+  display: block;
+  font-size: clamp(25px, 3vw, 34px);
+  line-height: 1.05;
+  margin-bottom: 5px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.practice-page .stat b {
+  display: block;
+  font-size: 13px;
+  line-height: 1.3;
+}
+
+.practice-page .stat small {
+  display: block;
+  margin-top: 6px;
+  font-size: 12px;
+  color: #28344d;
+}
+
+.practice-page .stat-green {
+  background: #eef8ef;
+  color: #17841d;
+}
+
+.practice-page .stat-blue {
+  background: #edf7ff;
+  color: #06417e;
+}
+
+.practice-page .stat-blue .stat-icon {
+  color: #0788ef;
+}
+
+.practice-page .stat-orange {
+  background: #fff3e9;
+  color: #e65300;
+}
+
+.practice-page .stat-violet {
+  background: #f5efff;
+  color: #5413b9;
+}
+
+/* CHART */
+
+.practice-page .chart-card {
+  margin-top: 13px;
+  border: 1px solid #dce6f3;
+  border-radius: 13px;
+  padding: 13px 18px;
+  display: grid;
+  grid-template-columns: 3fr 1.1fr;
+  gap: 20px;
+  box-shadow: 0 2px 7px rgba(20,50,100,.05);
+}
+
+.practice-page .chart-area h3 {
+  margin: 0 0 13px;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.practice-page .bar-row {
+  display: grid;
+  grid-template-columns: 82px 1fr;
+  align-items: center;
+  gap: 10px;
+  margin: 9px 0;
+  font-weight: 600;
+}
+
+.practice-page .bar-track {
+  height: 24px;
+  border-left: 1px solid #8ea6c6;
+  background: repeating-linear-gradient(
+    90deg,
+    transparent 0,
+    transparent calc(20% - 1px),
+    #dbe5f1 calc(20% - 1px),
+    #dbe5f1 20%
+  );
+}
+
+.practice-page .bar {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 8px;
+  border-radius: 0 5px 5px 0;
+  color: #fff;
+  font-weight: 800;
+  font-size: 14px;
+  transition: width .5s ease;
+}
+
+.practice-page .bar.green {
+  background: #2b941e;
+}
+
+.practice-page .bar.orange {
+  background: #f56a00;
+}
+
+.practice-page .axis {
+  margin-left: 92px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #25334d;
+}
+
+.practice-page .chart-note {
+  align-self: center;
+  border-radius: 12px;
+  background: #faf7f2;
+  padding: 13px 15px;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.practice-page .chart-note b {
+  font-size: 13px;
+}
+
+.practice-page .chart-note b span {
+  color: #f07800;
+  font-size: 17px;
+  margin-right: 5px;
+}
+
+.practice-page .chart-note p {
+  margin: 8px 0 0;
+}
+
+/* CONTACT AND REPORT */
+
+.practice-page .two-columns {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 20px;
+  margin-top: 16px;
+}
+
+.practice-page .two-columns .section {
+  margin-top: 0;
+}
+
+.practice-page .contact-card,
+.practice-page .report-card {
+  border: 1px solid #dce6f3;
+  border-radius: 13px;
+  min-height: 116px;
+  padding: 13px 16px;
+  display: flex;
+  align-items: flex-start;
+  box-shadow: 0 2px 7px rgba(20,50,100,.05);
+}
+
+.practice-page .avatar {
+  width: 48px;
+  height: 48px;
+  flex: 0 0 48px;
+  border-radius: 50%;
+  background: #ffeadb;
+  color: #f05a00;
+  display: grid;
+  place-items: center;
+  font-size: 25px;
+  margin: 0 15px 0 12px;
+}
+
+.practice-page .contact-details h3 {
+  margin: 0 0 2px;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.practice-page .contact-details p {
+  margin: 0;
+  line-height: 1.4;
+  font-size: 13px;
+}
+
+.practice-page .contact-links {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.practice-page .contact-links a {
+  color: #0b1b43;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.practice-page .contact-links a:first-child {
+  color: #e95a00;
+}
+
+.practice-page .report-card {
+  justify-content: center;
+  align-items: center;
+}
+
+.practice-page .download {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: #ed5b00;
+  color: white;
+  text-decoration: none;
+  padding: 12px 18px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 13px;
+  box-shadow: 0 3px 7px rgba(237,91,0,.16);
+}
+
+.practice-page .download span {
+  font-size: 22px;
+}
+
+/* SIMILAR PRACTICES */
+
+.practice-page .similar-section {
+  margin-top: 18px;
+}
+
+.practice-page .similar-card {
+  width: min(100%, 460px);
+  min-height: 139px;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  border: 1px solid #dce6f3;
+  border-radius: 12px;
+  padding: 9px;
+  box-shadow: 0 2px 7px rgba(20,50,100,.05);
+  margin-bottom: 12px;
+}
+
+.practice-page .similar-card > img {
+  width: 122px;
+  height: 112px;
+  border-radius: 9px;
+  object-fit: cover;
+}
+
+.practice-page .similar-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.practice-page .tag {
+  display: inline-block;
+  color: #4c1ab9;
+  background: #f0e8ff;
+  border-radius: 7px;
+  padding: 4px 8px;
+  font-weight: 700;
+  font-size: 11px;
+}
+
+.practice-page .similar-content h3 {
+  margin: 6px 0 3px;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.practice-page .similar-content p {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.practice-page .similar-content .location {
+  font-weight: 600;
+  margin-bottom: 3px;
+}
+
+.practice-page .arrow {
+  width: 31px;
+  height: 31px;
+  flex: 0 0 31px;
+  border: 1px solid #ff6a00;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: white;
+  cursor: pointer;
+  color: #f05a00;
+  font-size: 22px;
+}
+
+.practice-page .similar-empty {
+  color: #667085;
+  padding: 15px 0;
+}
+
+/* IMAGE LIGHTBOX */
+
+.image-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: rgba(0,0,0,.94);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 30px;
+}
+
+.image-lightbox img {
+  max-width: 100%;
+  max-height: 88vh;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+.lightbox-close {
+  position: absolute;
+  top: 20px;
+  right: 25px;
+  width: 42px;
+  height: 42px;
+  border: none;
+  border-radius: 50%;
+  color: white;
+  background: rgba(255,255,255,.2);
+  font-size: 22px;
+  cursor: pointer;
+}
+
+/* TABLET AND MOBILE */
+
+@media (max-width: 760px) {
+
+  .practice-page {
+    padding: 10px 16px 28px;
+  }
+
+  .practice-hero {
+    margin: 0 -16px 12px;
+    padding: 18px 16px;
+    min-height: 185px;
+  }
+
+  .practice-hero img {
+    width: 56%;
+    opacity: .35;
+  }
+
+  .practice-hero::after {
+    background: linear-gradient(
+      90deg,
+      #fff 0%,
+      rgba(255,255,255,.95) 55%,
+      rgba(255,255,255,.35) 100%
+    );
+  }
+
+  .practice-hero .hero-copy {
+    padding-left: 15px;
+  }
+
+  .practice-page .gallery {
+    grid-template-columns: 1fr;
+  }
+
+  .practice-page .gallery-main {
+    height: 250px;
+  }
+
+  .practice-page .gallery-side {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 135px;
+    min-height: 0;
+  }
+
+  .practice-page .stats {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 9px;
+  }
+
+  .practice-page .stat {
+    min-height: 105px;
+    padding: 11px;
+    gap: 8px;
+  }
+
+  .practice-page .stat-icon {
+    font-size: 25px;
+  }
+
+  .practice-page .stat strong {
+    font-size: 26px;
+  }
+
+  .practice-page .chart-card {
+    grid-template-columns: 1fr;
+  }
+
+  .practice-page .two-columns {
+    grid-template-columns: 1fr;
+    gap: 17px;
+  }
+}
+
+@media (max-width: 440px) {
+
+  .practice-page .chips {
+    gap: 7px;
+  }
+
+  .practice-page .chip {
+    font-size: 11px;
+    padding: 6px 9px;
+  }
+
+  .practice-page .section h2 {
+    font-size: 18px;
+  }
+
+  .practice-page .gallery-main {
+    height: 205px;
+  }
+
+  .practice-page .gallery-side {
+    grid-template-rows: 115px;
+    gap: 8px;
+  }
+
+  .practice-page .gallery figcaption {
+    font-size: 10px;
+    padding: 7px;
+  }
+
+  .practice-page .stat {
+    display: block;
+  }
+
+  .practice-page .stat-icon {
+    float: left;
+    margin-right: 8px;
+  }
+
+  .practice-page .stat strong {
+    font-size: 23px;
+  }
+
+  .practice-page .stat b {
+    clear: both;
+    padding-top: 5px;
+  }
+
+  .practice-page .chart-card {
+    padding: 12px;
+  }
+
+  .practice-page .chart-area h3 {
+    font-size: 15px;
+  }
+
+  .practice-page .bar-row {
+    grid-template-columns: 68px 1fr;
+    font-size: 12px;
+    gap: 6px;
+  }
+
+  .practice-page .axis {
+    margin-left: 74px;
+    font-size: 10px;
+  }
+
+  .practice-page .contact-card {
+    padding: 12px 9px;
+  }
+
+  .practice-page .avatar {
+    margin: 0 10px 0 0;
+  }
+
+  .practice-page .contact-links {
+    gap: 8px 15px;
+  }
+
+  .practice-page .similar-card > img {
+    width: 88px;
+    height: 104px;
+  }
+
+  .practice-page .similar-card {
+    gap: 9px;
+  }
+
+  .practice-page .similar-content p {
+    font-size: 10px;
+  }
+
+  .practice-page .arrow {
+    width: 27px;
+    height: 27px;
+    flex-basis: 27px;
+  }
+
+}

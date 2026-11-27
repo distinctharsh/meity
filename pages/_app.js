@@ -9,6 +9,9 @@ import { useEffect, useState } from 'react';
 import Script from 'next/script';
 import Head from 'next/head';
 import { t } from "@/lib/translations";
+import "@/styles/good-practice-detail.css";
+import "@/styles/education.css";
+import "@/styles/about-good-practices.css";
 
 export default function App({ Component, pageProps }) {
   const router = useRouter();

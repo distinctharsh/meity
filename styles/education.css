@@ -1,0 +1,389 @@
+
+.education-page {
+  color: #0b1c45;
+  background: #fff;
+  min-height: 100vh;
+  font-family: Inter, "Segoe UI", Arial, sans-serif;
+}
+
+.education-hero {
+  height: 187px;
+  position: relative;
+  overflow: hidden;
+  background: #075184;
+  color: white;
+}
+
+.education-hero-art {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(0,67,113,.96), rgba(0,73,122,.75), rgba(0,73,122,.05)),
+    url("/images/good-practices/education.jpg") center 38% / cover;
+}
+
+.education-hero-inner {
+  width: 88%;
+  max-width: 1275px;
+  height: 100%;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  position: relative;
+  z-index: 1;
+}
+
+.education-book-icon {
+  width: 82px;
+  height: 76px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(255,255,255,.35);
+  border-radius: 18px;
+  background: rgba(0,178,220,.45);
+  font-size: 55px;
+}
+
+.education-hero h1 {
+  font-size: clamp(34px, 4vw, 49px);
+  line-height: 1.08;
+  margin: 0 0 5px;
+  font-weight: 800;
+}
+
+.education-hero p {
+  margin: 0;
+  font-size: clamp(14px, 1.55vw, 19px);
+  line-height: 1.45;
+  font-weight: 500;
+  max-width: 700px;
+}
+
+.education-container {
+  width: 88%;
+  max-width: 1275px;
+  margin: 14px auto 55px;
+}
+
+.education-filters {
+  padding: 13px 21px;
+  display: grid;
+  grid-template-columns: 1.9fr .75fr 1.05fr 1.05fr 137px;
+  gap: 15px;
+  align-items: center;
+  border-radius: 16px;
+  background: linear-gradient(100deg, #eef7ff, #dceeff);
+  box-shadow: 0 5px 13px rgba(25,80,130,.13);
+}
+
+.education-search,
+.education-filters select {
+  height: 42px;
+  border: 1.5px solid #b8d2f0;
+  border-radius: 11px;
+  background: white;
+  color: #101d3d;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.education-search {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 14px;
+}
+
+.education-search span {
+  font-size: 27px;
+}
+
+.education-search input {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  font-size: 14px;
+}
+
+.education-filters select {
+  width: 100%;
+  padding: 0 10px;
+  cursor: pointer;
+}
+
+.education-search-button {
+  height: 42px;
+  border: 0;
+  border-radius: 11px;
+  background: linear-gradient(100deg, #f27600, #e65a00);
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.education-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 22px 3px;
+  font-size: 14px;
+}
+
+.education-toolbar label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.education-toolbar select {
+  height: 40px;
+  width: 150px;
+  border: 1px solid #b8d2f0;
+  border-radius: 10px;
+  background: #eff6ff;
+  padding: 0 12px;
+}
+
+.education-cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 25px;
+}
+
+.education-card {
+  min-width: 0;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid #dce5ef;
+  border-radius: 16px;
+  background: white;
+  box-shadow: 0 4px 10px rgba(20,45,80,.09);
+}
+
+.education-card-image {
+  height: 196px;
+  overflow: hidden;
+  background: #eaf0f7;
+}
+
+.education-card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.education-card-body {
+  min-height: 183px;
+  padding: 20px 23px 30px;
+  position: relative;
+}
+
+.education-category {
+  position: absolute;
+  top: -16px;
+  left: 16px;
+  padding: 6px 16px;
+  border-radius: 20px;
+  background: #f0e9ff;
+  color: #2610a5;
+  font-weight: 800;
+  font-size: 13px;
+}
+
+.education-card h2 {
+  margin: 0 0 8px;
+  font-size: 22px;
+  line-height: 1.25;
+  font-weight: 800;
+}
+
+.education-location {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 12px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.education-location span {
+  color: #f26700;
+}
+
+.education-description {
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.education-card-arrow {
+  position: absolute;
+  right: 14px;
+  bottom: 13px;
+  width: 37px;
+  height: 37px;
+  border: 1.5px solid #f26700;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: #f26700;
+  background: white;
+  font-size: 25px;
+  cursor: pointer;
+}
+
+.education-card-arrow:hover {
+  background: #f26700;
+  color: white;
+}
+
+.education-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 17px;
+  margin: 46px 0 0;
+}
+
+.education-pagination button {
+  height: 42px;
+  min-width: 122px;
+  padding: 0 16px;
+  border: 1.5px solid #ff6900;
+  border-radius: 12px;
+  color: #ed5d00;
+  background: white;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.education-pagination button:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+}
+
+.education-pagination span {
+  width: 53px;
+  height: 42px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  color: white;
+  background: linear-gradient(110deg,#ef7800,#d94e00);
+  font-weight: 800;
+}
+
+.education-empty {
+  text-align: center;
+  padding: 60px 20px;
+  background: #f8faff;
+  border-radius: 15px;
+}
+
+.education-empty button {
+  margin-top: 15px;
+  background: #f26700;
+  color: white;
+  border-radius: 9px;
+  padding: 10px 20px;
+}
+
+.education-skeleton {
+  height: 360px;
+  border-radius: 15px;
+  background: #e5e7eb;
+  animation: education-pulse 1.5s infinite;
+}
+
+@keyframes education-pulse {
+  50% { opacity: .45; }
+}
+
+@media (max-width: 1000px) {
+  .education-filters {
+    grid-template-columns: 1.5fr 1fr 1fr;
+    gap: 10px;
+  }
+
+  .education-search {
+    grid-column: span 2;
+  }
+
+  .education-search-button {
+    grid-column: 3;
+  }
+
+  .education-cards {
+    gap: 15px;
+  }
+}
+
+@media (max-width: 700px) {
+  .education-hero {
+    height: 205px;
+  }
+
+  .education-hero-inner {
+    width: 92%;
+    align-items: flex-start;
+    padding-top: 30px;
+    gap: 14px;
+  }
+
+  .education-book-icon {
+    width: 58px;
+    height: 58px;
+    font-size: 39px;
+  }
+
+  .education-hero h1 {
+    font-size: 34px;
+  }
+
+  .education-hero p {
+    font-size: 13px;
+  }
+
+  .education-container {
+    width: 92%;
+  }
+
+  .education-filters {
+    grid-template-columns: 1fr 1fr;
+    padding: 12px;
+    gap: 9px;
+  }
+
+  .education-search,
+  .education-search-button {
+    grid-column: 1 / -1;
+  }
+
+  .education-cards {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .education-card-image {
+    height: 220px;
+  }
+
+  .education-toolbar {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .education-pagination {
+    gap: 8px;
+  }
+
+  .education-pagination button {
+    min-width: 100px;
+  }
+}
