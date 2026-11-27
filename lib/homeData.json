@@ -4,19 +4,19 @@
       "id": 17,
       "image_url": "/uploads/media/1791821239903_9r0qtw.jpeg",
       "link_url": "",
-      "display_order": 0,
+      "display_order": 1,
       "is_active": 1,
       "created_at": "2026-10-12T16:07:24.000Z",
-      "updated_at": "2026-11-18T06:16:57.000Z"
+      "updated_at": "2026-11-25T11:56:20.000Z"
     },
     {
       "id": 16,
       "image_url": "/uploads/media/1791821229697_zndijy.jpeg",
       "link_url": "",
-      "display_order": 1,
+      "display_order": 2,
       "is_active": 1,
       "created_at": "2026-10-12T16:07:14.000Z",
-      "updated_at": "2026-11-18T06:16:57.000Z"
+      "updated_at": "2026-11-25T11:56:24.000Z"
     }
   ],
   "announcements": [
@@ -40,9 +40,9 @@
       "author": "PM’s address on the 17th Civil Services Day",
       "image_url": "/images/pm/pm-modi.jpg",
       "event_url": "https://www.pmindia.gov.in/en/news_updates/pms-address-on-the-17th-civil-services-day/?comment=disable",
-      "quote_date": "2025-04-11T18:30:00.000Z",
+      "quote_date": "2025-04-17T18:30:00.000Z",
       "created_at": "2025-10-14T07:45:11.000Z",
-      "updated_at": "2026-11-18T06:47:01.000Z"
+      "updated_at": "2026-11-25T12:01:37.000Z"
     }
   ],
   "aboutSection": null,
@@ -179,32 +179,6 @@
       "is_active": 1,
       "created_at": "2026-10-23T11:46:14.000Z",
       "updated_at": "2026-10-23T11:46:14.000Z",
-      "is_key_document": 1
-    },
-    {
-      "id": 12,
-      "title": "sty",
-      "description": null,
-      "type": "link",
-      "file_url": null,
-      "external_url": "https://distinctharsh.com",
-      "display_order": 10,
-      "is_active": 1,
-      "created_at": "2026-11-02T11:49:38.000Z",
-      "updated_at": "2026-11-18T07:19:03.000Z",
-      "is_key_document": 0
-    },
-    {
-      "id": 13,
-      "title": "test",
-      "description": null,
-      "type": "link",
-      "file_url": null,
-      "external_url": "https://distinctharsh.com",
-      "display_order": 11,
-      "is_active": 1,
-      "created_at": "2026-11-18T07:19:24.000Z",
-      "updated_at": "2026-11-18T07:19:24.000Z",
       "is_key_document": 1
     }
   ],

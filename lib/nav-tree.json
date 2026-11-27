@@ -117,6 +117,15 @@
     "display_order": 3,
     "items": [
       {
+        "id": 99,
+        "text": "Good Practices",
+        "href": "/good-practices",
+        "dropdown": false,
+        "display_order": 0,
+        "items": [],
+        "children": []
+      },
+      {
         "id": 48,
         "text": "Council of Ministers - Portfolio Allocations",
         "href": "/documents/council-of-ministers-portfolio-allocations",
@@ -172,6 +181,15 @@
       }
     ],
     "children": [
+      {
+        "id": 99,
+        "text": "Good Practices",
+        "href": "/good-practices",
+        "dropdown": false,
+        "display_order": 0,
+        "items": [],
+        "children": []
+      },
       {
         "id": 48,
         "text": "Council of Ministers - Portfolio Allocations",
